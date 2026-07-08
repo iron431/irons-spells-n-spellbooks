@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.block.portal_frame.PortalFrameBlockEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
+import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
@@ -36,10 +37,14 @@ import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.worldgen.IceSpiderPatrolSpawner;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
+import io.redspace.skillcasting.api.event.SkillSelectionPriority;
 import io.redspace.skillcasting.api.skill.CastType;
+import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
+import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -101,7 +106,6 @@ import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
@@ -115,6 +119,7 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
+import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -165,26 +170,6 @@ public class ServerPlayerEvents {
     public static void onServerStarted(ServerStartedEvent event) {
         IronsSpellbooks.MCS = event.getServer();
         IronsSpellbooks.OVERWORLD = IronsSpellbooks.MCS.overworld();
-    }
-
-    @SubscribeEvent
-    public static void onLivingEquipmentChangeEvent(LivingEquipmentChangeEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            var magicData = MagicData.get(serverPlayer);
-            var skillcastingData = SkillcastingData.get(serverPlayer);
-            // todo: ensure skillcasting sufficiently performs this responsibility
-//            var isFromSpellContainer = ISpellContainer.isSpellContainer(event.getFrom());
-//            if (isFromSpellContainer &&
-//                    ISpellContainer.get(event.getFrom()).getIndexForSpell(magicData.getCastingSpell().getSpell()) >= 0 &&
-//                    !Utils.isSameItemSameComponentsIgnoreDurability(event.getFrom(), event.getTo())) {
-//                if (magicData.isCasting()) {
-//                    Utils.serverSideCancelCast(serverPlayer);
-//                }
-//                PacketDistributor.sendToPlayer(serverPlayer, new EquipmentChangedPacket());
-//            } else if (isFromSpellContainer || ISpellContainer.isSpellContainer(event.getTo())) {
-//                PacketDistributor.sendToPlayer(serverPlayer, new EquipmentChangedPacket());
-//            }
-        }
     }
 
     @SubscribeEvent
@@ -241,6 +226,8 @@ public class ServerPlayerEvents {
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             CameraShakeManager.doSync(serverPlayer);
+            // fixme: will we still need dedicated packet?
+//            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(MagicData.get(serverPlayer)));
         }
     }
 
@@ -313,6 +300,30 @@ public class ServerPlayerEvents {
                 Vec3 vec3 = boundingBox.getCenter();
                 MagicManager.spawnParticles(event.getEntity().level, ParticleTypes.CRIT, vec3.x, vec3.y, vec3.z, 25, boundingBox.getXsize() * .6, boundingBox.getYsize() * .6, boundingBox.getZsize() * .6, 0, false);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void buildSkillOptions(GatherSkillSelectionEvent event) {
+        var player = event.getEntity();
+        CuriosApi.getCuriosInventory(player).ifPresent(inv -> {
+            ItemStack spellbook = Utils.getPlayerSpellbookStack(player);
+            if (spellbook != null && ISkillContainer.isSkillContainer(spellbook)) {
+                event.addSource(ISkillContainer.get(spellbook), Curios.SPELLBOOK_SLOT, SkillSelectionPriority.PRIMARY_SKILL_SOURCE);
+            }
+            inv.findCurios(ISkillContainer::isSkillContainer).stream().filter(slot -> !slot.slotContext().identifier().equals(Curios.SPELLBOOK_SLOT)).forEach(
+                    slotResult -> event.addSource(ISkillContainer.get(slotResult.stack()), String.format("%s_%s", slotResult.slotContext().identifier(), slotResult.slotContext().index()),SkillSelectionPriority.CURIO));
+        });
+    }
+
+    @SubscribeEvent
+    public static void onCurioChangeEvent(CurioChangeEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
+            return;
+        }
+        if ((ISkillContainer.isSkillContainer(event.getFrom()) || ISkillContainer.isSkillContainer(event.getTo()))) {
+            SkillcastingData.get(player).selectionManager().refresh(player);
+            SkillcastingNetwork.syncSelection(player, SkillcastingData.get(player));
         }
     }
 
@@ -413,14 +424,15 @@ public class ServerPlayerEvents {
     public static void onProjectileImpact(ProjectileImpactEvent event) {
         if (event.getRayTraceResult() instanceof EntityHitResult entityHitResult) {
             var victim = entityHitResult.getEntity();
-            var livingEntity = (LivingEntity) victim;
-            if (livingEntity.hasEffect(MobEffectRegistry.EVASION)) {
-                if (EvasionEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
-                    event.setCanceled(true);
-                }
-            } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD)) {
-                if (AbyssalShroudEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
-                    event.setCanceled(true);
+            if (victim instanceof LivingEntity livingEntity) {
+                if (livingEntity.hasEffect(MobEffectRegistry.EVASION)) {
+                    if (EvasionEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
+                        event.setCanceled(true);
+                    }
+                } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD)) {
+                    if (AbyssalShroudEffect.doEffect(livingEntity, victim.damageSources().indirectMagic(event.getProjectile(), event.getProjectile().getOwner()))) {
+                        event.setCanceled(true);
+                    }
                 }
             }
         }

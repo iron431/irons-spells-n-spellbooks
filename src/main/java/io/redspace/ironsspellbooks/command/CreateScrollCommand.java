@@ -8,9 +8,9 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillData;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -34,7 +34,7 @@ public class CreateScrollCommand {
             spell = IronsSpellbooks.MODID + ":" + spell;
         }
 
-        AbstractSpellSkill abstractSpell = SpellRegistry.REGISTRY.get(ResourceLocation.parse(spell));
+        AbstractSkill abstractSpell = SpellRegistry.getSpell(ResourceLocation.parse(spell));
 
         if (abstractSpell == null) {
             throw ERROR_FAILED.create();

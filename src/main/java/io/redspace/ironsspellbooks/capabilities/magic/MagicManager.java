@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.api.magic.IMagicManager;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -85,7 +85,7 @@ public class MagicManager implements IMagicManager {
 //        });
     }
 
-    public void addCooldown(ServerPlayer serverPlayer, AbstractSpell spell, CastSource castSource) {
+    public void addCooldown(ServerPlayer serverPlayer, AbstractSpellSkill spell, CastSource castSource) {
 //        int effectiveCooldown = getEffectiveSpellCooldown(spell, serverPlayer, castSource);
 //        var pre = NeoForge.EVENT_BUS.post(new SpellCooldownAddedEvent.Pre(effectiveCooldown, spell, serverPlayer, castSource));
 //
@@ -106,14 +106,14 @@ public class MagicManager implements IMagicManager {
 //        MagicData.get(serverPlayer).getPlayerCooldowns().syncToPlayer(serverPlayer);
     }
 
-    public static int getEffectiveSpellCooldown(AbstractSpell spell, Player player, CastSource castSource) {
+    public static int getEffectiveSpellCooldown(AbstractSpellSkill spell, Player player, CastSource castSource) {
         double playerCooldownModifier = player.getAttributeValue(COOLDOWN_REDUCTION);
 
         float itemCoolDownModifer = 1;
         if (castSource == CastSource.SWORD) {
             itemCoolDownModifer = ServerConfigs.SWORDS_CD_MULTIPLIER.get().floatValue();
         }
-        return (int) (spell.getSpellCooldown() * (2 - Utils.softCapFormula(playerCooldownModifier)) * itemCoolDownModifer);
+        return (int) (spell.getCooldownTicks() * (2 - Utils.softCapFormula(playerCooldownModifier)) * itemCoolDownModifer);
     }
 
     public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force) {

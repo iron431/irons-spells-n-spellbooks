@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.mixin.LivingEntityAccessor;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -35,7 +35,7 @@ public class VoltStrikeEffect extends MagicMobEffect implements ISyncedMobEffect
         UUID ignore = null;
         if (!list.isEmpty()) {
             for (Entity entity : list) {
-                if (DamageSources.applyDamage(entity, amplifier, SkillRegistry.VOLT_STRIKE_SPELL.get().getDamageSource(livingEntity.level(), livingEntity))) {
+                if (DamageSources.applyDamage(entity, amplifier, SpellRegistry.VOLT_STRIKE_SPELL.get().getDamageSource(livingEntity.level(), livingEntity))) {
                     //Guarantee that the entity receives i-frames, since we are damaging every tick
                     entity.invulnerableTime = 20;
                     hit = true;
@@ -60,7 +60,7 @@ public class VoltStrikeEffect extends MagicMobEffect implements ISyncedMobEffect
                 if (ignore != entity.getUUID() && distanceSqr < explosionRadiusSqr && entity.canBeHitByProjectile() && Utils.hasLineOfSight(level, losPoint, entity.getBoundingBox().getCenter(), true)) {
                     double p = (1 - distanceSqr / explosionRadiusSqr);
                     float damage = (float) (amplifier * p * 0.5);
-                    DamageSources.applyDamage(entity, damage, SkillRegistry.VOLT_STRIKE_SPELL.get().getDamageSource(livingEntity.level(), livingEntity));
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.VOLT_STRIKE_SPELL.get().getDamageSource(livingEntity.level(), livingEntity));
                 }
             }
             livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().normalize().scale(-0.5).add(0, 0.5, 0));

@@ -1,5 +1,6 @@
 package io.redspace.skillcasting.irons_spellbooks;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
@@ -43,6 +44,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +59,8 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     protected float baseSpellPower, spellPowerPerLevel;
     protected int baseManaCost, manaCostPerLevel;
     protected int castTime;
+
+    private volatile List<Double> rarityWeights;
 
     @Override
     public int getCastTimeTicks() {
@@ -102,10 +106,13 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         return this.getSchoolType().requiresLearning();
     }
 
+    public boolean isEnabled() {
+        return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.ENABLED);
+    }
+
     public boolean obfuscateStats(@Nullable Player player) {
         return requiresLearning() && !isLearned(player);
     }
-
 
     @Override
     public void buildContextComponents(CastContext castContext) {
@@ -326,30 +333,61 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         return (float) this.getSchoolType().getPowerFor(livingEntity) * (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER);
     }
 
+    public void resetRarityWeights() {
+        rarityWeights = null;
+    }
+
+    private void initializeRarityWeights() {
+        synchronized (this) {
+            if (rarityWeights == null) {
+                int minRarity = getMinRarity();
+                int maxRarity = getMaxRarity();
+                List<Double> rarityRawConfig = SpellRarity.getRawRarityConfig();
+                List<Double> rarityConfig = SpellRarity.getRarityConfig();
+
+                if (minRarity != 0) {
+                    //Must balance remaining weights
+                    var subList = rarityRawConfig.subList(minRarity, maxRarity + 1);
+                    double subtotal = subList.stream().reduce(0d, Double::sum);
+                    List<Double> rarityRawWeights = subList.stream().map(item -> ((item / subtotal) * (1 - subtotal)) + item).toList();
+
+                    var counter = new AtomicDouble();
+                    var weights = new ArrayList<Double>();
+                    rarityRawWeights.forEach(item -> weights.add(counter.addAndGet(item)));
+                    rarityWeights = weights;
+                } else {
+                    rarityWeights = rarityConfig;
+                }
+            }
+        }
+    }
+
+    public int getMaxRarity() {
+        return SpellRarity.LEGENDARY.getValue();
+    }
+
     public SpellRarity getRarity(int level) {
-        // fixme: implement rarity
-//        if (rarityWeights == null) {
-//            initializeRarityWeights();
-//        }
-//
-//        int maxLevel = getMaxLevel();
-//        int maxRarity = getMaxRarity();
-//        if (maxLevel == 1)
-//            return SpellRarity.values()[getMinRarity()];
-//        if (level >= maxLevel) {
-//            return SpellRarity.LEGENDARY;
-//        }
-//        double percentOfMaxLevel = (double) level / (double) maxLevel;
-//
-//        //irons_spellbooks.LOGGER.debug("getRarity: {} {} {} {} {} {}", this.toString(), rarityRawWeights, rarityWeights, percentOfMaxLevel, minRarity, maxRarity);
-//
-//        int lookupOffset = maxRarity + 1 - rarityWeights.size();
-//
-//        for (int i = 0; i < rarityWeights.size(); i++) {
-//            if (percentOfMaxLevel <= rarityWeights.get(i)) {
-//                return SpellRarity.values()[i + lookupOffset];
-//            }
-//        }
+        if (rarityWeights == null) {
+            initializeRarityWeights();
+        }
+
+        int maxLevel = getMaxLevel();
+        int maxRarity = getMaxRarity();
+        if (maxLevel == 1) {
+            return SpellRarity.values()[getMinRarity()];
+        }
+        if (level >= maxLevel) {
+            return SpellRarity.LEGENDARY;
+        }
+        double percentOfMaxLevel = (double) level / (double) maxLevel;
+
+        int lookupOffset = maxRarity + 1 - rarityWeights.size();
+
+        for (int i = 0; i < rarityWeights.size(); i++) {
+            if (percentOfMaxLevel <= rarityWeights.get(i)) {
+                return SpellRarity.values()[i + lookupOffset];
+            }
+        }
 
         return SpellRarity.COMMON;
     }
@@ -369,27 +407,29 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     /**
      * Returns an additional condition for whether this spell can be crafted in the scroll forge, or whether it will be omitted
      */
+    public int getMinRarity() {
+        return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.MIN_RARITY).getValue();
+    }
+
     public boolean allowCrafting() {
         return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.ALLOW_CRAFTING);
     }
 
     public int getMinLevelForRarity(SpellRarity rarity) {
-        return 0;
-        // fixme: rarity
-//        if (rarityWeights == null) {
-//            initializeRarityWeights();
-//        }
-//
-//        int minRarity = getMinRarity();
-//        int maxLevel = getMaxLevel();
-//        if (rarity.getValue() < minRarity) {
-//            return 0;
-//        }
-//
-//        if (rarity.getValue() == minRarity) {
-//            return 1;
-//        }
-//
-//        return (int) (rarityWeights.get(rarity.getValue() - (1 + minRarity)) * maxLevel) + 1;
+        if (rarityWeights == null) {
+            initializeRarityWeights();
+        }
+
+        int minRarity = getMinRarity();
+        int maxLevel = getMaxLevel();
+        if (rarity.getValue() < minRarity) {
+            return 0;
+        }
+
+        if (rarity.getValue() == minRarity) {
+            return 1;
+        }
+
+        return (int) (rarityWeights.get(rarity.getValue() - (1 + minRarity)) * maxLevel) + 1;
     }
 }

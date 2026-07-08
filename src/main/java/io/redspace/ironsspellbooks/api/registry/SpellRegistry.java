@@ -1,213 +1,416 @@
 package io.redspace.ironsspellbooks.api.registry;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
-import io.redspace.skillcasting.registry.SkillcastingRegistries;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.AcupunctureSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.BloodNeedlesSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.BloodSlashSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.BloodStepSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.DevourSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.HeartstopSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.RaiseDeadSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.RayOfSiphoningSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.SacrificeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.blood.WitherSkullSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.AbyssalShroudSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.EldritchBlastSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.PlanarSightSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.PocketDimensionSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.SculkTentaclesSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.SonicBoomSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.eldritch.TelekinesisSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.ArcaneShackleSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.BlackHoleSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.CounterspellSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.DragonBreathSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.EchoingStrikesSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.EvasionSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.GravityFissureSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.MagicArrowSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.MagicMissileSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.PortalSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.RecallSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.ShadowSlashSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.StarfallSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.SummonEnderChestSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.SummonSwordsSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ender.TeleportSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ArrowVolleySpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ChainCreeperSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.FangStrikeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.FangSwirlSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.FangWardSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.FirecrackerSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.GustSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.InvisibilitySpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.LobCreeperSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ScapegoatSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ShieldSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.SlowSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.SpectralHammerSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.SummonHorseSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.SummonVexSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ThrowSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.evocation.WololoSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.BlazeStormSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.BurningDashSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.FireArrowSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.FireBreathSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.FireballSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.FireboltSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.FlamingBarrageSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.FlamingStrikeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.HeatSurgeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.MagmaBombSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.RaiseHellSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.ScorchSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.fire.WallOfFireSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.AngelWingsSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.BlessingOfLifeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.CleanseSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.CloudOfRegenerationSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.DivineSmiteSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.FortifySpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.GreaterHealSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.GuidingBoltSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.HasteSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.HealSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.HealingCircleSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.SunbeamSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.holy.WispSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ice.BlizzardSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ice.ConeOfColdSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ice.FrostStepSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ice.FrostbiteSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ice.FrostwaveSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ice.IceBlockSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ice.IceSpikesSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ice.IceTombSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ice.IcicleSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ice.RayOfFrostSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ice.SnowballSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.ice.SummonPolarBearSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.AscensionSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.BallLightningSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.ChainLightningSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.ChargeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.ElectrocuteSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.LightningBoltSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.LightningLanceSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.ShockwaveSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.ThunderstormSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.lightning.VoltStrikeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.AcidOrbSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.BlightSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.EarthquakeSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.FireflySwarmSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.GluttonySpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.OakskinSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.PoisonArrowSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.PoisonBreathSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.PoisonSplashSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.RootSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.SpiderAspectSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.StompSpell;
+import io.redspace.skillcasting.irons_spellbooks.spells.nature.TouchDigSpell;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static io.redspace.skillcasting.registry.SkillcastingRegistries.SKILL_REGISTRY;
+
 public class SpellRegistry {
-    //    public static final ResourceKey<Registry<AbstractSpellSkill>> SPELL_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "spells"));
-    private static final DeferredRegister<AbstractSkill> SPELLS = DeferredRegister.create(SkillcastingRegistries.SKILL_REGISTRY_KEY, IronsSpellbooks.MODID);
+    private static final DeferredRegister<AbstractSkill> SPELLS = DeferredRegister.create(SKILL_REGISTRY, IronsSpellbooks.MODID);
 
-    //public static final Supplier<IForgeRegistry<AbstractSpell>> REGISTRY = SPELLS.makeRegistry(() -> new RegistryBuilder<AbstractSpell>().disableSaving().disableOverrides());
-//    public static final Registry<AbstractSpellSkill> REGISTRY = new RegistryBuilder<>(SPELL_REGISTRY_KEY).create();
-
-    //    private static final NoneSpell noneSpell = new NoneSpell();
-    private static final Map<SchoolType, List<AbstractSkill>> SCHOOLS_TO_SPELLS = new HashMap<>();
+    private static final Map<SchoolType, List<AbstractSpellSkill>> SCHOOLS_TO_SPELLS = new HashMap<>();
 
     public static void register(IEventBus eventBus) {
         SPELLS.register(eventBus);
     }
 
-//    public static void registerRegistry(NewRegistryEvent event) {
-//        IronsSpellbooks.LOGGER.debug("SpellRegistry.registerRegistry");
-//        event.register(REGISTRY);
-//    }
-
-//    public static NoneSpell none() {
-//        return noneSpell;
-//    }
-
-    private static Supplier<AbstractSkill> registerSpell(AbstractSkill spell) {
-        return SPELLS.register(spell.getSpellName(), () -> spell);
+    @Nullable
+    public static AbstractSpellSkill getSpell(ResourceLocation spellId) {
+        return SKILL_REGISTRY.get(spellId) instanceof AbstractSpellSkill spell ? spell : null;
     }
 
-    public static AbstractSkill getSpell(String spellId) {
-        return getSpell(ResourceLocation.parse(spellId));
+    public static boolean containsKey(ResourceLocation spellId) {
+        return getSpell(spellId) != null;
     }
 
-    public static List<AbstractSkill> getEnabledSpells() {
-        return SPELLS.getEntries()
+    public static List<AbstractSpellSkill> getEnabledSpells() {
+        return SKILL_REGISTRY.stream()
+                .filter(AbstractSpellSkill.class::isInstance)
+                .map(AbstractSpellSkill.class::cast)
+                .filter(AbstractSpellSkill::isEnabled)
+                .collect(Collectors.toList());
+    }
+
+    public static List<AbstractSpellSkill> getAllSpells() {
+        return SKILL_REGISTRY.stream()
+                .filter(AbstractSpellSkill.class::isInstance)
+                .map(AbstractSpellSkill.class::cast)
+                .collect(Collectors.toList());
+    }
+
+    public static List<AbstractSpellSkill> getSpellsForSchool(SchoolType schoolType) {
+        return SCHOOLS_TO_SPELLS.computeIfAbsent(schoolType, (school) -> SKILL_REGISTRY
                 .stream()
-                .map(DeferredHolder::get)
-                .map(s -> (AbstractSkill) s)
-                // fixme: enabled?
-//                .filter(AbstractSkill::isEnabled)
-                .toList();
+                .filter(AbstractSpellSkill.class::isInstance)
+                .map(AbstractSpellSkill.class::cast)
+                .filter(spell -> spell.getSchoolType() == school)
+                .collect(Collectors.toList()));
     }
-
-    public static List<AbstractSkill> getSpellsForSchool(SchoolType schoolType) {
-        return SCHOOLS_TO_SPELLS.computeIfAbsent(schoolType, (school) -> SpellRegistry.REGISTRY
-                .stream()
-                .filter(spell -> spell.getSchoolType() == school).collect(Collectors.toList()));
-    }
-
-//    public static AbstractSkill getSpell(ResourceLocation resourceLocation) {
-//        var spell = SPELLS.(resourceLocation);
-//        if (spell == null) {
-//            return noneSpell;
-//        }
-//        return spell;
-//    }
 
     public static void onConfigReload() {
         SCHOOLS_TO_SPELLS.clear();
+        SKILL_REGISTRY.stream()
+                .filter(AbstractSpellSkill.class::isInstance)
+                .map(AbstractSpellSkill.class::cast)
+                .forEach(AbstractSpellSkill::resetRarityWeights);
     }
 
-    //TODO: should the none spell be registered?
+    public static final DeferredHolder<AbstractSkill, IcicleSpell> ICICLE_SPELL =
+            registerSpell("icicle", IcicleSpell::new);
+    public static final DeferredHolder<AbstractSkill, ConeOfColdSpell> CONE_OF_COLD_SPELL =
+            registerSpell("cone_of_cold", ConeOfColdSpell::new);
+    public static final DeferredHolder<AbstractSkill, FrostbiteSpell> FROSTBITE_SPELL =
+            registerSpell("frostbite", FrostbiteSpell::new);
+    public static final DeferredHolder<AbstractSkill, FrostStepSpell> FROST_STEP_SPELL =
+            registerSpell("frost_step", FrostStepSpell::new);
+    public static final DeferredHolder<AbstractSkill, FrostwaveSpell> FROSTWAVE_SPELL =
+            registerSpell("frostwave", FrostwaveSpell::new);
+    public static final DeferredHolder<AbstractSkill, IceBlockSpell> ICE_BLOCK_SPELL =
+            registerSpell("ice_block", IceBlockSpell::new);
+    public static final DeferredHolder<AbstractSkill, IceSpikesSpell> ICE_SPIKES_SPELL =
+            registerSpell("ice_spikes", IceSpikesSpell::new);
+    public static final DeferredHolder<AbstractSkill, IceTombSpell> ICE_TOMB_SPELL =
+            registerSpell("ice_tomb", IceTombSpell::new);
+    public static final DeferredHolder<AbstractSkill, RayOfFrostSpell> RAY_OF_FROST_SPELL =
+            registerSpell("ray_of_frost", RayOfFrostSpell::new);
+    public static final DeferredHolder<AbstractSkill, SnowballSpell> SNOWBALL_SPELL =
+            registerSpell("snowball", SnowballSpell::new);
+    public static final DeferredHolder<AbstractSkill, BlizzardSpell> BLIZZARD_SPELL =
+            registerSpell("blizzard", BlizzardSpell::new);
+    public static final DeferredHolder<AbstractSkill, SummonPolarBearSpell> SUMMON_POLAR_BEAR_SPELL =
+            registerSpell("summon_polar_bear", SummonPolarBearSpell::new);
 
-//    // BLOOD
-//    public static final Supplier<AbstractSpell> ACUPUNCTURE_SPELL = registerSpell(new AcupunctureSpell());
-//    public static final Supplier<AbstractSpell> BLOOD_NEEDLES_SPELL = registerSpell(new BloodNeedlesSpell());
-//    public static final Supplier<AbstractSpell> BLOOD_SLASH_SPELL = registerSpell(new BloodSlashSpell());
-//    public static final Supplier<AbstractSpell> BLOOD_STEP_SPELL = registerSpell(new BloodStepSpell());
-//    public static final Supplier<AbstractSpell> DEVOUR_SPELL = registerSpell(new DevourSpell());
-//    public static final Supplier<AbstractSpell> HEARTSTOP_SPELL = registerSpell(new HeartstopSpell());
-//    public static final Supplier<AbstractSpell> RAISE_DEAD_SPELL = registerSpell(new RaiseDeadSpell());
-//    public static final Supplier<AbstractSpell> RAY_OF_SIPHONING_SPELL = registerSpell(new RayOfSiphoningSpell());
-//    public static final Supplier<AbstractSpell> WITHER_SKULL_SPELL = registerSpell(new WitherSkullSpell());
-//    public static final Supplier<AbstractSpell> SACRIFICE_SPELL = registerSpell(new SacrificeSpell());
-//
-//    // ENDER
-//    public static final Supplier<AbstractSpell> COUNTERSPELL_SPELL = registerSpell(new CounterspellSpell());
-//    public static final Supplier<AbstractSpell> DRAGON_BREATH_SPELL = registerSpell(new DragonBreathSpell());
-//    public static final Supplier<AbstractSpell> EVASION_SPELL = registerSpell(new EvasionSpell());
-//    public static final Supplier<AbstractSpell> MAGIC_ARROW_SPELL = registerSpell(new MagicArrowSpell());
-//    public static final Supplier<AbstractSpell> MAGIC_MISSILE_SPELL = registerSpell(new MagicMissileSpell());
-//    public static final Supplier<AbstractSpell> STARFALL_SPELL = registerSpell(new StarfallSpell());
-//    public static final Supplier<AbstractSpell> TELEPORT_SPELL = registerSpell(new TeleportSpell());
-//    public static final Supplier<AbstractSpell> SUMMON_ENDER_CHEST_SPELL = registerSpell(new SummonEnderChestSpell());
-//    public static final Supplier<AbstractSpell> RECALL_SPELL = registerSpell(new RecallSpell());
-//    public static final Supplier<AbstractSpell> PORTAL_SPELL = registerSpell(new PortalSpell());
-//    public static final Supplier<AbstractSpell> ECHOING_STRIKES_SPELL = registerSpell(new EchoingStrikesSpell());
-//    public static final Supplier<AbstractSpell> BLACK_HOLE_SPELL = registerSpell(new BlackHoleSpell());
-//    public static final Supplier<AbstractSpell> SUMMON_SWORDS = registerSpell(new SummonSwordsSpell());
-//    public static final Supplier<AbstractSpell> SHADOW_SLASH = registerSpell(new ShadowSlashSpell());
-//    public static final Supplier<AbstractSpell> ARCANE_SHACKLE_SPELL = registerSpell(new ArcaneShackleSpell());
-//    public static final Supplier<AbstractSpell> GRAVITY_FISSURE = registerSpell(new GravityFissureSpell());
-//
-//    // EVOCATION
-//    public static final Supplier<AbstractSpell> CHAIN_CREEPER_SPELL = registerSpell(new ChainCreeperSpell());
-//    public static final Supplier<AbstractSpell> FANG_STRIKE_SPELL = registerSpell(new FangStrikeSpell());
-//    public static final Supplier<AbstractSpell> FANG_WARD_SPELL = registerSpell(new FangWardSpell());
-//    public static final Supplier<AbstractSpell> FIRECRACKER_SPELL = registerSpell(new FirecrackerSpell());
-//    public static final Supplier<AbstractSpell> GUST_SPELL = registerSpell(new GustSpell());
-//    public static final Supplier<AbstractSpell> INVISIBILITY_SPELL = registerSpell(new InvisibilitySpell());
-//    public static final Supplier<AbstractSpell> LOB_CREEPER_SPELL = registerSpell(new LobCreeperSpell());
-//    public static final Supplier<AbstractSpell> SHIELD_SPELL = registerSpell(new ShieldSpell());
-//    public static final Supplier<AbstractSpell> SPECTRAL_HAMMER_SPELL = registerSpell(new SpectralHammerSpell());
-//    public static final Supplier<AbstractSpell> SUMMON_HORSE_SPELL = registerSpell(new SummonHorseSpell());
-//    public static final Supplier<AbstractSpell> SUMMON_VEX_SPELL = registerSpell(new SummonVexSpell());
-//    public static final Supplier<AbstractSpell> SLOW_SPELL = registerSpell(new SlowSpell());
-//    public static final Supplier<AbstractSpell> ARROW_VOLLEY_SPELL = registerSpell(new ArrowVolleySpell());
-//    public static final Supplier<AbstractSpell> WOLOLO_SPELL = registerSpell(new WololoSpell());
-//    public static final Supplier<AbstractSpell> THROW_SPELL = registerSpell(new ThrowSpell());
-//    public static final Supplier<AbstractSpell> FANG_SWIRL_SPELL = registerSpell(new FangSwirlSpell());
-//    public static final Supplier<AbstractSpell> SCAPEGOAT_SPELL = registerSpell(new ScapegoatSpell());
-//
-//    // FIRE
-//    public static final Supplier<AbstractSpell> BLAZE_STORM_SPELL = registerSpell(new BlazeStormSpell());
-//    public static final Supplier<AbstractSpell> BURNING_DASH_SPELL = registerSpell(new BurningDashSpell());
-//    public static final Supplier<AbstractSpell> FIREBALL_SPELL = registerSpell(new FireballSpell());
-//    public static final Supplier<AbstractSpell> FIREBOLT_SPELL = registerSpell(new FireboltSpell());
-//    public static final Supplier<AbstractSpell> FIRE_BREATH_SPELL = registerSpell(new FireBreathSpell());
-//    public static final Supplier<AbstractSpell> MAGMA_BOMB_SPELL = registerSpell(new MagmaBombSpell());
-//    public static final Supplier<AbstractSpell> WALL_OF_FIRE_SPELL = registerSpell(new WallOfFireSpell());
-//    public static final Supplier<AbstractSpell> HEAT_SURGE_SPELL = registerSpell(new HeatSurgeSpell());
-//    public static final Supplier<AbstractSpell> FLAMING_STRIKE_SPELL = registerSpell(new FlamingStrikeSpell());
-//    public static final Supplier<AbstractSpell> SCORCH_SPELL = registerSpell(new ScorchSpell());
-//    public static final Supplier<AbstractSpell> FLAMING_BARRAGE_SPELL = registerSpell(new FlamingBarrageSpell());
-//    public static final Supplier<AbstractSpell> FIRE_ARROW_SPELL = registerSpell(new FireArrowSpell());
-//    public static final Supplier<AbstractSpell> RAISE_HELL_SPELL = registerSpell(new RaiseHellSpell());
-////    public static final Supplier<AbstractSpell> SOULFIRE_RAY_SPELL = registerSpell(new SoulfireRaySpell());
-//
-//
-//    // HOLY
-//    public static final Supplier<AbstractSpell> ANGEL_WINGS_SPELL = registerSpell(new AngelWingsSpell());
-//    public static final Supplier<AbstractSpell> BLESSING_OF_LIFE_SPELL = registerSpell(new BlessingOfLifeSpell());
-//    public static final Supplier<AbstractSpell> CLOUD_OF_REGENERATION_SPELL = registerSpell(new CloudOfRegenerationSpell());
-//    public static final Supplier<AbstractSpell> FORTIFY_SPELL = registerSpell(new FortifySpell());
-//    public static final Supplier<AbstractSpell> GREATER_HEAL_SPELL = registerSpell(new GreaterHealSpell());
-//    public static final Supplier<AbstractSpell> GUIDING_BOLT_SPELL = registerSpell(new GuidingBoltSpell());
-//    public static final Supplier<AbstractSpell> HEALING_CIRCLE_SPELL = registerSpell(new HealingCircleSpell());
-//    public static final Supplier<AbstractSpell> HEAL_SPELL = registerSpell(new HealSpell());
-//    public static final Supplier<AbstractSpell> SUNBEAM_SPELL = registerSpell(new SunbeamSpell());
-//    public static final Supplier<AbstractSpell> WISP_SPELL = registerSpell(new WispSpell());
-//    public static final Supplier<AbstractSpell> DIVINE_SMITE_SPELL = registerSpell(new DivineSmiteSpell());
-//    public static final Supplier<AbstractSpell> HASTE_SPELL = registerSpell(new HasteSpell());
-//    public static final Supplier<AbstractSpell> CLEANSE_SPELL = registerSpell(new CleanseSpell());
+    public static final DeferredHolder<AbstractSkill, BlazeStormSpell> BLAZE_STORM_SPELL =
+            registerSpell("blaze_storm", BlazeStormSpell::new);
+    public static final DeferredHolder<AbstractSkill, BurningDashSpell> BURNING_DASH_SPELL =
+            registerSpell("burning_dash", BurningDashSpell::new);
+    public static final DeferredHolder<AbstractSkill, FireArrowSpell> FIRE_ARROW_SPELL =
+            registerSpell("fire_arrow", FireArrowSpell::new);
+    public static final DeferredHolder<AbstractSkill, FireballSpell> FIREBALL_SPELL =
+            registerSpell("fireball", FireballSpell::new);
+    public static final DeferredHolder<AbstractSkill, FireboltSpell> FIREBOLT_SPELL =
+            registerSpell("firebolt", FireboltSpell::new);
+    public static final DeferredHolder<AbstractSkill, FireBreathSpell> FIRE_BREATH_SPELL =
+            registerSpell("fire_breath", FireBreathSpell::new);
+    public static final DeferredHolder<AbstractSkill, FlamingBarrageSpell> FLAMING_BARRAGE_SPELL =
+            registerSpell("flaming_barrage", FlamingBarrageSpell::new);
+    public static final DeferredHolder<AbstractSkill, FlamingStrikeSpell> FLAMING_STRIKE_SPELL =
+            registerSpell("flaming_strike", FlamingStrikeSpell::new);
+    public static final DeferredHolder<AbstractSkill, HeatSurgeSpell> HEAT_SURGE_SPELL =
+            registerSpell("heat_surge", HeatSurgeSpell::new);
+    public static final DeferredHolder<AbstractSkill, MagmaBombSpell> MAGMA_BOMB_SPELL =
+            registerSpell("magma_bomb", MagmaBombSpell::new);
+    public static final DeferredHolder<AbstractSkill, RaiseHellSpell> RAISE_HELL_SPELL =
+            registerSpell("raise_hell", RaiseHellSpell::new);
+    public static final DeferredHolder<AbstractSkill, ScorchSpell> SCORCH_SPELL =
+            registerSpell("scorch", ScorchSpell::new);
+    public static final DeferredHolder<AbstractSkill, WallOfFireSpell> WALL_OF_FIRE_SPELL =
+            registerSpell("wall_of_fire", WallOfFireSpell::new);
 
-//    // ICE
-//    public static final Supplier<AbstractSpell> CONE_OF_COLD_SPELL = registerSpell(new ConeOfColdSpell());
-//    //    public static final Supplier<AbstractSpell> FROSTBITE_SPELL = registerSpell(new FrostbiteSpell());
-//    public static final Supplier<AbstractSpell> FROST_STEP_SPELL = registerSpell(new FrostStepSpell());
-//    public static final Supplier<AbstractSpell> ICE_BLOCK_SPELL = registerSpell(new IceBlockSpell());
-//    public static final Supplier<AbstractSpell> ICICLE_SPELL = registerSpell(new IcicleSpell());
-//    public static final Supplier<AbstractSpell> SUMMON_POLAR_BEAR_SPELL = registerSpell(new SummonPolarBearSpell());
-//    public static final Supplier<AbstractSpell> RAY_OF_FROST_SPELL = registerSpell(new RayOfFrostSpell());
-//    public static final Supplier<AbstractSpell> FROSTWAVE_SPELL = registerSpell(new FrostwaveSpell());
-//    public static final Supplier<AbstractSpell> ICE_SPIKES_SPELL = registerSpell(new IceSpikesSpell());
-//    public static final Supplier<AbstractSpell> ICE_TOMB_SPELL = registerSpell(new IceTombSpell());
-//    public static final Supplier<AbstractSpell> SNOWBALL_SPELL = registerSpell(new SnowballSpell());
-//    public static final Supplier<AbstractSpell> FROSTBITE_SPELL = registerSpell(new FrostbiteSpell());
-//    public static final Supplier<AbstractSpell> BLIZZARD_SPELL = registerSpell(new BlizzardSpell());
-//
-//    // LIGHTNING
-//    public static final Supplier<AbstractSpell> ASCENSION_SPELL = registerSpell(new AscensionSpell());
-//    public static final Supplier<AbstractSpell> CHAIN_LIGHTNING_SPELL = registerSpell(new ChainLightningSpell());
-//    public static final Supplier<AbstractSpell> CHARGE_SPELL = registerSpell(new ChargeSpell());
-//    public static final Supplier<AbstractSpell> ELECTROCUTE_SPELL = registerSpell(new ElectrocuteSpell());
-//    public static final Supplier<AbstractSpell> LIGHTNING_BOLT_SPELL = registerSpell(new LightningBoltSpell());
-//    public static final Supplier<AbstractSpell> LIGHTNING_LANCE_SPELL = registerSpell(new LightningLanceSpell());
-//    //    public static final Supplier<AbstractSpell> THUNDER_STEP_SPELL = registerSpell(new ThunderStepSpell());
-//    public static final Supplier<AbstractSpell> SHOCKWAVE_SPELL = registerSpell(new ShockwaveSpell());
-//    public static final Supplier<AbstractSpell> THUNDERSTORM_SPELL = registerSpell(new ThunderstormSpell());
-//    public static final Supplier<AbstractSpell> BALL_LIGHTNING_SPELL = registerSpell(new BallLightningSpell());
-//    public static final Supplier<AbstractSpell> VOLT_STRIKE_SPELL = registerSpell(new VoltStrikeSpell());
-//
-//    // NATURE
-//    public static final Supplier<AbstractSpell> ACID_ORB_SPELL = registerSpell(new AcidOrbSpell());
-//    public static final Supplier<AbstractSpell> BLIGHT_SPELL = registerSpell(new BlightSpell());
-//    public static final Supplier<AbstractSpell> POISON_ARROW_SPELL = registerSpell(new PoisonArrowSpell());
-//    public static final Supplier<AbstractSpell> POISON_BREATH_SPELL = registerSpell(new PoisonBreathSpell());
-//    public static final Supplier<AbstractSpell> POISON_SPLASH_SPELL = registerSpell(new PoisonSplashSpell());
-//    public static final Supplier<AbstractSpell> ROOT_SPELL = registerSpell(new RootSpell());
-//    public static final Supplier<AbstractSpell> SPIDER_ASPECT_SPELL = registerSpell(new SpiderAspectSpell());
-//    public static final Supplier<AbstractSpell> FIREFLY_SWARM_SPELL = registerSpell(new FireflySwarmSpell());
-//    public static final Supplier<AbstractSpell> OAKSKIN_SPELL = registerSpell(new OakskinSpell());
-//    public static final Supplier<AbstractSpell> EARTHQUAKE_SPELL = registerSpell(new EarthquakeSpell());
-//    public static final Supplier<AbstractSpell> STOMP_SPELL = registerSpell(new StompSpell());
-//    public static final Supplier<AbstractSpell> GLUTTONY_SPELL = registerSpell(new GluttonySpell());
-//    public static final Supplier<AbstractSpell> TOUCH_DIG = registerSpell(new TouchDigSpell());
-//
-//    //VOID
-//    public static final Supplier<AbstractSpell> ABYSSAL_SHROUD_SPELL = registerSpell(new AbyssalShroudSpell());
-//    public static final Supplier<AbstractSpell> SCULK_TENTACLES_SPELL = registerSpell(new SculkTentaclesSpell());
-//    public static final Supplier<AbstractSpell> SONIC_BOOM_SPELL = registerSpell(new SonicBoomSpell());
-//    public static final Supplier<AbstractSpell> PLANAR_SIGHT_SPELL = registerSpell(new PlanarSightSpell());
-//    public static final Supplier<AbstractSpell> TELEKINESIS_SPELL = registerSpell(new TelekinesisSpell());
-//    public static final Supplier<AbstractSpell> ELDRITCH_BLAST_SPELL = registerSpell(new EldritchBlastSpell());
-//    public static final Supplier<AbstractSpell> POCKET_DIMENSION_SPELL = registerSpell(new PocketDimensionSpell());
+    public static final DeferredHolder<AbstractSkill, ArrowVolleySpell> ARROW_VOLLEY_SPELL =
+            registerSpell("arrow_volley", ArrowVolleySpell::new);
+    public static final DeferredHolder<AbstractSkill, ChainCreeperSpell> CHAIN_CREEPER_SPELL =
+            registerSpell("chain_creeper", ChainCreeperSpell::new);
+    public static final DeferredHolder<AbstractSkill, FangStrikeSpell> FANG_STRIKE_SPELL =
+            registerSpell("fang_strike", FangStrikeSpell::new);
+    public static final DeferredHolder<AbstractSkill, FangSwirlSpell> FANG_SWIRL_SPELL =
+            registerSpell("fang_swirl", FangSwirlSpell::new);
+    public static final DeferredHolder<AbstractSkill, FangWardSpell> FANG_WARD_SPELL =
+            registerSpell("fang_ward", FangWardSpell::new);
+    public static final DeferredHolder<AbstractSkill, FirecrackerSpell> FIRECRACKER_SPELL =
+            registerSpell("firecracker", FirecrackerSpell::new);
+    public static final DeferredHolder<AbstractSkill, GustSpell> GUST_SPELL =
+            registerSpell("gust", GustSpell::new);
+    public static final DeferredHolder<AbstractSkill, InvisibilitySpell> INVISIBILITY_SPELL =
+            registerSpell("invisibility", InvisibilitySpell::new);
+    public static final DeferredHolder<AbstractSkill, LobCreeperSpell> LOB_CREEPER_SPELL =
+            registerSpell("lob_creeper", LobCreeperSpell::new);
+    public static final DeferredHolder<AbstractSkill, ShieldSpell> SHIELD_SPELL =
+            registerSpell("shield", ShieldSpell::new);
+    public static final DeferredHolder<AbstractSkill, SlowSpell> SLOW_SPELL =
+            registerSpell("slow", SlowSpell::new);
+    public static final DeferredHolder<AbstractSkill, SpectralHammerSpell> SPECTRAL_HAMMER_SPELL =
+            registerSpell("spectral_hammer", SpectralHammerSpell::new);
+    public static final DeferredHolder<AbstractSkill, SummonHorseSpell> SUMMON_HORSE_SPELL =
+            registerSpell("summon_horse", SummonHorseSpell::new);
+    public static final DeferredHolder<AbstractSkill, SummonVexSpell> SUMMON_VEX_SPELL =
+            registerSpell("summon_vex", SummonVexSpell::new);
+    public static final DeferredHolder<AbstractSkill, ThrowSpell> THROW_SPELL =
+            registerSpell("throw", ThrowSpell::new);
+    public static final DeferredHolder<AbstractSkill, WololoSpell> WOLOLO_SPELL =
+            registerSpell("wololo", WololoSpell::new);
+    public static final DeferredHolder<AbstractSkill, ScapegoatSpell> SCAPEGOAT_SPELL =
+            registerSpell("scapegoat", ScapegoatSpell::new);
+
+    public static final DeferredHolder<AbstractSkill, AbyssalShroudSpell> ABYSSAL_SHROUD_SPELL =
+            registerSpell("abyssal_shroud", AbyssalShroudSpell::new);
+    public static final DeferredHolder<AbstractSkill, SculkTentaclesSpell> SCULK_TENTACLES_SPELL =
+            registerSpell("sculk_tentacles", SculkTentaclesSpell::new);
+    public static final DeferredHolder<AbstractSkill, SonicBoomSpell> SONIC_BOOM_SPELL =
+            registerSpell("sonic_boom", SonicBoomSpell::new);
+    public static final DeferredHolder<AbstractSkill, PlanarSightSpell> PLANAR_SIGHT_SPELL =
+            registerSpell("planar_sight", PlanarSightSpell::new);
+    public static final DeferredHolder<AbstractSkill, TelekinesisSpell> TELEKINESIS_SPELL =
+            registerSpell("telekinesis", TelekinesisSpell::new);
+    public static final DeferredHolder<AbstractSkill, EldritchBlastSpell> ELDRITCH_BLAST_SPELL =
+            registerSpell("eldritch_blast", EldritchBlastSpell::new);
+    public static final DeferredHolder<AbstractSkill, PocketDimensionSpell> POCKET_DIMENSION_SPELL =
+            registerSpell("pocket_dimension", PocketDimensionSpell::new);
+
+    public static final DeferredHolder<AbstractSkill, AcupunctureSpell> ACUPUNCTURE_SPELL =
+            registerSpell("acupuncture", AcupunctureSpell::new);
+    public static final DeferredHolder<AbstractSkill, BloodNeedlesSpell> BLOOD_NEEDLES_SPELL =
+            registerSpell("blood_needles", BloodNeedlesSpell::new);
+    public static final DeferredHolder<AbstractSkill, BloodSlashSpell> BLOOD_SLASH_SPELL =
+            registerSpell("blood_slash", BloodSlashSpell::new);
+    public static final DeferredHolder<AbstractSkill, BloodStepSpell> BLOOD_STEP_SPELL =
+            registerSpell("blood_step", BloodStepSpell::new);
+    public static final DeferredHolder<AbstractSkill, DevourSpell> DEVOUR_SPELL =
+            registerSpell("devour", DevourSpell::new);
+    public static final DeferredHolder<AbstractSkill, HeartstopSpell> HEARTSTOP_SPELL =
+            registerSpell("heartstop", HeartstopSpell::new);
+    public static final DeferredHolder<AbstractSkill, RaiseDeadSpell> RAISE_DEAD_SPELL =
+            registerSpell("raise_dead", RaiseDeadSpell::new);
+    public static final DeferredHolder<AbstractSkill, RayOfSiphoningSpell> RAY_OF_SIPHONING_SPELL =
+            registerSpell("ray_of_siphoning", RayOfSiphoningSpell::new);
+    public static final DeferredHolder<AbstractSkill, SacrificeSpell> SACRIFICE_SPELL =
+            registerSpell("sacrifice", SacrificeSpell::new);
+    public static final DeferredHolder<AbstractSkill, WitherSkullSpell> WITHER_SKULL_SPELL =
+            registerSpell("wither_skull", WitherSkullSpell::new);
+
+    public static final DeferredHolder<AbstractSkill, MagicMissileSpell> MAGIC_MISSILE_SPELL =
+            registerSpell("magic_missile", MagicMissileSpell::new);
+    public static final DeferredHolder<AbstractSkill, MagicArrowSpell> MAGIC_ARROW_SPELL =
+            registerSpell("magic_arrow", MagicArrowSpell::new);
+    public static final DeferredHolder<AbstractSkill, TeleportSpell> TELEPORT_SPELL =
+            registerSpell("teleport", TeleportSpell::new);
+    public static final DeferredHolder<AbstractSkill, CounterspellSpell> COUNTERSPELL_SPELL =
+            registerSpell("counterspell", CounterspellSpell::new);
+    public static final DeferredHolder<AbstractSkill, EvasionSpell> EVASION_SPELL =
+            registerSpell("evasion", EvasionSpell::new);
+    public static final DeferredHolder<AbstractSkill, SummonEnderChestSpell> SUMMON_ENDER_CHEST_SPELL =
+            registerSpell("summon_ender_chest", SummonEnderChestSpell::new);
+    public static final DeferredHolder<AbstractSkill, StarfallSpell> STARFALL_SPELL =
+            registerSpell("starfall", StarfallSpell::new);
+    public static final DeferredHolder<AbstractSkill, PortalSpell> PORTAL_SPELL =
+            registerSpell("portal", PortalSpell::new);
+    public static final DeferredHolder<AbstractSkill, RecallSpell> RECALL_SPELL =
+            registerSpell("recall", RecallSpell::new);
+    public static final DeferredHolder<AbstractSkill, DragonBreathSpell> DRAGON_BREATH_SPELL =
+            registerSpell("dragon_breath", DragonBreathSpell::new);
+    public static final DeferredHolder<AbstractSkill, ArcaneShackleSpell> ARCANE_SHACKLE_SPELL =
+            registerSpell("arcane_shackle", ArcaneShackleSpell::new);
+    public static final DeferredHolder<AbstractSkill, BlackHoleSpell> BLACK_HOLE_SPELL =
+            registerSpell("black_hole", BlackHoleSpell::new);
+    public static final DeferredHolder<AbstractSkill, EchoingStrikesSpell> ECHOING_STRIKES_SPELL =
+            registerSpell("echoing_strikes", EchoingStrikesSpell::new);
+    public static final DeferredHolder<AbstractSkill, SummonSwordsSpell> SUMMON_SWORDS_SPELL =
+            registerSpell("summon_swords", SummonSwordsSpell::new);
+    public static final DeferredHolder<AbstractSkill, ShadowSlashSpell> SHADOW_SLASH_SPELL =
+            registerSpell("shadow_slash", ShadowSlashSpell::new);
+    public static final DeferredHolder<AbstractSkill, GravityFissureSpell> GRAVITY_FISSURE_SPELL =
+            registerSpell("gravity_fissure", GravityFissureSpell::new);
+
+    public static final DeferredHolder<AbstractSkill, HealSpell> HEAL_SPELL =
+            registerSpell("heal", HealSpell::new);
+    public static final DeferredHolder<AbstractSkill, GreaterHealSpell> GREATER_HEAL_SPELL =
+            registerSpell("greater_heal", GreaterHealSpell::new);
+    public static final DeferredHolder<AbstractSkill, BlessingOfLifeSpell> BLESSING_OF_LIFE_SPELL =
+            registerSpell("blessing_of_life", BlessingOfLifeSpell::new);
+    public static final DeferredHolder<AbstractSkill, CleanseSpell> CLEANSE_SPELL =
+            registerSpell("cleanse", CleanseSpell::new);
+    public static final DeferredHolder<AbstractSkill, CloudOfRegenerationSpell> CLOUD_OF_REGENERATION_SPELL =
+            registerSpell("cloud_of_regeneration", CloudOfRegenerationSpell::new);
+    public static final DeferredHolder<AbstractSkill, DivineSmiteSpell> DIVINE_SMITE_SPELL =
+            registerSpell("divine_smite", DivineSmiteSpell::new);
+    public static final DeferredHolder<AbstractSkill, FortifySpell> FORTIFY_SPELL =
+            registerSpell("fortify", FortifySpell::new);
+    public static final DeferredHolder<AbstractSkill, GuidingBoltSpell> GUIDING_BOLT_SPELL =
+            registerSpell("guiding_bolt", GuidingBoltSpell::new);
+    public static final DeferredHolder<AbstractSkill, HasteSpell> HASTE_SPELL =
+            registerSpell("haste", HasteSpell::new);
+    public static final DeferredHolder<AbstractSkill, HealingCircleSpell> HEALING_CIRCLE_SPELL =
+            registerSpell("healing_circle", HealingCircleSpell::new);
+    public static final DeferredHolder<AbstractSkill, SunbeamSpell> SUNBEAM_SPELL =
+            registerSpell("sunbeam", SunbeamSpell::new);
+    public static final DeferredHolder<AbstractSkill, AngelWingsSpell> ANGEL_WINGS_SPELL =
+            registerSpell("angel_wing", AngelWingsSpell::new);
+    public static final DeferredHolder<AbstractSkill, WispSpell> WISP_SPELL =
+            registerSpell("wisp", WispSpell::new);
+
+    public static final DeferredHolder<AbstractSkill, AscensionSpell> ASCENSION_SPELL =
+            registerSpell("ascension", AscensionSpell::new);
+    public static final DeferredHolder<AbstractSkill, BallLightningSpell> BALL_LIGHTNING_SPELL =
+            registerSpell("ball_lightning", BallLightningSpell::new);
+    public static final DeferredHolder<AbstractSkill, ChainLightningSpell> CHAIN_LIGHTNING_SPELL =
+            registerSpell("chain_lightning", ChainLightningSpell::new);
+    public static final DeferredHolder<AbstractSkill, ChargeSpell> CHARGE_SPELL =
+            registerSpell("charge", ChargeSpell::new);
+    public static final DeferredHolder<AbstractSkill, ElectrocuteSpell> ELECTROCUTE_SPELL =
+            registerSpell("electrocute", ElectrocuteSpell::new);
+    public static final DeferredHolder<AbstractSkill, LightningBoltSpell> LIGHTNING_BOLT_SPELL =
+            registerSpell("lightning_bolt", LightningBoltSpell::new);
+    public static final DeferredHolder<AbstractSkill, LightningLanceSpell> LIGHTNING_LANCE_SPELL =
+            registerSpell("lightning_lance", LightningLanceSpell::new);
+    public static final DeferredHolder<AbstractSkill, ShockwaveSpell> SHOCKWAVE_SPELL =
+            registerSpell("shockwave", ShockwaveSpell::new);
+    public static final DeferredHolder<AbstractSkill, ThunderstormSpell> THUNDERSTORM_SPELL =
+            registerSpell("thunderstorm", ThunderstormSpell::new);
+    public static final DeferredHolder<AbstractSkill, VoltStrikeSpell> VOLT_STRIKE_SPELL =
+            registerSpell("volt_strike", VoltStrikeSpell::new);
+
+    public static final DeferredHolder<AbstractSkill, AcidOrbSpell> ACID_ORB_SPELL =
+            registerSpell("acid_orb", AcidOrbSpell::new);
+    public static final DeferredHolder<AbstractSkill, BlightSpell> BLIGHT_SPELL =
+            registerSpell("blight", BlightSpell::new);
+    public static final DeferredHolder<AbstractSkill, EarthquakeSpell> EARTHQUAKE_SPELL =
+            registerSpell("earthquake", EarthquakeSpell::new);
+    public static final DeferredHolder<AbstractSkill, FireflySwarmSpell> FIREFLY_SWARM_SPELL =
+            registerSpell("firefly_swarm", FireflySwarmSpell::new);
+    public static final DeferredHolder<AbstractSkill, GluttonySpell> GLUTTONY_SPELL =
+            registerSpell("gluttony", GluttonySpell::new);
+    public static final DeferredHolder<AbstractSkill, OakskinSpell> OAKSKIN_SPELL =
+            registerSpell("oakskin", OakskinSpell::new);
+    public static final DeferredHolder<AbstractSkill, PoisonArrowSpell> POISON_ARROW_SPELL =
+            registerSpell("poison_arrow", PoisonArrowSpell::new);
+    public static final DeferredHolder<AbstractSkill, PoisonBreathSpell> POISON_BREATH_SPELL =
+            registerSpell("poison_breath", PoisonBreathSpell::new);
+    public static final DeferredHolder<AbstractSkill, PoisonSplashSpell> POISON_SPLASH_SPELL =
+            registerSpell("poison_splash", PoisonSplashSpell::new);
+    public static final DeferredHolder<AbstractSkill, RootSpell> ROOT_SPELL =
+            registerSpell("root", RootSpell::new);
+    public static final DeferredHolder<AbstractSkill, SpiderAspectSpell> SPIDER_ASPECT_SPELL =
+            registerSpell("spider_aspect", SpiderAspectSpell::new);
+    public static final DeferredHolder<AbstractSkill, StompSpell> STOMP_SPELL =
+            registerSpell("stomp", StompSpell::new);
+    public static final DeferredHolder<AbstractSkill, TouchDigSpell> TOUCH_DIG_SPELL =
+            registerSpell("touch_dig", TouchDigSpell::new);
+
+    private static <T extends AbstractSpellSkill> DeferredHolder<AbstractSkill, T> registerSpell(String name, Supplier<T> skill) {
+        return SPELLS.register(name, skill);
+    }
 }

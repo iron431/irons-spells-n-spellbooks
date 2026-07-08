@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.icicle;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -8,7 +9,6 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.data.PlayableSound;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -42,7 +42,7 @@ public class IcicleProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SkillRegistry.ICICLE_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+        DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.ICICLE_SPELL.get().getDamageSource(this.level(), this, getOwner()));
         consumeEntityImpact(entityHitResult, true);
     }
 

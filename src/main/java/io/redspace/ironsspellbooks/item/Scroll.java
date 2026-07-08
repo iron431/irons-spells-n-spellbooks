@@ -1,13 +1,18 @@
 package io.redspace.ironsspellbooks.item;
 
 
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.ISkillContainerMutable;
 import io.redspace.skillcasting.data.SkillContainer;
 import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.data.SkillSlot;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.skillcasting.lifecycle.SkillcastingManager;
+import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -28,12 +33,34 @@ public class Scroll extends Item {
         super(properties);
     }
 
-    private @Nullable SkillData getSpellSlotFromStack(ItemStack itemStack) {
-        return ISkillContainer.isSkillContainer(itemStack) ? ISkillContainer.get(itemStack).getSkillAtIndex(0) : null;
+    public static @Nullable SkillData getSpellSlotFromStack(ItemStack itemStack) {
+        if (!ISkillContainer.isSkillContainer(itemStack)) {
+            return null;
+        }
+        var container = ISkillContainer.get(itemStack);
+        if (container.isEmpty()) {
+            return null;
+        }
+        return container.getSkillAtIndex(0);
     }
 
     public static ISkillContainer createScrollContainer(SkillData skillData) {
         return new SkillContainer(1, false, false, new SkillSlot[]{new SkillSlot(skillData, 0)});
+    }
+
+    public static void applyScrollToStack(ItemStack stack, AbstractSpellSkill spell, int level) {
+        ISkillContainer.set(stack, createScrollContainer(new SkillData(spell, level)));
+    }
+
+    public static void applyImbuedToStack(ItemStack stack, AbstractSpellSkill spell, int level) {
+        ISkillContainer.set(stack, SkillContainer.create(false, new SkillData(spell, level, true)));
+    }
+
+    public static ISkillContainerMutable getOrCreateContainer(ItemStack stack, int maxSlots, boolean spellWheel, boolean mustEquip) {
+        if (!ISkillContainer.isSkillContainer(stack)) {
+            ISkillContainer.set(stack, new SkillContainer(maxSlots, spellWheel, mustEquip));
+        }
+        return ISkillContainer.get(stack).mutableCopy();
     }
 
     protected void removeScrollAfterCast(ServerPlayer serverPlayer, ItemStack stack) {
@@ -53,7 +80,7 @@ public class Scroll extends Item {
     @Override
     public @Nullable String getCreatorModId(ItemStack itemStack) {
         var spell = getSpellSlotFromStack(itemStack).getSkill();
-        var id = SpellRegistry.REGISTRY.getKey(spell);
+        var id = SkillcastingRegistries.SKILL_REGISTRY.getKey(spell);
         return id == null ? super.getCreatorModId(itemStack) : id.getNamespace();
     }
 
@@ -61,16 +88,22 @@ public class Scroll extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         var spellSlot = getSpellSlotFromStack(stack);
-        var spell = spellSlot.getSkill();
-        //fixme: scroll casting
-//        var castingSlot = hand.ordinal() == 0 ? SpellSelectionManager.MAINHAND : SpellSelectionManager.OFFHAND;
-//        if (spell.attemptInitiateCast(stack, spell.getLevelFor(spellSlot.getLevel(), player), level, player, CastSource.SCROLL, false, castingSlot)) {
-//            return InteractionResultHolder.consume(stack);
-//        } else {
-//            return InteractionResultHolder.fail(stack);
-//        }
+        // todo: is there a point of limiting scrolls to only spells?
+        if (spellSlot == null /*|| !(spellSlot.getSkill() instanceof AbstractSpellSkill spell)*/) {
+            return InteractionResultHolder.fail(stack);
+        }
+        if (level.isClientSide) {
+            return InteractionResultHolder.pass(stack);
+        }
+        boolean cast = SkillcastingManager.attemptInitiateCast(
+                CasterRef.entity(player),
+                spellSlot.getHolder(),
+                spellSlot.getLevel(),
+                CastSource.SCROLL.name());
+        if (cast) {
+            return InteractionResultHolder.consume(stack);
+        }
         return InteractionResultHolder.fail(stack);
-
     }
 
     @Override

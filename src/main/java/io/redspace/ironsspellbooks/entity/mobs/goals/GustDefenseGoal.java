@@ -1,7 +1,8 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -11,11 +12,13 @@ import net.minecraft.world.entity.monster.Enemy;
 
 public class GustDefenseGoal extends Goal {
     protected final PathfinderMob mob;
+    protected final AbstractSpellCastingMob spellCastingMob;
     protected int attackCooldown = 0;
 
     public GustDefenseGoal(Mob abstractSpellCastingMob) {
-        if (abstractSpellCastingMob instanceof PathfinderMob m) {
+        if (abstractSpellCastingMob instanceof PathfinderMob m && abstractSpellCastingMob instanceof AbstractSpellCastingMob castingMob) {
             this.mob = m;
+            this.spellCastingMob = castingMob;
         } else
             throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
     }
@@ -61,9 +64,8 @@ public class GustDefenseGoal extends Goal {
     public void start() {
         //fixme: 2.5 second cooldown??
         this.attackCooldown = 40 + mob.getRandom().nextInt(30);
-        int spellLevel = (int) (SkillRegistry.GUST_SPELL.get().getMaxLevel() * .5f);
-        var spellType = SkillRegistry.GUST_SPELL.get();
-        //fixme: spellcasting
-//        spellCastingMob.initiateCastSpell(spellType, spellLevel);
+        int spellLevel = (int) (SpellRegistry.GUST_SPELL.get().getMaxLevel() * .5f);
+        var spellType = SpellRegistry.GUST_SPELL.get();
+        spellCastingMob.initiateCastSpell(spellType, spellLevel);
     }
 }

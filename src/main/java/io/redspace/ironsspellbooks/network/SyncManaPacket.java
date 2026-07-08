@@ -30,8 +30,9 @@ public class SyncManaPacket implements CustomPacketPayload {
 
     public static void handle(SyncManaPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
-            // fixme: will we still need dedicated packet?
-//            ClientMagicData.setMana(packet.playerMana);
+            if (context.player() != null) {
+                MagicData.get(context.player()).setMana(packet.playerMana);
+            }
         });
     }
 

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -8,7 +9,6 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.data.PlayableSound;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -93,7 +93,7 @@ public class ChainLightning extends AbstractMagicProjectile {
 
     public void doHurt(Entity victim) {
         hits++;
-        DamageSources.applyDamage(victim, damage, SkillRegistry.CHAIN_LIGHTNING_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+        DamageSources.applyDamage(victim, damage, SpellRegistry.CHAIN_LIGHTNING_SPELL.get().getDamageSource(this.level(), this, getOwner()));
         MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, victim.getX(), victim.getY() + victim.getBbHeight() / 2, victim.getZ(), 10, victim.getBbWidth() / 3, victim.getBbHeight() / 3, victim.getBbWidth() / 3, 0.1, false);
 
         lastVictims.add(victim);

@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.cryomancer;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
@@ -17,7 +18,6 @@ import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.player.AdditionalWanderingTrades;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
@@ -65,14 +65,14 @@ public class CryomancerEntity extends NeutralWizard implements IMerchantWizard {
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FocusOnTradingPlayerGoal<>(this));
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SkillRegistry.ICE_BLOCK_SPELL.get(), 3, 6, 100, 250, 1));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.ICE_BLOCK_SPELL.get(), 3, 6, 100, 250, 1));
         this.goalSelector.addGoal(3, new WizardAttackGoal(this, 1.25f, 50, 75)
                 .setSpells(
-                        List.of(SkillRegistry.ICICLE_SPELL.get(), SkillRegistry.ICICLE_SPELL.get(), SkillRegistry.ICICLE_SPELL.get(), SkillRegistry.CONE_OF_COLD_SPELL.get()),
-                        List.of(SkillRegistry.COUNTERSPELL_SPELL.get()),
-                        List.of(SkillRegistry.FROST_STEP_SPELL.get()),
+                        List.of(SpellRegistry.ICICLE_SPELL.get(), SpellRegistry.ICICLE_SPELL.get(), SpellRegistry.ICICLE_SPELL.get(), SpellRegistry.CONE_OF_COLD_SPELL.get()),
+                        List.of(SpellRegistry.COUNTERSPELL_SPELL.get()),
+                        List.of(SpellRegistry.FROST_STEP_SPELL.get()),
                         List.of()
-                ).setSingleUseSpell(SkillRegistry.SUMMON_POLAR_BEAR_SPELL.get(), 80, 400, 3, 6)
+                ).setSingleUseSpell(SpellRegistry.SUMMON_POLAR_BEAR_SPELL.get(), 80, 400, 3, 6)
                 .setDrinksPotions()
         );
         this.goalSelector.addGoal(4, new PatrolNearLocationGoal(this, 30, .75f));

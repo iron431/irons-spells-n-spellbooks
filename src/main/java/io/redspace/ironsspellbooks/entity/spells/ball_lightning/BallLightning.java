@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.ball_lightning;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -8,7 +9,6 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.data.PlayableSound;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -106,7 +106,7 @@ public class BallLightning extends AbstractMagicProjectile {
         if (target instanceof LivingEntity livingEntity) {
             DamageSources.ignoreNextKnockback(livingEntity);
         }
-        DamageSources.applyDamage(target, getDamage(), SkillRegistry.BALL_LIGHTNING_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+        DamageSources.applyDamage(target, getDamage(), SpellRegistry.BALL_LIGHTNING_SPELL.get().getDamageSource(this.level(), this, getOwner()));
         victims.put(target.getUUID(), target.tickCount);
     }
 

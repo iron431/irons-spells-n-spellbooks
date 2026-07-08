@@ -58,10 +58,13 @@ public class CreateImbuedSwordCommand {
             spell = IronsSpellbooks.MODID + ":" + spell;
         }
 
-        var abstractSpell = SpellRegistry.REGISTRY.get(ResourceLocation.parse(spell));
+        var abstractSpell = SpellRegistry.getSpell(ResourceLocation.parse(spell));
 
+        if (abstractSpell == null) {
+            throw ERROR_FAILED.create();
+        }
         if (spellLevel > abstractSpell.getMaxLevel()) {
-            throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", abstractSpell.getSpellName(), abstractSpell.getMaxLevel())).create();
+            throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", abstractSpell.getSkillId().getPath(), abstractSpell.getMaxLevel())).create();
         }
 
         var serverPlayer = source.getPlayer();

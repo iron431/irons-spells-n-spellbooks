@@ -82,13 +82,12 @@ public class IronsSpellbooks {
         modEventBus.addListener(this::enqueueIMC);
         modEventBus.addListener(this::processIMC);
         modEventBus.addListener(SchoolRegistry::registerRegistry);
-        modEventBus.addListener(SpellRegistry::registerRegistry);
         modEventBus.addListener(UpgradeOrbTypeRegistry::registerDatapackRegistries);
         //NeoForge.EVENT_BUS.register(this);
 
         //TODO: custom annotation would be nice
-        SchoolRegistry.register(modEventBus);
         SpellRegistry.register(modEventBus);
+        SchoolRegistry.register(modEventBus);
         ItemRegistry.register(modEventBus);
         AttributeRegistry.register(modEventBus);
         BlockRegistry.register(modEventBus);

@@ -29,20 +29,20 @@ public final class SkillcastingRegistries {
     public static final ResourceKey<Registry<DirectionResolver.Type<?>>> DIRECTION_RESOLVER_TYPE_KEY =
             ResourceKey.createRegistryKey(Skillcasting.id("direction_resolver_types"));
 
-    public static final Registry<AbstractSkill> SKILLS = new RegistryBuilder<>(SKILL_REGISTRY_KEY).sync(true).create();
+    public static final Registry<AbstractSkill> SKILL_REGISTRY = new RegistryBuilder<>(SKILL_REGISTRY_KEY).sync(true).create();
     public static final Registry<ComponentType<?>> COMPONENT_TYPES = new RegistryBuilder<>(COMPONENT_TYPE_REGISTRY_KEY).create();
     public static final Registry<PositionResolver.Type<?>> POSITION_RESOLVER_TYPES =
             new RegistryBuilder<>(POSITION_RESOLVER_TYPE_KEY).create();
     public static final Registry<DirectionResolver.Type<?>> DIRECTION_RESOLVER_TYPES =
             new RegistryBuilder<>(DIRECTION_RESOLVER_TYPE_KEY).create();
 
-    public static final Codec<Holder<AbstractSkill>> SKILL_HOLDER_CODEC = SKILLS.holderByNameCodec();
+    public static final Codec<Holder<AbstractSkill>> SKILL_HOLDER_CODEC = SKILL_REGISTRY.holderByNameCodec();
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<AbstractSkill>> SKILL_HOLDER_STREAM_CODEC =
             ByteBufCodecs.holderRegistry(SKILL_REGISTRY_KEY);
     public static final Codec<ComponentType<?>> COMPONENT_TYPE_CODEC = COMPONENT_TYPES.byNameCodec();
 
     public static void registerRegistries(NewRegistryEvent event) {
-        event.register(SKILLS);
+        event.register(SKILL_REGISTRY);
         event.register(COMPONENT_TYPES);
         event.register(POSITION_RESOLVER_TYPES);
         event.register(DIRECTION_RESOLVER_TYPES);

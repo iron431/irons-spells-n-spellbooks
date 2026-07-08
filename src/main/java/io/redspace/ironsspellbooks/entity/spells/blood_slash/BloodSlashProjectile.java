@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.blood_slash;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -8,7 +9,6 @@ import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
 import io.redspace.ironsspellbooks.entity.spells.ShieldPart;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -170,7 +170,7 @@ public class BloodSlashProjectile extends AbstractMagicProjectile {
 
     private void damageEntity(Entity entity) {
         if (!victims.contains(entity)) {
-            DamageSources.applyDamage(entity, damage, SkillRegistry.BLOOD_SLASH_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+            DamageSources.applyDamage(entity, damage, SpellRegistry.BLOOD_SLASH_SPELL.get().getDamageSource(this.level(), this, getOwner()));
             victims.add(entity);
         }
     }

@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -39,7 +39,7 @@ public class FrostbiteEffect extends MagicMobEffect {
     }
 
     public static float getDamageForAmplifier(int effectAmplifier, @Nullable LivingEntity caster) {
-        var power = caster == null ? 1 : SkillRegistry.FROSTBITE_SPELL.get().getEntityPowerMultiplier(caster);
+        var power = caster == null ? 1 : SpellRegistry.FROSTBITE_SPELL.get().getEntityPowerMultiplier(caster);
         return (1 + effectAmplifier) * power;
     }
 }

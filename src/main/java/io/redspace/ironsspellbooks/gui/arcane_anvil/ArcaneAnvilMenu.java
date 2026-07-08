@@ -2,8 +2,10 @@ package io.redspace.ironsspellbooks.gui.arcane_anvil;
 
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
+import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
+import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
@@ -14,8 +16,9 @@ import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
+import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -76,73 +79,52 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
     public void createResult() {
         ItemStack result = ItemStack.EMPTY;
         this.additionalDrops.clear();
-        /*
-        Actions that can be taken in arcane anvil:
-        - Upgrade scroll (scroll + scroll)
-        - Imbue Weapon (weapon + scroll)
-        - Upgrade item (item + upgrade orb)
-         */
         ItemStack baseItemStack = inputSlots.getItem(0);
         ItemStack modifierItemStack = inputSlots.getItem(1);
         if (!baseItemStack.isEmpty() && !modifierItemStack.isEmpty()) {
-            //Scroll Merging
-            if (ServerConfigs.SCROLL_MERGING.get() && baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof InkItem inkItem/*Scroll*/) {
-                var spell1 = ISpellContainer.get(baseItemStack).getSpellAtIndex(0);
-                if (spell1.getLevel() < spell1.getSpell().getMaxLevel()) {
-                    var baseRarity = spell1.getRarity();
-                    var nextRarity = spell1.getSpell().getRarity(spell1.getLevel() + 1);
-                    if (nextRarity.equals(inkItem.getRarity())) {
-                        result = baseItemStack.copy();
-                        result.setCount(1);
-                        ISpellContainer.createScrollContainer(spell1.getSpell(), spell1.getLevel() + 1, result);
-                    }
-                }
-                //var spell2 = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
-
-                //if (spell1.equals(spell2)) {
-                //    if (spell1.getLevel() < ServerConfigs.getSpellConfig(spell1.getSpell()).maxLevel()) {
-                //        result = new ItemStack(ItemRegistry.SCROLL.get());
-                //        ISpellContainer.createScrollContainer(spell1.getSpell(), spell1.getLevel() + 1, result);
-                //    }
-                //}
-            }
-            //Unique Weapon Improving
-            else if (baseItemStack.getItem() instanceof UniqueItem && modifierItemStack.getItem() instanceof Scroll scroll) {
-                var scrollSlot = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
-                if (ISpellContainer.isSpellContainer(baseItemStack)) {
-                    var spellContainer = ISpellContainer.get(baseItemStack);
-                    var matchIndex = spellContainer.getIndexForSpell(scrollSlot.getSpell());
-                    if (matchIndex >= 0) {
-                        var spellData = spellContainer.getSpellAtIndex(matchIndex);
-                        if (spellData.getLevel() < scrollSlot.getLevel() && spellData.isLocked()) {
+            if (ServerConfigs.SCROLL_MERGING.get() && baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof InkItem inkItem) {
+                SkillData spell1 = ISkillContainer.get(baseItemStack).getSkillAtIndex(0);
+                if (spell1 != null && spell1.getSkill() instanceof AbstractSpellSkill spellSkill) {
+                    if (spell1.getLevel() < spellSkill.getMaxLevel()) {
+                        SpellRarity nextRarity = spellSkill.getRarity(spell1.getLevel() + 1);
+                        if (nextRarity.equals(inkItem.getRarity())) {
                             result = baseItemStack.copy();
-                            var newContainer = spellContainer.mutableCopy();
-                            newContainer.removeSpellAtIndex(matchIndex);
-                            newContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), matchIndex, true);
-                            newContainer.setImproved(true);
-                            ISpellContainer.set(result, newContainer.toImmutable());
+                            result.setCount(1);
+                            Scroll.applyScrollToStack(result, spellSkill, spell1.getLevel() + 1);
                         }
                     }
                 }
-            }
-            //Weapon Imbuement
-            else if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll scroll) {
-                result = baseItemStack.copy();
-                var spellContainer = ISpellContainer.getOrCreate(result).mutableCopy();
-
-                var scrollSlot = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
-                var nextSlotIndex = spellContainer.getNextAvailableIndex();
-
-                if (nextSlotIndex == -1) {
-                    nextSlotIndex = 0;
+            } else if (baseItemStack.getItem() instanceof MagicSwordItem && modifierItemStack.getItem() instanceof Scroll) {
+                SkillData scrollSlot = ISkillContainer.get(modifierItemStack).getSkillAtIndex(0);
+                if (scrollSlot != null && ISkillContainer.isSkillContainer(baseItemStack)) {
+                    ISkillContainer spellContainer = ISkillContainer.get(baseItemStack);
+                    int matchIndex = spellContainer.getIndexForSkill(scrollSlot.getSkill());
+                    if (matchIndex >= 0) {
+                        SkillData spellData = spellContainer.getSkillAtIndex(matchIndex);
+                        if (spellData != null && spellData.getLevel() < scrollSlot.getLevel() && spellData.isLocked()) {
+                            result = baseItemStack.copy();
+                            var newContainer = spellContainer.mutableCopy();
+                            newContainer.removeSpellAtIndex(matchIndex);
+                            newContainer.setSpellAtIndex(new SkillData(scrollSlot.getSkill(), scrollSlot.getLevel(), true), matchIndex);
+                            ISkillContainer.set(result, newContainer.toImmutable());
+                        }
+                    }
                 }
-                //override slot
-                spellContainer.removeSpellAtIndex(nextSlotIndex);
-                spellContainer.addSpellAtIndex(scrollSlot.getSpell(), scrollSlot.getLevel(), nextSlotIndex, false);
-                ISpellContainer.set(result, spellContainer.toImmutable());
-            }
-            //Upgrade System
-            else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getTotalUpgrades() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.has(ComponentRegistry.UPGRADE_ORB_TYPE)) {
+            } else if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
+                result = baseItemStack.copy();
+                var spellContainer = Scroll.getOrCreateContainer(result, 1, true, false);
+
+                SkillData scrollSlot = ISkillContainer.get(modifierItemStack).getSkillAtIndex(0);
+                if (scrollSlot != null) {
+                    int nextSlotIndex = spellContainer.getNextAvailableIndex();
+                    if (nextSlotIndex == -1) {
+                        nextSlotIndex = 0;
+                    }
+                    spellContainer.removeSpellAtIndex(nextSlotIndex);
+                    spellContainer.setSpellAtIndex(new SkillData(scrollSlot.getSkill(), scrollSlot.getLevel(), false), nextSlotIndex);
+                    ISkillContainer.set(result, spellContainer.toImmutable());
+                }
+            } else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getTotalUpgrades() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.has(ComponentRegistry.UPGRADE_ORB_TYPE)) {
                 var upgradeKey = modifierItemStack.get(ComponentRegistry.UPGRADE_ORB_TYPE);
                 var holderopt = this.player.registryAccess().holder(upgradeKey);
                 if (holderopt.isPresent()) {
@@ -151,35 +133,28 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                     String slot = UpgradeUtils.getRelevantEquipmentSlot(result);
                     UpgradeData.getUpgradeData(result).addUpgrade(result, upgradeOrb, slot);
                 }
-            }
-            //Shriving Stone
-            else if (modifierItemStack.is(ItemRegistry.SHRIVING_STONE.get())) {
+            } else if (modifierItemStack.is(ItemRegistry.SHRIVING_STONE.get())) {
                 result = Utils.handleShriving(baseItemStack);
                 UpgradeData upgradeData = UpgradeData.getUpgradeData(baseItemStack);
                 upgradeData.upgrades().forEach((upgrade, count) -> upgrade.value().containerItem().map(stack -> {
                     stack.setCount(count);
                     return stack;
                 }).ifPresent(additionalDrops::add));
-            }
-            //Spell Slot upgrades
-            else if (modifierItemStack.getItem() instanceof SpellSlotUpgradeItem spellSlotUpgradeItem) {
+            } else if (modifierItemStack.getItem() instanceof SpellSlotUpgradeItem spellSlotUpgradeItem) {
                 if (baseItemStack.getItem() instanceof SpellBook) {
-                    ISpellContainer spellBookContainer = ISpellContainer.get(baseItemStack);
+                    ISkillContainer spellBookContainer = ISkillContainer.get(baseItemStack);
                     int max = spellSlotUpgradeItem.maxSlots();
-                    if (spellBookContainer.getMaxSpellCount() < max) {
+                    if (spellBookContainer.getMaxSkillCount() < max) {
                         result = baseItemStack.copy();
-                        var upgradedContainer = ISpellContainer.get(result).mutableCopy();
-                        upgradedContainer.setMaxSpellCount(upgradedContainer.getMaxSpellCount() + 1);
-                        ISpellContainer.set(result, upgradedContainer.toImmutable());
+                        var upgradedContainer = ISkillContainer.get(result).mutableCopy();
+                        upgradedContainer.setMaxSpellCount(upgradedContainer.getMaxSkillCount() + 1);
+                        ISkillContainer.set(result, upgradedContainer.toImmutable());
                     }
                 }
-            }
-            //Attune Affinity Ring
-            else if (baseItemStack.getItem() instanceof AffinityRing affinityRing && modifierItemStack.getItem() instanceof Scroll scroll) {
+            } else if (baseItemStack.getItem() instanceof AffinityRing && modifierItemStack.getItem() instanceof Scroll) {
                 result = baseItemStack.copy();
-                var scrollSlot = ISpellContainer.get(modifierItemStack).getSpellAtIndex(0);
-                var skill = SkillRegistry.get(scrollSlot.getSpell().getSpellResource());
-                if (skill instanceof AbstractSpellSkill spellSkill) {
+                SkillData scrollSlot = ISkillContainer.get(modifierItemStack).getSkillAtIndex(0);
+                if (scrollSlot != null && scrollSlot.getSkill() instanceof AbstractSpellSkill spellSkill) {
                     AffinityData.set(result, new AffinityData(spellSkill));
                 }
             }

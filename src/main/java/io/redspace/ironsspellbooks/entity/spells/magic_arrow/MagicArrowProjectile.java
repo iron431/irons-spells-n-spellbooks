@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.magic_arrow;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -8,7 +9,6 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.data.PlayableSound;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -85,7 +85,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
     protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         Entity entity = entityHitResult.getEntity();
         if (!victims.contains(entity.getUUID())) {
-            DamageSources.applyDamage(entity, damage, SkillRegistry.MAGIC_ARROW_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+            DamageSources.applyDamage(entity, damage, SpellRegistry.MAGIC_ARROW_SPELL.get().getDamageSource(this.level(), this, getOwner()));
             victims.add(entity.getUUID());
         }
         consumeEntityImpact(entityHitResult, true);

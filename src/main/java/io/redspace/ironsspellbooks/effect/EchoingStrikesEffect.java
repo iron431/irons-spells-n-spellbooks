@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.damage.SpellDamageSource;
+import io.redspace.skillcasting.irons_spellbooks.SpellSkillDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingArrowProjectile;
 import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingSword;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -39,7 +39,7 @@ public class EchoingStrikesEffect extends MagicMobEffect {
     @SubscribeEvent
     public static void createEcho(LivingDamageEvent.Post event) {
         var damageSource = event.getSource();
-        if (damageSource.getEntity() instanceof LivingEntity attacker && (damageSource.getDirectEntity() == attacker || damageSource.getDirectEntity() instanceof AbstractArrow) && !(damageSource instanceof SpellDamageSource)) {
+        if (damageSource.getEntity() instanceof LivingEntity attacker && (damageSource.getDirectEntity() == attacker || damageSource.getDirectEntity() instanceof AbstractArrow) && !(damageSource instanceof SpellSkillDamageSource)) {
             var effect = attacker.getEffect(MobEffectRegistry.ECHOING_STRIKES);
             if (effect == null) {
                 return;
@@ -51,7 +51,7 @@ public class EchoingStrikesEffect extends MagicMobEffect {
             }
             var level = attacker.level();
             var percent = getDamageModifier(effect.getAmplifier(),
-                    SkillRegistry.ECHOING_STRIKES_SPELL.get().getEntityPowerMultiplier(attacker));
+                    SpellRegistry.ECHOING_STRIKES_SPELL.get().getEntityPowerMultiplier(attacker));
             var target = event.getEntity();
             if (damageSource.isDirect()) {
                 createEchoingSword(attacker, level, target, event.getNewDamage() * percent);

@@ -12,7 +12,6 @@ import com.mojang.datafixers.util.Pair;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
@@ -20,6 +19,8 @@ import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -31,6 +32,7 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
@@ -184,13 +186,13 @@ public class IronsSpellbooksCommand {
             spellid = "irons_spellbooks:" + spellid;
         }
         var source = context.getSource();
-        AbstractSpell spell = SpellRegistry.getSpell(spellid);
-        if (spell == SpellRegistry.none()) {
+        AbstractSkill spell = SpellRegistry.getSpell(ResourceLocation.parse(spellid));
+        if (!(spell instanceof AbstractSpellSkill spellSkill)) {
             source.sendFailure(Component.translatable("commands.irons_spellbooks.generic.unknown_spell", spellid));
             return 0;
         }
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Pair<Boolean, File> result = SpellConfigManager.generateSpellConfigFile(gson, spell, full, override);
+        Pair<Boolean, File> result = SpellConfigManager.generateSpellConfigFile(gson, spellSkill, full, override);
         if (result.getFirst()) {
             source.sendSuccess(
                     () -> Component.translatable("commands.irons_spellbooks.generic.create_file",

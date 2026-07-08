@@ -16,6 +16,7 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.skillcasting.data.ISkillContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -126,18 +127,15 @@ public class ClientPlayerEvents {
                 handleCastingImplementTooltip(stack, player, lines, advanced);
             }
             // Imbued Spell Tooltip
-            if (ISpellContainer.isSpellContainer(stack) && !(stack.getItem() instanceof SpellBook)) {
+            if (ISkillContainer.isSkillContainer(stack) && !(stack.getItem() instanceof SpellBook)) {
                 handleImbuedSpellTooltip(stack, player, lines, advanced);
             }
             // "Can be Imbued" tooltip
-            if (ISpellContainer.isSpellContainer(stack) && Utils.canImbue(stack)) {
-                var spellContainer = ISpellContainer.get(stack);
-//                if (spellContainer.getActiveSpellCount() < spellContainer.getMaxSpellCount()) {
-//                    var component = Component.translatable("tooltip.irons_spellbooks.can_be_imbued", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount());
-//                    component.setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW));
-//                    additionalLines.add(component);
-//                }
-                lines.add(1, Component.translatable("tooltip.irons_spellbooks.can_be_imbued_frame", Component.translatable("tooltip.irons_spellbooks.can_be_imbued_number", spellContainer.getActiveSpellCount(), spellContainer.getMaxSpellCount()).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GOLD));
+            if (ISkillContainer.isSkillContainer(stack) && Utils.canImbue(stack)) {
+                var spellContainer = ISkillContainer.get(stack);
+                if (spellContainer != null) {
+                    lines.add(1, Component.translatable("tooltip.irons_spellbooks.can_be_imbued_frame", Component.translatable("tooltip.irons_spellbooks.can_be_imbued_number", spellContainer.getActiveSkillCount(), spellContainer.getMaxSkillCount()).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GOLD));
+                }
             }
             if (stack.has(ComponentRegistry.MULTIHAND_WEAPON)) {
                 Predicate<Holder<Attribute>> predicate = ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get() ? Utils.NON_BASE_ATTRIBUTES : Utils.ONLY_MAGIC_ATTRIBUTES;

@@ -1,7 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.skillcasting.lifecycle.ActiveCast;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
@@ -58,6 +61,7 @@ public class WizardAttackGoal extends Goal {
 
     protected boolean drinksPotions;
     protected final PathfinderMob mob;
+    protected final AbstractSpellCastingMob spellCastingMob;
 
 //    public WizardAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int pAttackInterval) {
 //        this(abstractSpellCastingMob, pSpeedModifier, pAttackInterval, pAttackInterval);
@@ -65,11 +69,12 @@ public class WizardAttackGoal extends Goal {
 
     public WizardAttackGoal(Mob abstractSpellCastingMob, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Flag.TARGET));
-//        this.spellCastingMob = abstractSpellCastingMob;
-        if (abstractSpellCastingMob instanceof PathfinderMob m) {
-            this.mob = m;
-        } else
+        if (abstractSpellCastingMob instanceof PathfinderMob pathfinderMob && abstractSpellCastingMob instanceof AbstractSpellCastingMob castingMob) {
+            this.mob = pathfinderMob;
+            this.spellCastingMob = castingMob;
+        } else {
             throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
+        }
 
         this.speedModifier = pSpeedModifier;
         this.spellAttackIntervalMin = pAttackIntervalMin;
@@ -200,24 +205,23 @@ public class WizardAttackGoal extends Goal {
         }
         if (--this.spellAttackDelay == 0) {
             resetSpellAttackTimer(distanceSquared);
-//            if (!spellCastingMob.isCasting() && !spellCastingMob.isDrinkingPotion()) {
-//                doSpellAction();
-//            }
+            if (!spellCastingMob.isCasting() && !spellCastingMob.isDrinkingPotion()) {
+                doSpellAction();
+            }
 
         } else if (this.spellAttackDelay < 0) {
             resetSpellAttackTimer(distanceSquared);
         }
-//        if (spellCastingMob.isCasting()) {
-//            var spellData = MagicData.get(mob).getCastingSpell();
-//            if (target.isDeadOrDying() || spellData.getSpell().shouldAIStopCasting(spellData.getLevel(), mob, target)) {
-//                spellCastingMob.cancelCast();
-//            }
-//        }
+        if (spellCastingMob.isCasting() && target != null) {
+            ActiveCast activeCast = SkillcastingData.get(mob).getActiveCast();
+            if (target.isDeadOrDying() || (activeCast != null && activeCast.context().skill().value().shouldAIStopCasting(activeCast, mob, target))) {
+                spellCastingMob.cancelCast();
+            }
+        }
     }
 
     public boolean isActing() {
-        return false;
-//        return spellCastingMob.isCasting() || spellCastingMob.isDrinkingPotion();
+        return spellCastingMob.isCasting() || spellCastingMob.isDrinkingPotion();
     }
 
     protected void resetSpellAttackTimer(double distanceSquared) {
@@ -296,23 +300,21 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doSpellAction() {
-//        if (!spellCastingMob.getHasUsedSingleAttack() && singleUseSpell != SpellRegistry.none() && singleUseDelay <= 0) {
-//            spellCastingMob.setHasUsedSingleAttack(true);
-//            spellCastingMob.initiateCastSpell(singleUseSpell, singleUseLevel);
-//            fleeCooldown = 7 + singleUseSpell.getCastTime(singleUseLevel);
-//        } else {
-//            var spell = getNextSpellType();
-//            int spellLevel = (int) (spell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
-//            spellLevel = Math.max(spellLevel, 1);
-//
-//            //Make sure cast is valid. if not, try again shortly
-//            if (!spell.shouldAIStopCasting(spellLevel, mob, target)) {
-//                spellCastingMob.initiateCastSpell(spell, spellLevel);
-//                fleeCooldown = 7 + spell.getCastTime(spellLevel);
-//            } else {
-//                spellAttackDelay = 5;
-//            }
-//        }
+        if (!spellCastingMob.getHasUsedSingleAttack() && singleUseSpell != null && singleUseDelay <= 0) {
+            spellCastingMob.setHasUsedSingleAttack(true);
+            spellCastingMob.initiateCastSpell(singleUseSpell, singleUseLevel);
+            fleeCooldown = 7 + singleUseSpell.getCastTimeTicks();
+        } else {
+            var spell = getNextSpellType();
+            if (spell == null) {
+                return;
+            }
+            int spellLevel = (int) (spell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
+            spellLevel = Math.max(spellLevel, 1);
+
+            spellCastingMob.initiateCastSpell(spell, spellLevel);
+            fleeCooldown = 7 + spell.getCastTimeTicks();
+        }
     }
 
     protected @Nullable AbstractSpellSkill getNextSpellType() {
@@ -347,8 +349,7 @@ public class WizardAttackGoal extends Goal {
             //IronsSpellbooks.LOGGER.debug("WizardAttackGoal.getNextSpell weights: A:{} D:{} M:{} S:{} ({}/{})", attackWeight, defenseWeight, movementWeight, supportWeight, seed, total);
             if (drinksPotions && spellList == supportSpells) {
                 if (supportSpells.isEmpty() || mob.getRandom().nextFloat() < .5f) {
-                    //IronsSpellbooks.LOGGER.debug("Drinking Potion");
-//                    spellCastingMob.startDrinkingPotion();
+                    spellCastingMob.startDrinkingPotion();
                     return null;
                 }
             }

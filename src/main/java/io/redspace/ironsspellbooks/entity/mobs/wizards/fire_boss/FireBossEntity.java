@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.BossbarManager;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
@@ -44,7 +45,6 @@ import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -328,14 +328,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 .setMeleeAttackInverval(10, 30)
                 .setMeleeBias(1f, 1f)
                 .setSpells(
-                        List.of(SkillRegistry.FIRE_ARROW_SPELL.get(), SkillRegistry.FIRE_ARROW_SPELL.get(), SkillRegistry.SCORCH_SPELL.get()),
+                        List.of(SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.FIRE_ARROW_SPELL.get(), SpellRegistry.SCORCH_SPELL.get()),
                         List.of(), List.of(), List.of()
                 );
         this.goalSelector.addGoal(2, new OminousFieryDaggerLeapGoal(this));
         this.goalSelector.addGoal(2, new OminousSpawnFireOrbGoal(this));
         this.goalSelector.addGoal(2, new FieryDaggerSwarmAbilityGoal(this));
         this.goalSelector.addGoal(2, new FieryDaggerZoneAbilityGoal(this));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SkillRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.RAISE_HELL_SPELL.get(), 5, 5, 80, 240, 1));
         this.goalSelector.addGoal(3, attackGoal);
 
         this.goalSelector.addGoal(4, new PatrolNearLocationGoal(this, 30, .75f));

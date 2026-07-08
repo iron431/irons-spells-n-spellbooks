@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.api.events;
 
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.Event;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * ModifySpellLevelEvent is fired on the server and client whenever a spell's level is queried via {@link AbstractSpell#getLevel(int, LivingEntity)}. Compared to modifying the level at spellcast ({@link SpellOnCastEvent#setSpellLevel(int)}), this level will affect the tooltip and mana cost. <br>
+ * ModifySpellLevelEvent is fired on the server and client whenever a spell's level is queried. Compared to modifying the level at spellcast ({@link SpellOnCastEvent#setSpellLevel(int)}), this level will affect the tooltip and mana cost. <br>
  * <br>
  * This event is not {@link Cancelable}.<br>
  * <br>
@@ -16,12 +16,12 @@ import org.jetbrains.annotations.Nullable;
  **/
 public class ModifySpellLevelEvent extends Event {
 
-    final AbstractSpell spell;
+    final AbstractSpellSkill spell;
     final LivingEntity caster;
     final int baseLevel;
     int totalLevel;
 
-    public ModifySpellLevelEvent(AbstractSpell spell, LivingEntity caster, int baseLevel, int totalLevel) {
+    public ModifySpellLevelEvent(AbstractSpellSkill spell, LivingEntity caster, int baseLevel, int totalLevel) {
         this.spell = spell;
         this.caster = caster;
         this.baseLevel = baseLevel;
@@ -59,7 +59,7 @@ public class ModifySpellLevelEvent extends Event {
     /**
      * @return Returns the spell type associated with the level query
      */
-    public AbstractSpell getSpell() {
+    public AbstractSpellSkill getSpell() {
         return spell;
     }
 

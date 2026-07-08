@@ -120,9 +120,6 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     public void handleServerConfigUpdate() {
         registerConfigParameterTypes();
         initiateDefaultFiles(gson);
-        for (AbstractSpellSkill spell : SpellRegistry.REGISTRY) {
-            spell.resetRarityWeights();
-        }
         dirty = true;
     }
 
@@ -215,7 +212,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
                     for (File entry : entries) {
                         String spellName = entry.getName().split("\\.")[0];
                         ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(namespace, spellName);
-                        if (SpellRegistry.REGISTRY.containsKey(spellId)) {
+                        if (SpellRegistry.containsKey(spellId)) {
                             if (files.containsKey(spellId)) {
                                 IronsSpellbooks.LOGGER.warn("Duplicate spell config for spell {}! Overriding config.", spellId);
                             }
@@ -293,7 +290,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         RegistryOps<JsonElement> registryops = this.makeConditionalOps();
         Map<SpellConfigParameter<?>, Object> globalValues = applyGlobalConfig ?
                 readGlobalConfig(registryops) : Collections.emptyMap();
-        for (AbstractSpellSkill spell : SpellRegistry.REGISTRY) {
+        for (AbstractSpellSkill spell : SpellRegistry.getAllSpells()) {
             // Manually build defaults from static data object
             SpellConfigHolder config = new SpellConfigHolder();
             DefaultConfig raw = spell.getDefaultConfig();
@@ -337,7 +334,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
         config = builder.build();
         // Second pass for events. Allows for full context (can reference existing default and modified config values)
-        for (AbstractSpellSkill spell : SpellRegistry.REGISTRY) {
+        for (AbstractSpellSkill spell : SpellRegistry.getAllSpells()) {
             NeoForge.EVENT_BUS.post(new ModifyDefaultConfigValuesEvent(spell, config.get(spell)));
         }
         return !hasErrors;

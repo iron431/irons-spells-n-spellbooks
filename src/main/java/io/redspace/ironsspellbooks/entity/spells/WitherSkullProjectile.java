@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.skillcasting.data.PlayableSound;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -56,7 +56,7 @@ public class WitherSkullProjectile extends AbstractMagicProjectile {
             Entity directHit = hitResult instanceof EntityHitResult entityHitResult ? entityHitResult.getEntity() : null;
             var explosionRadius = getRadius();
             var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
-            var damageSource = SkillRegistry.WITHER_SKULL_SPELL.get().getDamageSource(this.level(), this, getOwner());
+            var damageSource = SpellRegistry.WITHER_SKULL_SPELL.get().getDamageSource(this.level(), this, getOwner());
             for (Entity entity : entities) {
                 if (entity == directHit) {
                     DamageSources.applyDamage(entity, damage, damageSource);

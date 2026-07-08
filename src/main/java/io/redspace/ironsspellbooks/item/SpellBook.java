@@ -1,14 +1,28 @@
 package io.redspace.ironsspellbooks.item;
 
+import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.render.RenderHelper;
+import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
+import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillContainer;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingDataComponents;
+import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
@@ -19,6 +33,7 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,*/ ILecternPlaceable {
 
@@ -45,43 +60,40 @@ public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, Item.TooltipContext context, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
-        // fixme: tooltips
-//        if (this.isUnique()) {
-//            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", Component.translatable("tooltip.irons_spellbooks.spellbook_unique").withStyle(TooltipsUtils.UNIQUE_STYLE)).withStyle(ChatFormatting.GRAY));
-//        }
-//        var player = MinecraftInstanceHelper.getPlayer();
-//        if (player != null && ISpellContainer.isSpellContainer(itemStack)) {
-//            var spellList = ISpellContainer.get(itemStack);
-//            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", spellList.getMaxSpellCount()).withStyle(ChatFormatting.GRAY));
-//            var activeSpellSlots = spellList.getActiveSpells();
-//            if (!activeSpellSlots.isEmpty()) {
-//                lines.add(Component.empty());
-//                lines.add(Component.translatable("tooltip.irons_spellbooks.press_to_cast", Component.keybind("key.irons_spellbooks.spellbook_cast")).withStyle(ChatFormatting.GOLD));
-//                lines.add(Component.empty());
-//                lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_tooltip").withStyle(ChatFormatting.GRAY));
-//                SkillSelectionManager spellSelectionManager = SkillcastingData.get(player).selectionManager();
-//                for (int i = 0; i < activeSpellSlots.size(); i++) {
-//                    var spellText = TooltipsUtils.getTitleComponent(activeSpellSlots.get(i).spellData(), (LocalPlayer) player).setStyle(Style.EMPTY);
-//                    var option = spellSelectionManager.getOptionAt(spellSelectionManager.getSelectionIndex());
-//                    if ((MinecraftInstanceHelper.getPlayer() != null &&
-//                            Utils.getPlayerSpellbookStack(MinecraftInstanceHelper.getPlayer()) == itemStack) &&
-//                            option != null &&
-//                            option.equipmentSlot.equals(Curios.SPELLBOOK_SLOT) &&
-//                            option.localIndex == i) {
-//                        // fixme: ensure skillcasting stuff works
-//                        var shiftMessage = TooltipsUtils.formatActiveSpellTooltip(itemStack, spellSelectionManager.getSelectedSkillData(), CastSource.SPELLBOOK, (LocalPlayer) player);
-//                        shiftMessage.remove(0); // remove buffering empty line
-//                        TooltipsUtils.addShiftTooltip(
-//                                lines,
-//                                Component.literal("> ").append(spellText).withStyle(ChatFormatting.YELLOW),
-//                                shiftMessage.stream().map(component -> Component.literal(" ").append(component)).collect(Collectors.toList())
-//                        );
-//                    } else {
-//                        lines.add(Component.literal(" ").append(spellText.withStyle(Style.EMPTY.withColor(0x8888fe))));
-//                    }
-//                }
-//            }
-//        }
+        if (this.isUnique()) {
+            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", Component.translatable("tooltip.irons_spellbooks.spellbook_unique").withStyle(TooltipsUtils.UNIQUE_STYLE)).withStyle(ChatFormatting.GRAY));
+        }
+        var player = MinecraftInstanceHelper.getPlayer();
+        var spellList = ISkillContainer.get(itemStack);
+        if (player != null && spellList != null) {
+            lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", spellList.getMaxSkillCount()).withStyle(ChatFormatting.GRAY));
+            var activeSpellSlots = spellList.getActiveSkills();
+            if (!activeSpellSlots.isEmpty()) {
+                lines.add(Component.empty());
+                lines.add(Component.translatable("tooltip.irons_spellbooks.press_to_cast", Component.keybind("key.irons_spellbooks.spellbook_cast")).withStyle(ChatFormatting.GOLD));
+                lines.add(Component.empty());
+                lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_tooltip").withStyle(ChatFormatting.GRAY));
+                SkillSelectionManager spellSelectionManager = SkillcastingData.get(player).selectionManager();
+                for (int i = 0; i < activeSpellSlots.size(); i++) {
+                    var spellText = TooltipsUtils.getTitleComponent(activeSpellSlots.get(i).skillData(), (LocalPlayer) player).setStyle(Style.EMPTY);
+                    var option = spellSelectionManager.getOptionAt(spellSelectionManager.getSelectionIndex());
+                    if (Utils.getPlayerSpellbookStack(player) == itemStack &&
+                            option != null &&
+                            option.equipmentSlot.equals(Curios.SPELLBOOK_SLOT) &&
+                            option.localIndex == i) {
+                        var shiftMessage = TooltipsUtils.formatActiveSpellTooltip(itemStack, spellSelectionManager.getSelectedSkillData(), CastSource.SPELLBOOK, (LocalPlayer) player);
+                        shiftMessage.remove(0); // remove buffering empty line
+                        TooltipsUtils.addShiftTooltip(
+                                lines,
+                                Component.literal("> ").append(spellText).withStyle(ChatFormatting.YELLOW),
+                                shiftMessage.stream().map(component -> Component.literal(" ").append(component)).collect(Collectors.toList())
+                        );
+                    } else {
+                        lines.add(Component.literal(" ").append(spellText.withStyle(Style.EMPTY.withColor(0x8888fe))));
+                    }
+                }
+            }
+        }
         super.appendHoverText(itemStack, context, lines, flag);
     }
 
@@ -104,32 +116,34 @@ public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,
 
     @Override
     public List<Component> getPages(ItemStack stack) {
-        // fixme: bleh
-//        var spellbookData = ISpellContainer.get(stack);
-//        if (spellbookData != null && !spellbookData.isEmpty()) {
-//            var player = MinecraftInstanceHelper.getPlayer();
-//            return spellbookData.getActiveSpells().stream().map(slot -> {
-//                var color = slot.getSpell().getSchoolType().getDisplayName().getStyle().getColor().getValue();
-//                color = RenderHelper.colorLerp(.6f, color, 0);
-//                var titleStyle = Style.EMPTY.withColor(color).withUnderlined(true).withBold(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/iron431"));
-//                boolean hideStats = false;
-//                if (player != null) {
-//                    var scrollTooltip = TooltipsUtils.formatActiveSpellTooltip(null, slot.spellData(), CastSource.SPELLBOOK, (LocalPlayer) player);
-//                    scrollTooltip.remove(0); // this is a space for tooltip, which we don't want
-//                    titleStyle = titleStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, scrollTooltip.stream().reduce((a, b) -> a.append("\n").append(b)).get()));
-//                    if (slot.getSpell().obfuscateStats(player)) {
-//                        hideStats = true;
-//                    }
-//                }
-//                var title = Component.translatable(slot.getSpell().getComponentId()).withStyle(titleStyle);
-//                var desc = Component.translatable(slot.getSpell().getComponentId() + ".guide").withStyle(ChatFormatting.BLACK);
-//                var page = Component.literal("").append(title).append("\n\n").append(desc);
-//                if (hideStats) {
-//                    page = page.withStyle(page.getStyle().applyTo(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("alt"))));
-//                }
-//                return (Component) page;
-//            }).toList();
-//        }
+        var spellbookData = ISkillContainer.get(stack);
+        if (spellbookData != null && !spellbookData.isEmpty()) {
+            var player = MinecraftInstanceHelper.getPlayer();
+            return spellbookData.getActiveSkills().stream()
+                    .filter(slot -> slot.getSkill() instanceof AbstractSpellSkill)
+                    .map(slot -> {
+                        var spell = (AbstractSpellSkill) slot.getSkill();
+                        var color = spell.getSchoolType().getDisplayName().getStyle().getColor().getValue();
+                        color = RenderHelper.colorLerp(.6f, color, 0);
+                        var titleStyle = Style.EMPTY.withColor(color).withUnderlined(true).withBold(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/iron431"));
+                        boolean hideStats = false;
+                        if (player != null) {
+                            var scrollTooltip = TooltipsUtils.formatActiveSpellTooltip(null, slot.skillData(), CastSource.SPELLBOOK, (LocalPlayer) player);
+                            scrollTooltip.remove(0); // this is a space for tooltip, which we don't want
+                            titleStyle = titleStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, scrollTooltip.stream().reduce((a, b) -> a.append("\n").append(b)).get()));
+                            if (spell.obfuscateStats(player)) {
+                                hideStats = true;
+                            }
+                        }
+                        var title = Component.translatable(spell.getDescriptionId()).withStyle(titleStyle);
+                        var desc = Component.translatable(spell.getDescriptionId() + ".guide").withStyle(ChatFormatting.BLACK);
+                        var page = Component.literal("").append(title).append("\n\n").append(desc);
+                        if (hideStats) {
+                            page = page.withStyle(page.getStyle().applyTo(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("alt"))));
+                        }
+                        return (Component) page;
+                    }).toList();
+        }
         return List.of(Component.translatable("ui.irons_spellbooks.empty_spellbook_lectern").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
     }
 }

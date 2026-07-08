@@ -5,9 +5,9 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -39,9 +39,9 @@ public class LearnCommand {
 
     private static int learnAll(CommandSourceStack source) {
         int i = 0;
-        for (AbstractSpell spell : SpellRegistry.getEnabledSpells()) {
+        for (AbstractSpellSkill spell : SpellRegistry.getEnabledSpells()) {
             if (spell.requiresLearning() && !spell.isLearned(source.getPlayer())) {
-                MagicData.get(source.getPlayer()).getLearnedSpellData().learnedSpells.add(spell.getSpellResource());
+                MagicData.get(source.getPlayer()).getLearnedSpellData().learnedSpells.add(spell.getSkillId());
             }
         }
         source.getPlayer().syncData(DataAttachmentRegistry.MAGIC_DATA);

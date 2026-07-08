@@ -26,9 +26,6 @@ public class SchoolRegistry {
     private static final DeferredRegister<SchoolType> SCHOOLS = DeferredRegister.create(SCHOOL_REGISTRY_KEY, IronsSpellbooks.MODID);
     public static final Registry<SchoolType> REGISTRY = new RegistryBuilder<>(SCHOOL_REGISTRY_KEY).create();
 
-    /**
-     * Register registry objects
-     */
     public static void register(IEventBus eventBus) {
         SCHOOLS.register(eventBus);
     }

@@ -41,7 +41,7 @@ public final class CooldownManager {
     }
 
     public void addCooldown(AbstractSkill skill, CooldownInstance instance) {
-        addCooldown(SkillcastingRegistries.SKILLS.wrapAsHolder(skill), instance);
+        addCooldown(SkillcastingRegistries.SKILL_REGISTRY.wrapAsHolder(skill), instance);
     }
 
     public boolean isOnCooldown(Holder<AbstractSkill> skill) {
@@ -50,7 +50,7 @@ public final class CooldownManager {
     }
 
     public boolean isOnCooldown(AbstractSkill skill) {
-        return isOnCooldown(SkillcastingRegistries.SKILLS.wrapAsHolder(skill));
+        return isOnCooldown(SkillcastingRegistries.SKILL_REGISTRY.wrapAsHolder(skill));
     }
 
     public int remainingTicks(Holder<AbstractSkill> skill) {
@@ -59,7 +59,7 @@ public final class CooldownManager {
     }
 
     public int remainingTicks(AbstractSkill skill) {
-        return remainingTicks(SkillcastingRegistries.SKILLS.wrapAsHolder(skill));
+        return remainingTicks(SkillcastingRegistries.SKILL_REGISTRY.wrapAsHolder(skill));
     }
 
     public boolean isEmpty() {
@@ -102,7 +102,7 @@ public final class CooldownManager {
     }
 
     public float getCooldownPercent(AbstractSkill skill) {
-        return getCooldownPercent(SkillcastingRegistries.SKILLS.wrapAsHolder(skill));
+        return getCooldownPercent(SkillcastingRegistries.SKILL_REGISTRY.wrapAsHolder(skill));
     }
 
     public boolean hasCooldownsActive() {
@@ -116,7 +116,7 @@ public final class CooldownManager {
 
     @Nullable
     public CooldownInstance get(AbstractSkill skill) {
-        return get(SkillcastingRegistries.SKILLS.wrapAsHolder(skill));
+        return get(SkillcastingRegistries.SKILL_REGISTRY.wrapAsHolder(skill));
     }
 
     public void applySynced(Holder<AbstractSkill> skill, @Nullable CooldownInstance instance) {

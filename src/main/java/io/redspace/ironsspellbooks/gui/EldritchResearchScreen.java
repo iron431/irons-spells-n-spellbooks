@@ -5,8 +5,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.ironsspellbooks.network.spells.LearnSpellPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -61,7 +61,7 @@ public class EldritchResearchScreen extends Screen {
         this.activeHand = activeHand;
     }
 
-    List<AbstractSpell> learnableSpells;
+    List<AbstractSpellSkill> learnableSpells;
     List<SpellNode> nodes;
     Vec2 maxViewportOffset;
     Vec2 viewportOffset;
@@ -135,7 +135,7 @@ public class EldritchResearchScreen extends Screen {
             if (isMouseHoldingSpell && heldSpellIndex >= 0 && heldSpellIndex < nodes.size() && !nodes.get(heldSpellIndex).spell.isLearned(player)) {
                 if (heldSpellTime > TIME_TO_HOLD) {
                     heldSpellTime = -1;
-                    PacketDistributor.sendToServer(new LearnSpellPacket(this.activeHand, nodes.get(heldSpellIndex).spell.getSpellId()));
+                    PacketDistributor.sendToServer(new LearnSpellPacket(this.activeHand, nodes.get(heldSpellIndex).spell.getSkillId().toString()));
                     player.playNotifySound(SoundRegistry.LEARN_ELDRITCH_SPELL.get(), SoundSource.MASTER, 1f, Utils.random.nextIntBetweenInclusive(9, 11) * .1f);
                 }
                 heldSpellTime++;
@@ -184,7 +184,7 @@ public class EldritchResearchScreen extends Screen {
     }
 
     private void drawNode(GuiGraphics guiGraphics, SpellNode node, LocalPlayer player, boolean drawProgress) {
-        drawWithClipping(node.spell.getSpellIconResource(),
+        drawWithClipping(node.spell.getIconLocation(),
                 guiGraphics,
                 node.x,
                 node.y,
@@ -236,10 +236,10 @@ public class EldritchResearchScreen extends Screen {
     private static final Component ALREADY_LEARNED = Component.translatable("ui.irons_spellbooks.research_already_learned").withStyle(ChatFormatting.DARK_AQUA);
     private static final Component UNLEARNED = Component.translatable("ui.irons_spellbooks.research_warning").withStyle(ChatFormatting.RED);
 
-    public static List<FormattedCharSequence> buildTooltip(AbstractSpell spell, Font font) {
+    public static List<FormattedCharSequence> buildTooltip(AbstractSpellSkill spell, Font font) {
         boolean learned = spell.isLearned(Minecraft.getInstance().player);
         var name = spell.getDisplayName(null).withStyle(learned ? ChatFormatting.DARK_AQUA : ChatFormatting.RED);
-        var description = font.split(Component.translatable(String.format("%s.guide", spell.getComponentId())).withStyle(ChatFormatting.GRAY), 180);
+        var description = font.split(Component.translatable(String.format("%s.guide", spell.getDescriptionId())).withStyle(ChatFormatting.GRAY), 180);
         var hoverText = new ArrayList<FormattedCharSequence>();
         hoverText.add(FormattedCharSequence.forward(name.getString(), name.getStyle().withUnderlined(true)));
         hoverText.addAll(description);
@@ -392,7 +392,7 @@ public class EldritchResearchScreen extends Screen {
         return mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
     }
 
-    record SpellNode(AbstractSpell spell, int x, int y) {
+    record SpellNode(AbstractSpellSkill spell, int x, int y) {
     }
 
     record NodeConnection(SpellNode node1, SpellNode node2) {

@@ -4,9 +4,12 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.SkillContainer;
+import io.redspace.skillcasting.data.SkillData;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -29,8 +32,8 @@ public class CreateSpellBookCommand {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
-            var spellContainer = ISpellContainer.create(slots, true, true);
-            ISpellContainer.set(itemstack, spellContainer);
+            var spellContainer = new SkillContainer(slots, true, true);
+            ISkillContainer.set(itemstack, spellContainer);
 
             if (serverPlayer.getInventory().add(itemstack)) {
                 return 1;
@@ -44,14 +47,16 @@ public class CreateSpellBookCommand {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
-            var spellContainer = ISpellContainer.create(slots, true, true).mutableCopy();
+            var spellContainer = new SkillContainer(slots, true, true).mutableCopy();
             for (int i = 0; i < slots; i++) {
-                AbstractSpell spell;
+                AbstractSpellSkill spell;
+                boolean added;
                 do {
                     spell = new SpellFilter().getRandomSpell(source.getLevel().random);
-                } while (!spellContainer.addSpell(spell, source.getLevel().random.nextIntBetweenInclusive(1, spell.getMaxLevel()), false));
+                    added = spell != null && spellContainer.addSpell(new SkillData(spell, source.getLevel().random.nextIntBetweenInclusive(1, spell.getMaxLevel())));
+                } while (!added);
             }
-            ISpellContainer.set(itemstack, spellContainer.toImmutable());
+            ISkillContainer.set(itemstack, spellContainer.toImmutable());
             if (serverPlayer.getInventory().add(itemstack)) {
                 return 1;
             }

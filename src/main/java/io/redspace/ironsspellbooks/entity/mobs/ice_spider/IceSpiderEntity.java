@@ -1,7 +1,8 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -13,7 +14,6 @@ import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.skillcasting.api.skill.CastType;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -277,7 +277,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     @Override
-    public void initiateCastSpell(AbstractSpell spell, int spellLevel) {
+    public void initiateCastSpell(AbstractSpellSkill spell, int spellLevel) {
         if (!wantsToCastSpells) {
             return;
         }
@@ -342,7 +342,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
                         new AttackAnimationData.Builder("attack_right_swipe").length(14).attacks(new AttackKeyframe(10, new Vec3(0, 0.1, -1), new Vec3(0, 0, 1))).build()
                 ))
                 .setMeleeBias(1f, 1f)
-                .setSpells(List.of(SkillRegistry.SNOWBALL_SPELL.get(), SkillRegistry.ICE_SPIKES_SPELL.get()), List.of(), List.of(), List.of()).setSpellQuality(.75f, .75f);
+                .setSpells(List.of(SpellRegistry.SNOWBALL_SPELL.get(), SpellRegistry.ICE_SPIKES_SPELL.get()), List.of(), List.of(), List.of()).setSpellQuality(.75f, .75f);
         this.goalSelector.addGoal(2, attackGoal
         );
         this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 32, 0.08f));

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.creeper_head;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -9,7 +10,6 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ChainCreeperSpell;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -88,7 +88,7 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
                         break;
                     }
                     float damage = (float) (this.damage * (1 - Math.pow(distance / (explosionRadius), 2)));
-                    DamageSources.applyDamage(entity, damage, SkillRegistry.LOB_CREEPER_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.LOB_CREEPER_SPELL.get().getDamageSource(this.level(), this, getOwner()));
                     if (chainOnKill && contextSnapshot != null && entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying()) {
                         ChainCreeperSpell.summonCreeperRing(this.level(), livingEntity.getEyePosition(), contextSnapshot, this.chainCount);
                     }

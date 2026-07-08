@@ -38,7 +38,7 @@ public final class RecastManager {
     }
 
     public void addRecast(AbstractSkill skill, RecastInstance instance) {
-        addRecast(SkillcastingRegistries.SKILLS.wrapAsHolder(skill), instance);
+        addRecast(SkillcastingRegistries.SKILL_REGISTRY.wrapAsHolder(skill), instance);
     }
 
     public boolean hasRecast(Holder<AbstractSkill> skill) {
@@ -46,7 +46,7 @@ public final class RecastManager {
     }
 
     public boolean hasRecast(AbstractSkill skill) {
-        return hasRecast(SkillcastingRegistries.SKILLS.wrapAsHolder(skill));
+        return hasRecast(SkillcastingRegistries.SKILL_REGISTRY.wrapAsHolder(skill));
     }
 
     @Nullable
@@ -56,7 +56,7 @@ public final class RecastManager {
 
     @Nullable
     public RecastInstance get(AbstractSkill skill) {
-        return get(SkillcastingRegistries.SKILLS.wrapAsHolder(skill));
+        return get(SkillcastingRegistries.SKILL_REGISTRY.wrapAsHolder(skill));
     }
 
     public boolean isEmpty() {

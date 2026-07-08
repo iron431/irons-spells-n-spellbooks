@@ -2,12 +2,11 @@ package io.redspace.ironsspellbooks.loot;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -47,8 +46,8 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             }
             var spellList = getWeightedSpellList(applicableSpells);
             int total = spellList.floorKey(Integer.MAX_VALUE);
-            AbstractSpell spell = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
-            if (spell.equals(SpellRegistry.none())) {
+            AbstractSpellSkill spell = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
+            if (spell == null) {
                 return fallback;
             }
 
@@ -58,19 +57,19 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             //quality = quality * Mth.sin(Mth.HALF_PI * quality);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
             if (itemStack.getItem() instanceof Scroll) {
-                ISpellContainer.createScrollContainer(spell, spellLevel, itemStack);
+                Scroll.applyScrollToStack(itemStack, spell, spellLevel);
             } else {
-                ISpellContainer.createImbuedContainer(spell, spellLevel, itemStack);
+                Scroll.applyImbuedToStack(itemStack, spell, spellLevel);
             }
         }
         return itemStack;
     }
 
-    private NavigableMap<Integer, AbstractSpell> getWeightedSpellList(List<AbstractSpell> entries) {
+    private NavigableMap<Integer, AbstractSpellSkill> getWeightedSpellList(List<AbstractSpellSkill> entries) {
         int total = 0;
-        NavigableMap<Integer, AbstractSpell> weightedSpells = new TreeMap<>();
+        NavigableMap<Integer, AbstractSpellSkill> weightedSpells = new TreeMap<>();
 
-        for (AbstractSpell entry : entries) {
+        for (AbstractSpellSkill entry : entries) {
             total += getWeightFromRarity(SpellRarity.values()[entry.getMinRarity()]);
             weightedSpells.put(total, entry);
 

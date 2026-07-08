@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.entity.spells.echoing_strikes;
 
 import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowProjectile;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -61,7 +61,7 @@ public class EchoingArrowProjectile extends MagicArrowProjectile implements NoKn
         entityHitResult.getEntity().invulnerableTime = 0;
         Entity entity = entityHitResult.getEntity();
         if (!victims.contains(entity.getUUID())) {
-            DamageSources.applyDamage(entity, damage, SkillRegistry.ECHOING_STRIKES_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+            DamageSources.applyDamage(entity, damage, SpellRegistry.ECHOING_STRIKES_SPELL.get().getDamageSource(this.level(), this, getOwner()));
             victims.add(entity.getUUID());
         }
         consumeEntityImpact(entityHitResult, true);

@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.entity.spells.electrocute;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractConeProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -129,7 +129,7 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         var entity = entityHitResult.getEntity();
-        DamageSources.applyDamage(entity, damage, SkillRegistry.ELECTROCUTE_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+        DamageSources.applyDamage(entity, damage, SpellRegistry.ELECTROCUTE_SPELL.get().getDamageSource(this.level(), this, getOwner()));
 
         MagicManager.spawnParticles(level(), ParticleHelper.ELECTRICITY, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 10, entity.getBbWidth() / 3, entity.getBbHeight() / 3, entity.getBbWidth() / 3, 0.1, false);
     }

@@ -6,7 +6,14 @@ import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillSlot;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.skillcasting.lifecycle.SkillcastingManager;
+import io.redspace.skillcasting.registry.SkillRegistry;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -221,9 +228,9 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             guiHelper.drawString(font, line, titleX, titleY, 0xFFFFFF, false);
 
             //show description if hovering
-            if (spellSelected && isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY)) {
-                // fixme: clean this entire pos up, and check if abstractspellskill. or defer check to tooltiputils (probably that)
-//                guiHelper.renderTooltip(font, TooltipsUtils.createSpellDescriptionTooltip(spellSlots.get(selectedSpellIndex).spellSlot.getSkill(), font), mouseX, mouseY);
+            if (spellSelected && isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY)
+                    && spellSlots.get(selectedSpellIndex).spellSlot.getSkill() instanceof AbstractSpellSkill hoveredSpell) {
+                guiHelper.renderTooltip(font, TooltipsUtils.createSpellDescriptionTooltip(hoveredSpell, font), mouseX, mouseY);
             }
 
             //increment y for next line
@@ -242,12 +249,15 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         var colorMana = Style.EMPTY.withColor(0x0044a9);
         var colorCast = Style.EMPTY.withColor(0x115511);
         var colorCooldown = Style.EMPTY.withColor(0x115511);
-        var spell = spellSlots.get(selectedSpellIndex).spellSlot.getSpell();
+        var spell = spellSlots.get(selectedSpellIndex).spellSlot.getSkill();
+        if (!(spell instanceof AbstractSpellSkill spellSkill)) {
+            return;
+        }
         var spellLevel = spellSlots.get(selectedSpellIndex).spellSlot.getLevel();
         float textScale = 1f;
         float reverseScale = 1 / textScale;
 
-        Component school = spell.getSchoolType().getDisplayName();
+        Component school = spellSkill.getSchoolType().getDisplayName();
         poseStack.scale(textScale, textScale, textScale);
 
 
@@ -267,24 +277,16 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         //
         // Mana
         //
-        descLine += drawStatText(font, guiHelper, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(spell.getManaCost(spellLevel) + ""), colorMana, textScale);
-
-        //
-        // Cast Time
-        //
-
-        descLine += drawText(font, guiHelper, TooltipsUtils.getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(spell.getEffectiveCastTime(spellLevel, null), 1)), x + margin, descLine, textColor.getColor().getValue(), textScale);
-
-        //
-        // Cooldown
-        //
-        descLine += drawStatText(font, guiHelper, x + margin, descLine, "ui.irons_spellbooks.cooldown", textColor, Component.translatable(Utils.timeFromTicks(spell.getSpellCooldown(), 1)), colorCooldown, textScale);
-
-
-        //
-        //  Unique Info
-        //
-        for (MutableComponent component : spell.getUniqueInfo(spellLevel, null)) {
+        var previewCaster = Minecraft.getInstance().player;
+        CastContext previewContext = SkillcastingManager.buildCastContext(CasterRef.entity(previewCaster), SkillRegistry.holder(spellSkill), spellLevel, null, true);
+        int manaCost = spellSkill.getManaCost(previewContext);
+        int castTimeTicks = previewContext.getOrDefault(SkillcastingComponentTypes.CAST_TIME, spellSkill.getCastTimeTicks());
+        descLine += drawStatText(font, guiHelper, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(manaCost + ""), colorMana, textScale);
+        if (spellSkill.getCastType() != io.redspace.skillcasting.api.skill.CastType.INSTANT) {
+            descLine += drawText(font, guiHelper, TooltipsUtils.getCastTimeComponent(spellSkill.getCastType(), Utils.timeFromTicks(castTimeTicks, 1)), x + margin, descLine, textColor.getColor().getValue(), textScale);
+        }
+        descLine += drawStatText(font, guiHelper, x + margin, descLine, "ui.irons_spellbooks.cooldown", textColor, Component.translatable(Utils.timeFromTicks(spellSkill.getCooldownTicks(), 1)), colorCooldown, textScale);
+        for (MutableComponent component : spellSkill.getUniqueInfo(previewContext)) {
             descLine += drawText(font, guiHelper, component, x + margin, descLine, textColor.getColor().getValue(), 1);
         }
 
@@ -325,13 +327,13 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         var spellBookSlot = menu.slots.get(SPELLBOOK_SLOT);
         var spellBookItemStack = spellBookSlot.getItem();
 
-        var spellBookContainer = ISpellContainer.get(spellBookItemStack);
+        var spellBookContainer = ISkillContainer.get(spellBookItemStack);
         if (spellBookContainer == null) {
             return;
         }
 
-        var storedSpells = spellBookContainer.getAllSpells();
-        int spellCount = spellBookContainer.getMaxSpellCount();
+        var storedSpells = spellBookContainer.getAllSkills();
+        int spellCount = spellBookContainer.getMaxSkillCount();
         if (spellCount > 15) {
             spellCount = 15;
         }
@@ -388,8 +390,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         isDirty = true;
         var spellBookStack = menu.slots.get(SPELLBOOK_SLOT).getItem();
         if (spellBookStack.getItem() instanceof SpellBook) {
-            var spellBookContainer = ISpellContainer.get(spellBookStack);
-            if (spellBookContainer.getMaxSpellCount() <= selectedSpellIndex) {
+            var spellBookContainer = ISkillContainer.get(spellBookStack);
+            if (spellBookContainer.getMaxSkillCount() <= selectedSpellIndex) {
                 resetSelectedSpell();
             }
         } else {
@@ -408,8 +410,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             if (spellSlots.isEmpty())
                 return;
 
-            var scrollContainer = ISpellContainer.get(menu.getScrollSlot().getItem());
-            var scrollSlot = scrollContainer.getSpellAtIndex(0);
+            var scrollContainer = ISkillContainer.get(menu.getScrollSlot().getItem());
+            var scrollSlot = scrollContainer != null ? scrollContainer.getSkillAtIndex(0) : null;
 
             //  Quick inscribe
             if (selectedSpellIndex < 0 || spellSlots.get(selectedSpellIndex).hasSpell()) {

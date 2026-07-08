@@ -16,6 +16,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -56,6 +57,13 @@ public record AffinityData(Map<Holder<AbstractSpellSkill>, Integer> affinityData
         Map<Holder<AbstractSpellSkill>, Integer> copy = HashMap.newHashMap(bonuses.size());
         bonuses.forEach((holder, bonus) -> copy.put(requireSpellSkillHolder(holder), bonus));
         return new AffinityData(Map.copyOf(copy));
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static AffinityData ofHolders(Map<DeferredHolder<AbstractSkill, ? extends AbstractSpellSkill>, Integer> bonuses) {
+        HashMap<Holder<AbstractSpellSkill>, Integer> copy = new HashMap<>(bonuses.size());
+        bonuses.forEach((holder, i) -> copy.put((Holder<AbstractSpellSkill>) (Holder) holder, i));
+        return new AffinityData(copy);
     }
 
     public static AffinityData getAffinityData(ItemStack stack) {

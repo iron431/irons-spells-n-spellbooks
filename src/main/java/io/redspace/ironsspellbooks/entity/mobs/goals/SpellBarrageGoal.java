@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -12,6 +14,7 @@ import java.util.EnumSet;
 public class SpellBarrageGoal extends Goal {
     protected static final int interval = 5;
     protected final PathfinderMob mob;
+    protected final AbstractSpellCastingMob spellCastingMob;
     protected LivingEntity target;
     protected final int attackIntervalMin;
     protected final int attackIntervalMax;
@@ -26,9 +29,9 @@ public class SpellBarrageGoal extends Goal {
 
     public SpellBarrageGoal(Mob abstractSpellCastingMob, AbstractSkill spell, int minLevel, int maxLevel, int pAttackIntervalMin, int pAttackIntervalMax, int projectileCount) {
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Flag.TARGET));
-//        this.spellCastingMob = abstractSpellCastingMob;
-        if (abstractSpellCastingMob instanceof PathfinderMob m) {
+        if (abstractSpellCastingMob instanceof PathfinderMob m && abstractSpellCastingMob instanceof AbstractSpellCastingMob castingMob) {
             this.mob = m;
+            this.spellCastingMob = castingMob;
         } else
             throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
         this.attackIntervalMin = pAttackIntervalMin;
@@ -95,8 +98,9 @@ public class SpellBarrageGoal extends Goal {
         if (distanceSquared < attackRadiusSqr) {
             //IronsSpellbooks.LOGGER.debug("SpellBarrageGoal ({}) initiate cast on tick {}", this.hashCode(), attackTime);
             this.mob.getLookControl().setLookAt(this.target, 45, 45);
-            // fixme: spellcasting
-//            spellCastingMob.initiateCastSpell(spell, mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel));
+            if (spell instanceof AbstractSpellSkill spellSkill) {
+                spellCastingMob.initiateCastSpell(spellSkill, mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel));
+            }
             stop();
         }
 

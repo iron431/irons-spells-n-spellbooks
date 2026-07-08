@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
@@ -11,7 +12,6 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.GenericOwnerHurtByTargetGoa
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericOwnerHurtTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericProtectOwnerTargetGoal;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -157,7 +157,7 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
 
     @Override
     public boolean doHurtTarget(Entity pEntity) {
-        return Utils.doMeleeAttack(this, pEntity, SkillRegistry.RAISE_DEAD_SPELL.get().getDamageSource(this.level(), this, getSummoner()));
+        return Utils.doMeleeAttack(this, pEntity, SpellRegistry.RAISE_DEAD_SPELL.get().getDamageSource(this.level(), this, getSummoner()));
     }
 
     @Override

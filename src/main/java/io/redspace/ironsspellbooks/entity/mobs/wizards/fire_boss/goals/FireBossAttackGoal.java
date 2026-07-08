@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
@@ -107,8 +108,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
                 if (!isActing()) {
                     // insta-cast that fireball
                     mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION).addOrUpdateTransientModifier(MODIFIER_FIRE_BALLER);
-                    // fixme: spellcasting
-//                    mob.initiateCastSpell(SkillRegistry.FIREBALL_SPELL.get(), mob.isSoulMode() ? 6 : 5);
+                    mob.initiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), mob.isSoulMode() ? 6 : 5);
                     fireballcooldown = 20 * 10;
                     return;
                 }

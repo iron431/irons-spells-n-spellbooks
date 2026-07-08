@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -154,7 +154,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
             if (player != null) {
                 var magicData = SkillcastingData.get(player);
                 var playerRecasts = magicData.recasts();
-                var spellId = SkillRegistry.PORTAL_SPELL;
+                var spellId = SpellRegistry.PORTAL_SPELL;
                 var recastInstance = playerRecasts.get(spellId.get());
                 if (recastInstance != null) {
                     //fixme: cancel recast

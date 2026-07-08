@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
 import io.redspace.ironsspellbooks.api.events.SetSummonOwnerEvent;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.BossbarManager;
 import io.redspace.ironsspellbooks.api.util.MusicManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -38,7 +39,6 @@ import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -116,7 +116,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
             }
             float f = Mth.lerp(1 - boss.getHealth() / boss.getMaxHealth(), .2f, .75f);
             if (boss.getRandom().nextFloat() < f) {
-                int maxLevel = SkillRegistry.SACRIFICE_SPELL.get().getMaxLevel();
+                int maxLevel = SpellRegistry.SACRIFICE_SPELL.get().getMaxLevel();
                 int spellLevel = Mth.clamp(Mth.floor(f * (maxLevel - 1) + 1), 1, maxLevel);
                 living.addEffect(new MobEffectInstance(MobEffectRegistry.SACRIFICIAL_MARK, Integer.MAX_VALUE, spellLevel - 1, false, false, true));
             }
@@ -215,15 +215,15 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     private DeadKingAnimatedWarlockAttackGoal getCombatGoal() {
         return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85).setMeleeAttackInverval(0, 20).setSpellQuality(.3f, .5f).setSpells(
                 List.of(
-                        SkillRegistry.RAY_OF_SIPHONING_SPELL.get(),
-                        SkillRegistry.BLOOD_SLASH_SPELL.get(), SkillRegistry.BLOOD_SLASH_SPELL.get(),
-                        SkillRegistry.WITHER_SKULL_SPELL.get(), SkillRegistry.WITHER_SKULL_SPELL.get(), SkillRegistry.WITHER_SKULL_SPELL.get(),
-                        SkillRegistry.FANG_STRIKE_SPELL.get(), SkillRegistry.FANG_STRIKE_SPELL.get(),
-                        SkillRegistry.POISON_ARROW_SPELL.get(), SkillRegistry.POISON_ARROW_SPELL.get(),
-                        SkillRegistry.BLIGHT_SPELL.get(),
-                        SkillRegistry.ACID_ORB_SPELL.get()
+                        SpellRegistry.RAY_OF_SIPHONING_SPELL.get(),
+                        SpellRegistry.BLOOD_SLASH_SPELL.get(), SpellRegistry.BLOOD_SLASH_SPELL.get(),
+                        SpellRegistry.WITHER_SKULL_SPELL.get(), SpellRegistry.WITHER_SKULL_SPELL.get(), SpellRegistry.WITHER_SKULL_SPELL.get(),
+                        SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FANG_STRIKE_SPELL.get(),
+                        SpellRegistry.POISON_ARROW_SPELL.get(), SpellRegistry.POISON_ARROW_SPELL.get(),
+                        SpellRegistry.BLIGHT_SPELL.get(),
+                        SpellRegistry.ACID_ORB_SPELL.get()
                 ),
-                List.of(SkillRegistry.FANG_WARD_SPELL.get(), SkillRegistry.BLOOD_STEP_SPELL.get()),
+                List.of(SpellRegistry.FANG_WARD_SPELL.get(), SpellRegistry.BLOOD_STEP_SPELL.get()),
                 List.of(/*SpellType.BLOOD_STEP_SPELL*/),
                 List.of()
         ).setMeleeBias(0.8f, 0.8f).setAllowFleeing(false);
@@ -248,7 +248,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
 
         // Use root in ominous mode
-        this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SkillRegistry.ROOT_SPELL.get(), 1, 1, 200, 400, 1) {
+        this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SpellRegistry.ROOT_SPELL.get(), 1, 1, 200, 400, 1) {
             @Override
             public boolean canUse() {
                 return isOminous() && super.canUse();
@@ -259,20 +259,20 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     protected void setFirstPhaseGoals() {
         this.goalSelector.getAvailableGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals((x) -> true);
-        this.goalSelector.addGoal(1, new DeadKingBarrageGoal(this, SkillRegistry.WITHER_SKULL_SPELL.get(), 3, 4, 70, 140, 3));
-        this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SkillRegistry.RAISE_DEAD_SPELL.get(), 4, 4, 400, 600, 1));
-        this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SkillRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
-        this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(SkillRegistry.RAISE_DEAD_SPELL.get(), 20, 20, 8, 8));
+        this.goalSelector.addGoal(1, new DeadKingBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 3, 4, 70, 140, 3));
+        this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SpellRegistry.RAISE_DEAD_SPELL.get(), 4, 4, 400, 600, 1));
+        this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
+        this.goalSelector.addGoal(4, getCombatGoal().setSingleUseSpell(SpellRegistry.RAISE_DEAD_SPELL.get(), 20, 20, 8, 8));
         setGenericGoals();
     }
 
     protected void setFinalPhaseGoals() {
         this.goalSelector.getAvailableGoals().forEach(WrappedGoal::stop);
         this.goalSelector.removeAllGoals((x) -> true);
-        this.goalSelector.addGoal(1, new DeadKingBarrageGoal(this, SkillRegistry.WITHER_SKULL_SPELL.get(), 5, 5, 60, 140, 4));
-        this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SkillRegistry.SUMMON_VEX_SPELL.get(), 2, 4, 200, 400, 1));
-        this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SkillRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
-        this.goalSelector.addGoal(4, getCombatGoal().setIsFlying().setSingleUseSpell(SkillRegistry.BLAZE_STORM_SPELL.get(), 10, 30, 10, 10));
+        this.goalSelector.addGoal(1, new DeadKingBarrageGoal(this, SpellRegistry.WITHER_SKULL_SPELL.get(), 5, 5, 60, 140, 4));
+        this.goalSelector.addGoal(2, new DeadKingBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 2, 4, 200, 400, 1));
+        this.goalSelector.addGoal(3, new DeadKingBarrageGoal(this, SpellRegistry.BLOOD_STEP_SPELL.get(), 1, 1, 100, 180, 1));
+        this.goalSelector.addGoal(4, getCombatGoal().setIsFlying().setSingleUseSpell(SpellRegistry.BLAZE_STORM_SPELL.get(), 10, 30, 10, 10));
         this.hasUsedSingleAttack = false;
         this.moveControl = new NotIdioticFlyingMoveControl(this, 30, true);
         setGenericGoals();

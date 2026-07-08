@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.fireball;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -9,7 +10,6 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.data.PlayableSound;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -83,7 +83,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile {
         if (!this.level.isClientSide) {
             var target = pResult.getEntity();
             var owner = getOwner();
-            DamageSources.applyDamage(target, damage, SkillRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this.level(), this, owner));
+            DamageSources.applyDamage(target, damage, SpellRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this.level(), this, owner));
         }
     }
 

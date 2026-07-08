@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.cultist;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -13,7 +14,6 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.NotIdioticNavigation;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
@@ -89,7 +89,7 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SkillRegistry.DEVOUR_SPELL.get(), 3, 6, 100, 250, 1));
+        this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.DEVOUR_SPELL.get(), 3, 6, 100, 250, 1));
         this.goalSelector.addGoal(3, new GenericAnimatedWarlockAttackGoal<>(this, 1.25f, 50, 75)
                 .setMoveset(List.of(
                         new AttackAnimationData(9, "simple_sword_upward_swipe", 5),
@@ -101,8 +101,8 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
                 .setMeleeAttackInverval(10, 30)
                 .setMeleeMovespeedModifier(1.5f)
                 .setSpells(
-                        List.of(SkillRegistry.BLOOD_NEEDLES_SPELL.get(), SkillRegistry.BLOOD_NEEDLES_SPELL.get(), SkillRegistry.WITHER_SKULL_SPELL.get(), SkillRegistry.BLOOD_SLASH_SPELL.get()),
-                        List.of(SkillRegistry.RAY_OF_SIPHONING_SPELL.get()),
+                        List.of(SpellRegistry.BLOOD_NEEDLES_SPELL.get(), SpellRegistry.BLOOD_NEEDLES_SPELL.get(), SpellRegistry.WITHER_SKULL_SPELL.get(), SpellRegistry.BLOOD_SLASH_SPELL.get()),
+                        List.of(SpellRegistry.RAY_OF_SIPHONING_SPELL.get()),
                         List.of(/*SkillRegistry.BLOOD_STEP_SPELL.get()*/),
                         List.of()
                 ).setDrinksPotions()

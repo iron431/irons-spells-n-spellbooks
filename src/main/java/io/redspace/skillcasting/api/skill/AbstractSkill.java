@@ -43,7 +43,7 @@ public abstract class AbstractSkill {
      */
     public final ResourceLocation getSkillId() {
         if (cachedId == null) {
-            cachedId = Objects.requireNonNull(SkillcastingRegistries.SKILLS.getKey(this));
+            cachedId = Objects.requireNonNull(SkillcastingRegistries.SKILL_REGISTRY.getKey(this));
         }
         return cachedId;
     }

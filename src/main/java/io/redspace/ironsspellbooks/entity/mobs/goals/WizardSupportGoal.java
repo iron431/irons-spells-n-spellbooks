@@ -2,11 +2,14 @@ package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -175,16 +178,16 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob> extends Goa
     }
 
     protected void doSpellAction() {
-//        int spellLevel = (int) (getNextSpellType().getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
-//        spellLevel = Math.max(spellLevel, 1);
-//        var abstractSpell = getNextSpellType();
-//
-// //        Make sure cast is valid
-//        if (!abstractSpell.shouldAIStopCasting(spellLevel, mob, target)) {
-// //            fixme: spellcasting
-//            mob.initiateCastSpell(abstractSpell, spellLevel);
-//        }
-//        mob.setSupportTarget(null);
+        var abstractSpell = getNextSpellType();
+        if (abstractSpell == null || !(mob instanceof AbstractSpellCastingMob castingMob)) {
+            return;
+        }
+        int spellLevel = (int) (abstractSpell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
+        spellLevel = Math.max(spellLevel, 1);
+        if (abstractSpell instanceof AbstractSpellSkill spellSkill) {
+            castingMob.initiateCastSpell(spellSkill, spellLevel);
+        }
+        mob.setSupportTarget(null);
     }
 
     protected @Nullable AbstractSkill getNextSpellType() {

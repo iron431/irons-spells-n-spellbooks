@@ -1,11 +1,11 @@
 package io.redspace.ironsspellbooks.entity.spells.thrown_item;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.skillcasting.data.PlayableSound;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -94,7 +94,7 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
         var item = getThrownItem();
         double damage = getDamage();
         var target = pResult.getEntity();
-        var damageSource = SkillRegistry.THROW_SPELL.get().getDamageSource(this.level(), this, getOwner());
+        var damageSource = SpellRegistry.THROW_SPELL.get().getDamageSource(this.level(), this, getOwner());
         if (DamageSources.applyDamage(target, (float) damage, damageSource) && !item.isEmpty() && level instanceof ServerLevel serverLevel) {
             EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, target, damageSource, item);
         }

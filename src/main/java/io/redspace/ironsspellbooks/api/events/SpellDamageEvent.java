@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.api.events;
 
 
-import io.redspace.ironsspellbooks.damage.SpellDamageSource;
+import io.redspace.skillcasting.irons_spellbooks.SpellSkillDamageSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,11 +23,11 @@ import net.neoforged.neoforge.event.entity.living.LivingEvent;
  **/
 public class SpellDamageEvent extends LivingEvent implements ICancellableEvent {
     //TODO: pre and post?
-    private final SpellDamageSource spellDamageSource;
+    private final SpellSkillDamageSource spellDamageSource;
     private final float baseAmount;
     private float amount;
 
-    public SpellDamageEvent(LivingEntity livingEntity, float amount, SpellDamageSource spellDamageSource) {
+    public SpellDamageEvent(LivingEntity livingEntity, float amount, SpellSkillDamageSource spellDamageSource) {
         super(livingEntity);
         this.spellDamageSource = spellDamageSource;
         this.baseAmount = amount;
@@ -46,7 +46,7 @@ public class SpellDamageEvent extends LivingEvent implements ICancellableEvent {
         this.amount = amount;
     }
 
-    public SpellDamageSource getSpellDamageSource() {
+    public SpellSkillDamageSource getSpellDamageSource() {
         return this.spellDamageSource;
     }
 }

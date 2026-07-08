@@ -3,13 +3,12 @@ package io.redspace.ironsspellbooks.jei;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.item.InkItem;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -34,10 +33,7 @@ public class ArcaneAnvilJeiRecipe {
     @Nullable
     Item rightItem;
     @Nullable
-    AbstractSpell spell;
-    @Nullable
-    AbstractSpellSkill spellSkill;
-    @Nullable
+    AbstractSpellSkill spell;
     int level;
 
     public ArcaneAnvilJeiRecipe(Item leftItem, Item rightItem) {
@@ -46,22 +42,20 @@ public class ArcaneAnvilJeiRecipe {
         this.type = Type.Item_Upgrade;
     }
 
-    public ArcaneAnvilJeiRecipe(Item leftItem, AbstractSpell spell) {
+    public ArcaneAnvilJeiRecipe(Item leftItem, AbstractSpellSkill spell) {
         this.leftItem = leftItem;
         this.spell = spell;
         this.type = Type.Imbue;
     }
 
-    public ArcaneAnvilJeiRecipe(AbstractSpell spell, int baseLevel) {
+    public ArcaneAnvilJeiRecipe(AbstractSpellSkill spell, int baseLevel) {
         this.spell = spell;
         this.level = baseLevel;
         this.type = Type.Scroll_Upgrade;
     }
 
-    public ArcaneAnvilJeiRecipe(AbstractSpell spell) {
+    public ArcaneAnvilJeiRecipe(AbstractSpellSkill spell) {
         this.spell = spell;
-        var skill = SkillRegistry.get(spell.getSpellResource());
-        this.spellSkill = skill instanceof AbstractSpellSkill abstractSpellSkill ? abstractSpellSkill : null;
         this.type = Type.Affinity_Ring_Attune;
     }
 
@@ -71,8 +65,8 @@ public class ArcaneAnvilJeiRecipe {
                 var scroll1 = new ItemStack(ItemRegistry.SCROLL.get());
                 var scroll2 = new ItemStack(ItemRegistry.SCROLL.get());
                 var ink = new ItemStack(InkItem.getInkForRarity(spell.getRarity(level + 1)));
-                ISpellContainer.createScrollContainer(spell, level, scroll1);
-                ISpellContainer.createScrollContainer(spell, level + 1, scroll2);
+                Scroll.applyScrollToStack(scroll1, spell, level);
+                Scroll.applyScrollToStack(scroll2, spell, level + 1);
                 yield new Tuple<>(List.of(scroll1), List.of(ink), List.of(scroll2));
             }
             case Imbue -> {
@@ -81,9 +75,9 @@ public class ArcaneAnvilJeiRecipe {
                 SpellRegistry.getEnabledSpells().forEach(spell -> {
                     IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel()).forEach(i -> {
                         var scroll = new ItemStack(ItemRegistry.SCROLL.get());
-                        ISpellContainer.createScrollContainer(spell, i, scroll);
+                        Scroll.applyScrollToStack(scroll, spell, i);
                         var result = new ItemStack(leftItem);
-                        ISpellContainer.createScrollContainer(spell, i, result);
+                        Scroll.applyImbuedToStack(result, spell, i);
                         tuple.b.add(scroll);
                         tuple.c.add(result);
                     });
@@ -106,20 +100,17 @@ public class ArcaneAnvilJeiRecipe {
             case Affinity_Ring_Attune -> {
                 var tuple = new Tuple<List<ItemStack>, List<ItemStack>, List<ItemStack>>(new ArrayList<ItemStack>(), new ArrayList<ItemStack>(), new ArrayList<ItemStack>());
                 var result = new ItemStack(ItemRegistry.AFFINITY_RING.get());
-                if (this.spellSkill != null) {
-                    AffinityData.set(result, new AffinityData(this.spellSkill));
+                if (this.spell != null) {
+                    AffinityData.set(result, new AffinityData(this.spell));
                 }
                 SpellRegistry.getEnabledSpells().forEach(randomSpell -> {
-                    var skill = SkillRegistry.get(randomSpell.getSpellResource());
-                    if (skill instanceof AbstractSpellSkill spellSkill) {
-                        var baseRing = new ItemStack(ItemRegistry.AFFINITY_RING.get());
-                        AffinityData.set(baseRing, new AffinityData(spellSkill));
-                        tuple.a.add(baseRing);
-                    }
+                    var baseRing = new ItemStack(ItemRegistry.AFFINITY_RING.get());
+                    AffinityData.set(baseRing, new AffinityData(randomSpell));
+                    tuple.a.add(baseRing);
                 });
                 IntStream.rangeClosed(this.spell.getMinLevel(), this.spell.getMaxLevel()).forEach(i -> {
-                    var scroll = new ItemStack(ItemRegistry.SCROLL);
-                    ISpellContainer.createScrollContainer(this.spell, i, scroll);
+                    var scroll = new ItemStack(ItemRegistry.SCROLL.get());
+                    Scroll.applyScrollToStack(scroll, this.spell, i);
 
                     tuple.b.add(scroll);
                     //tuple.c.add(result);

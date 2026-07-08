@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.datagen.DamageTypeTagGenerator;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
@@ -75,7 +75,7 @@ public class EvasionEffect extends CustomDescriptionMobEffect implements ISynced
             if (destination.distanceToSqr(livingEntity.position()) > 4 && level.noCollision(livingEntity.getBoundingBox().move(destination.subtract(livingEntity.position())).inflate(-0.05)) && !level.getBlockState(BlockPos.containing(destination).below()).isAir()) {
                 particleCloud(livingEntity);
                 level.playSound(null, d0, d1, d2, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-                Utils.handleSpellTeleport(SkillRegistry.EVASION_SPELL.get(), livingEntity, destination);
+                Utils.handleSpellTeleport(SpellRegistry.EVASION_SPELL.get(), livingEntity, destination);
                 if (damageSource.getEntity() != null) {
                     livingEntity.lookAt(EntityAnchorArgument.Anchor.EYES, damageSource.getEntity().getEyePosition());
                 }

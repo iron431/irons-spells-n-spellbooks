@@ -11,6 +11,7 @@ import io.redspace.skillcasting.api.resolver.FixedPositionResolver;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillContainer;
+import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
@@ -36,7 +37,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
  */
 public final class SkillcastingDevCommands {
     private static final SuggestionProvider<CommandSourceStack> SKILL_SUGGESTIONS = (ctx, builder) ->
-            SharedSuggestionProvider.suggestResource(SkillcastingRegistries.SKILLS.keySet().stream(), builder);
+            SharedSuggestionProvider.suggestResource(SkillcastingRegistries.SKILL_REGISTRY.keySet().stream(), builder);
 
     private SkillcastingDevCommands() {
     }
@@ -153,9 +154,9 @@ public final class SkillcastingDevCommands {
             return 0;
         }
 
-        var skills = SkillcastingRegistries.SKILLS.keySet().stream()
+        var skills = SkillcastingRegistries.SKILL_REGISTRY.keySet().stream()
                 .sorted()
-                .map(SkillcastingRegistries.SKILLS::get)
+                .map(SkillcastingRegistries.SKILL_REGISTRY::get)
                 .toList();
         if (skills.isEmpty()) {
             source.sendFailure(Component.literal("No skills registered"));
@@ -164,7 +165,7 @@ public final class SkillcastingDevCommands {
 
         var container = new SkillContainer(skills.size(), true, false).mutableCopy();
         for (int i = 0; i < skills.size(); i++) {
-            container.setSpellAtIndex(skills.get(i), level, i, false);
+            container.setSpellAtIndex(new SkillData(skills.get(i), level), i);
         }
         ISkillContainer.set(stack, container.toImmutable());
         var data = SkillcastingData.get(player);
@@ -196,7 +197,7 @@ public final class SkillcastingDevCommands {
             return 0;
         }
         var container = new SkillContainer(1, true, false).mutableCopy();
-        container.addSpell(skill, level, false);
+        container.addSpell(new SkillData(skill, level));
         ISkillContainer.set(stack, container.toImmutable());
         var data = SkillcastingData.get(player);
         data.selectionManager().refresh(player);

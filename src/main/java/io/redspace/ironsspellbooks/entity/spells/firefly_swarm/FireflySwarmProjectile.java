@@ -1,13 +1,13 @@
 package io.redspace.ironsspellbooks.entity.spells.firefly_swarm;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -104,7 +104,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
             this.level.getEntities(this, this.getBoundingBox().inflate(inflate), this::canHitEntity).forEach(
                     (entity) -> {
                         if (canHitEntity(entity)) {
-                            boolean hit = DamageSources.applyDamage(entity, damage, SkillRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+                            boolean hit = DamageSources.applyDamage(entity, damage, SpellRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this.level(), this, getOwner()));
                             if (hit) {
                                 this.playSound(SoundRegistry.FIREFLY_SWARM_ATTACK.get(), .75f, .9f + Utils.random.nextFloat() * .2f);
                                 if (target == null) {

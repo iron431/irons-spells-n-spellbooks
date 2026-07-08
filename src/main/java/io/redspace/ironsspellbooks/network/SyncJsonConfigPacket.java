@@ -2,8 +2,6 @@ package io.redspace.ironsspellbooks.network;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -53,9 +51,6 @@ public class SyncJsonConfigPacket implements CustomPacketPayload {
 
     public static void handle(SyncJsonConfigPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
-            for (AbstractSpell spell : SpellRegistry.REGISTRY) {
-                spell.resetRarityWeights();
-            }
             SpellConfigManager.INSTANCE.handleClientSync(packet);
         });
     }

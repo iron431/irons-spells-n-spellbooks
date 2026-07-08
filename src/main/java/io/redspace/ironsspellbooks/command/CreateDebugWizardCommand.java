@@ -9,9 +9,11 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class CreateDebugWizardCommand {
 
@@ -40,10 +42,12 @@ public class CreateDebugWizardCommand {
             spellId = IronsSpellbooks.MODID + ":" + spellId;
         }
 
-        var spell = SpellRegistry.getSpell(spellId);
+        if (!(SpellRegistry.getSpell(ResourceLocation.parse(spellId)) instanceof AbstractSpellSkill spell)) {
+            throw ERROR_FAILED.create();
+        }
 
         if (spellLevel > spell.getMaxLevel()) {
-            throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", spell.getSpellName(), spell.getMaxLevel())).create();
+            throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", spell.getSkillId().getPath(), spell.getMaxLevel())).create();
         }
 
         var serverPlayer = source.getPlayer();

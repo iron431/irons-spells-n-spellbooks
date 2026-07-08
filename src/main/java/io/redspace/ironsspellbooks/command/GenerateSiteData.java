@@ -6,7 +6,6 @@ import io.redspace.ironslib.internal.client.ClientInputEvents;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
 import io.redspace.ironsspellbooks.item.InkItem;
@@ -18,7 +17,6 @@ import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecip
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -41,7 +39,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -477,10 +474,7 @@ public class GenerateSiteData {
         try {
             var sb = new StringBuilder();
 
-            SkillRegistry.SKILLS.getEntries().stream()
-                    .map(DeferredHolder::get)
-                    .filter(skill -> skill instanceof AbstractSpellSkill spell /*&& spell.enab*/) // fixme: enabled
-                    .map(skill -> (AbstractSpellSkill) skill)
+            SpellRegistry.getEnabledSpells().stream()
                     .forEach(spellType -> {
                         var spellMin = spellType.getMinLevel();
                         var spellMax = spellType.getMaxLevel();
@@ -494,11 +488,12 @@ public class GenerateSiteData {
                         sb.append(String.format(SPELL_DATA_TEMPLATE,
                                 handleCapitalization(spellType.getDisplayName(null).getString()),
                                 handleCapitalization(spellType.getSchoolType().getDisplayName().getString()),
-                                String.format("/img/spells/%s.png", spellType.getSpellName()),
+                                String.format("/img/spells/%s.png", spellType.getSkillId().getPath()),
                                 spellType.getMinLevel(),
                                 spellType.getMaxLevel(),
-                                spellType.getManaCost(spellMin),
-                                spellType.getManaCost(spellMax),
+                                // fixme skillcasting: mana cost now requires a CastContext; needs a caster-free context builder
+                                0,
+                                0,
                                 spellType.getCooldownTicks(),
                                 handleCapitalization(spellType.getCastType().name()),
                                 handleCapitalization(spellType.getRarity(spellMin).name()),
@@ -519,10 +514,11 @@ public class GenerateSiteData {
         }
     }
 
-    private static List<String> processUniqueInfo(AbstractSpell spell) {
+    private static List<String> processUniqueInfo(AbstractSpellSkill spell) {
         List<String> text = new ArrayList<>();
-        var uniqueInfoMin = spell.getUniqueInfo(spell.getMinLevel(), null);
-        var uniqueInfoMax = spell.getUniqueInfo(spell.getMaxLevel(), null);
+        // fixme skillcasting: unique info now requires a CastContext; needs a caster-free context builder to restore level-scaled ranges
+        List<net.minecraft.network.chat.MutableComponent> uniqueInfoMin = List.of();
+        List<net.minecraft.network.chat.MutableComponent> uniqueInfoMax = List.of();
         for (int i = 0; i < uniqueInfoMax.size(); i++) {
             var lineMinLevel = uniqueInfoMin.get(i).getString().split(" ");
             var lineMaxLevel = uniqueInfoMax.get(i).getString().split(" ");

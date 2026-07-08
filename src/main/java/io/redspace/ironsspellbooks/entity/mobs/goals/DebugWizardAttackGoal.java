@@ -1,25 +1,27 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 public class DebugWizardAttackGoal extends Goal {
     private final PathfinderMob mob;
-    private final AbstractSpell spell;
+    private final AbstractSpellCastingMob spellCastingMob;
+    private final AbstractSpellSkill spell;
     private final int spellLevel;
     private final int cancelCastAfterTicks;
     private int tickCount = 0;
-    private AbstractSpell castingSpell;
-
     private int castingTicks = 0;
 
-    public DebugWizardAttackGoal(Mob abstractSpellCastingMob, AbstractSpell spell, int spellLevel, int cancelCastAfterTicks) {
-        if (abstractSpellCastingMob instanceof PathfinderMob m) {
-            this.mob = m;
-        } else
+    public DebugWizardAttackGoal(Mob abstractSpellCastingMob, AbstractSpellSkill spell, int spellLevel, int cancelCastAfterTicks) {
+        if (abstractSpellCastingMob instanceof PathfinderMob pathfinderMob && abstractSpellCastingMob instanceof AbstractSpellCastingMob castingMob) {
+            this.mob = pathfinderMob;
+            this.spellCastingMob = castingMob;
+        } else {
             throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
+        }
         this.spell = spell;
         this.spellLevel = spellLevel;
         this.cancelCastAfterTicks = cancelCastAfterTicks;
@@ -38,19 +40,17 @@ public class DebugWizardAttackGoal extends Goal {
     }
 
     public void tick() {
-        // fixme: spellcasting
-//        if (tickCount++ % 200 == 0) {
-//            IronsSpellbooks.LOGGER.debug("DebugWizardAttackGoal:  mob.initiateCastSpell:{}({}), pos:{}, isCasting:{}, isClient:{}", spell.getSpellId(), spellLevel, mob.position(), spellCastingMob.isCasting(), mob.level.isClientSide());
-//            spellCastingMob.initiateCastSpell(spell, spellLevel);
-//            castingTicks = 0;
-//        }
-//
-//        if (spellCastingMob.isCasting()) {
-//            castingTicks++;
-//
-//            if (cancelCastAfterTicks == castingTicks) {
-//                spellCastingMob.cancelCast();
-//            }
-//        }
+        if (tickCount++ % 200 == 0) {
+            spellCastingMob.initiateCastSpell(spell, spellLevel);
+            castingTicks = 0;
+        }
+
+        if (spellCastingMob.isCasting()) {
+            castingTicks++;
+
+            if (cancelCastAfterTicks == castingTicks) {
+                spellCastingMob.cancelCast();
+            }
+        }
     }
 }

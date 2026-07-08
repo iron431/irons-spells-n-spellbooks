@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.network.ScrollForgeSelectSpellPacket;
@@ -177,7 +176,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             var spells = SchoolRegistry
                     .getSchoolsFromFocus(focusStack).stream()
                     .flatMap(school -> SpellRegistry.getSpellsForSchool(school).stream())
-                    .filter(AbstractSpell::allowCrafting)
+                    .filter(AbstractSpellSkill::allowCrafting)
                     .toList();
             for (int i = 0; i < spells.size(); i++) {
                 int tempIndex = i;
@@ -191,7 +190,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
 
     private void setSelectedSpell(AbstractSpellSkill spell) {
         selectedSpell = spell;
-        PacketDistributor.sendToServer(new ScrollForgeSelectSpellPacket(this.menu.blockEntity.getBlockPos(), spell.getSkillId()));
+        PacketDistributor.sendToServer(new ScrollForgeSelectSpellPacket(this.menu.blockEntity.getBlockPos(), spell.getSkillId().toString()));
     }
 
     private SpellRarity getRarityFromInk(Item ink) {
@@ -271,7 +270,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
                 //"hidden" color
                 guiHelper.blit(TEXTURE, x, y, 0, 185, 108, 19);
             }
-            var texture = (this.activityState == ActivityState.ENABLED ? spell.getIconLocation() : SpellRegistry.none().getSpellIconResource());
+            var texture = spell.getIconLocation();
             guiHelper.blit(texture, x + 108 - 18, y + 1, 0, 0, 16, 16, 16, 16);
 
             int maxWidth = 108 - 20;

@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.priest;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
@@ -23,7 +24,6 @@ import io.redspace.ironsspellbooks.item.FurledMapItem;
 import io.redspace.ironsspellbooks.player.AdditionalWanderingTrades;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -105,15 +105,15 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.goalSelector.addGoal(1, new GustDefenseGoal(this));
         this.goalSelector.addGoal(2, new WizardSupportGoal<>(this, 1.25f, 100, 180)
                 .setSpells(
-                        List.of(SkillRegistry.BLESSING_OF_LIFE_SPELL.get(), SkillRegistry.BLESSING_OF_LIFE_SPELL.get(), SkillRegistry.HEALING_CIRCLE_SPELL.get()),
-                        List.of(SkillRegistry.FORTIFY_SPELL.get())
+                        List.of(SpellRegistry.BLESSING_OF_LIFE_SPELL.get(), SpellRegistry.BLESSING_OF_LIFE_SPELL.get(), SpellRegistry.HEALING_CIRCLE_SPELL.get()),
+                        List.of(SpellRegistry.FORTIFY_SPELL.get())
                 ));
         this.goalSelector.addGoal(3, new WizardAttackGoal(this, 1.25f, 35, 70)
                 .setSpells(
-                        List.of(SkillRegistry.WISP_SPELL.get(), SkillRegistry.GUIDING_BOLT_SPELL.get()),
-                        List.of(SkillRegistry.GUST_SPELL.get()),
+                        List.of(SpellRegistry.WISP_SPELL.get(), SpellRegistry.GUIDING_BOLT_SPELL.get()),
+                        List.of(SpellRegistry.GUST_SPELL.get()),
                         List.of(),
-                        List.of(SkillRegistry.HEAL_SPELL.get()))
+                        List.of(SpellRegistry.HEAL_SPELL.get()))
                 .setSpellQuality(0.3f, 0.5f)
                 .setDrinksPotions());
         this.goalSelector.addGoal(5, new RoamVillageGoal(this, 30, 1f));

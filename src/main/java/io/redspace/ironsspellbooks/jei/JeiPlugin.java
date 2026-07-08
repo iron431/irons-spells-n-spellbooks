@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecipe;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.FluidRegistry;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import mezz.jei.api.IModPlugin;
@@ -116,17 +117,15 @@ public class JeiPlugin implements IModPlugin {
         registration.addRecipes(AlchemistCauldronRecipeCategory.ALCHEMIST_CAULDRON_RECIPE_TYPE, AlchemistCauldronRecipeMaker.getRecipes(vanillaRecipeFactory, itemFinder));
         registration.addRecipes(RecipeTypes.ANVIL, VanillaAnvilRecipeMaker.getAnvilRepairRecipes(vanillaRecipeFactory, itemFinder));
 //        registration.addRecipes(RecipeTypes.SMITHING, VanillaAnvilRecipeMaker.getCustomSmithingRecipes(vanillaRecipeFactory, itemFinder));
-        SpellRegistry.REGISTRY.stream().forEach(spell -> {
-            if (spell.isEnabled() && spell != SpellRegistry.none()) {
-                var list = new ArrayList<ItemStack>();
-                IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel())
-                        .forEach((spellLevel) -> {
-                            var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-                            ISpellContainer.createScrollContainer(spell, spellLevel, scrollStack);
-                            list.add(scrollStack);
-                        });
-                registration.addIngredientInfo(list, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spell.getComponentId())));
-            }
+        SpellRegistry.getEnabledSpells().forEach(spell -> {
+            var list = new ArrayList<ItemStack>();
+            IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel())
+                    .forEach((spellLevel) -> {
+                        var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
+                        Scroll.applyScrollToStack(scrollStack, spell, spellLevel);
+                        list.add(scrollStack);
+                    });
+            registration.addIngredientInfo(list, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spell.getDescriptionId())));
         });
         registration.addItemStackInfo(new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get()), Component.translatable("item.irons_spellbooks.lightning_bottle.guide"));
         registration.addItemStackInfo(new ItemStack(ItemRegistry.BLOOD_VIAL.get()), Component.translatable("item.irons_spellbooks.blood_vial.guide"));

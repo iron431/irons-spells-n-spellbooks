@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.mixin.LivingEntityAccessor;
 import io.redspace.skillcasting.irons_spellbooks.spells.fire.BurningDashSpell;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -22,7 +22,7 @@ public class BurningDashEffect extends MagicMobEffect implements ISyncedMobEffec
         if (!list.isEmpty()) {
             for (Entity entity : list) {
                 if (entity instanceof LivingEntity) {
-                    DamageSources.applyDamage(entity, amplifier, SkillRegistry.BURNING_DASH_SPELL.get().getDamageSource(livingEntity.level(), livingEntity));
+                    DamageSources.applyDamage(entity, amplifier, SpellRegistry.BURNING_DASH_SPELL.get().getDamageSource(livingEntity.level(), livingEntity));
                     //Guarantee that the entity receives i-frames, since we are damaging every tick
                     entity.invulnerableTime = 20;
                 }

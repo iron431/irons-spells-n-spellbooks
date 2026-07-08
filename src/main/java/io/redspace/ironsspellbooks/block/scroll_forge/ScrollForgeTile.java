@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.block.scroll_forge;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeMenu;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
@@ -10,6 +11,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
@@ -70,7 +72,12 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider, Cleara
     }
 
     public void setRecipeSpell(String spellId) {
-        menu.setRecipeSpell(SpellRegistry.getSpell(spellId));
+        var skill = SpellRegistry.getSpell(ResourceLocation.parse(spellId));
+        if (skill instanceof AbstractSpellSkill spellSkill) {
+            menu.setRecipeSpell(spellSkill);
+        } else {
+            menu.setRecipeSpell(null);
+        }
     }
 
     public void drops() {

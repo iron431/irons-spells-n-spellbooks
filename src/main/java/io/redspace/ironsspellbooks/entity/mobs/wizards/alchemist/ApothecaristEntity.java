@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist;
 
 import com.google.common.collect.Sets;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.NeutralWizard;
@@ -14,7 +15,6 @@ import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.player.AdditionalWanderingTrades;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
@@ -73,13 +73,13 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(2, new AlchemistAttackGoal(this, 1.25f, 30, 70, 12, 0.5f)
                 .setSpells(
-                        List.of(SkillRegistry.FANG_STRIKE_SPELL.get(), SkillRegistry.FANG_STRIKE_SPELL.get(), SkillRegistry.ACID_ORB_SPELL.get(), SkillRegistry.POISON_BREATH_SPELL.get(), SkillRegistry.STOMP_SPELL.get(), SkillRegistry.POISON_ARROW_SPELL.get()),
-                        List.of(SkillRegistry.ROOT_SPELL.get()),
+                        List.of(SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.ACID_ORB_SPELL.get(), SpellRegistry.POISON_BREATH_SPELL.get(), SpellRegistry.STOMP_SPELL.get(), SpellRegistry.POISON_ARROW_SPELL.get()),
+                        List.of(SpellRegistry.ROOT_SPELL.get()),
                         List.of(),
-                        List.of(SkillRegistry.OAKSKIN_SPELL.get(), SkillRegistry.STOMP_SPELL.get())
+                        List.of(SpellRegistry.OAKSKIN_SPELL.get(), SpellRegistry.STOMP_SPELL.get())
                 )
                 .setDrinksPotions()
-                .setSingleUseSpell(SkillRegistry.FIREFLY_SWARM_SPELL.get(), 80, 200, 4, 6)
+                .setSingleUseSpell(SpellRegistry.FIREFLY_SWARM_SPELL.get(), 80, 200, 4, 6)
                 .setSpellQuality(.25f, .60f)
         );
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .75f));
