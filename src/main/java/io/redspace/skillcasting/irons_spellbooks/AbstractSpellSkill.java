@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
@@ -121,6 +122,11 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         castContext.set(SpellcastingComponentTypes.MANA_COST, baseManaCost + manaCostPerLevel * scaledLevel);
         if (castContext.getRecastsRemaining() > 0) {
             castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
+        }
+        if (castContext.find(SkillcastingComponentTypes.CAST_SOURCE).filter(source -> source.name().equals(CastSource.SCROLL.name())).isPresent()) {
+            castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
+            // todo: likely remove anti-cooldown in future balance patch.
+            castContext.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
         }
         castContext.set(SpellcastingComponentTypes.CAST_START_ANIMATION, getCastStartAnimation());
         castContext.set(SpellcastingComponentTypes.CAST_FINISH_ANIMATION, getCastFinishAnimation());

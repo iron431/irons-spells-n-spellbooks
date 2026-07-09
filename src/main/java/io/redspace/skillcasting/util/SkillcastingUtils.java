@@ -5,6 +5,7 @@ import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.component.TargetedEntitiesData;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -112,9 +113,9 @@ public final class SkillcastingUtils {
         if (activeCast == null) {
             return false;
         }
-        String castSource = activeCast.context().getOrNull(SkillcastingComponentTypes.CAST_SOURCE);
+        CastSource castSource = activeCast.context().getOrNull(SkillcastingComponentTypes.CAST_SOURCE);
         if (castSource != null
-                && castSource.equals(changedSlot.getName())
+                && castSource.equipmentSlot().equals(changedSlot.getName())
                 && !SkillcastingUtils.isSameItemSameComponentsIgnoreDurability(from, to)) {
             return true;
         }

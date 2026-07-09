@@ -15,6 +15,7 @@
   "item.irons_spellbooks.copper_spell_book": "Flimsy Journal",
   "item.irons_spellbooks.druidic_spell_book": "Druidic Tome",
   "item.irons_spellbooks.scroll": "Scroll",
+  "item.irons_spellbooks.scroll.framed": "%s Scroll",
   "item.irons_spellbooks.scroll.unlearned": "Unlearned Scroll",
   "item.irons_spellbooks.common_ink": "Common Ink",
   "item.irons_spellbooks.uncommon_ink": "Uncommon Ink",

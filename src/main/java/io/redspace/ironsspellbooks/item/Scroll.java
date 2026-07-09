@@ -1,10 +1,11 @@
 package io.redspace.ironsspellbooks.item;
 
 
-import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.ISkillContainerMutable;
 import io.redspace.skillcasting.data.SkillContainer;
@@ -12,10 +13,12 @@ import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.data.SkillSlot;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -62,18 +65,23 @@ public class Scroll extends Item {
         return ISkillContainer.get(stack).mutableCopy();
     }
 
-    protected void removeScrollAfterCast(ServerPlayer serverPlayer, ItemStack stack) {
-        if (!serverPlayer.isCreative()) {
+    public static void removeScrollAfterCast(ServerPlayer serverPlayer, ItemStack stack) {
+        if (!serverPlayer.hasInfiniteMaterials()) {
             stack.shrink(1);
         }
     }
 
-    public static void attemptRemoveScrollAfterCast(ServerPlayer serverPlayer) {
-        // fixme: cast item tracking
-//        ItemStack potentialScroll = MagicData.get(serverPlayer).getPlayerCastingItem();
-//        if (potentialScroll.getItem() instanceof Scroll scroll) {
-//            scroll.removeScrollAfterCast(serverPlayer, potentialScroll);
-//        }
+    public static void attemptRemoveScrollAfterCast(ServerPlayer serverPlayer, CastContext castContext) {
+        CastSource castSource = castContext.getOrNull(SkillcastingComponentTypes.CAST_SOURCE);
+        if (castSource == null) {
+            return;
+        }
+        if (castSource.name().equals(io.redspace.ironsspellbooks.api.spells.CastSource.SCROLL.name())) {
+            EquipmentSlot slot = EquipmentSlot.CODEC.byName(castSource.equipmentSlot());
+            if (slot != null) {
+                removeScrollAfterCast(serverPlayer, serverPlayer.getItemBySlot(slot));
+            }
+        }
     }
 
     @Override
@@ -91,7 +99,7 @@ public class Scroll extends Item {
                 CasterRef.entity(player),
                 spellSlot.getHolder(),
                 spellSlot.getLevel(),
-                CastSource.SCROLL.name());
+                CastSource.of(io.redspace.ironsspellbooks.api.spells.CastSource.SCROLL.name(), hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND));
         if (cast) {
             return InteractionResultHolder.consume(stack);
         }
@@ -100,8 +108,11 @@ public class Scroll extends Item {
 
     @Override
     public @NotNull Component getName(@NotNull ItemStack itemStack) {
-        // fixme: create "%s Scroll" lang entry
-        return getSpellSlotFromStack(itemStack).getSkill().getDisplayName(null);
+        var data = getSpellSlotFromStack(itemStack);
+        if (data == null) {
+            return super.getName(itemStack);
+        }
+        return Component.translatable(getDescriptionId() + ".framed", data.getSkill().getDisplayName(MinecraftInstanceHelper.getPlayer()));
     }
 
     @Override

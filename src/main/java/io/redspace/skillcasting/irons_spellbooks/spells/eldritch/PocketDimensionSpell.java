@@ -11,7 +11,6 @@ import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.PortalManager;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
-import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
@@ -126,7 +125,7 @@ public class PocketDimensionSpell extends AbstractSpellSkill {
             PortalManager.INSTANCE.addPortalData(uuid, portalData);
             portalFrameBlockEntity.setChanged();
             PortalManager.INSTANCE.addDirectPortalCooldown(serverPlayer, uuid);
-            Scroll.attemptRemoveScrollAfterCast(serverPlayer);
+//            Scroll.attemptRemoveScrollAfterCast(serverPlayer);
             serverPlayer.stopRiding();
             serverPlayer.changeDimension(new DimensionTransition(
                     pocketLevel,

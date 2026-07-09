@@ -5,17 +5,15 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
-import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.PlayerEnderChestContainer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 
 public class SummonEnderChestSpell extends AbstractSpellSkill {
 
@@ -49,7 +47,7 @@ public class SummonEnderChestSpell extends AbstractSpellSkill {
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         if (castContext.asEntityCaster() instanceof ServerPlayer player) {
-            Scroll.attemptRemoveScrollAfterCast(player);
+//            Scroll.attemptRemoveScrollAfterCast(player);
             PlayerEnderChestContainer enderChest = player.getEnderChestInventory();
             player.openMenu(new SimpleMenuProvider(
                     (containerId, inventory, ignored) -> ChestMenu.threeRows(containerId, inventory, enderChest),

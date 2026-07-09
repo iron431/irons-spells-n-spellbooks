@@ -182,7 +182,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         }
 
         CasterRef casterRef = CasterRef.entity(this);
-        var castContext = SkillcastingManager.buildCastContext(casterRef, SkillRegistry.holder(spell), spellLevel, CastSource.MOB.name(), false);
+        var castContext = SkillcastingManager.buildCastContext(casterRef, SkillRegistry.holder(spell), spellLevel, io.redspace.skillcasting.data.CastSource.of(CastSource.MOB.name()), false);
         castContext.set(io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
         castContext.set(io.redspace.skillcasting.registry.SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
 

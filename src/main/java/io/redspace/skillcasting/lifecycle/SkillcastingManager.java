@@ -18,6 +18,7 @@ import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastResult;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.cooldown.CooldownInstance;
+import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -27,7 +28,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.common.NeoForge;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,7 +49,7 @@ public final class SkillcastingManager {
         if (selected == null) {
             return false;
         }
-        return attemptInitiateCast(caster, SkillRegistry.holder(selected.getSkill()), selected.getLevel(), selected.equipmentSlot);
+        return attemptInitiateCast(caster, SkillRegistry.holder(selected.getSkill()), selected.getLevel(), CastSource.of(selected.equipmentSlot));
     }
 
     public static boolean attemptInitiateFromQuickCastSlot(CasterRef caster, int globalIndex) {
@@ -58,10 +58,10 @@ public final class SkillcastingManager {
         if (option == null) {
             return false;
         }
-        return attemptInitiateCast(caster, SkillRegistry.holder(option.skillData.getSkill()), option.skillData.getLevel(), option.equipmentSlot);
+        return attemptInitiateCast(caster, SkillRegistry.holder(option.skillData.getSkill()), option.skillData.getLevel(), CastSource.of(option.equipmentSlot));
     }
 
-    public static CastContext buildCastContext(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, @Nullable String equipmentSlot, boolean preview) {
+    public static CastContext buildCastContext(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, CastSource castSource, boolean preview) {
         SkillcastingData skillcastingData = caster.skillcastingData();
         CastContext context = new CastContext(skillHolder, caster, caster.level());
         AbstractSkill skill = skillHolder.value();
@@ -70,9 +70,7 @@ public final class SkillcastingManager {
         context.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, CasterDirectionResolver.INSTANCE);
         context.set(SkillcastingComponentTypes.CAST_TIME, skill.getCastTimeTicks());
         context.set(SkillcastingComponentTypes.COOLDOWN_TICKS, skill.getCooldownTicks());
-        if (equipmentSlot != null) {
-            context.set(SkillcastingComponentTypes.CAST_SOURCE, equipmentSlot);
-        }
+        context.set(SkillcastingComponentTypes.CAST_SOURCE, castSource);
         BuildCastContextEvent.Level levelEvent = new BuildCastContextEvent.Level(context, baseLevel);
         NeoForge.EVENT_BUS.post(levelEvent);
         context.set(SkillcastingComponentTypes.SKILL_LEVEL, levelEvent.getLevel());
@@ -89,6 +87,7 @@ public final class SkillcastingManager {
 
     /**
      * Checks physical ability constraints via {@link AbstractSkill#checkPreCastConditions(CastContext)}, posts events, then initiates a cast absent any other criteria
+     *
      * @return whether the cast is triggered
      */
     public static boolean initiateCast(CasterRef caster, CastContext castContext) {
@@ -120,9 +119,10 @@ public final class SkillcastingManager {
 
     /**
      * Helper for building a {@link CastContext}, and evaluating the capability for a caster to initiate a cast via {@link AbstractSkill#canBeCastBy(CastContext)}. Forwards to {@link SkillcastingManager#initiateCast(CasterRef, CastContext)}.
+     *
      * @return whether the cast is fully triggered
      */
-    public static boolean attemptInitiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, @Nullable String equipmentSlot) {
+    public static boolean attemptInitiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, CastSource castSource) {
         if (caster.level().isClientSide() || !caster.isValid()) {
             return false;
         }
@@ -134,7 +134,7 @@ public final class SkillcastingManager {
                 return false;
             }
         }
-        CastContext castContext = buildCastContext(caster, skillHolder, baseLevel, equipmentSlot, false);
+        CastContext castContext = buildCastContext(caster, skillHolder, baseLevel, castSource, false);
         CastResult result = skillHolder.value().canBeCastBy(castContext);
         if (caster.get() instanceof ServerPlayer serverPlayer && result.message() != null) {
             serverPlayer.displayClientMessage(result.message(), true);

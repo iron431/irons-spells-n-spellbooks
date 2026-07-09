@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
@@ -38,6 +39,7 @@ import io.redspace.ironsspellbooks.worldgen.IceSpiderPatrolSpawner;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
+import io.redspace.skillcasting.api.event.SkillCastCompleteEvent;
 import io.redspace.skillcasting.api.event.SkillSelectionPriority;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.ISkillContainer;
@@ -106,6 +108,7 @@ import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
@@ -138,20 +141,6 @@ public class ServerPlayerEvents {
 //            }
 //        }
 //    }
-
-    @SubscribeEvent
-    public static void onPlayerDropItem(ItemTossEvent event) {
-        var itemStack = event.getEntity().getItem();
-        if (itemStack.getItem() instanceof Scroll) {
-            var castingData = SkillcastingData.get(event.getPlayer());
-            // fixme: this is quite robust for source checking. also, normalized source names?
-            if (castingData.isCasting() &&
-                    castingData.getActiveCastType() == CastType.CONTINUOUS &&
-                    castingData.getActiveCast().context().find(SkillcastingComponentTypes.CAST_SOURCE).map(source -> source.equals("scroll")).orElse(false)) {
-                itemStack.shrink(1);
-            }
-        }
-    }
 
     @SubscribeEvent
     public static void onLevelLoaded(LevelEvent.Load event) {
@@ -312,7 +301,7 @@ public class ServerPlayerEvents {
                 event.addSource(ISkillContainer.get(spellbook), Curios.SPELLBOOK_SLOT, SkillSelectionPriority.PRIMARY_SKILL_SOURCE);
             }
             inv.findCurios(ISkillContainer::isSkillContainer).stream().filter(slot -> !slot.slotContext().identifier().equals(Curios.SPELLBOOK_SLOT)).forEach(
-                    slotResult -> event.addSource(ISkillContainer.get(slotResult.stack()), String.format("%s_%s", slotResult.slotContext().identifier(), slotResult.slotContext().index()),SkillSelectionPriority.CURIO));
+                    slotResult -> event.addSource(ISkillContainer.get(slotResult.stack()), String.format("%s_%s", slotResult.slotContext().identifier(), slotResult.slotContext().index()), SkillSelectionPriority.CURIO));
         });
     }
 
@@ -324,6 +313,48 @@ public class ServerPlayerEvents {
         if ((ISkillContainer.isSkillContainer(event.getFrom()) || ISkillContainer.isSkillContainer(event.getTo()))) {
             SkillcastingData.get(player).selectionManager().refresh(player);
             SkillcastingNetwork.syncSelection(player, SkillcastingData.get(player));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onCastComplete(SkillCastCompleteEvent event) {
+        if (event.context().asEntityCaster() instanceof ServerPlayer serverPlayer &&
+                (event.reason() == CastEndReason.COMPLETED || event.context().skill().value().getCastType() == CastType.CONTINUOUS)) {
+            Scroll.attemptRemoveScrollAfterCast(serverPlayer, event.context());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerDropItem(ItemTossEvent event) {
+        var itemStack = event.getEntity().getItem();
+        if (itemStack.getItem() instanceof Scroll) {
+            var castingData = SkillcastingData.get(event.getPlayer());
+            if (castingData.isCasting() &&
+                    castingData.getActiveCastType() != CastType.INSTANT &&
+                    castingData.getActiveCast().context().find(SkillcastingComponentTypes.CAST_SOURCE)
+                            .map(source -> source.name().equals(CastSource.SCROLL.name()) && source.equipmentSlot().equals(EquipmentSlot.MAINHAND.getName()))
+                            .orElse(false)) {
+                if (castingData.getActiveCastType() == CastType.CONTINUOUS) {
+                    itemStack.shrink(1);
+                }
+                // fixme: this is a clunky way to avoid repeat-remove-scroll-after-cast
+                //  it does kinda make sense though, if the scroll is deleted, the source isn't the scroll anymore :)
+                castingData.getActiveCast().context().set(SkillcastingComponentTypes.CAST_SOURCE, io.redspace.skillcasting.data.CastSource.of(EquipmentSlot.MAINHAND));
+                SkillcastingManager.cancelCast(CasterRef.entity(event.getPlayer()), CastEndReason.INTERRUPTED);
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void onLivingEquipmentChange(LivingEquipmentChangeEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        SkillcastingData data = SkillcastingData.get(serverPlayer);
+        if (data.isCasting() && event.getFrom().is(ItemRegistry.SCROLL) && data.getActiveCastType() == CastType.CONTINUOUS &&
+                data.getActiveCast().context().find(SkillcastingComponentTypes.CAST_SOURCE)
+                        .filter(source -> source.name().equals(CastSource.SCROLL.name()) && source.equipmentSlot().equals(event.getSlot().getName())).isPresent()) {
+            Scroll.removeScrollAfterCast(serverPlayer, event.getFrom());
         }
     }
 

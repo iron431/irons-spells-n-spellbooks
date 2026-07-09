@@ -8,6 +8,7 @@ import io.redspace.skillcasting.api.component.TargetedEntitiesData;
 import io.redspace.skillcasting.api.recast.RecastConfig;
 import io.redspace.skillcasting.api.resolver.DirectionResolver;
 import io.redspace.skillcasting.api.resolver.PositionResolver;
+import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
 import io.redspace.skillcasting.network.ComponentSyncCodecs;
@@ -110,10 +111,10 @@ public final class SkillcastingComponentTypes {
                     .persisted(Unit.CODEC)
                     .build());
 
-    public static final DeferredHolder<ComponentType<?>, ComponentType<String>> CAST_SOURCE =
-            COMPONENT_TYPES.register("cast_source", () -> ComponentType.<String>builder()
-                    .persisted(Codec.STRING)
-                    .synced(ComponentSyncCodecs.STRING)
+    public static final DeferredHolder<ComponentType<?>, ComponentType<CastSource>> CAST_SOURCE =
+            COMPONENT_TYPES.register("cast_source", () -> ComponentType.<CastSource>builder()
+                    .persisted(CastSource.CODEC)
+                    .synced(CastSource.STREAM_CODEC)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<RecastConfig>> RECAST_CONFIG =

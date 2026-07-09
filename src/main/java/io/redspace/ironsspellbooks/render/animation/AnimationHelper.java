@@ -16,6 +16,7 @@ import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
+import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -70,7 +71,7 @@ public class AnimationHelper {
                         @Override
                         public boolean isEnabled() {
                             String castingEquipmentSlot = Optional.ofNullable(SkillcastingData.get(player).getActiveCast()).map(ActiveCast::context)
-                                    .flatMap(context -> context.find(SkillcastingComponentTypes.CAST_SOURCE)).orElse("");
+                                    .flatMap(context -> context.find(SkillcastingComponentTypes.CAST_SOURCE)).map(CastSource::equipmentSlot).orElse("");
                             return castingEquipmentSlot.equals(SkillSelectionManager.OFFHAND) ^ player.getMainArm() == HumanoidArm.LEFT;
                         }
                     });

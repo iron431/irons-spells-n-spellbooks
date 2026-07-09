@@ -75,7 +75,10 @@ public class TooltipsUtils {
     }
 
     private static CastContext buildPreviewContext(LivingEntity caster, AbstractSpellSkill spell, int baseLevel, @Nullable CastSource castSource) {
-        return SkillcastingManager.buildCastContext(CasterRef.entity(caster), SkillRegistry.holder(spell), baseLevel, castSource == null ? null : castSource.name(), true);
+        return SkillcastingManager.buildCastContext(CasterRef.entity(caster),
+                SkillRegistry.holder(spell),
+                baseLevel,
+                castSource == null ? io.redspace.skillcasting.data.CastSource.EMPTY : io.redspace.skillcasting.data.CastSource.of(castSource.name()), true);
     }
 
     public static List<MutableComponent> formatActiveSpellTooltip(ItemStack stack, SkillData spellData, CastSource castSource, @Nonnull LocalPlayer player) {

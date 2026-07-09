@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.api.spells;
 
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 
+@Deprecated(forRemoval = true)
 public enum CastSource {
     SPELLBOOK,
     SCROLL,

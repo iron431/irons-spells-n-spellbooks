@@ -8,6 +8,7 @@ import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.SkillWheelInfo;
+import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
@@ -116,7 +117,7 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
         SkillSelectionManager.SelectionOption selectionOption = manager.getOptionAt(wheelSelection);
         AbstractSkill selectedSkill = selectionOption == null ? null : selectionOption.getSkill();
         if (selectedSkill != null) {
-            CastContext castContext = SkillcastingManager.buildCastContext(CasterRef.entity(player), SkillRegistry.holder(selectedSkill), selectionOption.getLevel(), selectionOption.equipmentSlot, true);
+            CastContext castContext = SkillcastingManager.buildCastContext(CasterRef.entity(player), SkillRegistry.holder(selectedSkill), selectionOption.getLevel(), CastSource.of(selectionOption.equipmentSlot), true);
             var font = Minecraft.getInstance().font;
             SkillWheelInfo info = selectedSkill.buildSpellWheelInfo(castContext, selectionOption);
             int textHeight = Math.max(2, Math.max(info.leftText().size(), info.rightText().size())) * font.lineHeight + 5;
