@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.entity.armor.GenericCustomArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.TarnishedCrownModel;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
-import io.redspace.skillcasting.data.SkillContainer;
+import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.registry.SkillcastingDataComponents;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -17,7 +17,7 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 public class TarnishedCrownArmorItem extends ExtendedArmorItem {
 
     public TarnishedCrownArmorItem(ArmorItem.Type slot, Properties properties) {
-        super(ArmorMaterialRegistry.TARNISHED, slot, properties.component(SkillcastingDataComponents.SKILL_CONTAINER, SkillContainer.create(true, 1)),
+        super(ArmorMaterialRegistry.TARNISHED, slot, properties.component(SkillcastingDataComponents.SKILL_CONTAINER, ISkillContainer.create(true, 1)),
                 new AttributeContainer(AttributeRegistry.MAX_MANA, 150, AttributeModifier.Operation.ADD_VALUE),
                 new AttributeContainer(AttributeRegistry.MANA_REGEN, 0.25, AttributeModifier.Operation.ADD_MULTIPLIED_BASE),
                 new AttributeContainer(Attributes.ATTACK_DAMAGE, -0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)

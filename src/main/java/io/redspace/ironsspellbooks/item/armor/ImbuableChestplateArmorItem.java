@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.item.armor;
 
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
-import io.redspace.skillcasting.data.SkillContainer;
+import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.registry.SkillcastingDataComponents;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorMaterial;
@@ -11,7 +11,7 @@ public abstract class ImbuableChestplateArmorItem extends ExtendedArmorItem {
 
     public static Item.Properties setupImbueIfChestplate(Type type, Properties properties) {
         if (type == Type.CHESTPLATE) {
-            properties.component(SkillcastingDataComponents.SKILL_CONTAINER, SkillContainer.create(true, 1));
+            properties.component(SkillcastingDataComponents.SKILL_CONTAINER, ISkillContainer.create(true, 1));
         }
         return properties;
     }

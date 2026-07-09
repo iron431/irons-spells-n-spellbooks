@@ -12,7 +12,6 @@ import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.data.SkillSlot;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
-import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -53,7 +52,7 @@ public class Scroll extends Item {
     }
 
     public static void applyImbuedToStack(ItemStack stack, AbstractSpellSkill spell, int level) {
-        ISkillContainer.set(stack, SkillContainer.create(false, new SkillData(spell, level, true)));
+        ISkillContainer.set(stack, ISkillContainer.create(false, new SkillData(spell, level, true)));
     }
 
     public static ISkillContainerMutable getOrCreateContainer(ItemStack stack, int maxSlots, boolean spellWheel, boolean mustEquip) {
@@ -75,13 +74,6 @@ public class Scroll extends Item {
 //        if (potentialScroll.getItem() instanceof Scroll scroll) {
 //            scroll.removeScrollAfterCast(serverPlayer, potentialScroll);
 //        }
-    }
-
-    @Override
-    public @Nullable String getCreatorModId(ItemStack itemStack) {
-        var spell = getSpellSlotFromStack(itemStack).getSkill();
-        var id = SkillcastingRegistries.SKILL_REGISTRY.getKey(spell);
-        return id == null ? super.getCreatorModId(itemStack) : id.getNamespace();
     }
 
     @Override

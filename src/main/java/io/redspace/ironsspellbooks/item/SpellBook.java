@@ -10,7 +10,6 @@ import io.redspace.ironsspellbooks.render.RenderHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.data.SkillContainer;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingDataComponents;
@@ -38,7 +37,7 @@ import java.util.stream.Collectors;
 public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,*/ ILecternPlaceable {
 
     public SpellBook(int maxSpellSlots, Item.Properties properties) {
-        this(properties.component(SkillcastingDataComponents.SKILL_CONTAINER, SkillContainer.create(true, maxSpellSlots)));
+        this(properties.component(SkillcastingDataComponents.SKILL_CONTAINER, ISkillContainer.create(true, maxSpellSlots)));
     }
 
     public SpellBook(Item.Properties properties){

@@ -7,14 +7,7 @@
     "tag": "irons_spellbooks:wizard_base_chestplate"
   },
   "result": {
-    "components": {
-      "irons_spellbooks:spell_container": {
-        "data": [],
-        "maxSpells": 1,
-        "mustEquip": true,
-        "spellWheel": true
-      }
-    },
+
     "count": 1,
     "id": "irons_spellbooks:archevoker_chestplate"
   },

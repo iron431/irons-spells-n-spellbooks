@@ -153,20 +153,6 @@ public class SkillContainer implements ISkillContainer {
         return new Mutable(this);
     }
 
-    // todo: expose spell wheel param later
-    //  ...or make mutable act as a more useful builder to avoid needing static presets in the first place
-    public static ISkillContainer create(boolean mustEquip, SkillData... skills) {
-        return create(mustEquip, 0, skills);
-    }
-
-    public static ISkillContainer create(boolean mustEquip, int extraSlots, SkillData... skills) {
-        var container = new SkillContainer(extraSlots + skills.length, true, mustEquip).mutableCopy();
-        for (SkillData data : skills) {
-            container.addSpell(data);
-        }
-        return container.toImmutable();
-    }
-
     public static class Mutable extends SkillContainer implements ISkillContainerMutable {
         public Mutable(SkillContainer container) {
             this.maxSpells = container.maxSpells;

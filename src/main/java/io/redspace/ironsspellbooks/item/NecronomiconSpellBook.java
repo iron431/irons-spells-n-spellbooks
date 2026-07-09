@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import io.redspace.skillcasting.data.SkillContainer;
+import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.registry.SkillcastingDataComponents;
 import net.minecraft.network.chat.Component;
@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class NecronomiconSpellBook extends SpellBook {
     public NecronomiconSpellBook(Item.Properties properties) {
-        super(properties.component(SkillcastingDataComponents.SKILL_CONTAINER, SkillContainer.create(true,
+        super(properties.component(SkillcastingDataComponents.SKILL_CONTAINER, ISkillContainer.create(true,
                 6,
                 new SkillData(SpellRegistry.BLOOD_SLASH_SPELL, 5),
                 new SkillData(SpellRegistry.BLOOD_STEP_SPELL, 5),

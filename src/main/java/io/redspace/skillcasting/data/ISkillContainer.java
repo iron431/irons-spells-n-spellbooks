@@ -9,17 +9,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public interface ISkillContainer {
-    static boolean isSkillContainer(@Nullable ItemStack itemStack) {
-        return itemStack != null && itemStack.has(SkillcastingDataComponents.SKILL_CONTAINER);
-    }
-
-    static @Nullable ISkillContainer get(ItemStack itemStack) {
-        return itemStack.get(SkillcastingDataComponents.SKILL_CONTAINER);
-    }
-
-    static void set(ItemStack itemStack, ISkillContainer container) {
-        itemStack.set(SkillcastingDataComponents.SKILL_CONTAINER, container);
-    }
 
     int getMaxSkillCount();
 
@@ -54,4 +43,28 @@ public interface ISkillContainer {
     boolean isEmpty();
 
     ISkillContainerMutable mutableCopy();
+
+    static boolean isSkillContainer(@Nullable ItemStack itemStack) {
+        return itemStack != null && itemStack.has(SkillcastingDataComponents.SKILL_CONTAINER);
+    }
+
+    static @Nullable ISkillContainer get(ItemStack itemStack) {
+        return itemStack.get(SkillcastingDataComponents.SKILL_CONTAINER);
+    }
+
+    static void set(ItemStack itemStack, ISkillContainer container) {
+        itemStack.set(SkillcastingDataComponents.SKILL_CONTAINER, container);
+    }
+
+    static ISkillContainer create(boolean mustEquip, SkillData... skills) {
+        return create(mustEquip, 0, skills);
+    }
+
+    static ISkillContainer create(boolean mustEquip, int extraSlots, SkillData... skills) {
+        var container = new SkillContainer(extraSlots + skills.length, true, mustEquip).mutableCopy();
+        for (SkillData data : skills) {
+            container.addSpell(data);
+        }
+        return container.toImmutable();
+    }
 }
