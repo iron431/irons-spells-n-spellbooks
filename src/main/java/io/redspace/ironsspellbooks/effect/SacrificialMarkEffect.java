@@ -43,7 +43,7 @@ public class SacrificialMarkEffect extends MagicMobEffect implements ISyncedMobE
         // fixme: this is the perfect place for a level cast instance
         //  infrastructure is far from set up though
         CasterRef caster = CasterRef.entity(owner);
-        CastContext castContext = SkillcastingManager.buildCastContext(caster, SpellRegistry.SACRIFICE_SPELL, mark.getAmplifier() + 1, null, false);
+        CastContext castContext = SkillcastingManager.buildCastContext(caster, SpellRegistry.SACRIFICE_SPELL, mark.getAmplifier() + 1, null);
         castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES, new TargetedEntitiesData(entity));
         spell.onCast(serverLevel, castContext);
         spell.onPostCast(castContext);

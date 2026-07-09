@@ -15,15 +15,16 @@ import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
+import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
-import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -70,9 +71,7 @@ public class AnimationHelper {
                     animation.addModifierLast(new MirrorModifier() {
                         @Override
                         public boolean isEnabled() {
-                            String castingEquipmentSlot = Optional.ofNullable(SkillcastingData.get(player).getActiveCast()).map(ActiveCast::context)
-                                    .flatMap(context -> context.find(SkillcastingComponentTypes.CAST_SOURCE)).map(CastSource::equipmentSlot).orElse("");
-                            return castingEquipmentSlot.equals(SkillSelectionManager.OFFHAND) ^ player.getMainArm() == HumanoidArm.LEFT;
+                            return MagicData.get(player).getCachedCastingEquipmentSlot().equals(EquipmentSlot.OFFHAND.getName()) ^ player.getMainArm() == HumanoidArm.LEFT;
                         }
                     });
 

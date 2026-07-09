@@ -12,11 +12,13 @@ import io.redspace.skillcasting.client.ClientSkillTicker;
 import io.redspace.skillcasting.client.SkillcastClientTickManager;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
+import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -248,5 +250,9 @@ public abstract class AbstractSkill {
 
     public int getMinLevel() {
         return 1;
+    }
+
+    public Holder<AbstractSkill> holder() {
+        return SkillRegistry.holder(this);
     }
 }

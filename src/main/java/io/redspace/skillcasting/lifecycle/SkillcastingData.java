@@ -131,10 +131,9 @@ public final class SkillcastingData {
     }
 
     /**
-     * @return <code>true</code> if there is live state beyond an "empty" skillcasting data.
+     * @return <code>true</code> if there is live, persistable state beyond a default, empty skillcasting data.
      */
-    // todo: rename this. not a great name
-    public boolean isLive() {
+    public boolean requiresPersistence() {
         return !cooldowns.isEmpty() || !recasts.isEmpty() || !selection.isEmpty();
     }
 }

@@ -53,13 +53,62 @@ public class SpellcastingComponentTypes {
                     .synced(ComponentSyncCodecs.PORTAL_CAST_DATA)
                     .build());
 
-    //    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> SPELL_POWER =
-//            COMPONENT_TYPES.register("spell_power", () -> ComponentType.<Float>builder()
-//                    .persisted(Codec.FLOAT)
-//                    .synced(ComponentSyncCodecs.FLOAT)
-//                    .build());
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> SPELL_POWER_MULTIPLIER =
             COMPONENT_TYPES.register("spell_power", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> FIRE_POWER_MULTIPLIER =
+            COMPONENT_TYPES.register("fire_power", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> ICE_POWER_MULTIPLIER =
+            COMPONENT_TYPES.register("ice_power", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> LIGHTNING_POWER_MULTIPLIER =
+            COMPONENT_TYPES.register("lightning_power", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> HOLY_POWER_MULTIPLIER =
+            COMPONENT_TYPES.register("holy_power", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> ENDER_POWER_MULTIPLIER =
+            COMPONENT_TYPES.register("ender_power", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> BLOOD_POWER_MULTIPLIER =
+            COMPONENT_TYPES.register("blood_power", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> EVOCATION_POWER_MULTIPLIER =
+            COMPONENT_TYPES.register("evocation_power", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> NATURE_POWER_MULTIPLIER =
+            COMPONENT_TYPES.register("nature_power", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> ELDRITCH_POWER_MULTIPLIER =
+            COMPONENT_TYPES.register("eldritch_power", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
                     .synced(ComponentSyncCodecs.FLOAT)
                     .build());

@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.SpellCastSources;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
@@ -9,9 +9,12 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingDataComponents;
 import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.ChatFormatting;
@@ -40,7 +43,7 @@ public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,
         this(properties.component(SkillcastingDataComponents.SKILL_CONTAINER, ISkillContainer.create(true, maxSpellSlots)));
     }
 
-    public SpellBook(Item.Properties properties){
+    public SpellBook(Item.Properties properties) {
         super(properties);
     }
 
@@ -74,13 +77,15 @@ public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,
                 lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_tooltip").withStyle(ChatFormatting.GRAY));
                 SkillSelectionManager spellSelectionManager = SkillcastingData.get(player).selectionManager();
                 for (int i = 0; i < activeSpellSlots.size(); i++) {
-                    var spellText = TooltipsUtils.getTitleComponent(activeSpellSlots.get(i).skillData(), (LocalPlayer) player).setStyle(Style.EMPTY);
+                    var spellData = activeSpellSlots.get(i).skillData();
+                    var source = CastSource.of(SpellCastSources.SPELLBOOK);
+                    var spellText = TooltipsUtils.getTitleComponent(spellData, (LocalPlayer) player, SkillcastingManager.buildCastContext(CasterRef.entity(player), spellData.getHolder(), spellData.getLevel(), source)).setStyle(Style.EMPTY);
                     var option = spellSelectionManager.getOptionAt(spellSelectionManager.getSelectionIndex());
                     if (Utils.getPlayerSpellbookStack(player) == itemStack &&
                             option != null &&
                             option.equipmentSlot.equals(Curios.SPELLBOOK_SLOT) &&
                             option.localIndex == i) {
-                        var shiftMessage = TooltipsUtils.formatActiveSpellTooltip(itemStack, spellSelectionManager.getSelectedSkillData(), CastSource.SPELLBOOK, (LocalPlayer) player);
+                        var shiftMessage = TooltipsUtils.formatActiveSpellTooltip(itemStack, spellSelectionManager.getSelectedSkillData(), source, (LocalPlayer) player);
                         shiftMessage.remove(0); // remove buffering empty line
                         TooltipsUtils.addShiftTooltip(
                                 lines,
@@ -102,17 +107,6 @@ public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,
         return new ICurio.SoundInfo(SoundRegistry.EQUIP_SPELL_BOOK.get(), 1.0f, 1.0f);
     }
 
-//    @Override
-//    public void initializeSpellContainer(ItemStack itemStack) {
-//        if (itemStack == null) {
-//            return;
-//        }
-//
-//        if (!ISpellContainer.isSpellContainer(itemStack)) {
-//            ISpellContainer.set(itemStack, ISpellContainer.create(getMaxSpellSlots(), true, true));
-//        }
-//    }
-
     @Override
     public List<Component> getPages(ItemStack stack) {
         var spellbookData = ISkillContainer.get(stack);
@@ -127,7 +121,7 @@ public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,
                         var titleStyle = Style.EMPTY.withColor(color).withUnderlined(true).withBold(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/iron431"));
                         boolean hideStats = false;
                         if (player != null) {
-                            var scrollTooltip = TooltipsUtils.formatActiveSpellTooltip(null, slot.skillData(), CastSource.SPELLBOOK, (LocalPlayer) player);
+                            var scrollTooltip = TooltipsUtils.formatActiveSpellTooltip(null, slot.skillData(), CastSource.of(SpellCastSources.SPELLBOOK), (LocalPlayer) player);
                             scrollTooltip.remove(0); // this is a space for tooltip, which we don't want
                             titleStyle = titleStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, scrollTooltip.stream().reduce((a, b) -> a.append("\n").append(b)).get()));
                             if (spell.obfuscateStats(player)) {

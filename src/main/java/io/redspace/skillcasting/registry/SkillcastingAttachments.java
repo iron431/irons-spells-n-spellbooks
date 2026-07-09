@@ -22,7 +22,7 @@ public final class SkillcastingAttachments {
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<SkillcastingData>> SKILLCASTING_DATA =
             ATTACHMENT_TYPES.register("skillcasting_data", () -> AttachmentType
                     .builder(holder -> new SkillcastingData())
-                    .serialize(SkillcastingData.CODEC, SkillcastingData::isLive)
+                    .serialize(SkillcastingData.CODEC, SkillcastingData::requiresPersistence)
                     .copyOnDeath()
                     .build());
 }

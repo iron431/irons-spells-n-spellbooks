@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.spells.SpellCastSources;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.skillcasting.api.cast.CastContext;
@@ -82,16 +82,14 @@ public class Scroll extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         var spellSlot = getSpellSlotFromStack(stack);
-        // todo: is there a point of limiting scrolls to only spells?
-        if (spellSlot == null /*|| !(spellSlot.getSkill() instanceof AbstractSpellSkill spell)*/) {
+        if (spellSlot == null || !(spellSlot.getSkill() instanceof AbstractSpellSkill spell)) {
             return InteractionResultHolder.fail(stack);
         }
         SkillcastingManager.attemptInitiateCast(
                 CasterRef.entity(player),
                 spellSlot.getHolder(),
                 spellSlot.getLevel(),
-                CastSource.of(io.redspace.ironsspellbooks.api.spells.CastSource.SCROLL.name(), hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND));
-        IronsSpellbooks.LOGGER.debug("scoll");
+                CastSource.of(SpellCastSources.SCROLL, hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND));
         return InteractionResultHolder.consume(stack);
     }
 

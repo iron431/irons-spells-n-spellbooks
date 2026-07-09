@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
+import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
@@ -13,6 +14,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -35,8 +37,8 @@ public class SchoolRegistry {
         event.register(REGISTRY);
     }
 
-    private static Supplier<SchoolType> registerSchool(SchoolType schoolType) {
-        return SCHOOLS.register(schoolType.getId().getPath(), () -> schoolType);
+    private static DeferredHolder<SchoolType, SchoolType> registerSchool(String name, Supplier<SchoolType> schoolType) {
+        return SCHOOLS.register(name, schoolType);
     }
 
     public static SchoolType getSchool(ResourceLocation resourceLocation) {
@@ -53,89 +55,89 @@ public class SchoolRegistry {
     public static final ResourceLocation NATURE_RESOURCE = IronsSpellbooks.id("nature");
     public static final ResourceLocation ELDRITCH_RESOURCE = IronsSpellbooks.id("eldritch");
 
-    public static final Supplier<SchoolType> FIRE = registerSchool(new SchoolType(
-            FIRE_RESOURCE,
+    public static final DeferredHolder<SchoolType, SchoolType> FIRE = registerSchool("fire", () -> new SchoolType(
             ModTags.FIRE_FOCUS,
             Component.translatable("school.irons_spellbooks.fire").withStyle(ChatFormatting.GOLD),
+            SpellcastingComponentTypes.FIRE_POWER_MULTIPLIER,
             AttributeRegistry.FIRE_SPELL_POWER,
             AttributeRegistry.FIRE_MAGIC_RESIST,
             SoundRegistry.FIRE_CAST,
             ISSDamageTypes.FIRE_MAGIC
     ));
 
-    public static final Supplier<SchoolType> ICE = registerSchool(new SchoolType(
-            ICE_RESOURCE,
+    public static final DeferredHolder<SchoolType, SchoolType> ICE = registerSchool("ice", () -> new SchoolType(
             ModTags.ICE_FOCUS,
             Component.translatable("school.irons_spellbooks.ice").withStyle(Style.EMPTY.withColor(0xd0f9ff)),
+            SpellcastingComponentTypes.ICE_POWER_MULTIPLIER,
             AttributeRegistry.ICE_SPELL_POWER,
             AttributeRegistry.ICE_MAGIC_RESIST,
             SoundRegistry.ICE_CAST,
             ISSDamageTypes.ICE_MAGIC
     ));
 
-    public static final Supplier<SchoolType> LIGHTNING = registerSchool(new SchoolType(
-            LIGHTNING_RESOURCE,
+    public static final DeferredHolder<SchoolType, SchoolType> LIGHTNING = registerSchool("lightning", () -> new SchoolType(
             ModTags.LIGHTNING_FOCUS,
             Component.translatable("school.irons_spellbooks.lightning").withStyle(ChatFormatting.AQUA),
+            SpellcastingComponentTypes.LIGHTNING_POWER_MULTIPLIER,
             AttributeRegistry.LIGHTNING_SPELL_POWER,
             AttributeRegistry.LIGHTNING_MAGIC_RESIST,
             SoundRegistry.LIGHTNING_CAST,
             ISSDamageTypes.LIGHTNING_MAGIC
     ));
 
-    public static final Supplier<SchoolType> HOLY = registerSchool(new SchoolType(
-            HOLY_RESOURCE,
+    public static final DeferredHolder<SchoolType, SchoolType> HOLY = registerSchool("holy", () -> new SchoolType(
             ModTags.HOLY_FOCUS,
             Component.translatable("school.irons_spellbooks.holy").withStyle(Style.EMPTY.withColor(0xfff8d4)),
+            SpellcastingComponentTypes.HOLY_POWER_MULTIPLIER,
             AttributeRegistry.HOLY_SPELL_POWER,
             AttributeRegistry.HOLY_MAGIC_RESIST,
             SoundRegistry.HOLY_CAST,
             ISSDamageTypes.HOLY_MAGIC
     ));
 
-    public static final Supplier<SchoolType> ENDER = registerSchool(new SchoolType(
-            ENDER_RESOURCE,
+    public static final DeferredHolder<SchoolType, SchoolType> ENDER = registerSchool("ender", () -> new SchoolType(
             ModTags.ENDER_FOCUS,
             Component.translatable("school.irons_spellbooks.ender").withStyle(ChatFormatting.LIGHT_PURPLE),
+            SpellcastingComponentTypes.ENDER_POWER_MULTIPLIER,
             AttributeRegistry.ENDER_SPELL_POWER,
             AttributeRegistry.ENDER_MAGIC_RESIST,
             SoundRegistry.ENDER_CAST,
             ISSDamageTypes.ENDER_MAGIC
     ));
 
-    public static final Supplier<SchoolType> BLOOD = registerSchool(new SchoolType(
-            BLOOD_RESOURCE,
+    public static final DeferredHolder<SchoolType, SchoolType> BLOOD = registerSchool("blood", () -> new SchoolType(
             ModTags.BLOOD_FOCUS,
             Component.translatable("school.irons_spellbooks.blood").withStyle(ChatFormatting.DARK_RED),
+            SpellcastingComponentTypes.BLOOD_POWER_MULTIPLIER,
             AttributeRegistry.BLOOD_SPELL_POWER,
             AttributeRegistry.BLOOD_MAGIC_RESIST,
             SoundRegistry.BLOOD_CAST,
             ISSDamageTypes.BLOOD_MAGIC));
 
-    public static final Supplier<SchoolType> EVOCATION = registerSchool(new SchoolType(
-            EVOCATION_RESOURCE,
+    public static final DeferredHolder<SchoolType, SchoolType> EVOCATION = registerSchool("evocation", () -> new SchoolType(
             ModTags.EVOCATION_FOCUS,
             Component.translatable("school.irons_spellbooks.evocation").withStyle(ChatFormatting.WHITE),
+            SpellcastingComponentTypes.EVOCATION_POWER_MULTIPLIER,
             AttributeRegistry.EVOCATION_SPELL_POWER,
             AttributeRegistry.EVOCATION_MAGIC_RESIST,
             SoundRegistry.EVOCATION_CAST,
             ISSDamageTypes.EVOCATION_MAGIC
     ));
 
-    public static final Supplier<SchoolType> NATURE = registerSchool(new SchoolType(
-            NATURE_RESOURCE,
+    public static final DeferredHolder<SchoolType, SchoolType> NATURE = registerSchool("nature", () -> new SchoolType(
             ModTags.NATURE_FOCUS,
             Component.translatable("school.irons_spellbooks.nature").withStyle(ChatFormatting.GREEN),
+            SpellcastingComponentTypes.NATURE_POWER_MULTIPLIER,
             AttributeRegistry.NATURE_SPELL_POWER,
             AttributeRegistry.NATURE_MAGIC_RESIST,
             SoundRegistry.NATURE_CAST,
             ISSDamageTypes.NATURE_MAGIC
     ));
 
-    public static final Supplier<SchoolType> ELDRITCH = registerSchool(new SchoolType(
-            ELDRITCH_RESOURCE,
+    public static final DeferredHolder<SchoolType, SchoolType> ELDRITCH = registerSchool("eldritch", () -> new SchoolType(
             ModTags.ELDRITCH_FOCUS,
             Component.translatable("school.irons_spellbooks.eldritch").withStyle(Style.EMPTY.withColor(0x0f839c)),
+            SpellcastingComponentTypes.ELDRITCH_POWER_MULTIPLIER,
             AttributeRegistry.ELDRITCH_SPELL_POWER,
             AttributeRegistry.ELDRITCH_MAGIC_RESIST,
             SoundRegistry.EVOCATION_CAST,

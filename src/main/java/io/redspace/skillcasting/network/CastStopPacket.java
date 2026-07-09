@@ -40,11 +40,11 @@ public record CastStopPacket(CasterId casterId, Holder<AbstractSkill> skill, Cas
                 return;
             }
             SkillcastingData data = caster.skillcastingData();
-            data.endActiveCast();
             var level = context.player().level;
             CastContext castContext = new CastContext(packet.skill(), caster, level);
             castContext.components().applyFrom(packet.components);
             packet.skill().value().onClientCastComplete(castContext, packet.castEndReason);
+            data.endActiveCast();
             var localPlayer = context.player();
             if (localPlayer != null && packet.casterId().equals(CasterRef.entity(localPlayer).id())) {
                 ClientSkillCastHelper.setSuppressRightClicks(false);

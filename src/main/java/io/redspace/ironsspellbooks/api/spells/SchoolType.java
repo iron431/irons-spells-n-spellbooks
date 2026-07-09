@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.api.spells;
 
+import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.skillcasting.api.component.ComponentType;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -15,20 +17,30 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3f;
 
-public class SchoolType {
-    final ResourceLocation id;
-    final TagKey<Item> focus;
-    final Component displayName;
-    final Style displayStyle;
-    final Holder<Attribute> powerAttribute;
-    final Holder<Attribute> resistanceAttribute;
-    final Holder<SoundEvent> defaultCastSound;
-    final ResourceKey<DamageType> damageType;
-    final boolean requiresLearning;
-    final boolean allowLooting;
+import java.util.function.Supplier;
 
-    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, Holder<Attribute> powerAttribute, Holder<Attribute> resistanceAttribute, Holder<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType, boolean requiresLearning, boolean allowLooting) {
-        this.id = id;
+public class SchoolType {
+    private final TagKey<Item> focus;
+    private final Component displayName;
+    private final Style displayStyle;
+    private final Holder<Attribute> powerAttribute;
+    private final Holder<Attribute> resistanceAttribute;
+    private final Supplier<ComponentType<Float>> powerComponent;
+    private final Holder<SoundEvent> defaultCastSound;
+    private final ResourceKey<DamageType> damageType;
+    private final boolean requiresLearning;
+    private final boolean allowLooting;
+
+    public SchoolType(
+            TagKey<Item> focus,
+            Component displayName,
+            Supplier<ComponentType<Float>> powerComponent,
+            Holder<Attribute> powerAttribute,
+            Holder<Attribute> resistanceAttribute,
+            Holder<SoundEvent> defaultCastSound,
+            ResourceKey<DamageType> damageType,
+            boolean requiresLearning,
+            boolean allowLooting) {
         this.focus = focus;
         this.displayName = displayName;
         this.displayStyle = displayName.getStyle();
@@ -38,10 +50,18 @@ public class SchoolType {
         this.damageType = damageType;
         this.requiresLearning = requiresLearning;
         this.allowLooting = allowLooting;
+        this.powerComponent = powerComponent;
     }
 
-    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, Holder<Attribute> powerAttribute, Holder<Attribute> resistanceAttribute, Holder<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType) {
-        this(id, focus, displayName, powerAttribute, resistanceAttribute, defaultCastSound, damageType, false, true);
+    public SchoolType(
+            TagKey<Item> focus,
+            Component displayName,
+            Supplier<ComponentType<Float>> powerComponent,
+            Holder<Attribute> powerAttribute,
+            Holder<Attribute> resistanceAttribute,
+            Holder<SoundEvent> defaultCastSound,
+            ResourceKey<DamageType> damageType) {
+        this(focus, displayName, powerComponent, powerAttribute, resistanceAttribute, defaultCastSound, damageType, false, true);
     }
 
     /**
@@ -68,7 +88,7 @@ public class SchoolType {
     }
 
     public ResourceLocation getId() {
-        return id;
+        return SchoolRegistry.REGISTRY.getKey(this);
     }
 
     public Component getDisplayName() {
@@ -90,7 +110,12 @@ public class SchoolType {
     public boolean allowLooting() {
         return allowLooting;
     }
+
     public boolean requiresLearning() {
         return requiresLearning;
+    }
+
+    public Supplier<ComponentType<Float>> getPowerComponent() {
+        return powerComponent;
     }
 }

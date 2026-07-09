@@ -3,19 +3,18 @@ package io.redspace.ironsspellbooks.util;
 import io.redspace.ironslib.internal.client.ClientInputEvents;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.events.CustomizeScrollModNameEvent;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
+import io.redspace.ironsspellbooks.api.spells.SpellCastSources;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.CastType;
-import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
-import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
@@ -31,7 +30,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -74,24 +72,19 @@ public class TooltipsUtils {
         return -1;
     }
 
-    private static CastContext buildPreviewContext(LivingEntity caster, AbstractSpellSkill spell, int baseLevel, @Nullable CastSource castSource) {
-        return SkillcastingManager.buildCastContext(CasterRef.entity(caster),
-                SkillRegistry.holder(spell),
-                baseLevel,
-                castSource == null ? io.redspace.skillcasting.data.CastSource.EMPTY : io.redspace.skillcasting.data.CastSource.of(castSource.name()), true);
-    }
-
     public static List<MutableComponent> formatActiveSpellTooltip(ItemStack stack, SkillData spellData, CastSource castSource, @Nonnull LocalPlayer player) {
         if (!(spellData.getSkill() instanceof AbstractSpellSkill spell)) {
             return new ArrayList<>();
         }
-        var context = buildPreviewContext(player, spell, spellData.getLevel(), castSource);
-        var title = getTitleComponent(spellData, player);
+        // todo: move tooltip generation logic and helpers to expose as skillcasting helpers
+        var context = SkillcastingManager.buildCastContext(CasterRef.entity(player), spell.holder(), spellData.getLevel(), castSource);
+        var title = getTitleComponent(spellData, player, context);
         var uniqueInfo = spell.getUniqueInfo(context);
-        int manaCost = spell.getManaCost(context);
+        int manaCost = context.getOrDefault(SpellcastingComponentTypes.MANA_COST, 0);
+        int cooldownTicks = context.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0);
         int castTimeTicks = context.getOrDefault(SkillcastingComponentTypes.CAST_TIME, spell.getCastTimeTicks());
         var manaCostComponent = getManaCostComponent(spell.getCastType(), manaCost).withStyle(ChatFormatting.BLUE);
-        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, castSource), 2)).withStyle(ChatFormatting.BLUE);
+        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(cooldownTicks, 2)).withStyle(ChatFormatting.BLUE);
 
         List<MutableComponent> lines = new ArrayList<>();
         lines.add(Component.empty());
@@ -100,67 +93,63 @@ public class TooltipsUtils {
         if (spell.getCastType() != CastType.INSTANT) {
             lines.add(Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(castTimeTicks, 2)).withStyle(ChatFormatting.BLUE)));
         }
-        if ((castSource != CastSource.SWORD || ServerConfigs.SWORDS_CONSUME_MANA.get()) && manaCost > 0) {
+        if (manaCost > 0) {
             lines.add(manaCostComponent);
         }
-        if ((castSource != CastSource.SWORD || ServerConfigs.SWORDS_CD_MULTIPLIER.get().floatValue() > 0) && spell.getCooldownTicks() > 0) {
+        if (cooldownTicks > 0) {
             lines.add(cooldownTime);
         }
         return lines;
     }
 
     public static List<Component> formatScrollTooltip(ItemStack stack, Player player) {
-        if (stack.getItem() instanceof Scroll && ISkillContainer.isSkillContainer(stack)) {
-            var spellList = ISkillContainer.get(stack);
-            if (spellList == null) {
-                return List.of();
-            }
-
-            var spellData = spellList.getSkillAtIndex(0);
-            if (spellData == null || !(spellData.getSkill() instanceof AbstractSpellSkill spell)) {
-                return List.of();
-            }
-            var context = buildPreviewContext(player, spell, spellData.getLevel(), CastSource.SCROLL);
-            int manaCost = spell.getManaCost(context);
-            int castTimeTicks = context.getOrDefault(SkillcastingComponentTypes.CAST_TIME, spell.getCastTimeTicks());
-
-            var levelText = getLevelComponenet(spellData, player);
-            var title = Component.translatable("tooltip.irons_spellbooks.level", levelText)
-                    .append(" ")
-                    .append(Component.translatable("tooltip.irons_spellbooks.rarity", spell.getRarity(spellData.getLevel()).getDisplayName()).withStyle(spell.getRarity(spellData.getLevel()).getDisplayName().getStyle()))
-                    .withStyle(ChatFormatting.GRAY);
-            var uniqueInfo = spell.getUniqueInfo(context);
-            var whenInSpellBook = Component.translatable("tooltip.irons_spellbooks.scroll_tooltip").withStyle(ChatFormatting.GRAY);
-            var manaCostComponent = getManaCostComponent(spell.getCastType(), manaCost).withStyle(ChatFormatting.BLUE);
-            var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(MagicManager.getEffectiveSpellCooldown(spell, player, CastSource.SCROLL), 2)).withStyle(ChatFormatting.BLUE);
-            MutableComponent castType = null;
-            if (spell.getCastType() != CastType.INSTANT) {
-                castType = (Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(castTimeTicks, 2)).withStyle(ChatFormatting.BLUE)));
-            }
-            List<Component> lines = new ArrayList<>();
-            String parentModId = spell.getSkillId().getNamespace();
-            if (!parentModId.equals(IronsSpellbooks.MODID)) {
-                CustomizeScrollModNameEvent.resolveModLabel(parentModId).ifPresent(lines::add);
-            }
-            lines.add(Component.literal(" ").append(title));
-            uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(line.getStyle().applyTo(getStyleFor(player, spell))))));
-            if (castType != null) {
-                lines.add(castType);
-            }
-
-            lines.add(Component.empty());
-            lines.add(whenInSpellBook);
-            if (manaCost > 0) {
-                lines.add(manaCostComponent);
-            }
-            if (spell.getCooldownTicks() > 0) {
-                lines.add(cooldownTime);
-            }
-            lines.add(spell.getSchoolType().getDisplayName().copy());
-
-            return lines;
+        if (!(stack.getItem() instanceof Scroll)) {
+            return List.of();
         }
-        return List.of();
+        SkillData spellData = Scroll.getSpellSlotFromStack(stack);
+        if (spellData == null || !(spellData.getSkill() instanceof AbstractSpellSkill spell)) {
+            return List.of();
+        }
+        CastContext context = SkillcastingManager.buildCastContext(CasterRef.entity(player), spell.holder(), spellData.getLevel(), CastSource.of(SpellCastSources.SCROLL, ""));
+        int manaCost = context.getOrDefault(SpellcastingComponentTypes.MANA_COST, 0);
+        int cooldownTicks = context.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0);
+        int castTimeTicks = context.getOrDefault(SkillcastingComponentTypes.CAST_TIME, spell.getCastTimeTicks());
+
+        MutableComponent levelText = getLevelComponenet(spellData, player, context);
+        MutableComponent title = Component.translatable("tooltip.irons_spellbooks.level", levelText)
+                .append(" ")
+                .append(Component.translatable("tooltip.irons_spellbooks.rarity", spell.getRarity(spellData.getLevel()).getDisplayName()).withStyle(spell.getRarity(spellData.getLevel()).getDisplayName().getStyle()))
+                .withStyle(ChatFormatting.GRAY);
+        List<MutableComponent> uniqueInfo = spell.getUniqueInfo(context);
+        MutableComponent whenInSpellBook = Component.translatable("tooltip.irons_spellbooks.scroll_tooltip").withStyle(ChatFormatting.GRAY);
+        MutableComponent manaCostComponent = getManaCostComponent(spell.getCastType(), manaCost).withStyle(ChatFormatting.BLUE);
+        MutableComponent cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(context.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0), 2)).withStyle(ChatFormatting.BLUE);
+        MutableComponent castType = null;
+        if (spell.getCastType() != CastType.INSTANT) {
+            castType = (Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(castTimeTicks, 2)).withStyle(ChatFormatting.BLUE)));
+        }
+        List<Component> lines = new ArrayList<>();
+        String parentModId = spell.getSkillId().getNamespace();
+        if (!parentModId.equals(IronsSpellbooks.MODID)) {
+            CustomizeScrollModNameEvent.resolveModLabel(parentModId).ifPresent(lines::add);
+        }
+        lines.add(Component.literal(" ").append(title));
+        uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(line.getStyle().applyTo(getStyleFor(player, spell))))));
+        if (castType != null) {
+            lines.add(castType);
+        }
+
+        lines.add(Component.empty());
+        lines.add(whenInSpellBook);
+        if (manaCost > 0) {
+            lines.add(manaCostComponent);
+        }
+        if (spell.getCooldownTicks() > 0) {
+            lines.add(cooldownTime);
+        }
+        lines.add(spell.getSchoolType().getDisplayName().copy());
+
+        return lines;
     }
 
     public static void addShiftTooltip(List<Component> currentTooltip, List<Component> tooltipToAdd) {
@@ -178,12 +167,9 @@ public class TooltipsUtils {
     private static final Style INFO_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);
     private static final Style OBFUSCATED_STYLE = AbstractSpellSkill.ELDRITCH_OBFUSCATED_STYLE.applyTo(INFO_STYLE);
 
-    public static MutableComponent getLevelComponenet(SkillData spellData, LivingEntity caster) {
+    public static MutableComponent getLevelComponenet(SkillData spellData, LivingEntity caster, CastContext context) {
         int baseLevel = spellData.getLevel();
-        int levelTotal = baseLevel;
-        if (caster != null && spellData.getSkill() instanceof AbstractSpellSkill spell) {
-            levelTotal = buildPreviewContext(caster, spell, baseLevel, null).getSkillLevel();
-        }
+        int levelTotal = context.getSkillLevel();
         int diff = levelTotal - baseLevel;
         if (diff > 0) {
             return Component.translatable("tooltip.irons_spellbooks.level_plus", levelTotal, diff);
@@ -202,10 +188,7 @@ public class TooltipsUtils {
         };
     }
 
-//    public static MutableComponent getSpellNameComponent(AbstractSpell spell, Player caster) {
-//        return spell.obfuscateStats(caster) ? Component.translatable("ui.irons_spellbooks.unlearned_spell") : spell.getDisplayName();
-//    }
-
+    @Deprecated
     public static MutableComponent getManaCostComponent(CastType castType, int manaCost) {
         if (castType == CastType.CONTINUOUS) {
             return Component.translatable("tooltip.irons_spellbooks.mana_cost_per_second", manaCost * (20 / MagicManager.CONTINUOUS_CAST_TICK_INTERVAL));
@@ -214,8 +197,8 @@ public class TooltipsUtils {
         }
     }
 
-    public static MutableComponent getTitleComponent(SkillData spellData, @NotNull LocalPlayer player) {
-        var levelText = getLevelComponenet(spellData, player);
+    public static MutableComponent getTitleComponent(SkillData spellData, @NotNull LocalPlayer player, CastContext context) {
+        var levelText = getLevelComponenet(spellData, player, context);
         var skill = spellData.getSkill();
         Style schoolStyle = skill instanceof AbstractSpellSkill spell ? spell.getSchoolType().getDisplayName().getStyle() : Style.EMPTY;
         return Component.translatable("tooltip.irons_spellbooks.selected_spell",

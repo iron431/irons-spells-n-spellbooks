@@ -18,7 +18,7 @@ import java.util.Map;
 
 public final class SkillcastingNetwork {
     public static void syncSelection(ServerPlayer player, SkillcastingData data) {
-        SyncSelectionPacket.sendToPlayer(player, data.selectionManager());
+        SyncSelectionPacket.sendToPlayer(player, data.selectionManager().copy());
     }
 
     public static void syncAll(ServerPlayer player) {

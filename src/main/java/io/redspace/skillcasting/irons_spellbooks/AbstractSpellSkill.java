@@ -7,8 +7,8 @@ import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.spells.SpellCastSources;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -23,6 +23,7 @@ import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastResult;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.api.skill.SkillWheelInfo;
+import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -37,6 +38,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -123,16 +125,25 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
         if (castContext.getRecastsRemaining() > 0) {
             castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
         }
-        if (castContext.find(SkillcastingComponentTypes.CAST_SOURCE).filter(source -> source.name().equals(CastSource.SCROLL.name())).isPresent()) {
+        if (castContext.find(SkillcastingComponentTypes.CAST_SOURCE).filter(source -> source.name().equals(SpellCastSources.SCROLL)).isPresent()) {
             castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
             // todo: likely remove anti-cooldown in future balance patch.
             castContext.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
+            if (castContext.asEntityCaster() instanceof ServerPlayer serverPlayer) {
+                EquipmentSlot slot = EquipmentSlot.CODEC.byName(castContext.getOrDefault(SkillcastingComponentTypes.CAST_SOURCE, CastSource.EMPTY).equipmentSlot());
+                if (slot != null) {
+                    castContext.set(SpellcastingComponentTypes.SCROLL_STACK, serverPlayer.getItemBySlot(slot));
+                }
+            }
         }
         castContext.set(SpellcastingComponentTypes.CAST_START_ANIMATION, getCastStartAnimation());
         castContext.set(SpellcastingComponentTypes.CAST_FINISH_ANIMATION, getCastFinishAnimation());
         if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
-            // todo: all the school powers, and other attributes (cast time movespeed?)
+            // todo: other attributes (cast time movespeed?)
             castContext.set(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER));
+            for (SchoolType type : SchoolRegistry.REGISTRY) {
+                castContext.set(type.getPowerComponent(), (float) type.getPowerFor(livingEntity));
+            }
         }
         if (castContext.asEntityCaster() instanceof Player player && player.getAbilities().instabuild) {
             if (!ServerConfigs.CREATIVE_COOLDOWN.get()) {
@@ -152,11 +163,11 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     }
 
     /**
-     * @return composite multipliers saved to this cast context based on generic spell power and school spell power
+     * @return calculates the composite multiplier saved to this cast context based on generic spell power and school spell power
      */
     public float getSpellPowerMultiplier(CastContext castContext) {
-        // todo: implement school power scaling
-        return castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, 1f);
+        return castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, 1f)
+                * castContext.getOrDefault(getSchoolType().getPowerComponent(), 1f);
     }
 
     @Override
@@ -229,6 +240,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     @Override
     public void onClientCastStart(CastContext castContext) {
         super.onClientCastStart(castContext);
+        MagicData.get(castContext.caster().get()).setCachedCastingEquipmentSlot(castContext.getOrDefault(SkillcastingComponentTypes.CAST_SOURCE, CastSource.EMPTY).equipmentSlot());
         handleCastStartAnimation(castContext);
     }
 

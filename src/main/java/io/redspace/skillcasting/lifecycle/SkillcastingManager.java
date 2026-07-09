@@ -61,11 +61,9 @@ public final class SkillcastingManager {
         return attemptInitiateCast(caster, SkillRegistry.holder(option.skillData.getSkill()), option.skillData.getLevel(), CastSource.of(option.equipmentSlot));
     }
 
-    public static CastContext buildCastContext(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, CastSource castSource, boolean preview) {
-        SkillcastingData skillcastingData = caster.skillcastingData();
+    public static CastContext buildCastContext(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, CastSource castSource) {
         CastContext context = new CastContext(skillHolder, caster, caster.level());
         AbstractSkill skill = skillHolder.value();
-
         context.set(SkillcastingComponentTypes.POSITION_RESOLVER, CasterPositionResolver.INSTANCE);
         context.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, CasterDirectionResolver.INSTANCE);
         context.set(SkillcastingComponentTypes.CAST_TIME, skill.getCastTimeTicks());
@@ -74,12 +72,7 @@ public final class SkillcastingManager {
         BuildCastContextEvent.Level levelEvent = new BuildCastContextEvent.Level(context, baseLevel);
         NeoForge.EVENT_BUS.post(levelEvent);
         context.set(SkillcastingComponentTypes.SKILL_LEVEL, levelEvent.getLevel());
-        RecastManager recastManager = skillcastingData.recasts();
-        if (recastManager.hasRecast(skillHolder) && !preview) {
-            context.components().applyFrom(recastManager.get(skillHolder).components());
-        } else {
-            skill.getRecastConfig(context).ifPresent(recast -> context.set(SkillcastingComponentTypes.RECAST_CONFIG, recast));
-        }
+
         skill.buildContextComponents(context);
         NeoForge.EVENT_BUS.post(new BuildCastContextEvent.Post(context));
         return context;
@@ -97,6 +90,12 @@ public final class SkillcastingManager {
         SkillcastingData skillcastingData = caster.skillcastingData();
         Holder<AbstractSkill> skillHolder = castContext.skill();
         AbstractSkill skill = skillHolder.value();
+        RecastManager recastManager = skillcastingData.recasts();
+        if (recastManager.hasRecast(skillHolder)) {
+            castContext.components().applyFrom(recastManager.get(skillHolder).components());
+        } else {
+            skill.getRecastConfig(castContext).ifPresent(recast -> castContext.set(SkillcastingComponentTypes.RECAST_CONFIG, recast));
+        }
         if (skillcastingData.getActiveCast() != null) {
             endCast(caster, skillcastingData, skillcastingData.getActiveCast(), CastEndReason.INTERRUPTED);
         }
@@ -134,7 +133,7 @@ public final class SkillcastingManager {
                 return false;
             }
         }
-        CastContext castContext = buildCastContext(caster, skillHolder, baseLevel, castSource, false);
+        CastContext castContext = buildCastContext(caster, skillHolder, baseLevel, castSource);
         CastResult result = skillHolder.value().canBeCastBy(castContext);
         if (caster.get() instanceof ServerPlayer serverPlayer && result.message() != null) {
             serverPlayer.displayClientMessage(result.message(), true);

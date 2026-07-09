@@ -92,7 +92,7 @@ public final class SkillSelectionManager {
         }
     }
 
-    public void replaceFrom(SkillSelectionManager other) {
+    public synchronized void replaceFrom(SkillSelectionManager other) {
         options.clear();
         for (SelectionOption option : other.options) {
             options.add(option.copy());
@@ -310,6 +310,17 @@ public final class SkillSelectionManager {
 
     public boolean isEmpty() {
         return options.isEmpty();
+    }
+
+    /**
+     * @return threadsafe shallow copy
+     */
+    public SkillSelectionManager copy() {
+        SkillSelectionManager copy = new SkillSelectionManager(this.skillSelection);
+        copy.options.addAll(this.options);
+        copy.selectionIndex = this.selectionIndex;
+        copy.selectionValid = this.selectionValid;
+        return copy;
     }
 
     public static final class SelectionOption {

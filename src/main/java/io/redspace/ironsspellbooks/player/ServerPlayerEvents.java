@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.block.BloodCauldronBlock;
@@ -38,7 +37,6 @@ import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.worldgen.IceSpiderPatrolSpawner;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
-import io.redspace.skillcasting.api.event.BuildCastContextEvent;
 import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
 import io.redspace.skillcasting.api.event.SkillCastCompleteEvent;
 import io.redspace.skillcasting.api.event.SkillSelectionPriority;
@@ -49,7 +47,6 @@ import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
-import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -339,21 +336,6 @@ public class ServerPlayerEvents {
                             Scroll.removeScrollAfterCast(serverPlayer, itemStack);
                             castingData.getActiveCast().context().remove(SpellcastingComponentTypes.SCROLL_STACK);
                         });
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onFinalizeCastContext(BuildCastContextEvent.Post event) {
-        if (!(event.context().asEntityCaster() instanceof ServerPlayer serverPlayer)) {
-            return;
-        }
-        // handle scroll stacks here instead of on AbstractSpell, because technically scrolls aren't limited to just spells
-        var source = event.context().getOrNull(SkillcastingComponentTypes.CAST_SOURCE);
-        if (source != null && source.name().equals(CastSource.SCROLL.name())) {
-            EquipmentSlot slot = EquipmentSlot.CODEC.byName(source.equipmentSlot());
-            if (slot != null) {
-                event.context().set(SpellcastingComponentTypes.SCROLL_STACK, serverPlayer.getItemBySlot(slot));
             }
         }
     }

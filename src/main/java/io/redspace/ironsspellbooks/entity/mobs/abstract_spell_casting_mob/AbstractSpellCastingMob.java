@@ -1,13 +1,13 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastType;
+import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
@@ -182,7 +182,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         }
 
         CasterRef casterRef = CasterRef.entity(this);
-        var castContext = SkillcastingManager.buildCastContext(casterRef, SkillRegistry.holder(spell), spellLevel, io.redspace.skillcasting.data.CastSource.of(CastSource.MOB.name()), false);
+        var castContext = SkillcastingManager.buildCastContext(casterRef, SkillRegistry.holder(spell), spellLevel, CastSource.EMPTY);
         castContext.set(io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
         castContext.set(io.redspace.skillcasting.registry.SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
 

@@ -33,22 +33,18 @@ public final class SkillRegistry {
         return SKILLS.register(name, skill);
     }
 
-    @Deprecated
     public static Holder<AbstractSkill> holder(ResourceLocation id) {
         return holder(get(id));
     }
 
-    @Deprecated
     public static Holder<AbstractSkill> holder(AbstractSkill skill) {
         return SkillcastingRegistries.SKILL_REGISTRY.wrapAsHolder(skill);
     }
 
-    @Deprecated
     public static ResourceLocation id(AbstractSkill skill) {
         return SkillcastingRegistries.SKILL_REGISTRY.getKey(skill);
     }
 
-    @Deprecated
     public static AbstractSkill get(ResourceLocation id) {
         return SkillcastingRegistries.SKILL_REGISTRY.get(id);
     }

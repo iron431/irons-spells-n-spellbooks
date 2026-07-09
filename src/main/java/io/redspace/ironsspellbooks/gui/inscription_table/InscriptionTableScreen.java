@@ -278,7 +278,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         // Mana
         //
         var previewCaster = Minecraft.getInstance().player;
-        CastContext previewContext = SkillcastingManager.buildCastContext(CasterRef.entity(previewCaster), SkillRegistry.holder(spellSkill), spellLevel, null, true);
+        CastContext previewContext = SkillcastingManager.buildCastContext(CasterRef.entity(previewCaster), SkillRegistry.holder(spellSkill), spellLevel, null);
         int manaCost = spellSkill.getManaCost(previewContext);
         int castTimeTicks = previewContext.getOrDefault(SkillcastingComponentTypes.CAST_TIME, spellSkill.getCastTimeTicks());
         descLine += drawStatText(font, guiHelper, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(manaCost + ""), colorMana, textScale);

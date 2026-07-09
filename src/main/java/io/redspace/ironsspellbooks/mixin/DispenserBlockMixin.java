@@ -75,7 +75,7 @@ public class DispenserBlockMixin {
         SkillSlot skillSlot = selectedEntry.getKey();
         ItemStack stack = selectedEntry.getValue();
         var caster = CasterRef.block(dispenserblockentity);
-        var context = SkillcastingManager.buildCastContext(caster, SkillRegistry.holder(skillSlot.getSkill()), skillSlot.getLevel(), CastSource.of("dispenser", ""), false);
+        var context = SkillcastingManager.buildCastContext(caster, SkillRegistry.holder(skillSlot.getSkill()), skillSlot.getLevel(), CastSource.of("dispenser", ""));
         if (stack.is(ItemRegistry.SCROLL)) {
             stack.shrink(1);
         }
