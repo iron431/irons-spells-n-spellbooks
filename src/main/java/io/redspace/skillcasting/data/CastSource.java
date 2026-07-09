@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 
 public record CastSource(String name, String equipmentSlot) {
@@ -13,6 +14,14 @@ public record CastSource(String name, String equipmentSlot) {
             Codec.STRING.fieldOf("name").forGetter(CastSource::name),
             Codec.STRING.fieldOf("equipment_slot").forGetter(CastSource::equipmentSlot)
     ).apply(builder, CastSource::new));
+
+    public boolean isFromSlot(EquipmentSlot slot) {
+        return slot.getName().equals(this.equipmentSlot);
+    }
+
+    public boolean isFromSlot(InteractionHand hand) {
+        return isFromSlot(hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
+    }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, CastSource> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8, CastSource::name,

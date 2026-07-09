@@ -7,6 +7,7 @@ import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.demo.SkillcastingDevCommands;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillcastingAttachments;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.EventPriority;
@@ -103,7 +104,8 @@ public final class SkillcastingEvents {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onUseItem(PlayerInteractEvent.RightClickItem event) {
-        if (SkillcastingData.has(event.getEntity()) && SkillcastingData.get(event.getEntity()).isCasting()) {
+        if (SkillcastingData.has(event.getEntity()) && SkillcastingData.get(event.getEntity()).isCasting() &&
+                !SkillcastingData.get(event.getEntity()).getActiveCast().context().find(SkillcastingComponentTypes.CAST_SOURCE).filter(source -> source.isFromSlot(event.getHand())).isPresent()) {
             event.setCanceled(true);
         }
     }

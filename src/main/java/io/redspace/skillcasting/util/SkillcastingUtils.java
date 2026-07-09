@@ -114,19 +114,12 @@ public final class SkillcastingUtils {
             return false;
         }
         CastSource castSource = activeCast.context().getOrNull(SkillcastingComponentTypes.CAST_SOURCE);
-        if (castSource != null
-                && castSource.equipmentSlot().equals(changedSlot.getName())
-                && !SkillcastingUtils.isSameItemSameComponentsIgnoreDurability(from, to)) {
-            return true;
+        boolean isChangingActiveCast = castSource != null && castSource.equipmentSlot().equals(changedSlot.getName())
+                || (ISkillContainer.isSkillContainer(from) && (ISkillContainer.get(from).getIndexForSkill(activeCast.context().skill().value()) >= 0));
+        if (!isChangingActiveCast) {
+            return false;
         }
-        if (ISkillContainer.isSkillContainer(from)) {
-            AbstractSkill skill = activeCast.context().skill().value();
-            if (ISkillContainer.get(from).getIndexForSkill(skill) >= 0
-                    && !SkillcastingUtils.isSameItemSameComponentsIgnoreDurability(from, to)) {
-                return true;
-            }
-        }
-        return false;
+        return !SkillcastingUtils.isSameItemSameComponentsIgnoreDurability(from, to) || from.getCount() != to.getCount();
     }
 
     public static @Nullable Entity getTargetedEntity(ServerLevel level, CastContext castContext) {

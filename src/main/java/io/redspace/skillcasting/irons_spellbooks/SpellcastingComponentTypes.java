@@ -13,6 +13,7 @@ import io.redspace.skillcasting.network.ComponentSyncCodecs;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -103,10 +104,6 @@ public class SpellcastingComponentTypes {
             COMPONENT_TYPES.register("telekinesis_data", () -> ComponentType.<TelekinesisData>builder()
                     .build());
 
-//    public static final DeferredHolder<ComponentType<?>, ComponentType<CastingMobAimingData>> CASTING_MOB_AIMING_DATA =
-//            COMPONENT_TYPES.register("casting_mob_aiming_data", () -> ComponentType.<CastingMobAimingData>builder()
-//                    .build());
-
     public static final DeferredHolder<ComponentType<?>, ComponentType<StarfallCastComponent>> STARFALL_DATA =
             COMPONENT_TYPES.register("starfall_data", () -> ComponentType.<StarfallCastComponent>builder()
                     .build());
@@ -123,5 +120,9 @@ public class SpellcastingComponentTypes {
     public static final DeferredHolder<ComponentType<?>, ComponentType<AnimationHolder>> CAST_FINISH_ANIMATION =
             COMPONENT_TYPES.register("cast_finish_animation", () -> ComponentType.<AnimationHolder>builder()
                     .synced(AnimationHolder.STREAM_CODEC)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<ItemStack>> SCROLL_STACK =
+            COMPONENT_TYPES.register("scroll_stack", () -> ComponentType.<ItemStack>builder()
                     .build());
 }

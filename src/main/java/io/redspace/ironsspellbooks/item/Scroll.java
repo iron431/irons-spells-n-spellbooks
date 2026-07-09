@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.skillcasting.api.cast.CastContext;
@@ -12,8 +13,8 @@ import io.redspace.skillcasting.data.SkillContainer;
 import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.data.SkillSlot;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
-import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -72,16 +73,9 @@ public class Scroll extends Item {
     }
 
     public static void attemptRemoveScrollAfterCast(ServerPlayer serverPlayer, CastContext castContext) {
-        CastSource castSource = castContext.getOrNull(SkillcastingComponentTypes.CAST_SOURCE);
-        if (castSource == null) {
-            return;
-        }
-        if (castSource.name().equals(io.redspace.ironsspellbooks.api.spells.CastSource.SCROLL.name())) {
-            EquipmentSlot slot = EquipmentSlot.CODEC.byName(castSource.equipmentSlot());
-            if (slot != null) {
-                removeScrollAfterCast(serverPlayer, serverPlayer.getItemBySlot(slot));
-            }
-        }
+        castContext.find(SpellcastingComponentTypes.SCROLL_STACK).ifPresent(
+                stack -> removeScrollAfterCast(serverPlayer, stack)
+        );
     }
 
     @Override
@@ -92,18 +86,13 @@ public class Scroll extends Item {
         if (spellSlot == null /*|| !(spellSlot.getSkill() instanceof AbstractSpellSkill spell)*/) {
             return InteractionResultHolder.fail(stack);
         }
-        if (level.isClientSide) {
-            return InteractionResultHolder.pass(stack);
-        }
-        boolean cast = SkillcastingManager.attemptInitiateCast(
+        SkillcastingManager.attemptInitiateCast(
                 CasterRef.entity(player),
                 spellSlot.getHolder(),
                 spellSlot.getLevel(),
                 CastSource.of(io.redspace.ironsspellbooks.api.spells.CastSource.SCROLL.name(), hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND));
-        if (cast) {
-            return InteractionResultHolder.consume(stack);
-        }
-        return InteractionResultHolder.fail(stack);
+        IronsSpellbooks.LOGGER.debug("scoll");
+        return InteractionResultHolder.consume(stack);
     }
 
     @Override
