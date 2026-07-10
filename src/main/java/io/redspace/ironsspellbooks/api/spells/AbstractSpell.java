@@ -19,6 +19,7 @@ import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.api.component.ComponentType;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastResult;
 import io.redspace.skillcasting.api.skill.CastType;
@@ -40,6 +41,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -147,7 +149,6 @@ public abstract class AbstractSpell extends AbstractSkill {
         castContext.set(SpellcastingComponentTypes.CAST_START_ANIMATION, getCastStartAnimation());
         castContext.set(SpellcastingComponentTypes.CAST_FINISH_ANIMATION, getCastFinishAnimation());
         if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
-            // todo: other attributes (cast time movespeed?)
             castContext.set(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER));
             for (SchoolType type : SchoolRegistry.REGISTRY) {
                 castContext.set(type.getPowerComponent(), (float) type.getPowerFor(livingEntity));

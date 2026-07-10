@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import io.redspace.ironslib.util.Color;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
@@ -17,12 +18,19 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -70,6 +78,7 @@ public class IronsDebugCommand {
                     ItemRegistry.THE_CHRONICLE.get().clearCache();
                     return 1;
                 }))
+                .then(Commands.literal("attribute_test_give").executes(IronsDebugCommand::giveAttributeTest))
                 .then(Commands.literal("summons").then(Commands.literal("set_self_as_owner").then(
                         Commands.argument("target", EntityArgument.entity())
                                 .executes(commandContext -> {
@@ -94,6 +103,54 @@ public class IronsDebugCommand {
                                 })
                 )))
                 .then(Commands.literal("palettizer").then(Commands.argument("minecraft:textures/entity/player/wide/steve.png", ResourceLocationArgument.id()).then(Commands.argument("CSV-Hex", StringArgumentType.string()).executes(IronsDebugCommand::palettizeCommand)))));
+    }
+
+    private static final List<Holder<Attribute>> APPLY_ATTRIBUTES_TO_CONTEXT = List.of(
+            AttributeRegistry.SPELL_RADIUS,
+            AttributeRegistry.SPELL_RANGE,
+            AttributeRegistry.SPELL_RICOCHET,
+            AttributeRegistry.SPELL_PIERCING
+    );
+
+    private static int giveAttributeTest(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        if (!(source.getPlayer() instanceof ServerPlayer player)) {
+            source.sendFailure(Component.literal("Must be run by a player"));
+            return 0;
+        }
+
+        for (Holder<Attribute> attribute : APPLY_ATTRIBUTES_TO_CONTEXT) {
+            player.getInventory().add(createAttributeTestStick(attribute, false));
+            player.getInventory().add(createAttributeTestStick(attribute, true));
+        }
+
+        source.sendSuccess(() -> Component.literal("Gave attribute test sticks for applyAttributesToContext"), true);
+        return 1;
+    }
+
+    private static ItemStack createAttributeTestStick(Holder<Attribute> attribute, boolean includeMultiplyTotal) {
+        String attributeName = ResourceLocation.parse(attribute.getRegisteredName()).getPath();
+        ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder()
+                .add(
+                        attribute,
+                        new AttributeModifier(IronsSpellbooks.id("debug_add_" + attributeName), 5, AttributeModifier.Operation.ADD_VALUE),
+                        EquipmentSlotGroup.MAINHAND
+                );
+        if (includeMultiplyTotal) {
+            builder.add(
+                    attribute,
+                    new AttributeModifier(IronsSpellbooks.id("debug_mult_total_" + attributeName), 0.50, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
+                    EquipmentSlotGroup.MAINHAND
+            );
+        }
+
+        ItemStack stack = new ItemStack(Items.STICK);
+        stack.set(DataComponents.ATTRIBUTE_MODIFIERS, builder.build());
+        stack.set(
+                DataComponents.CUSTOM_NAME,
+                Component.literal(attributeName + (includeMultiplyTotal ? " +5, +50%" : " +5"))
+        );
+        return stack;
     }
 
     private static int playPlayerAnimation(CommandContext<CommandSourceStack> context) {

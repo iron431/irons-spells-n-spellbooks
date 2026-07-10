@@ -114,17 +114,17 @@ public class FlamingStrikeSpell extends AbstractSpell {
         var damageSource = getDamageSourceDirect(castContext);
         for (Entity targetEntity : entities) {
             if (targetEntity instanceof LivingEntity living && living.isAlive() && living.isPickable() &&
-                    living.position().subtract(castOrigin).dot(forward) >= 0 &&
-                    castOrigin.distanceToSqr(living.position()) < radius * radius &&
+                    hitLocation.distanceToSqr(living.position()) < radius * radius &&
                     Utils.hasLineOfSight(level, castOrigin, living.getBoundingBox().getCenter(), true) &&
                     living.getBoundingBox().getCenter().subtract(castOrigin).dot(forward) >= 0) {
                 if (DamageSources.applyDamage(living, damage, damageSource)) {
                     MagicManager.spawnParticles(level, ParticleHelper.FIRE, living.getX(), living.getY() + living.getBbHeight() * 0.5f, living.getZ(),
                             30, living.getBbWidth() * 0.5f, living.getBbHeight() * 0.5f, living.getBbWidth() * 0.5f, 0.03, false);
-                    EnchantmentHelper.doPostAttackEffects((ServerLevel) level, living, damageSource);
+                    EnchantmentHelper.doPostAttackEffects(level, living, damageSource);
                 }
             }
         }
+        // fixme: cast source helper
         boolean mirrored = SkillSelectionManager.OFFHAND.equals(castContext.getOrNull(SkillcastingComponentTypes.CAST_SOURCE));
         MagicManager.spawnParticles(level, new FlameStrikeParticleOptions((float) forward.x, (float) forward.y, (float) forward.z, mirrored, false, 1f),
                 hitLocation.x, hitLocation.y + 0.5, hitLocation.z, 1, 0, 0, 0, 0, true);

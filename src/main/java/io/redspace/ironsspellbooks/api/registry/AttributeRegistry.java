@@ -1,35 +1,66 @@
 package io.redspace.ironsspellbooks.api.registry;
 
+import io.redspace.ironslib.attribute.AttributeEventsHandler;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.attribute.MagicPercentAttribute;
-import io.redspace.ironsspellbooks.api.attribute.MagicRangedAttribute;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
+import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.api.component.ComponentType;
+import io.redspace.skillcasting.api.event.BuildCastContextEvent;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.PercentageAttribute;
 import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import javax.annotation.Nullable;
+import java.util.function.Supplier;
+
 
 @EventBusSubscriber(modid = IronsSpellbooks.MODID)
 public class AttributeRegistry {
-
+    private static final double MILLION = 1_000_000;
     private static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(Registries.ATTRIBUTE, IronsSpellbooks.MODID);
 
     public static void register(IEventBus eventBus) {
         ATTRIBUTES.register(eventBus);
     }
 
-    public static final DeferredHolder<Attribute, Attribute> MAX_MANA = ATTRIBUTES.register("max_mana", () -> (new MagicRangedAttribute("attribute.irons_spellbooks.max_mana", 100.0D, 0.0D, 1000000.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> MANA_REGEN = ATTRIBUTES.register("mana_regen", () -> (new MagicPercentAttribute("attribute.irons_spellbooks.mana_regen", 1.0D, 0.0D, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> COOLDOWN_REDUCTION = ATTRIBUTES.register("cooldown_reduction", () -> (new MagicPercentAttribute("attribute.irons_spellbooks.cooldown_reduction", 1.0D, -100.0D, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> SPELL_POWER = ATTRIBUTES.register("spell_power", () -> (new MagicPercentAttribute("attribute.irons_spellbooks.spell_power", 1.0D, -100, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> SPELL_RESIST = ATTRIBUTES.register("spell_resist", () -> (new MagicPercentAttribute("attribute.irons_spellbooks.spell_resist", 1.0D, -100, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> CAST_TIME_REDUCTION = ATTRIBUTES.register("cast_time_reduction", () -> (new MagicPercentAttribute("attribute.irons_spellbooks.cast_time_reduction", 1.0D, -100, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> SUMMON_DAMAGE = ATTRIBUTES.register("summon_damage", () -> (new MagicPercentAttribute("attribute.irons_spellbooks.summon_damage", 1.0D, -100, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> CASTING_MOVESPEED = ATTRIBUTES.register("casting_movespeed", () -> (new MagicPercentAttribute("attribute.irons_spellbooks.casting_movespeed", 1, 0, 100.0D).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> MAX_MANA = ATTRIBUTES.register("max_mana",
+            () -> (new RangedAttribute("attribute.irons_spellbooks.max_mana", 100.0D, 0.0D, MILLION).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> MANA_REGEN = ATTRIBUTES.register("mana_regen",
+            () -> (new PercentageAttribute("attribute.irons_spellbooks.mana_regen", 1.0D, 0.0D, 100.0D).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> COOLDOWN_REDUCTION = ATTRIBUTES.register("cooldown_reduction",
+            () -> (new PercentageAttribute("attribute.irons_spellbooks.cooldown_reduction", 1.0D, -100.0D, 100.0D).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> SPELL_POWER = ATTRIBUTES.register("spell_power",
+            () -> (new PercentageAttribute("attribute.irons_spellbooks.spell_power", 1.0D, -100, 100.0D).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> SPELL_RESIST = ATTRIBUTES.register("spell_resist",
+            () -> (new PercentageAttribute("attribute.irons_spellbooks.spell_resist", 1.0D, -100, 100.0D).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> CAST_TIME_REDUCTION = ATTRIBUTES.register("cast_time_reduction",
+            () -> (new PercentageAttribute("attribute.irons_spellbooks.cast_time_reduction", 1.0D, -100, 100.0D).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> SUMMON_DAMAGE = ATTRIBUTES.register("summon_damage",
+            () -> (new PercentageAttribute("attribute.irons_spellbooks.summon_damage", 1.0D, -100, 100.0D).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> CASTING_MOVESPEED = ATTRIBUTES.register("casting_movespeed",
+            () -> (new PercentageAttribute("attribute.irons_spellbooks.casting_movespeed", 1, 0, 100.0D).setSyncable(true)));
+
+    public static final DeferredHolder<Attribute, Attribute> SPELL_RADIUS = ATTRIBUTES.register("spell_radius",
+            () -> (new RangedAttribute("attribute.irons_spellbooks.spell_radius", 0, -MILLION, MILLION).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> SPELL_RANGE = ATTRIBUTES.register("spell_range",
+            () -> (new RangedAttribute("attribute.irons_spellbooks.spell_range", 0, -MILLION, MILLION).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> SPELL_PIERCING = ATTRIBUTES.register("spell_piercing",
+            () -> (new RangedAttribute("attribute.irons_spellbooks.spell_piercing", 0, -MILLION, MILLION).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> SPELL_RICOCHET = ATTRIBUTES.register("spell_ricochet",
+            () -> (new RangedAttribute("attribute.irons_spellbooks.spell_ricochet", 0, -MILLION, MILLION).setSyncable(true)));
 
     public static final DeferredHolder<Attribute, Attribute> FIRE_MAGIC_RESIST = newResistanceAttribute("fire");
     public static final DeferredHolder<Attribute, Attribute> ICE_MAGIC_RESIST = newResistanceAttribute("ice");
@@ -57,10 +88,55 @@ public class AttributeRegistry {
     }
 
     private static DeferredHolder<Attribute, Attribute> newResistanceAttribute(String id) {
-        return (DeferredHolder<Attribute, Attribute>) ATTRIBUTES.register(id + "_magic_resist", () -> (new MagicPercentAttribute("attribute.irons_spellbooks." + id + "_magic_resist", 1.0D, -100, 100).setSyncable(true)));
+        return (DeferredHolder<Attribute, Attribute>) ATTRIBUTES.register(id + "_magic_resist", () -> (new PercentageAttribute("attribute.irons_spellbooks." + id + "_magic_resist", 1.0D, -100, 100).setSyncable(true)));
     }
 
     private static DeferredHolder<Attribute, Attribute> newPowerAttribute(String id) {
-        return ATTRIBUTES.register(id + "_spell_power", () -> (new MagicPercentAttribute("attribute.irons_spellbooks." + id + "_spell_power", 1.0D, -100, 100).setSyncable(true)));
+        return ATTRIBUTES.register(id + "_spell_power", () -> (new PercentageAttribute("attribute.irons_spellbooks." + id + "_spell_power", 1.0D, -100, 100).setSyncable(true)));
+    }
+
+    @SubscribeEvent
+    public static void applyAttributesToContext(BuildCastContextEvent.Post event) {
+        CastContext castContext = event.context();
+        if (!(castContext.skill().value() instanceof AbstractSpell spell) || !(castContext.asEntityCaster() instanceof LivingEntity livingEntity)) {
+            return;
+        }
+        modifyComponentAsBase(castContext, SkillcastingComponentTypes.CAST_RADIUS, livingEntity.getAttribute(AttributeRegistry.SPELL_RADIUS));
+        modifyComponentAsBase(castContext, SkillcastingComponentTypes.CAST_RANGE, livingEntity.getAttribute(AttributeRegistry.SPELL_RANGE));
+        modifyComponentAsBase(castContext, SkillcastingComponentTypes.TELEPORT_RANGE, livingEntity.getAttribute(AttributeRegistry.SPELL_RANGE));
+        simpleAddition(castContext, livingEntity, SkillcastingComponentTypes.PROJECTILE_RICOCHET, AttributeRegistry.SPELL_RICOCHET, 0);
+        simpleAddition(castContext, livingEntity, SkillcastingComponentTypes.PROJECTILE_PIERCE, AttributeRegistry.SPELL_PIERCING, 0);
+    }
+
+    public static void simpleAddition(CastContext castContext, LivingEntity livingEntity, Supplier<ComponentType<Integer>> componentType, Holder<Attribute> attribute, int defaultValue) {
+        int value = (int) livingEntity.getAttributeValue(attribute);
+        if (value == 0) {
+            return;
+        }
+        castContext.set(componentType, castContext.getOrDefault(componentType, defaultValue) + value);
+    }
+
+    public static void simpleScale(CastContext castContext, LivingEntity livingEntity, Supplier<ComponentType<Float>> componentType, Holder<Attribute> attribute, float defaultValue) {
+        float value = (float) livingEntity.getAttributeValue(attribute);
+        if (value == 0) {
+            return;
+        }
+        castContext.set(componentType, castContext.getOrDefault(componentType, defaultValue) * value);
+    }
+
+    public static void modifyComponentAsBase(CastContext castContext, Supplier<ComponentType<Float>> componentType, @Nullable AttributeInstance attribute) {
+        if (attribute == null) {
+            return;
+        }
+        castContext.find(componentType).ifPresent(
+                value -> {
+                    AttributeInstance simulated = new AttributeInstance(attribute.getAttribute(), (atr) -> {
+                    });
+                    simulated.replaceFrom(attribute);
+                    simulated.setBaseValue(simulated.getBaseValue() + value.doubleValue());
+                    value = (float) simulated.getValue();
+                    castContext.set(componentType, value);
+                }
+        );
     }
 }
