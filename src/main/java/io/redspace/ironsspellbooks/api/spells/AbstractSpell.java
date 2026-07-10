@@ -261,7 +261,7 @@ public abstract class AbstractSpell extends AbstractSkill {
         AnimationHolder finishAnimation = castContext.getOrDefault(SpellcastingComponentTypes.CAST_FINISH_ANIMATION, AnimationHolder.pass());
         boolean cancelled = castEndReason == CastEndReason.INTERRUPTED;
         // fixme: need pipeline for mobs to starting and canceling animations
-        if (finishAnimation.getType() == AnimationHolder.Type.PASS) {
+        if (finishAnimation.getType() == AnimationHolder.Type.PASS && !cancelled) {
             return;
         }
         if (castContext.asEntityCaster() instanceof Player player) {
