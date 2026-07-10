@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.component.TargetedEntitiesData;
-import io.redspace.skillcasting.irons_spellbooks.spells.blood.SacrificeSpell;
+import io.redspace.ironsspellbooks.spells.blood.SacrificeSpell;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.particles.ParticleOptions;

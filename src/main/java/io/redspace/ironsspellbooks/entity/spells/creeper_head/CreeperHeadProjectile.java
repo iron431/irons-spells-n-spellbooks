@@ -9,7 +9,7 @@ import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.data.PlayableSound;
-import io.redspace.skillcasting.irons_spellbooks.spells.evocation.ChainCreeperSpell;
+import io.redspace.ironsspellbooks.spells.evocation.ChainCreeperSpell;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;

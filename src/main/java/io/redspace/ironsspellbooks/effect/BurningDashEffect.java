@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.effect;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.mixin.LivingEntityAccessor;
-import io.redspace.skillcasting.irons_spellbooks.spells.fire.BurningDashSpell;
+import io.redspace.ironsspellbooks.spells.fire.BurningDashSpell;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;

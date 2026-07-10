@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
 import io.redspace.skillcasting.api.component.TargetedEntitiesData;
 import io.redspace.skillcasting.api.recast.RecastConfig;
-import io.redspace.skillcasting.irons_spellbooks.component.FireWallCastComponent;
+import io.redspace.ironsspellbooks.spells.FireWallCastComponent;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
