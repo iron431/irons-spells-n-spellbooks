@@ -49,7 +49,7 @@ public class FireEruptionAoe extends AoeEntity {
         var owner = this.getOwner() == null ? this : this.getOwner();
         var damageSource = damageSourceOverride != null
                 ? damageSourceOverride
-                : SpellRegistry.RAISE_HELL_SPELL.get().getDamageSource(this.level(), owner);
+                : SpellRegistry.RAISE_HELL_SPELL.get().getDamageSource(this.level(), owner, owner);
         DamageSources.ignoreNextKnockback(target);
         if (target.hurt(damageSource, getDamage())) {
             target.igniteForSeconds(5);

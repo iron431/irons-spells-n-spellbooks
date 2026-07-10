@@ -138,7 +138,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target.canBeHitByProjectile()) {
                 if (DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f),
-                        getDamageSource(level, null, castContext.asEntityCaster()))) {
+                        getDamageSourceIndirect(castContext))) {
                     Vec3 targetPos = target.position().add(0, target.getBbHeight() / 2, 0);
                     Vec3 casterPos = castContext.position(PositionAnchor.CENTER);
                     castContext.caster().distributeToClients(new BloodSiphonParticlesPacket(targetPos, casterPos));
@@ -168,7 +168,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
 
     @Override
     public SpellSkillDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
-        return super.getDamageSource(level, projectile, attacker).setLifestealPercent(1f).indirect();
+        return super.getDamageSource(level, projectile, attacker).setLifestealPercent(1f);
     }
 
     @Override

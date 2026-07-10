@@ -102,7 +102,7 @@ public class SonicBoomSpell extends AbstractSpell {
         for (Entity target : level.getEntities(caster, boundingBox)) {
             HitResult hit = Utils.checkEntityIntersecting(target, start, end, 0.4f);
             if (hit.getType() != HitResult.Type.MISS) {
-                DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), getDamageSource(level, caster));
+                DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), getDamageSourceIndirect(castContext));
             }
         }
 

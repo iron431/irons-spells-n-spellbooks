@@ -85,7 +85,7 @@ public class RayOfFrostSpell extends AbstractSpell {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             //Set freeze time right here because it scales off of level and power
             DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f),
-                    getDamageSource(level, null, castContext.asEntityCaster()).indirect().setFreezeTicks(target.getTicksRequiredToFreeze() + getFreezeTime(castContext)));
+                    getDamageSourceIndirect(castContext).setFreezeTicks(target.getTicksRequiredToFreeze() + getFreezeTime(castContext)));
             MagicManager.spawnParticles(level, ParticleHelper.ICY_FOG, hitResult.getLocation().x, target.getY(), hitResult.getLocation().z, 4, 0, 0, 0, .3, true);
         } else if (hitResult.getType() == HitResult.Type.BLOCK) {
             MagicManager.spawnParticles(level, ParticleHelper.ICY_FOG, hitResult.getLocation().x, hitResult.getLocation().y, hitResult.getLocation().z, 4, 0, 0, 0, .3, true);

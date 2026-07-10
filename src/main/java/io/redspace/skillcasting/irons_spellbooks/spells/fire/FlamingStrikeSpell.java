@@ -111,7 +111,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
         Vec3 hitLocation = castContext.position(PositionAnchor.BOTTOM_CENTER).lerp(castContext.position(PositionAnchor.CASTING_POSITION), .3f).add(forward.scale(distance));
         var entities = level.getEntities(castContext.asEntityCaster(), AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f) + castContext.getOrDefault(SkillcastingComponentTypes.WEAPON_DAMAGE, 0f);
-        var damageSource = getDamageSource(level, castContext.asEntityCaster());
+        var damageSource = getDamageSourceDirect(castContext);
         for (Entity targetEntity : entities) {
             if (targetEntity instanceof LivingEntity living && living.isAlive() && living.isPickable() &&
                     living.position().subtract(castOrigin).dot(forward) >= 0 &&

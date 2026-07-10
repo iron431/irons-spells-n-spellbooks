@@ -14,8 +14,10 @@ import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.render.animation.AnimationHelper;
+import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
+import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastResult;
 import io.redspace.skillcasting.api.skill.CastType;
@@ -81,11 +83,19 @@ public abstract class AbstractSpell extends AbstractSkill {
     }
 
     public SpellSkillDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
-        return SpellSkillDamageSource.source(level, projectile, attacker, this);
+        return SpellSkillDamageSource.source(this, level, projectile, attacker, null);
     }
 
-    public SpellSkillDamageSource getDamageSource(Level level, @Nullable Entity attacker) {
-        return getDamageSource(level, attacker, attacker);
+    public final SpellSkillDamageSource getDamageSourceDirect(CastContext castContext) {
+        var source = getDamageSource(castContext.level(), castContext.asEntityCaster(), castContext.asEntityCaster());
+        source.sourcePosition = castContext.position(PositionAnchor.BOTTOM_CENTER);
+        return source;
+    }
+
+    public final SpellSkillDamageSource getDamageSourceIndirect(CastContext castContext) {
+        var source = getDamageSource(castContext.level(), null, castContext.asEntityCaster());
+        source.sourcePosition = castContext.position(PositionAnchor.BOTTOM_CENTER);
+        return source;
     }
 
     @Override
@@ -343,14 +353,10 @@ public abstract class AbstractSpell extends AbstractSkill {
 
     @Deprecated(forRemoval = true)
     public float getEntityPowerMultiplier(@Nullable LivingEntity livingEntity) {
-        // fixme: definitely a nice helper, but does not have the power of a cast context behind it
-        //  should cases which need this (spell effect scaling usually) create their own context and manually calculate?
-        //  should this method take a context and fetch the parameter multipliers based on our school?
-        //  either way, a wrapper directly touching attributes is not the way to go
         if (livingEntity == null) {
             return 1f;
         }
-        return (float) this.getSchoolType().getPowerFor(livingEntity) * (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER);
+        return getSpellPowerMultiplier(SkillcastingManager.buildCastContext(CasterRef.entity(livingEntity), holder(), 0, CastSource.EMPTY));
     }
 
     public void resetRarityWeights() {

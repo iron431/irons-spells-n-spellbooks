@@ -35,7 +35,7 @@ public class VoltStrikeEffect extends MagicMobEffect implements ISyncedMobEffect
         UUID ignore = null;
         if (!list.isEmpty()) {
             for (Entity entity : list) {
-                if (DamageSources.applyDamage(entity, amplifier, SpellRegistry.VOLT_STRIKE_SPELL.get().getDamageSource(livingEntity.level(), livingEntity))) {
+                if (DamageSources.applyDamage(entity, amplifier, SpellRegistry.VOLT_STRIKE_SPELL.get().getDamageSource(livingEntity.level(), livingEntity, livingEntity))) {
                     //Guarantee that the entity receives i-frames, since we are damaging every tick
                     entity.invulnerableTime = 20;
                     hit = true;
@@ -60,7 +60,7 @@ public class VoltStrikeEffect extends MagicMobEffect implements ISyncedMobEffect
                 if (ignore != entity.getUUID() && distanceSqr < explosionRadiusSqr && entity.canBeHitByProjectile() && Utils.hasLineOfSight(level, losPoint, entity.getBoundingBox().getCenter(), true)) {
                     double p = (1 - distanceSqr / explosionRadiusSqr);
                     float damage = (float) (amplifier * p * 0.5);
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.VOLT_STRIKE_SPELL.get().getDamageSource(livingEntity.level(), livingEntity));
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.VOLT_STRIKE_SPELL.get().getDamageSource(livingEntity.level(), livingEntity, livingEntity));
                 }
             }
             livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().normalize().scale(-0.5).add(0, 0.5, 0));

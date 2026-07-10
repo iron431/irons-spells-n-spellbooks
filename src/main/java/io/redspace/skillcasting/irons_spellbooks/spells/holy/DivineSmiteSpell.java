@@ -120,7 +120,7 @@ public class DivineSmiteSpell extends AbstractSpell {
 
         float totalDamage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f)
                 + castContext.getOrDefault(SkillcastingComponentTypes.WEAPON_DAMAGE, 0f);
-        var damageSource = getDamageSource(level, caster);
+        var damageSource = getDamageSourceDirect(castContext);
         var entities = level.getEntities(caster, AABB.ofSize(smiteLocation, RADIUS * 2, RADIUS * 4, RADIUS * 2));
         for (Entity targetEntity : entities) {
             if (targetEntity.isAlive() && targetEntity.isPickable()

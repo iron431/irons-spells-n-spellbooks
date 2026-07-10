@@ -22,7 +22,7 @@ public class BurningDashEffect extends MagicMobEffect implements ISyncedMobEffec
         if (!list.isEmpty()) {
             for (Entity entity : list) {
                 if (entity instanceof LivingEntity) {
-                    DamageSources.applyDamage(entity, amplifier, SpellRegistry.BURNING_DASH_SPELL.get().getDamageSource(livingEntity.level(), livingEntity));
+                    DamageSources.applyDamage(entity, amplifier, SpellRegistry.BURNING_DASH_SPELL.get().getDamageSource(livingEntity.level(), livingEntity, livingEntity));
                     //Guarantee that the entity receives i-frames, since we are damaging every tick
                     entity.invulnerableTime = 20;
                 }

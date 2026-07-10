@@ -100,7 +100,7 @@ public class EldritchBlastSpell extends AbstractSpell {
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target.canBeHitByProjectile()) {
-                DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), getDamageSource(level, null, castContext.asEntityCaster()));
+                DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), getDamageSourceIndirect(castContext));
             }
         }
         Vec3 hit = hitResult.getLocation();
@@ -109,6 +109,6 @@ public class EldritchBlastSpell extends AbstractSpell {
 
     @Override
     public SpellSkillDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
-        return super.getDamageSource(level, projectile, attacker).setIFrames(0).indirect();
+        return super.getDamageSource(level, projectile, attacker).setIFrames(0);
     }
 }

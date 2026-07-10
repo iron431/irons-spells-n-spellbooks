@@ -122,7 +122,7 @@ public class ShockwaveSpell extends AbstractSpell {
                         }
                         MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, livingEntity.getX(), livingEntity.getY() + livingEntity.getBbHeight() / 2, livingEntity.getZ(),
                                 10, livingEntity.getBbWidth() / 3, livingEntity.getBbHeight() / 3, livingEntity.getBbWidth() / 3, 0.1, false);
-                        DamageSources.applyDamage(target, damage, getDamageSource(level, caster));
+                        DamageSources.applyDamage(target, damage, getDamageSourceIndirect(castContext));
                         if (target instanceof Creeper creeper && level instanceof ServerLevel serverLevel) {
                             creeper.thunderHit(serverLevel, dummyLightningBolt);
                         }
