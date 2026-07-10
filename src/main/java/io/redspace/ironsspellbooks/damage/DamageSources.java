@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
-import io.redspace.ironsspellbooks.api.spells.SpellSkillDamageSource;
+import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -43,7 +43,7 @@ public class DamageSources {
     }
 
     public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource) {
-        if (target instanceof LivingEntity livingTarget && damageSource instanceof SpellSkillDamageSource spellDamageSource) {
+        if (target instanceof LivingEntity livingTarget && damageSource instanceof SpellDamageSource spellDamageSource) {
             var e = new SpellDamageEvent(livingTarget, baseAmount, spellDamageSource);
             if (NeoForge.EVENT_BUS.post(e).isCanceled()) {
                 return false;
@@ -92,7 +92,7 @@ public class DamageSources {
     @SubscribeEvent
     public static void postHitEffects(LivingDamageEvent.Post event) {
         var damageSource = event.getSource();
-        if (damageSource instanceof SpellSkillDamageSource spellDamageSource && spellDamageSource.hasPostHitEffects()) {
+        if (damageSource instanceof SpellDamageSource spellDamageSource && spellDamageSource.hasPostHitEffects()) {
             float actualDamage = event.getNewDamage();
             var target = event.getEntity();
             var attacker = event.getSource().getEntity();
@@ -114,7 +114,7 @@ public class DamageSources {
     @SubscribeEvent
     public static void preHitEffects(LivingIncomingDamageEvent event) {
         var damageSource = event.getSource();
-        if (damageSource instanceof SpellSkillDamageSource spellDamageSource) {
+        if (damageSource instanceof SpellDamageSource spellDamageSource) {
             if (spellDamageSource.getIFrames() >= 0) {
                 event.getContainer().setPostAttackInvulnerabilityTicks(spellDamageSource.getIFrames());
             }

@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.api.spells.SpellSkillDamageSource;
+import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingArrowProjectile;
 import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingSword;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -39,7 +39,7 @@ public class EchoingStrikesEffect extends MagicMobEffect {
     @SubscribeEvent
     public static void createEcho(LivingDamageEvent.Post event) {
         var damageSource = event.getSource();
-        if (damageSource.getEntity() instanceof LivingEntity attacker && (damageSource.getDirectEntity() == attacker || damageSource.getDirectEntity() instanceof AbstractArrow) && !(damageSource instanceof SpellSkillDamageSource)) {
+        if (damageSource.getEntity() instanceof LivingEntity attacker && (damageSource.getDirectEntity() == attacker || damageSource.getDirectEntity() instanceof AbstractArrow) && !(damageSource instanceof SpellDamageSource)) {
             var effect = attacker.getEffect(MobEffectRegistry.ECHOING_STRIKES);
             if (effect == null) {
                 return;

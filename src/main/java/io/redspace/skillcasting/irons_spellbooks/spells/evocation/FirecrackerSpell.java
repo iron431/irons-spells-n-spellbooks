@@ -9,7 +9,7 @@ import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellSkillDamageSource;
+import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.RaycastBuilder;
 import it.unimi.dsi.fastutil.ints.IntImmutableList;
@@ -113,7 +113,7 @@ public class FirecrackerSpell extends AbstractSpell {
         castContext.level().createFireworks(spawn.x, spawn.y, spawn.z, direction.x, direction.y, direction.z, fireworks.explosions());
     }
 
-    private static void dealFirecrackerDamage(Level level, Vec3 hitPos, float damage, SpellSkillDamageSource damageSource) {
+    private static void dealFirecrackerDamage(Level level, Vec3 hitPos, float damage, SpellDamageSource damageSource) {
         double explosionRadius = 2;
         AABB area = new AABB(
                 hitPos.subtract(explosionRadius, explosionRadius, explosionRadius),

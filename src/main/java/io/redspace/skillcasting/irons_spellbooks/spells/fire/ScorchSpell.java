@@ -18,7 +18,7 @@ import io.redspace.skillcasting.api.component.TargetedEntitiesData;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellSkillDamageSource;
+import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.RaycastBuilder;
 import net.minecraft.core.particles.ParticleTypes;
@@ -164,7 +164,7 @@ public class ScorchSpell extends AbstractSpell {
     }
 
     @Override
-    public SpellSkillDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
+    public SpellDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
         return super.getDamageSource(level, projectile, attacker).setFireTicks(60);
     }
 

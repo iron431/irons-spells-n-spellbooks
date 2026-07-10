@@ -82,17 +82,17 @@ public abstract class AbstractSpell extends AbstractSkill {
         return List.of();
     }
 
-    public SpellSkillDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
-        return SpellSkillDamageSource.source(this, level, projectile, attacker, null);
+    public SpellDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
+        return SpellDamageSource.source(this, level, projectile, attacker, null);
     }
 
-    public final SpellSkillDamageSource getDamageSourceDirect(CastContext castContext) {
+    public final SpellDamageSource getDamageSourceDirect(CastContext castContext) {
         var source = getDamageSource(castContext.level(), castContext.asEntityCaster(), castContext.asEntityCaster());
         source.sourcePosition = castContext.position(PositionAnchor.BOTTOM_CENTER);
         return source;
     }
 
-    public final SpellSkillDamageSource getDamageSourceIndirect(CastContext castContext) {
+    public final SpellDamageSource getDamageSourceIndirect(CastContext castContext) {
         var source = getDamageSource(castContext.level(), null, castContext.asEntityCaster());
         source.sourcePosition = castContext.position(PositionAnchor.BOTTOM_CENTER);
         return source;

@@ -12,7 +12,7 @@ import io.redspace.skillcasting.api.recast.RecastConfig;
 import io.redspace.skillcasting.api.recast.RecastResult;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellSkillDamageSource;
+import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.skillcasting.irons_spellbooks.component.FireWallCastComponent;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -101,7 +101,7 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     @Override
-    public SpellSkillDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
+    public SpellDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
         return super.getDamageSource(level, projectile, attacker).setFireTicks(80);
     }
 
