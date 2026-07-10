@@ -75,7 +75,7 @@ public class FireBomb extends AbstractMagicProjectile {
             FireField fire = new FireField(level);
             fire.setOwner(getOwner());
             fire.setDuration(200);
-            fire.setDamage(aoeDamage);
+            fire.setDamage(dotDamage);
             fire.setRadius(getRadius());
             fire.setCircular();
             fire.moveTo(location);
@@ -83,20 +83,20 @@ public class FireBomb extends AbstractMagicProjectile {
         }
     }
 
-    float aoeDamage;
+    float dotDamage;
 
-    public void setAoeDamage(float damage) {
-        this.aoeDamage = damage;
+    public void setDotDamage(float damage) {
+        this.dotDamage = damage;
     }
 
-    public float getAoeDamage() {
-        return aoeDamage;
+    public float getDotDamage() {
+        return dotDamage;
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        tag.putFloat("AoeDamage", aoeDamage);
+        tag.putFloat("DotDamage", dotDamage);
 
 
     }
@@ -104,7 +104,7 @@ public class FireBomb extends AbstractMagicProjectile {
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        this.aoeDamage = tag.getFloat("AoeDamage");
+        this.dotDamage = tag.getFloat("DotDamage");
 
     }
 

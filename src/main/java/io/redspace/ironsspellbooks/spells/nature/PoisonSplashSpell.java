@@ -44,6 +44,8 @@ public class PoisonSplashSpell extends AbstractSpell {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage",
                         Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)),
+                Component.translatable("ui.irons_spellbooks.aoe_damage",
+                        Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f), 2)),
                 Component.translatable("ui.irons_spellbooks.effect_length",
                         Utils.timeFromTicks(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0), 1))
         );
@@ -74,6 +76,7 @@ public class PoisonSplashSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
+        castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, getSpellPower(castContext) * 0.1f);
         castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 100 + castContext.getSkillLevel() * 40);
     }
 
@@ -97,6 +100,7 @@ public class PoisonSplashSpell extends AbstractSpell {
         poisonSplash.setOwner(castContext.asEntityCaster());
         poisonSplash.moveTo(spawn);
         poisonSplash.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
+        poisonSplash.setDotDamage(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));
         poisonSplash.setEffectDuration(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0));
         level.addFreshEntity(poisonSplash);
     }

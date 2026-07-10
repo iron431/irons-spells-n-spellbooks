@@ -43,7 +43,7 @@ public class MagmaBombSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)),
-                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.AOE_DAMAGE, 0f), 1)),
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f), 1)),
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f), 1))
         );
     }
@@ -72,7 +72,7 @@ public class MagmaBombSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, baseSpellPower * getSpellPowerMultiplier(castContext));
-        castContext.set(SkillcastingComponentTypes.AOE_DAMAGE, 1 + getSpellPower(castContext) * 0.1f);
+        castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, 1 + getSpellPower(castContext) * 0.1f);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 3 + getSpellPowerMultiplier(castContext));
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.0f);
     }
@@ -81,7 +81,7 @@ public class MagmaBombSpell extends AbstractSpell {
     public void onCast(ServerLevel level, CastContext castContext) {
         FireBomb orb = new FireBomb(level, castContext.asEntityCaster());
         orb.applyContext(castContext);
-        orb.setAoeDamage(castContext.getOrDefault(SkillcastingComponentTypes.AOE_DAMAGE, 0f));
+        orb.setDotDamage(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         orb.setPos(origin.add(castContext.direction()).subtract(0, orb.getBbHeight() / 2, 0));
         orb.shootFromContext(orb, castContext);

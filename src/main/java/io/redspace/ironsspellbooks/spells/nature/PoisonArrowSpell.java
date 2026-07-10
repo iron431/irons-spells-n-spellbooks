@@ -46,7 +46,7 @@ public class PoisonArrowSpell extends AbstractSpell {
                 Component.translatable("ui.irons_spellbooks.damage",
                         Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 1)),
                 Component.translatable("ui.irons_spellbooks.aoe_damage",
-                        Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.AOE_DAMAGE, 0f), 1)));
+                        Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f), 1)));
     }
 
     @Override
@@ -74,7 +74,7 @@ public class PoisonArrowSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         float power = getSpellPower(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, power);
-        castContext.set(SkillcastingComponentTypes.AOE_DAMAGE, power * 0.2f);
+        castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, power * 0.2f);
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, PROJECTILE_BASE_SPEED);
     }
 
@@ -85,7 +85,7 @@ public class PoisonArrowSpell extends AbstractSpell {
                 .add(castContext.direction())
                 .add(0, magicArrow.getBoundingBox().getYsize() * -0.5f, 0));
         magicArrow.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
-        magicArrow.setAoeDamage(castContext.getOrDefault(SkillcastingComponentTypes.AOE_DAMAGE, 0f));
+        magicArrow.setDotDamage(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));
         magicArrow.shootFromContext(magicArrow, castContext);
         level.addFreshEntity(magicArrow);
     }

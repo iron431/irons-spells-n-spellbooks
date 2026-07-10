@@ -5,9 +5,11 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
+import io.redspace.ironsspellbooks.api.util.TickRepresentativeAttribute;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.component.ComponentType;
 import io.redspace.skillcasting.api.event.BuildCastContextEvent;
+import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -61,6 +63,14 @@ public class AttributeRegistry {
             () -> (new RangedAttribute("attribute.irons_spellbooks.spell_piercing", 0, -MILLION, MILLION).setSyncable(true)));
     public static final DeferredHolder<Attribute, Attribute> SPELL_RICOCHET = ATTRIBUTES.register("spell_ricochet",
             () -> (new RangedAttribute("attribute.irons_spellbooks.spell_ricochet", 0, -MILLION, MILLION).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> SPELL_PROJECTILE_SPEED = ATTRIBUTES.register("spell_projectile_speed",
+            () -> (new PercentageAttribute("attribute.irons_spellbooks.spell_projectile_speed", 1.0D, -100, 100.0D).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> SPELL_DAMAGE_OVER_TIME = ATTRIBUTES.register("spell_damage_over_time",
+            () -> (new RangedAttribute("attribute.irons_spellbooks.spell_damage_over_time", 0, -MILLION, MILLION).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> SPELL_HEALING = ATTRIBUTES.register("spell_healing",
+            () -> (new RangedAttribute("attribute.irons_spellbooks.spell_healing", 0, -MILLION, MILLION).setSyncable(true)));
+    public static final DeferredHolder<Attribute, Attribute> SPELL_EFFECT_DURATION = ATTRIBUTES.register("spell_effect_duration",
+            () -> (new TickRepresentativeAttribute("attribute.irons_spellbooks.spell_effect_duration", 0, -MILLION, MILLION).setSyncable(true)));
 
     public static final DeferredHolder<Attribute, Attribute> FIRE_MAGIC_RESIST = newResistanceAttribute("fire");
     public static final DeferredHolder<Attribute, Attribute> ICE_MAGIC_RESIST = newResistanceAttribute("ice");
@@ -106,6 +116,10 @@ public class AttributeRegistry {
         modifyComponentAsBase(castContext, SkillcastingComponentTypes.TELEPORT_RANGE, livingEntity.getAttribute(AttributeRegistry.SPELL_RANGE));
         simpleAddition(castContext, livingEntity, SkillcastingComponentTypes.PROJECTILE_RICOCHET, AttributeRegistry.SPELL_RICOCHET, 0);
         simpleAddition(castContext, livingEntity, SkillcastingComponentTypes.PROJECTILE_PIERCE, AttributeRegistry.SPELL_PIERCING, 0);
+        simpleScale(castContext, livingEntity, SkillcastingComponentTypes.PROJECTILE_SPEED, AttributeRegistry.SPELL_PROJECTILE_SPEED, 1.0f);
+        modifyComponentAsBase(castContext, SkillcastingComponentTypes.DOT_DAMAGE, livingEntity.getAttribute(AttributeRegistry.SPELL_DAMAGE_OVER_TIME));
+        modifyComponentAsBase(castContext, SkillcastingComponentTypes.HEALING, livingEntity.getAttribute(AttributeRegistry.SPELL_HEALING));
+        modifyComponentAsBaseInt(castContext, SkillcastingComponentTypes.EFFECT_DURATION_TICKS, livingEntity.getAttribute(AttributeRegistry.SPELL_EFFECT_DURATION));
     }
 
     public static void simpleAddition(CastContext castContext, LivingEntity livingEntity, Supplier<ComponentType<Integer>> componentType, Holder<Attribute> attribute, int defaultValue) {
@@ -135,6 +149,22 @@ public class AttributeRegistry {
                     simulated.replaceFrom(attribute);
                     simulated.setBaseValue(simulated.getBaseValue() + value.doubleValue());
                     value = (float) simulated.getValue();
+                    castContext.set(componentType, value);
+                }
+        );
+    }
+
+    public static void modifyComponentAsBaseInt(CastContext castContext, Supplier<ComponentType<Integer>> componentType, @Nullable AttributeInstance attribute) {
+        if (attribute == null) {
+            return;
+        }
+        castContext.find(componentType).ifPresent(
+                value -> {
+                    AttributeInstance simulated = new AttributeInstance(attribute.getAttribute(), (atr) -> {
+                    });
+                    simulated.replaceFrom(attribute);
+                    simulated.setBaseValue(simulated.getBaseValue() + value.doubleValue());
+                    value = (int) simulated.getValue();
                     castContext.set(componentType, value);
                 }
         );

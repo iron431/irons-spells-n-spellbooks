@@ -109,7 +109,11 @@ public class IronsDebugCommand {
             AttributeRegistry.SPELL_RADIUS,
             AttributeRegistry.SPELL_RANGE,
             AttributeRegistry.SPELL_RICOCHET,
-            AttributeRegistry.SPELL_PIERCING
+            AttributeRegistry.SPELL_PIERCING,
+            AttributeRegistry.SPELL_PROJECTILE_SPEED,
+            AttributeRegistry.SPELL_DAMAGE_OVER_TIME,
+            AttributeRegistry.SPELL_HEALING,
+            AttributeRegistry.SPELL_EFFECT_DURATION
     );
 
     private static int giveAttributeTest(CommandContext<CommandSourceStack> context) {

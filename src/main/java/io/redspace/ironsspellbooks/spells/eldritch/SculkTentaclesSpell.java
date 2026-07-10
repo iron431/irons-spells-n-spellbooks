@@ -47,7 +47,7 @@ public class SculkTentaclesSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         int rings = castContext.getOrDefault(SkillcastingComponentTypes.RING_COUNT, 0);
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)),
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f), 2)),
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(rings * 1.3f, 1))
         );
     }
@@ -82,7 +82,7 @@ public class SculkTentaclesSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
-        castContext.set(SkillcastingComponentTypes.DAMAGE, baseSpellPower * getSpellPowerMultiplier(castContext));
+        castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, baseSpellPower * getSpellPowerMultiplier(castContext));
         castContext.set(SkillcastingComponentTypes.RING_COUNT, 1 + castContext.getSkillLevel());
     }
 
@@ -105,7 +105,7 @@ public class SculkTentaclesSpell extends AbstractSpell {
             level.playSound(null, center.x, center.y, center.z, SoundRegistry.VOID_TENTACLES_FINISH.get(), SoundSource.AMBIENT, 1, 1);
         }
 
-        float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
+        float damage = castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f);
         for (int r = 0; r < rings; r++) {
             float tentacles = count + r * 2;
             for (int i = 0; i < tentacles; i++) {

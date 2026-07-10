@@ -31,7 +31,7 @@ public class FangSwirlSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)),
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f), 2)),
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f), 2))
         );
     }
@@ -83,7 +83,7 @@ public class FangSwirlSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         int level = castContext.getSkillLevel();
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
-        castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
+        castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 4.5f + 0.5f * level * getSpellPowerMultiplier(castContext));
         castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 8 * 20);
     }
@@ -121,7 +121,7 @@ public class FangSwirlSpell extends AbstractSpell {
         swirl.setRadius(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f));
         swirl.setDuration(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 160));
         swirl.setOwner(castContext.asEntityCaster());
-        swirl.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
+        swirl.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));
         level.addFreshEntity(swirl);
     }
 }

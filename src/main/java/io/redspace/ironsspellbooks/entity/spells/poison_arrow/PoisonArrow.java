@@ -40,7 +40,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
     public int shakeTime;
     protected boolean hasEmittedPoison;
     protected boolean inGround;
-    protected float aoeDamage;
+    protected float dotDamage;
 
     @Override
     public void tick() {
@@ -73,12 +73,12 @@ public class PoisonArrow extends AbstractMagicProjectile {
 
     }
 
-    public void setAoeDamage(float damage) {
-        this.aoeDamage = damage;
+    public void setDotDamage(float damage) {
+        this.dotDamage = damage;
     }
 
-    public float getAoeDamage() {
-        return aoeDamage;
+    public float getDotDamage() {
+        return dotDamage;
     }
 
     private boolean shouldFall() {
@@ -133,7 +133,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
         super.addAdditionalSaveData(tag);
         tag.putBoolean("inGround", this.inGround);
         tag.putBoolean("hasEmittedPoison", hasEmittedPoison);
-        tag.putFloat("aoeDamage", aoeDamage);
+        tag.putFloat("dotDamage", dotDamage);
     }
 
     public void createPoisonCloud(Vec3 location) {
@@ -141,7 +141,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
             PoisonCloud cloud = new PoisonCloud(level());
             cloud.setOwner(getOwner());
             cloud.setDuration(200);
-            cloud.setDamage(aoeDamage);
+            cloud.setDamage(dotDamage);
             cloud.moveTo(location);
             level().addFreshEntity(cloud);
             hasEmittedPoison = true;
@@ -153,7 +153,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
         super.readAdditionalSaveData(tag);
         this.inGround = tag.getBoolean("inGround");
         this.hasEmittedPoison = tag.getBoolean("hasEmittedPoison");
-        this.aoeDamage = tag.getFloat("aoeDamage");
+        this.dotDamage = tag.getFloat("dotDamage");
     }
 
     @Override

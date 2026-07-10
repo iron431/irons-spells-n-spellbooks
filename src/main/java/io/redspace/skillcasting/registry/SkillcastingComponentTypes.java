@@ -178,8 +178,14 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.FLOAT)
                     .build());
 
-    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> AOE_DAMAGE =
-            COMPONENT_TYPES.register("aoe_damage", () -> ComponentType.<Float>builder()
+//    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> AOE_DAMAGE =
+//            COMPONENT_TYPES.register("aoe_damage", () -> ComponentType.<Float>builder()
+//                    .persisted(Codec.FLOAT)
+//                    .synced(ComponentSyncCodecs.FLOAT)
+//                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> DOT_DAMAGE =
+            COMPONENT_TYPES.register("dot_damage", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
                     .synced(ComponentSyncCodecs.FLOAT)
                     .build());

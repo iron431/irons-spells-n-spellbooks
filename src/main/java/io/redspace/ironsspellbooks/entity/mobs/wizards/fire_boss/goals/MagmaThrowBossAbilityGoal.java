@@ -92,7 +92,7 @@ public class MagmaThrowBossAbilityGoal<T extends Mob & IAnimatedAttacker> extend
         FireBomb fireBomb = new FireBomb(mob.level, mob);
         fireBomb.moveTo(mob.getEyePosition());
         fireBomb.setDamage(20);
-        fireBomb.setAoeDamage(5);
+        fireBomb.setDotDamage(5);
         fireBomb.setRadius(4);
         return fireBomb;
     }

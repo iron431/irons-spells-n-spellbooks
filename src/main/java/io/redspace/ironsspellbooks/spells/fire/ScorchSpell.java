@@ -57,7 +57,7 @@ public class ScorchSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)),
-                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.AOE_DAMAGE, 0f), 2)),
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f), 2)),
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f), 1))
         );
     }
@@ -83,7 +83,7 @@ public class ScorchSpell extends AbstractSpell {
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 2.5f);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        castContext.set(SkillcastingComponentTypes.AOE_DAMAGE, getSpellPower(castContext) * 0.1f);
+        castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, getSpellPower(castContext) * 0.1f);
     }
 
     @Override
@@ -150,7 +150,7 @@ public class ScorchSpell extends AbstractSpell {
         FireField fire = new FireField(level);
         fire.setOwner(caster);
         fire.setDuration(200);
-        fire.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.AOE_DAMAGE, 0f));
+        fire.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));
         fire.setRadius(radius);
         fire.setCircular();
         fire.moveTo(targetArea);

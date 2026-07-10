@@ -43,7 +43,7 @@ public class FireflySwarmSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.aoe_damage",
-                        Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 1)),
+                        Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f), 1)),
                 Component.translatable("ui.irons_spellbooks.radius",
                         Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f), 1))
         );
@@ -68,7 +68,7 @@ public class FireflySwarmSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
-        castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext) / 3f);
+        castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, getSpellPower(castContext) / 3f);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, FireflySwarmProjectile.DEFAULT_RADIUS);
     }
 
@@ -89,7 +89,7 @@ public class FireflySwarmSpell extends AbstractSpell {
 
         FireflySwarmProjectile fireflies = new FireflySwarmProjectile(
                 level, castContext.asEntityCaster(), SkillcastingUtils.getTargetedEntity(level, castContext),
-                castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
+                castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));
         fireflies.setRadius(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, FireflySwarmProjectile.DEFAULT_RADIUS));
         fireflies.moveTo(spawn.add(0, 0.5, 0));
         level.addFreshEntity(fireflies);

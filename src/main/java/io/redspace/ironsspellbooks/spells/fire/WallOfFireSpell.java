@@ -54,7 +54,7 @@ public class WallOfFireSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)),
+                Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f), 2)),
                 Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f), 1))
         );
     }
@@ -77,7 +77,7 @@ public class WallOfFireSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
+        castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, getSpellPower(castContext));
         // fixme: being repurposed as wall length. no. also, dont hardcode raycast range
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, getWallLength(castContext));
     }
@@ -116,7 +116,7 @@ public class WallOfFireSpell extends AbstractSpell {
         if (data.anchorPoints.size() <= 1) {
             return;
         }
-        float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
+        float damage = castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f);
         WallOfFireEntity fireWall = new WallOfFireEntity(level, castContext.asEntityCaster(), data.anchorPoints, damage);
         Vec3 origin = Vec3.ZERO;
         for (Vec3 anchor : data.anchorPoints) {

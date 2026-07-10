@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -29,7 +30,16 @@ public class PoisonSplash extends AoeEntity {
         this(EntityRegistry.POISON_SPLASH.get(), level);
     }
 
-    boolean playedParticles;
+    protected boolean playedParticles;
+    protected float dotDamage;
+
+    public void setDotDamage(float damage) {
+        this.dotDamage = damage;
+    }
+
+    public float getDotDamage() {
+        return dotDamage;
+    }
 
     @Override
     public void tick() {
@@ -43,19 +53,18 @@ public class PoisonSplash extends AoeEntity {
                             this.random.nextDouble() * -.8 - .5,
                             Utils.getRandomScaled(.06f)
                     );
-
                     level().addParticle(ParticleHelper.ACID, getX() + pos.x, getY() + pos.y + getBoundingBox().getYsize(), getZ() + pos.z, motion.x, motion.y, motion.z);
                 }
             } else {
                 MagicManager.spawnParticles(level(), ParticleHelper.POISON_CLOUD, getX(), getY() + getBoundingBox().getYsize(), getZ(), 9, getRadius() * .7f, .2f, getRadius() * .7f, 1, true);
-
             }
         }
 
         if (tickCount == 4) {
             checkHits();
-            if (!level().isClientSide)
+            if (!level().isClientSide) {
                 MagicManager.spawnParticles(level(), ParticleHelper.POISON_CLOUD, getX(), getY(), getZ(), 9, getRadius() * .7f, .2f, getRadius() * .7f, 1, true);
+            }
             createPoisonCloud();
         }
 
@@ -63,13 +72,12 @@ public class PoisonSplash extends AoeEntity {
             discard();
         }
     }
-
     public void createPoisonCloud() {
         if (!level().isClientSide) {
             PoisonCloud cloud = new PoisonCloud(level());
             cloud.setOwner(getOwner());
             cloud.setDuration(getEffectDuration());
-            cloud.setDamage(getDamage() * .1f);
+            cloud.setDamage(this.dotDamage);
             cloud.moveTo(this.position());
             level().addFreshEntity(cloud);
         }
@@ -100,5 +108,17 @@ public class PoisonSplash extends AoeEntity {
     @Override
     public Optional<ParticleOptions> getParticle() {
         return Optional.empty();
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putFloat("dotDamage", dotDamage);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.dotDamage = tag.getFloat("dotDamage");
     }
 }

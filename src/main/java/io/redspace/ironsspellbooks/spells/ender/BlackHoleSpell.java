@@ -48,7 +48,7 @@ public class BlackHoleSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.aoe_damage",
-                        Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 1)),
+                        Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f), 1)),
                 Component.translatable("ui.irons_spellbooks.radius",
                         Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f), 1))
         );
@@ -79,7 +79,7 @@ public class BlackHoleSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         float power = getSpellPower(castContext);
         float radius = (2 * castContext.getSkillLevel() + 4) + (3 * (power - 1));
-        castContext.set(SkillcastingComponentTypes.DAMAGE, power * 2);
+        castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, power * 2);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, radius);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 16 + radius * 1.5f);
     }
@@ -105,7 +105,7 @@ public class BlackHoleSpell extends AbstractSpell {
 
         BlackHole blackHole = new BlackHole(level, castContext.asEntityCaster());
         blackHole.setRadius(radius);
-        blackHole.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
+        blackHole.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));
         blackHole.moveTo(center);
         level.addFreshEntity(blackHole);
     }
