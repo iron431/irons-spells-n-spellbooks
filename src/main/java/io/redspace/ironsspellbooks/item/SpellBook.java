@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.spells.SpellCastSources;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
@@ -9,14 +8,10 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.skillcasting.lifecycle.SkillcastingData;
-import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingDataComponents;
-import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
@@ -35,7 +30,6 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,*/ ILecternPlaceable {
 
@@ -75,27 +69,8 @@ public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,
                 lines.add(Component.translatable("tooltip.irons_spellbooks.press_to_cast", Component.keybind("key.irons_spellbooks.spellbook_cast")).withStyle(ChatFormatting.GOLD));
                 lines.add(Component.empty());
                 lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_tooltip").withStyle(ChatFormatting.GRAY));
-                SkillSelectionManager spellSelectionManager = SkillcastingData.get(player).selectionManager();
-                for (int i = 0; i < activeSpellSlots.size(); i++) {
-                    var spellData = activeSpellSlots.get(i).skillData();
-                    var source = CastSource.of(SpellCastSources.SPELLBOOK);
-                    var spellText = TooltipsUtils.getTitleComponent(spellData, (LocalPlayer) player, SkillcastingManager.buildCastContext(CasterRef.entity(player), spellData.getHolder(), spellData.getLevel(), source)).setStyle(Style.EMPTY);
-                    var option = spellSelectionManager.getOptionAt(spellSelectionManager.getSelectionIndex());
-                    if (Utils.getPlayerSpellbookStack(player) == itemStack &&
-                            option != null &&
-                            option.equipmentSlot.equals(Curios.SPELLBOOK_SLOT) &&
-                            option.localIndex == i) {
-                        var shiftMessage = TooltipsUtils.formatActiveSpellTooltip(itemStack, spellSelectionManager.getSelectedSkillData(), source, (LocalPlayer) player);
-                        shiftMessage.remove(0); // remove buffering empty line
-                        TooltipsUtils.addShiftTooltip(
-                                lines,
-                                Component.literal("> ").append(spellText).withStyle(ChatFormatting.YELLOW),
-                                shiftMessage.stream().map(component -> Component.literal(" ").append(component)).collect(Collectors.toList())
-                        );
-                    } else {
-                        lines.add(Component.literal(" ").append(spellText.withStyle(Style.EMPTY.withColor(0x8888fe))));
-                    }
-                }
+                var source = CastSource.of(SpellCastSources.SPELLBOOK);
+                lines.addAll(TooltipsUtils.createSpellAccordion(itemStack, source, player, activeSpellSlots));
             }
         }
         super.appendHoverText(itemStack, context, lines, flag);

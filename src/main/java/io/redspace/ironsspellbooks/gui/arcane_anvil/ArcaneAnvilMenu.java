@@ -82,6 +82,8 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
         ItemStack baseItemStack = inputSlots.getItem(0);
         ItemStack modifierItemStack = inputSlots.getItem(1);
         if (!baseItemStack.isEmpty() && !modifierItemStack.isEmpty()) {
+            //
+            // Scroll Upgrading
             if (ServerConfigs.SCROLL_MERGING.get() && baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof InkItem inkItem) {
                 SkillData spell1 = ISkillContainer.get(baseItemStack).getSkillAtIndex(0);
                 if (spell1 != null && spell1.getSkill() instanceof AbstractSpell spellSkill) {
@@ -94,7 +96,11 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                         }
                     }
                 }
-            } else if (baseItemStack.getItem() instanceof MagicSwordItem && modifierItemStack.getItem() instanceof Scroll) {
+            }
+            //
+            // Unique Item Improving
+            else if (/*baseItemStack.getItem() instanceof MagicSwordItem && modifierItemStack.getItem() instanceof Scroll*/false) {
+                // fixme: unique improvement detection
                 SkillData scrollSlot = ISkillContainer.get(modifierItemStack).getSkillAtIndex(0);
                 if (scrollSlot != null && ISkillContainer.isSkillContainer(baseItemStack)) {
                     ISkillContainer spellContainer = ISkillContainer.get(baseItemStack);
@@ -110,7 +116,10 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                         }
                     }
                 }
-            } else if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
+            }
+            //
+            // Generic Imbuement
+            else if (Utils.canImbue(baseItemStack) && modifierItemStack.getItem() instanceof Scroll) {
                 result = baseItemStack.copy();
                 var spellContainer = Scroll.getOrCreateContainer(result, 1, true, false);
 
@@ -124,7 +133,10 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                     spellContainer.setSpellAtIndex(new SkillData(scrollSlot.getSkill(), scrollSlot.getLevel(), false), nextSlotIndex);
                     ISkillContainer.set(result, spellContainer.toImmutable());
                 }
-            } else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getTotalUpgrades() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.has(ComponentRegistry.UPGRADE_ORB_TYPE)) {
+            }
+            //
+            // Upgrade Orbs
+            else if (Utils.canBeUpgraded(baseItemStack) && UpgradeData.getUpgradeData(baseItemStack).getTotalUpgrades() < ServerConfigs.MAX_UPGRADES.get() && modifierItemStack.has(ComponentRegistry.UPGRADE_ORB_TYPE)) {
                 var upgradeKey = modifierItemStack.get(ComponentRegistry.UPGRADE_ORB_TYPE);
                 var holderopt = this.player.registryAccess().holder(upgradeKey);
                 if (holderopt.isPresent()) {
@@ -133,14 +145,20 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                     String slot = UpgradeUtils.getRelevantEquipmentSlot(result);
                     UpgradeData.getUpgradeData(result).addUpgrade(result, upgradeOrb, slot);
                 }
-            } else if (modifierItemStack.is(ItemRegistry.SHRIVING_STONE.get())) {
+            }
+            //
+            // Shriving Stone
+            else if (modifierItemStack.is(ItemRegistry.SHRIVING_STONE.get())) {
                 result = Utils.handleShriving(baseItemStack);
                 UpgradeData upgradeData = UpgradeData.getUpgradeData(baseItemStack);
                 upgradeData.upgrades().forEach((upgrade, count) -> upgrade.value().containerItem().map(stack -> {
                     stack.setCount(count);
                     return stack;
                 }).ifPresent(additionalDrops::add));
-            } else if (modifierItemStack.getItem() instanceof SpellSlotUpgradeItem spellSlotUpgradeItem) {
+            }
+            //
+            // Spell Slot Upgrade
+            else if (modifierItemStack.getItem() instanceof SpellSlotUpgradeItem spellSlotUpgradeItem) {
                 if (baseItemStack.getItem() instanceof SpellBook) {
                     ISkillContainer spellBookContainer = ISkillContainer.get(baseItemStack);
                     int max = spellSlotUpgradeItem.maxSlots();
@@ -151,7 +169,10 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                         ISkillContainer.set(result, upgradedContainer.toImmutable());
                     }
                 }
-            } else if (baseItemStack.getItem() instanceof AffinityRing && modifierItemStack.getItem() instanceof Scroll) {
+            }
+            //
+            // Affinity Setting
+            else if (baseItemStack.getItem() instanceof AffinityRing && modifierItemStack.getItem() instanceof Scroll) {
                 result = baseItemStack.copy();
                 SkillData scrollSlot = ISkillContainer.get(modifierItemStack).getSkillAtIndex(0);
                 if (scrollSlot != null && scrollSlot.getSkill() instanceof AbstractSpell spellSkill) {

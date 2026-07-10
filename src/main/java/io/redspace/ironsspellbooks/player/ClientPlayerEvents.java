@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.player;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.FogManager;
 import io.redspace.ironsspellbooks.api.util.MusicManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -16,7 +17,9 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.SkillSlot;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -25,8 +28,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -47,6 +52,7 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientPlayerEvents {
@@ -86,19 +92,6 @@ public class ClientPlayerEvents {
         ItemStack stack = event.getItemStack();
 
         if (stack.getItem() instanceof Scroll) return;
-
-        /*
-        Universal info to display:
-        - Unique Info
-        - Cast Time
-        - Mana Cost
-        - Cooldown Time
-        Scrolls show:
-        - Level w/ rarity
-        - School
-        Spellbooks and Imbued weapons show:
-        - [*name* *lvl*]
-         */
         MinecraftInstanceHelper.ifPlayerPresent((player1) -> {
             var player = (LocalPlayer) player1;
             var lines = event.getToolTip();
@@ -122,104 +115,41 @@ public class ClientPlayerEvents {
                     lines.add(1, Component.translatable("tooltip.irons_spellbooks.can_be_imbued_frame", Component.translatable("tooltip.irons_spellbooks.can_be_imbued_number", spellContainer.getActiveSkillCount(), spellContainer.getMaxSkillCount()).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GOLD));
                 }
             }
-            if (stack.has(ComponentRegistry.MULTIHAND_WEAPON)) {
-                Predicate<Holder<Attribute>> predicate = ServerConfigs.APPLY_ALL_MULTIHAND_ATTRIBUTES.get() ? Utils.NON_BASE_ATTRIBUTES : Utils.ONLY_MAGIC_ATTRIBUTES;
-                int i = TooltipsUtils.indexOfComponent(lines, "item.modifiers.mainhand");
-                if (i >= 0) {
-                    int endIndex = 0;
-                    List<Integer> linesToGrab = new ArrayList<>();
-                    for (int j = i; j < lines.size(); j++) {
-                        var contents = lines.get(j).getContents();
-                        if (contents instanceof TranslatableContents translatableContents) {
-                            //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip translatableContents {}/{} :{}", j, lines.size(), translatableContents.getKey());
-                            if (translatableContents.getKey().startsWith("attribute.modifier")) {
-                                //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip attribute line: {} | args: {}", lines.get(j).getString(), translatableContents.getArgs());
-                                endIndex = j;
-                                for (Object arg : translatableContents.getArgs()) {
-                                    if (arg instanceof Component component && component.getContents() instanceof TranslatableContents translatableContents2) {
-                                        //IronsSpellbooks.LOGGER.debug("attribute.modifier arg translatable key: {} ({})", translatableContents2.getKey(), getAttributeForDescriptionId(translatableContents2.getKey()));
-                                        var atr = getAttributeForDescriptionId(translatableContents2.getKey());
-                                        if (atr != null && predicate.test(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(atr))) {
-                                            linesToGrab.add(j);
-                                        }
-                                    }
-                                }
-                            } else if (i != j && translatableContents.getKey().startsWith("item.modifiers")) {
-                                break;
-                            }
-                        } else {
-                            //Based on the ItemStack tooltip code, the only attributes getting here should be the base UUID attributes
-                            for (Component line : lines.get(j).getSiblings()) {
-                                if (line.getContents() instanceof TranslatableContents translatableContents) {
-                                    if (translatableContents.getKey().startsWith("attribute.modifier")) {
-                                        endIndex = j;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: lines to grab: {}", linesToGrab);
-                    if (!linesToGrab.isEmpty()) {
-                        //IronsSpellbooks.LOGGER.debug("FormatMultiTooltip: end index: {} ({})", endIndex, lines.get(endIndex));
-                        lines.add(++endIndex, Component.empty());
-                        lines.add(++endIndex, Component.translatable("tooltip.irons_spellbooks.modifiers.multihand").withStyle(lines.get(i).getStyle()));
-                        for (Integer index : linesToGrab) {
-                            lines.add(++endIndex, lines.get(index));
-                        }
-                        for (int j = linesToGrab.size() - 1; j >= 0; j--) {
-                            lines.remove((int) linesToGrab.get(j));
-                        }
-                    }
-                }
-            }
         });
     }
 
     private static void handleImbuedSpellTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
-        // fixme skillcasting: rewrite ig
-//        var spellContainer = ISpellContainer.get(stack);
-//        int tooltipInjectIndex = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
-//        if (!spellContainer.isEmpty()) {
-//            var additionalLines = new ArrayList<Component>();
-//            int spellCount = spellContainer.getActiveSpellCount();
-//            var header = Component.translatable(spellCount > 1 ? "tooltip.irons_spellbooks.imbued_tooltip_plural" : "tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY);
-//            if (spellCount > 3) {
-//                additionalLines.add(Component.empty());
-//                // collapse each spell into accordion-ish view
-//                SpellSelectionManager spellSelectionManager = ClientMagicData.getSpellSelectionManager();
-//                for (int i = 0; i < spellContainer.getActiveSpellCount(); i++) {
-//                    var spellSlot = spellContainer.getSpellAtIndex(i);
-//                    var spellText = TooltipsUtils.getTitleComponent(spellSlot, player).setStyle(Style.EMPTY);
-//                    var option = spellSelectionManager.getSpellSlot(spellSelectionManager.getSelectionIndex());
-//                    if (option != null &&
-//                            option.slotIndex == i &&
-//                            ((option.slot.equals("mainhand") && player.getMainHandItem() == stack) || (option.slot.equals("offhand") && player.getOffhandItem() == stack))
-//                    ) {
-//                        var shiftMessage = TooltipsUtils.formatActiveSpellTooltip(stack, spellSelectionManager.getSelectedSpellData(), CastSource.SPELLBOOK, player);
-//                        shiftMessage.remove(0); // remove buffering empty line
-//                        TooltipsUtils.addShiftTooltip(
-//                                additionalLines,
-//                                Component.literal("> ").append(spellText).withStyle(ChatFormatting.YELLOW),
-//                                shiftMessage.stream().map(component -> Component.literal(" ").append(component)).collect(Collectors.toList())
-//                        );
-//                    } else {
-//                        additionalLines.add(Component.literal(" ").append(spellText.withStyle(Style.EMPTY.withColor(0x8888fe))));
-//                    }
-//                }
-//            } else {
-//                // simple imbue display (fully expanded)
-//                spellContainer.getActiveSpells().forEach(spellSlot -> {
-//                    var spellTooltip = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot.spellData(), CastSource.SWORD, player);
-//                    //Indent the title because we'll have an additional header
-//                    spellTooltip.set(1, Component.literal(" ").append(spellTooltip.get(1)));
-//                    additionalLines.addAll(spellTooltip);
-//                });
-//            }
-//
-//            //Add header to sword tooltip
-//            additionalLines.add(1, header);
-//            lines.addAll(tooltipInjectIndex < 0 ? lines.size() : tooltipInjectIndex, additionalLines);
-//        }
+        var spellContainer = ISkillContainer.get(stack);
+        int tooltipInjectIndex = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
+        // fixme: not respecting "imbued" source and therefore buffs
+        CastSource castSource = CastSource.EMPTY;
+        if (stack == player.getMainHandItem()) {
+            castSource = CastSource.of(EquipmentSlot.MAINHAND);
+        } else if (stack == player.getOffhandItem()) {
+            castSource = CastSource.of(EquipmentSlot.OFFHAND);
+        }
+        if (!spellContainer.isEmpty()) {
+            var additionalLines = new ArrayList<Component>();
+            List<SkillSlot> spellSlots = spellContainer.getActiveSkills().stream().filter(slot -> slot.skillData().getSkill() instanceof AbstractSpell).toList();
+            int spellCount = spellSlots.size();
+            var header = Component.translatable(spellCount > 1 ? "tooltip.irons_spellbooks.imbued_tooltip_plural" : "tooltip.irons_spellbooks.imbued_tooltip").withStyle(ChatFormatting.GRAY);
+            if (spellCount >= 3) {
+                additionalLines.add(Component.empty());
+                additionalLines.addAll(TooltipsUtils.createSpellAccordion(stack, castSource, player, spellSlots));
+            } else {
+                // simple imbue display (fully expanded)
+                for (var spellSlot : spellSlots) {
+                    var spellTooltip = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot.skillData(), castSource, player);
+                    //Indent the title because we'll have an additional header
+                    spellTooltip.set(1, Component.literal(" ").append(spellTooltip.get(1)));
+                    additionalLines.addAll(spellTooltip);
+                }
+            }
+
+            //Add header to sword tooltip
+            additionalLines.add(1, header);
+            lines.addAll(tooltipInjectIndex < 0 ? lines.size() : tooltipInjectIndex, additionalLines);
+        }
     }
 
     private static void handleCastingImplementTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {

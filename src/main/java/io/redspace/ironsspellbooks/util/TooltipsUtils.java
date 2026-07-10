@@ -13,8 +13,11 @@ import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.SkillData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
+import io.redspace.skillcasting.data.SkillSlot;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
@@ -35,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class TooltipsUtils {
 
@@ -225,8 +229,28 @@ public class TooltipsUtils {
         return spell.obfuscateStats(player) ? OBFUSCATED_STYLE : INFO_STYLE;
     }
 
-//    private static void obfuscateStat(MutableComponent component) {
-//        var style = Style.EMPTY.withObfuscated(true).withFont(RUNIC_FONT);
-//        component.setStyle(style);
-//    }
+    public static List<Component> createSpellAccordion(@NotNull ItemStack itemStack, CastSource castSource, Player player, List<SkillSlot> activeSpellSlots) {
+        SkillSelectionManager spellSelectionManager = SkillcastingData.get(player).selectionManager();
+        ArrayList<Component> lines = new ArrayList<>();
+        SkillSelectionManager.SelectionOption playerSelection = spellSelectionManager.getOptionAt(spellSelectionManager.getSelectionIndex());
+
+        for (int i = 0; i < activeSpellSlots.size(); i++) {
+            var spellData = activeSpellSlots.get(i).skillData();
+            var spellText = getTitleComponent(spellData, (LocalPlayer) player, SkillcastingManager.buildCastContext(CasterRef.entity(player), spellData.getHolder(), spellData.getLevel(), castSource)).setStyle(Style.EMPTY);
+            if (playerSelection != null &&
+                    castSource.equipmentSlot().equals(playerSelection.equipmentSlot) &&
+                    playerSelection.localIndex == i) {
+                var shiftMessage = formatActiveSpellTooltip(itemStack, playerSelection.skillData, castSource, (LocalPlayer) player);
+                shiftMessage.remove(0); // remove buffering empty line
+                addShiftTooltip(
+                        lines,
+                        Component.literal("> ").append(spellText).withStyle(ChatFormatting.YELLOW),
+                        shiftMessage.stream().map(component -> Component.literal(" ").append(component)).collect(Collectors.toList())
+                );
+            } else {
+                lines.add(Component.literal(" ").append(spellText.withStyle(Style.EMPTY.withColor(0x8888fe))));
+            }
+        }
+        return lines;
+    }
 }
