@@ -7,17 +7,17 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -59,6 +59,12 @@ public class VoltStrikeSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, 5 + getSpellPower(castContext));
+    }
+
+    @Override
+    public void onClientCastComplete(CastContext castContext, CastEndReason castEndReason) {
+        super.onClientCastComplete(castContext, castEndReason);
+        MagicData.get(castContext.caster().get()).setSpinAttackType(SpinAttackType.LIGHTNING);
     }
 
     @Override

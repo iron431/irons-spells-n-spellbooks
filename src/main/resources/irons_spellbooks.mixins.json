@@ -3,7 +3,6 @@
   "package": "io.redspace.ironsspellbooks.mixin",
   "refmap": "irons_spellbooks.refmap.json",
   "compatibilityLevel": "JAVA_21",
-  "plugin": "io.redspace.ironsspellbooks.mixin.MixinPlugin",
   "mixins": [
     "AbstractArrowAccessor",
     "BeardifierMixin",
@@ -19,7 +18,6 @@
     "LevelMixin",
     "LivingEntityAccessor",
     "LivingEntityMixin",
-    "MobEffectMixin",
     "NoiseChunkGeneratorMixin",
     "NoiseChunkMixin",
     "PlayerMixin",

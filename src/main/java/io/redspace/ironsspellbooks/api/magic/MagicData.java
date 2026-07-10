@@ -9,7 +9,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import org.jetbrains.annotations.Nullable;
@@ -22,11 +21,10 @@ public class MagicData implements IHolderSensitiveData {
             Codec.FLOAT.optionalFieldOf("heartstop_damage", 0f).forGetter(MagicData::getHeartStopAccumulatedDamage)
     ).apply(builder, MagicData::new));
 
-    // fixme: implement optionals in codec by manual encoder/decoder
     public static final StreamCodec<RegistryFriendlyByteBuf, MagicData> STREAM_CODEC = StreamCodec.composite(
             LearnedSpellData.STREAM_CODEC, MagicData::getLearnedSpellData,
-            ByteBufCodecs.FLOAT, MagicData::getHeartStopAccumulatedDamage,
             ByteBufCodecs.FLOAT, MagicData::getMana,
+            ByteBufCodecs.FLOAT, MagicData::getHeartStopAccumulatedDamage,
             MagicData::new
     );
 
@@ -110,27 +108,6 @@ public class MagicData implements IHolderSensitiveData {
 
     public void addMana(float mana) {
         setMana(this.mana + mana);
-    }
-
-    private int poisonedTimestamp; //Poison does not have a damage source, so we mark when we are poisoned to ignore if instead of cancelling our long cast
-
-
-    public void markPoisoned() {
-        // fixme: is this still needed post 1.21.1?
-        if (this.holder instanceof Entity entity) {
-            this.poisonedTimestamp = entity.tickCount;
-        }
-    }
-
-    public boolean popMarkedPoison() {
-        // fixme: is this still needed post 1.21.1?
-        if (this.holder instanceof Entity entity) {
-            boolean poisoned = entity.tickCount - poisonedTimestamp <= 1;
-            //reset so magic damage on the same tick does not get marked as poison
-            poisonedTimestamp = 0;
-            return poisoned;
-        }
-        return false;
     }
 
     public static MagicData get(IAttachmentHolder holder) {

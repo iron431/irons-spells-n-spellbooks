@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.network.spells;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.registry.SkillRegistry;
@@ -47,6 +48,8 @@ public class LearnSpellPacket implements CustomPacketPayload {
                     data.add(spell);
                     if (!serverPlayer.getAbilities().instabuild) {
                         itemStack.shrink(1);
+                        // fixme: dedicated single ack would be more efficient than chunking this across the wire
+                        serverPlayer.syncData(DataAttachmentRegistry.MAGIC_DATA);
                     }
                 }
             }

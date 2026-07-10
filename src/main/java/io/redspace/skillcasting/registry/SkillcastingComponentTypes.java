@@ -239,6 +239,12 @@ public final class SkillcastingComponentTypes {
                     .synced(ComponentSyncCodecs.INT)
                     .build());
 
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> CASTING_MOVESPEED_MULTIPLIER =
+            COMPONENT_TYPES.register("casting_movespeed", () -> ComponentType.<Float>builder()
+                    .synced(ComponentSyncCodecs.FLOAT)
+                    .build());
+
+
 //    public static final DeferredHolder<ComponentType<?>, ComponentType<UUID>> ENTITY_HOMING =
 //            COMPONENT_TYPES.register("entity_homing", () -> ComponentType.<UUID>builder()
 //                    .persisted(MultiTargetEntityCastComponent.UUID_CODEC)

@@ -111,6 +111,7 @@ public abstract class AbstractSkill {
     public void buildContextComponents(CastContext castContext) {
         getCastStartSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.CAST_START_SOUND, sound));
         getOnCastSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.ON_CAST_SOUND, sound));
+        castContext.set(SkillcastingComponentTypes.CASTING_MOVESPEED_MULTIPLIER, getBaseCastingMovespeedMultiplier());
         if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
             // fixme: migrate attributes to skillcasting
             // todo: castContext#mutate?
@@ -118,8 +119,14 @@ public abstract class AbstractSkill {
                     (int) (ticks * (2 - Utils.softCapFormula(livingEntity.getAttributeValue(AttributeRegistry.COOLDOWN_REDUCTION))))));
             castContext.find(SkillcastingComponentTypes.CAST_TIME).ifPresent(ticks -> castContext.set(SkillcastingComponentTypes.CAST_TIME,
                     (int) (ticks * (2 - Utils.softCapFormula(livingEntity.getAttributeValue(AttributeRegistry.CAST_TIME_REDUCTION))))));
+            castContext.find(SkillcastingComponentTypes.CASTING_MOVESPEED_MULTIPLIER).ifPresent(multiplier -> castContext.set(SkillcastingComponentTypes.CASTING_MOVESPEED_MULTIPLIER,
+                    multiplier + (float) livingEntity.getAttributeValue(AttributeRegistry.CASTING_MOVESPEED) - 1));
             // todo: all attributes (piercing, ricochet, etc)
         }
+    }
+
+    public float getBaseCastingMovespeedMultiplier() {
+        return 1f;
     }
 
     /**

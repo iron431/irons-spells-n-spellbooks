@@ -208,6 +208,11 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     }
 
     @Override
+    public float getBaseCastingMovespeedMultiplier() {
+        return 0.2f;
+    }
+
+    @Override
     public int getCooldownTicks() {
         // fixme: full skill takeover (config)
         return (int) (getDefaultConfig().cooldownInSeconds * 20);

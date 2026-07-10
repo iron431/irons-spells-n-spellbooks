@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.player.SpinAttackType;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
 import io.redspace.skillcasting.irons_spellbooks.SpellSkillDamageSource;
@@ -66,6 +67,12 @@ public class BurningDashSpell extends AbstractSpellSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, 5 + getSpellPower(castContext));
+    }
+
+    @Override
+    public void onClientCastComplete(CastContext castContext, CastEndReason castEndReason) {
+        super.onClientCastComplete(castContext, castEndReason);
+        MagicData.get(castContext.caster().get()).setSpinAttackType(SpinAttackType.FIRE);
     }
 
     @Override

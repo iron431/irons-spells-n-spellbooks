@@ -343,7 +343,6 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
         var livingEntity = event.getEntity();
-        //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
         if (event.getSource().getEntity() != null && livingEntity.getVehicle() instanceof IceTombEntity iceTomb && !DamageSources.isFriendlyFireBetween(event.getSource().getEntity(), livingEntity)) {
             // redirect entity-caused damage away from entombed players into the tomb
             event.setCanceled(true);
@@ -372,8 +371,7 @@ public class ServerPlayerEvents {
             SkillcastingData data = SkillcastingData.get(player);
             if (data.isCasting() && data.getActiveSkill() instanceof AbstractSpellSkill spell &&
                     spell.canBeInterrupted(player) &&
-                    !event.getSource().is(DamageTypeTagGenerator.LONG_CAST_IGNORE) &&
-                    !magicData.popMarkedPoison()) {
+                    !event.getSource().is(DamageTypeTagGenerator.LONG_CAST_IGNORE)) {
                 SkillcastingManager.cancelCast(CasterRef.entity(player), CastEndReason.INTERRUPTED);
             }
         }

@@ -52,21 +52,6 @@ import java.util.function.Predicate;
 public class ClientPlayerEvents {
 
     @SubscribeEvent
-    public static void onCalculatePlayerSpeed(MovementInputUpdateEvent event) {
-        // fixme skillcasting: rewire casting speed as a skillcasting api feature, with cast context hook
-//        if (ClientMagicData.isCasting()) {
-//            float baseCastingSpeed = 0.2f;
-//            //due to the way attribute modifiers work, using 0.2 as the base for the attribute means you need +500% movespeed to reach 1.0x movespeed.
-//            //thus, we abstract the formula to make the values make sense to the player
-//            //it takes +80% Casting Movespeed to reach maximum speed (zero penalty)
-//            float castingSpeedModifier = (float) event.getEntity().getAttributeValue(AttributeRegistry.CASTING_MOVESPEED);
-//            float speed = baseCastingSpeed + castingSpeedModifier - 1;
-//            event.getInput().forwardImpulse *= speed;
-//            event.getInput().leftImpulse *= speed;
-//        }
-    }
-
-    @SubscribeEvent
     public static void onPlayerLogOut(ClientPlayerNetworkEvent.LoggingOut event) {
         MusicManager.clear();
         GuidingBoltManager.handleClientLogout();
