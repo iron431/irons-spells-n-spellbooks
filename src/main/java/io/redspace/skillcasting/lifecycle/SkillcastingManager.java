@@ -79,9 +79,9 @@ public final class SkillcastingManager {
     }
 
     /**
-     * Checks physical ability constraints via {@link AbstractSkill#checkPreCastConditions(CastContext)}, posts events, then initiates a cast absent any other criteria
+     * Checks physical ability constraints via {@link AbstractSkill#checkPreCastConditions(CastContext)}, then initiates a cast absent any other criteria
      *
-     * @return whether the cast is triggered
+     * @return whether the cast is initiated
      */
     public static boolean initiateCast(CasterRef caster, CastContext castContext) {
         if (caster.level().isClientSide() || !caster.isValid()) {
@@ -119,7 +119,7 @@ public final class SkillcastingManager {
     /**
      * Helper for building a {@link CastContext}, and evaluating the capability for a caster to initiate a cast via {@link AbstractSkill#canBeCastBy(CastContext)}. Forwards to {@link SkillcastingManager#initiateCast(CasterRef, CastContext)}.
      *
-     * @return whether the cast is fully triggered
+     * @return whether the cast is successfully initiated
      */
     public static boolean attemptInitiateCast(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, CastSource castSource) {
         if (caster.level().isClientSide() || !caster.isValid()) {

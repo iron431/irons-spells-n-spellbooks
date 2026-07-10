@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
 import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
+import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
@@ -35,8 +36,10 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.worldgen.IceSpiderPatrolSpawner;
+import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.api.event.BuildCastContextEvent;
 import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
 import io.redspace.skillcasting.api.event.SkillCastCompleteEvent;
 import io.redspace.skillcasting.api.event.SkillSelectionPriority;
@@ -127,7 +130,8 @@ import java.util.List;
 import java.util.UUID;
 
 @EventBusSubscriber
-public class ServerPlayerEvents {
+public class
+ServerPlayerEvents {
 
     //    @SubscribeEvent
 //    public static void onPlayerAttack(AttackEntityEvent event) {
@@ -319,6 +323,18 @@ public class ServerPlayerEvents {
         if (event.context().asEntityCaster() instanceof ServerPlayer serverPlayer &&
                 (event.reason() == CastEndReason.COMPLETED || event.context().skill().value().getCastType() == CastType.CONTINUOUS)) {
             Scroll.attemptRemoveScrollAfterCast(serverPlayer, event.context());
+        }
+    }
+
+    @SubscribeEvent
+    public static void buildSpellLevel(BuildCastContextEvent.Level event) {
+        // todo: in the purview of this being only spells, should this just be moved to abstractspell's build context?
+        CastContext context = event.context();
+        if (context.asEntityCaster() instanceof LivingEntity livingEntity && context.skill().value() instanceof AbstractSpell spell) {
+            int affinityBonus = CuriosApi.getCuriosInventory(livingEntity).map(inv ->
+                    inv.findCurios(AffinityData::hasAffinityData).stream()
+                            .mapToInt(slot -> AffinityData.getAffinityData(slot.stack()).getBonusFor(spell)).sum()).orElse(0);
+            event.setLevel(event.getLevel() + affinityBonus);
         }
     }
 

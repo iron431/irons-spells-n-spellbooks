@@ -222,9 +222,13 @@ public abstract class AbstractSkill {
         } else {
             levelComponent = Component.literal(String.valueOf(levelTotal));
         }
+        levelComponent = Component.translatable("tooltip.skillcasting.level", levelComponent);
         info.leftText().add(levelComponent);
-        // todo: no cooldown handling
-        info.leftText().add(Component.translatable("tooltip.skillcasting.cooldown_length", castContext.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0) / 20.0 + "s"));
+        int cooldownTicks = castContext.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0);
+        if (cooldownTicks > 0) {
+            info.leftText().add(Component.translatable("tooltip.skillcasting.cooldown_length",
+                    String.format("%.2fs", cooldownTicks / 20.0)));
+        }
         return info;
     }
 

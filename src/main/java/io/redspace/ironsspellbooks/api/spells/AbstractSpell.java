@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.render.animation.AnimationHelper;
+import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
@@ -287,28 +288,17 @@ public abstract class AbstractSpell extends AbstractSkill {
     @Override
     public SkillWheelInfo buildSpellWheelInfo(CastContext castContext, SkillSelectionManager.SelectionOption selectionOption) {
         SkillWheelInfo info = new SkillWheelInfo();
-        Component levelComponent;
-        int levelTotal = castContext.getSkillLevel();
-        int diff = levelTotal - selectionOption.getLevel();
-        if (diff > 0) {
-            levelComponent = Component.translatable("tooltip.skillcasting.level_plus", levelTotal, diff);
-        } else if (diff < 0) {
-            levelComponent = Component.translatable("tooltip.skillcasting.level_minus", levelTotal, diff);
-        } else {
-            levelComponent = Component.literal(String.valueOf(levelTotal));
-        }
-        info.leftText().add(levelComponent);
-        int manaCost = castContext.has(SpellcastingComponentTypes.IGNORE_MANA) ? 0 : castContext.getOrDefault(SpellcastingComponentTypes.MANA_COST, 0);
-        if (manaCost > 0) {
-            if (this.getCastType() == CastType.CONTINUOUS) {
-                info.leftText().add(Component.translatable("tooltip.irons_spellbooks.mana_cost_per_second", manaCost * 20 / continuousInterval()));
-            } else {
-                info.leftText().add(Component.translatable("tooltip.irons_spellbooks.mana_cost", manaCost));
-            }
-        }
-        // fixme: add ignore cooldown handling
-        info.leftText().add(Component.translatable("tooltip.skillcasting.cooldown_length", castContext.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0) / 20.0 + "s"));
-        info.rightText().addAll(getUniqueInfo(castContext));
+        info.leftText().add(
+                Component.translatable("tooltip.skillcasting.level", TooltipsUtils.getLevelNumberComponent(selectionOption.skillData, castContext))
+                        .withStyle(this.getRarity(castContext.getSkillLevel()).getDisplayName().getStyle())
+        );
+        TooltipsUtils.getManaCostComponent(castContext).ifPresent(
+                component -> info.leftText().add(component.withStyle(ChatFormatting.AQUA))
+        );
+        TooltipsUtils.getCooldownComponent(castContext).ifPresent(
+                component -> info.leftText().add(component.withStyle(ChatFormatting.YELLOW))
+        );
+        getUniqueInfo(castContext).forEach(component -> info.rightText().add(component.withStyle(Style.EMPTY.withColor(0x3be33b))));
         return info;
     }
 

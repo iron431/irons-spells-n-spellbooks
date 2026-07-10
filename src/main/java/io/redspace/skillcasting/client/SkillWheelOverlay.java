@@ -17,10 +17,12 @@ import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -72,8 +74,9 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
         }
         var screenWidth = guiHelper.guiWidth();
         var screenHeight = guiHelper.guiHeight();
-        if (!active)
+        if (!active) {
             return;
+        }
 
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
@@ -83,7 +86,7 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
             return;
         }
 
-        var data = SkillcastingData.get(player);
+        SkillcastingData data = SkillcastingData.get(player);
         SkillSelectionManager manager = data.selectionManager();
         int totalSpellsAvailable = manager.getSkillCount();
 
@@ -117,13 +120,16 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
         SkillSelectionManager.SelectionOption selectionOption = manager.getOptionAt(wheelSelection);
         AbstractSkill selectedSkill = selectionOption == null ? null : selectionOption.getSkill();
         if (selectedSkill != null) {
-            CastContext castContext = SkillcastingManager.buildCastContext(CasterRef.entity(player), SkillRegistry.holder(selectedSkill), selectionOption.getLevel(), CastSource.of(selectionOption.equipmentSlot));
-            var font = Minecraft.getInstance().font;
+            CastContext castContext = SkillcastingManager.buildCastContext(CasterRef.entity(player),
+                    SkillRegistry.holder(selectedSkill),
+                    selectionOption.getLevel(),
+                    CastSource.of(selectionOption.equipmentSlot));
+            Font font = Minecraft.getInstance().font;
             SkillWheelInfo info = selectedSkill.buildSpellWheelInfo(castContext, selectionOption);
             int textHeight = Math.max(2, Math.max(info.leftText().size(), info.rightText().size())) * font.lineHeight + 5;
             int textCenterMargin = 5;
             int textTitleMargin = 5;
-            var title = selectedSkill.getDisplayName(Minecraft.getInstance().player).withStyle(ChatFormatting.UNDERLINE);
+            MutableComponent title = selectedSkill.getDisplayName(player).withStyle(ChatFormatting.UNDERLINE);
 
             drawTextBackground(guiHelper, centerX, centerY, ringOuterEdge + textHeight - textTitleMargin - font.lineHeight, textCenterMargin, textHeight);
             guiHelper.drawString(font, title, centerX - font.width(title) / 2, (int) (centerY - (ringOuterEdge + textHeight)), 0xFFFFFF, true);
@@ -137,7 +143,7 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
             }
         }
 
-        //Spell Icons
+        // Skill Icons
         float scale = Mth.lerp(totalSpellsAvailable / 15f, 2, 1.25f) * .65f;
         double radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .25f * (totalSpellsAvailable / 15f));
         Vec2[] locations = new Vec2[totalSpellsAvailable];
@@ -173,7 +179,6 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
     }
 
     private void drawTextBackground(GuiGraphics guiHelper, float centerX, float centerY, float textYOffset, int textCenterMargin, int textHeight) {
-        guiHelper.fill(0, 0, (int) (centerX * 2), (int) (centerY * 2), 0);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         centerY = centerY - textYOffset - 2;
@@ -187,19 +192,14 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
 
         final VertexConsumer vertexConsumer = guiHelper.bufferSource().getBuffer(RenderType.gui());
         Matrix4f m = guiHelper.pose().last().pose();
+        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMin + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
+        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMax + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
+        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMax + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
+        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMin + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
         vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMin, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
         vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
         vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
         vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMin, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
-
-        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMin + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
-        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMax + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
-        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMax + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
-        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMin + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
-        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMin + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
-        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMax + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
-        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMax + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
-        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMin + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
         RenderSystem.disableBlend();
     }
 
@@ -294,32 +294,6 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
             vertexConsumer.addVertex(m, centerX + x2m2, centerY + y2m2, 0).setColor(color.x(), color.y(), color.z(), 0);
             vertexConsumer.addVertex(m, centerX + x1m2, centerY + y1m2, 0).setColor(color.x(), color.y(), color.z(), 0);
         }
-    }
-
-    private void setOpaqueTexture(ResourceLocation texture) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.setShaderTexture(0, texture);
-    }
-
-    private void setTranslucentTexture(ResourceLocation texture) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.setShaderTexture(0, texture);
-    }
-
-    private boolean inTriangle(final double x1, final double y1, final double x2, final double y2,
-                               final double x3, final double y3, final double x, final double y) {
-        final double ab = (x1 - x) * (y2 - y) - (x2 - x) * (y1 - y);
-        final double bc = (x2 - x) * (y3 - y) - (x3 - x) * (y2 - y);
-        final double ca = (x3 - x) * (y1 - y) - (x1 - x) * (y3 - y);
-        return sign(ab) == sign(bc) && sign(bc) == sign(ca);
-    }
-
-    private int sign(final double n) {
-        return n > 0 ? 1 : -1;
     }
 
     private static float getAngle(Vec2 a, Vec2 b) {

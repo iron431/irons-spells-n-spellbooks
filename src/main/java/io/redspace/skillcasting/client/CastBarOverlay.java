@@ -35,7 +35,7 @@ public final class CastBarOverlay implements LayeredDraw.Layer {
         }
         long gameTime = player.level().getGameTime();
         float castCompletionPercent = data.castCompletionPercent(gameTime);
-        String castTimeString = String.valueOf(data.castDurationRemaining(gameTime) / 20f);
+        String castTimeString = String.format("%.1fs",data.castDurationRemaining(gameTime) / 20f);
 
         int screenWidth = guiHelper.guiWidth();
         int screenHeight = guiHelper.guiHeight();

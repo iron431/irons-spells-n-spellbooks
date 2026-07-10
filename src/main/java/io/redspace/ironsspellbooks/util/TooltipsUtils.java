@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.events.CustomizeScrollModNameEvent;
 import io.redspace.ironsspellbooks.api.spells.SpellCastSources;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterRef;
@@ -34,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class TooltipsUtils {
@@ -45,7 +45,6 @@ public class TooltipsUtils {
     }
 
     public static int indexOfComponentRegex(List<Component> lines, String regex) {
-        //IronsSpellbooks.LOGGER.debug("TooltipsUtils.indexOfComponentRegex: {}", regex);
         return indexOfInternal(lines, (string -> string.matches(regex)));
     }
 
@@ -58,12 +57,10 @@ public class TooltipsUtils {
         for (int i = 0; i < size; i++) {
             var component = lines.get(i);
             if (component.getContents() instanceof TranslatableContents translatableContents) {
-                //IronsSpellbooks.LOGGER.debug("TooltipsUtils.indexOfInternal {}: {}: {}", i, translatableContents.getKey(), comparator.test(translatableContents.getKey()));
                 if (comparator.test(translatableContents.getKey())) {
                     return i;
                 }
             } else if (component.getContents() instanceof PlainTextContents.LiteralContents literalContents) {
-                //IronsSpellbooks.LOGGER.debug("TooltipsUtils.indexOfInternal {}: {}: {}", i, literalContents.text(), comparator.test(literalContents.text()));
                 if (comparator.test(literalContents.text())) {
                     return i;
                 }
@@ -80,11 +77,7 @@ public class TooltipsUtils {
         var context = SkillcastingManager.buildCastContext(CasterRef.entity(player), spell.holder(), spellData.getLevel(), castSource);
         var title = getTitleComponent(spellData, player, context);
         var uniqueInfo = spell.getUniqueInfo(context);
-        int manaCost = context.getOrDefault(SpellcastingComponentTypes.MANA_COST, 0);
-        int cooldownTicks = context.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0);
         int castTimeTicks = context.getOrDefault(SkillcastingComponentTypes.CAST_TIME, spell.getCastTimeTicks());
-        var manaCostComponent = getManaCostComponent(spell.getCastType(), manaCost).withStyle(ChatFormatting.BLUE);
-        var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(cooldownTicks, 2)).withStyle(ChatFormatting.BLUE);
 
         List<MutableComponent> lines = new ArrayList<>();
         lines.add(Component.empty());
@@ -93,12 +86,12 @@ public class TooltipsUtils {
         if (spell.getCastType() != CastType.INSTANT) {
             lines.add(Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(castTimeTicks, 2)).withStyle(ChatFormatting.BLUE)));
         }
-        if (manaCost > 0) {
-            lines.add(manaCostComponent);
-        }
-        if (cooldownTicks > 0) {
-            lines.add(cooldownTime);
-        }
+        TooltipsUtils.getManaCostComponent(context).ifPresent(
+                component -> lines.add(component.withStyle(ChatFormatting.BLUE))
+        );
+        TooltipsUtils.getCooldownComponent(context).ifPresent(
+                component -> lines.add(component.withStyle(ChatFormatting.BLUE))
+        );
         return lines;
     }
 
@@ -111,19 +104,15 @@ public class TooltipsUtils {
             return List.of();
         }
         CastContext context = SkillcastingManager.buildCastContext(CasterRef.entity(player), spell.holder(), spellData.getLevel(), CastSource.of(SpellCastSources.SCROLL, ""));
-        int manaCost = context.getOrDefault(SpellcastingComponentTypes.MANA_COST, 0);
-        int cooldownTicks = context.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0);
         int castTimeTicks = context.getOrDefault(SkillcastingComponentTypes.CAST_TIME, spell.getCastTimeTicks());
 
-        MutableComponent levelText = getLevelComponenet(spellData, player, context);
+        MutableComponent levelText = getLevelNumberComponent(spellData, context);
         MutableComponent title = Component.translatable("tooltip.irons_spellbooks.level", levelText)
                 .append(" ")
                 .append(Component.translatable("tooltip.irons_spellbooks.rarity", spell.getRarity(spellData.getLevel()).getDisplayName()).withStyle(spell.getRarity(spellData.getLevel()).getDisplayName().getStyle()))
                 .withStyle(ChatFormatting.GRAY);
         List<MutableComponent> uniqueInfo = spell.getUniqueInfo(context);
         MutableComponent whenInSpellBook = Component.translatable("tooltip.irons_spellbooks.scroll_tooltip").withStyle(ChatFormatting.GRAY);
-        MutableComponent manaCostComponent = getManaCostComponent(spell.getCastType(), manaCost).withStyle(ChatFormatting.BLUE);
-        MutableComponent cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(context.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0), 2)).withStyle(ChatFormatting.BLUE);
         MutableComponent castType = null;
         if (spell.getCastType() != CastType.INSTANT) {
             castType = (Component.literal(" ").append(getCastTimeComponent(spell.getCastType(), Utils.timeFromTicks(castTimeTicks, 2)).withStyle(ChatFormatting.BLUE)));
@@ -141,12 +130,12 @@ public class TooltipsUtils {
 
         lines.add(Component.empty());
         lines.add(whenInSpellBook);
-        if (manaCost > 0) {
-            lines.add(manaCostComponent);
-        }
-        if (spell.getCooldownTicks() > 0) {
-            lines.add(cooldownTime);
-        }
+        TooltipsUtils.getManaCostComponent(context).ifPresent(
+                component -> lines.add(component.withStyle(ChatFormatting.BLUE))
+        );
+        TooltipsUtils.getCooldownComponent(context).ifPresent(
+                component -> lines.add(component.withStyle(ChatFormatting.BLUE))
+        );
         lines.add(spell.getSchoolType().getDisplayName().copy());
 
         return lines;
@@ -167,7 +156,7 @@ public class TooltipsUtils {
     private static final Style INFO_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);
     private static final Style OBFUSCATED_STYLE = AbstractSpell.ELDRITCH_OBFUSCATED_STYLE.applyTo(INFO_STYLE);
 
-    public static MutableComponent getLevelComponenet(SkillData spellData, LivingEntity caster, CastContext context) {
+    public static MutableComponent getLevelNumberComponent(SkillData spellData, CastContext context) {
         int baseLevel = spellData.getLevel();
         int levelTotal = context.getSkillLevel();
         int diff = levelTotal - baseLevel;
@@ -188,17 +177,31 @@ public class TooltipsUtils {
         };
     }
 
-    @Deprecated
-    public static MutableComponent getManaCostComponent(CastType castType, int manaCost) {
-        if (castType == CastType.CONTINUOUS) {
-            return Component.translatable("tooltip.irons_spellbooks.mana_cost_per_second", manaCost * (20 / MagicManager.CONTINUOUS_CAST_TICK_INTERVAL));
-        } else {
-            return Component.translatable("tooltip.irons_spellbooks.mana_cost", manaCost);
+    public static Optional<MutableComponent> getManaCostComponent(CastContext castContext) {
+        // we do not respect IGNORE_MANA, because that is a gameplay effect, whereas we want definitive statistics returned
+        int manaCost = castContext.getOrDefault(SpellcastingComponentTypes.MANA_COST, 0);
+        var spell = castContext.skill().value();
+        if (manaCost > 0) {
+            if (spell.getCastType() == CastType.CONTINUOUS) {
+                return Optional.of(Component.translatable("tooltip.irons_spellbooks.mana_cost_per_second", manaCost * 20 / spell.continuousInterval()));
+            } else {
+                return Optional.of(Component.translatable("tooltip.irons_spellbooks.mana_cost", manaCost));
+            }
         }
+        return Optional.empty();
+    }
+
+    public static Optional<MutableComponent> getCooldownComponent(CastContext castContext) {
+        // we do not respect IGNORE_COOLDOWN, because that is a gameplay effect, whereas we want definitive statistics returned
+        int cooldownTicks = castContext.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0);
+        if (cooldownTicks > 0) {
+            return Optional.of(Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(cooldownTicks, 2)));
+        }
+        return Optional.empty();
     }
 
     public static MutableComponent getTitleComponent(SkillData spellData, @NotNull LocalPlayer player, CastContext context) {
-        var levelText = getLevelComponenet(spellData, player, context);
+        var levelText = getLevelNumberComponent(spellData, context);
         var skill = spellData.getSkill();
         Style schoolStyle = skill instanceof AbstractSpell spell ? spell.getSchoolType().getDisplayName().getStyle() : Style.EMPTY;
         return Component.translatable("tooltip.irons_spellbooks.selected_spell",
