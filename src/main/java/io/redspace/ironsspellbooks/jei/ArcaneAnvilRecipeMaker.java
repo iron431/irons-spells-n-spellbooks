@@ -3,10 +3,9 @@ package io.redspace.ironsspellbooks.jei;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.Comparator;
 import java.util.List;
@@ -36,7 +35,7 @@ public final class ArcaneAnvilRecipeMaker {
     private static Stream<ArcaneAnvilJeiRecipe> getScrollRecipes(JeiPlugin.ItemFinder itemFinder) {
         if (!ServerConfigs.SPEC.isLoaded() || ServerConfigs.SCROLL_MERGING.get()) {
             return SpellRegistry.getEnabledSpells().stream()
-                    .sorted(Comparator.comparing(AbstractSpellSkill::getSkillId))
+                    .sorted(Comparator.comparing(AbstractSpell::getSkillId))
                     .flatMap(spell -> IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel() - 1).mapToObj(i -> new ArcaneAnvilJeiRecipe(spell, i)));
         } else {
             return Stream.empty();
@@ -44,7 +43,7 @@ public final class ArcaneAnvilRecipeMaker {
     }
 
     private static Stream<ArcaneAnvilJeiRecipe> getImbueRecipes(JeiPlugin.ItemFinder itemFinder) {
-        return itemFinder.imbueable.stream().map(item -> new ArcaneAnvilJeiRecipe(item, (AbstractSpellSkill) null));
+        return itemFinder.imbueable.stream().map(item -> new ArcaneAnvilJeiRecipe(item, (AbstractSpell) null));
     }
 
     private static Stream<ArcaneAnvilJeiRecipe> getUpgradeRecipes(JeiPlugin.ItemFinder itemFinder) {
@@ -56,7 +55,7 @@ public final class ArcaneAnvilRecipeMaker {
 
     private static Stream<ArcaneAnvilJeiRecipe> getAffinityAttuneRecipes(JeiPlugin.ItemFinder itemFinder) {
         return SpellRegistry.getEnabledSpells().stream()
-                .sorted(Comparator.comparing(AbstractSpellSkill::getSkillId))
+                .sorted(Comparator.comparing(AbstractSpell::getSkillId))
                 .map(ArcaneAnvilJeiRecipe::new);
     }
 

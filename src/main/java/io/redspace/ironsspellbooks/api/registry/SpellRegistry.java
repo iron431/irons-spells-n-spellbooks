@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.api.registry;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.blood.AcupunctureSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.blood.BloodNeedlesSpell;
 import io.redspace.skillcasting.irons_spellbooks.spells.blood.BloodSlashSpell;
@@ -132,41 +132,41 @@ import static io.redspace.skillcasting.registry.SkillcastingRegistries.SKILL_REG
 public class SpellRegistry {
     private static final DeferredRegister<AbstractSkill> SPELLS = DeferredRegister.create(SKILL_REGISTRY, IronsSpellbooks.MODID);
 
-    private static final Map<SchoolType, List<AbstractSpellSkill>> SCHOOLS_TO_SPELLS = new HashMap<>();
+    private static final Map<SchoolType, List<AbstractSpell>> SCHOOLS_TO_SPELLS = new HashMap<>();
 
     public static void register(IEventBus eventBus) {
         SPELLS.register(eventBus);
     }
 
     @Nullable
-    public static AbstractSpellSkill getSpell(ResourceLocation spellId) {
-        return SKILL_REGISTRY.get(spellId) instanceof AbstractSpellSkill spell ? spell : null;
+    public static AbstractSpell getSpell(ResourceLocation spellId) {
+        return SKILL_REGISTRY.get(spellId) instanceof AbstractSpell spell ? spell : null;
     }
 
     public static boolean containsKey(ResourceLocation spellId) {
         return getSpell(spellId) != null;
     }
 
-    public static List<AbstractSpellSkill> getEnabledSpells() {
+    public static List<AbstractSpell> getEnabledSpells() {
         return SKILL_REGISTRY.stream()
-                .filter(AbstractSpellSkill.class::isInstance)
-                .map(AbstractSpellSkill.class::cast)
-                .filter(AbstractSpellSkill::isEnabled)
+                .filter(AbstractSpell.class::isInstance)
+                .map(AbstractSpell.class::cast)
+                .filter(AbstractSpell::isEnabled)
                 .collect(Collectors.toList());
     }
 
-    public static List<AbstractSpellSkill> getAllSpells() {
+    public static List<AbstractSpell> getAllSpells() {
         return SKILL_REGISTRY.stream()
-                .filter(AbstractSpellSkill.class::isInstance)
-                .map(AbstractSpellSkill.class::cast)
+                .filter(AbstractSpell.class::isInstance)
+                .map(AbstractSpell.class::cast)
                 .collect(Collectors.toList());
     }
 
-    public static List<AbstractSpellSkill> getSpellsForSchool(SchoolType schoolType) {
+    public static List<AbstractSpell> getSpellsForSchool(SchoolType schoolType) {
         return SCHOOLS_TO_SPELLS.computeIfAbsent(schoolType, (school) -> SKILL_REGISTRY
                 .stream()
-                .filter(AbstractSpellSkill.class::isInstance)
-                .map(AbstractSpellSkill.class::cast)
+                .filter(AbstractSpell.class::isInstance)
+                .map(AbstractSpell.class::cast)
                 .filter(spell -> spell.getSchoolType() == school)
                 .collect(Collectors.toList()));
     }
@@ -174,9 +174,9 @@ public class SpellRegistry {
     public static void onConfigReload() {
         SCHOOLS_TO_SPELLS.clear();
         SKILL_REGISTRY.stream()
-                .filter(AbstractSpellSkill.class::isInstance)
-                .map(AbstractSpellSkill.class::cast)
-                .forEach(AbstractSpellSkill::resetRarityWeights);
+                .filter(AbstractSpell.class::isInstance)
+                .map(AbstractSpell.class::cast)
+                .forEach(AbstractSpell::resetRarityWeights);
     }
 
     public static final DeferredHolder<AbstractSkill, IcicleSpell> ICICLE_SPELL =
@@ -410,7 +410,7 @@ public class SpellRegistry {
     public static final DeferredHolder<AbstractSkill, TouchDigSpell> TOUCH_DIG_SPELL =
             registerSpell("touch_dig", TouchDigSpell::new);
 
-    private static <T extends AbstractSpellSkill> DeferredHolder<AbstractSkill, T> registerSpell(String name, Supplier<T> skill) {
+    private static <T extends AbstractSpell> DeferredHolder<AbstractSkill, T> registerSpell(String name, Supplier<T> skill) {
         return SPELLS.register(name, skill);
     }
 }

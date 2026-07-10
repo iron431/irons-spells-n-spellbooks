@@ -19,7 +19,7 @@ import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -32,7 +32,6 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
@@ -41,7 +40,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class ShadowSlashSpell extends AbstractSpellSkill {
+public class ShadowSlashSpell extends AbstractSpell {
 
     private static final float DISTANCE = 12f;
 

@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.goals.DebugTargetClosestEntityGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.DebugWizardAttackGoal;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -19,7 +19,7 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.Level;
 
 public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
-    private AbstractSpellSkill spell;
+    private AbstractSpell spell;
     private int spellLevel;
     private boolean targetsPlayer;
     private String spellInfo = "No Spell Found";
@@ -30,7 +30,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
         super(pEntityType, pLevel);
     }
 
-    public DebugWizard(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel, AbstractSpellSkill spell, int spellLevel, boolean targetsPlayer, int cancelCastAfterTicks) {
+    public DebugWizard(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel, AbstractSpell spell, int spellLevel, boolean targetsPlayer, int cancelCastAfterTicks) {
         super(pEntityType, pLevel);
 
         this.targetsPlayer = targetsPlayer;
@@ -85,7 +85,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        spell = (AbstractSpellSkill) SpellRegistry.getSpell(ResourceLocation.parse(pCompound.getString("spellId")));
+        spell = (AbstractSpell) SpellRegistry.getSpell(ResourceLocation.parse(pCompound.getString("spellId")));
         spellLevel = pCompound.getInt("spellLevel");
         targetsPlayer = pCompound.getBoolean("targetsPlayer");
         cancelCastAfterTicks = pCompound.getInt("cancelCastAfterTicks");

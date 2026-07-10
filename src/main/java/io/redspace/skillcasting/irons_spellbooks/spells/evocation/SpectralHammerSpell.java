@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.skill.CastType;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -29,7 +29,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 
 import java.util.List;
 
-public class SpectralHammerSpell extends AbstractSpellSkill {
+public class SpectralHammerSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {

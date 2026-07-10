@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.skillcasting.api.cast.CastEndReason;
@@ -8,7 +9,7 @@ import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.CastSource;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
@@ -164,7 +165,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     }
 
-    public void initiateCastSpell(@Nullable AbstractSpellSkill spell, int spellLevel) {
+    public void initiateCastSpell(@Nullable AbstractSpell spell, int spellLevel) {
         if (spell == null) {
             return;
         }
@@ -183,7 +184,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
         CasterRef casterRef = CasterRef.entity(this);
         var castContext = SkillcastingManager.buildCastContext(casterRef, SkillRegistry.holder(spell), spellLevel, CastSource.EMPTY);
-        castContext.set(io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
+        castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
         castContext.set(io.redspace.skillcasting.registry.SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
 
         if (!spell.checkPreCastConditions(castContext)) {
@@ -198,13 +199,13 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     @Nullable
-    private AbstractSpellSkill getCastingSpellSkill() {
+    private AbstractSpell getCastingSpellSkill() {
         ActiveCast activeCast = SkillcastingData.get(this).getActiveCast();
         if (activeCast == null) {
             return null;
         }
         AbstractSkill skill = activeCast.context().skill().value();
-        return skill instanceof AbstractSpellSkill spellSkill ? spellSkill : null;
+        return skill instanceof AbstractSpell spellSkill ? spellSkill : null;
     }
 
     public void notifyDangerousProjectile(Projectile projectile) {
@@ -273,9 +274,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
     @Nullable
-    private AbstractSpellSkill lastCastSpellType;
+    private AbstractSpell lastCastSpellType;
     @Nullable
-    private AbstractSpellSkill instantCastSpellType;
+    private AbstractSpell instantCastSpellType;
     private boolean cancelCastAnimation = false;
     private boolean animatingLegs = false;
     private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
@@ -328,7 +329,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 //        }
 
         if (isCasting()) {
-            AbstractSpellSkill castingSpell = getCastingSpellSkill();
+            AbstractSpell castingSpell = getCastingSpellSkill();
             if (castingSpell != null && controller.getAnimationState() == AnimationController.State.STOPPED) {
                 setStartAnimationFromSpell(controller, castingSpell);
             }
@@ -346,7 +347,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
         var controller = event.getController();
         if (isCasting() && controller.getAnimationState() == AnimationController.State.STOPPED) {
-            AbstractSpellSkill castingSpell = getCastingSpellSkill();
+            AbstractSpell castingSpell = getCastingSpellSkill();
             if (castingSpell != null && castingSpell.getCastType() == CastType.CONTINUOUS) {
                 setStartAnimationFromSpell(controller, castingSpell);
             }
@@ -360,7 +361,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         }
     }
 
-    private void setStartAnimationFromSpell(AnimationController controller, AbstractSpellSkill spell) {
+    private void setStartAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
         AnimationHolder animation = spell.getCastStartAnimation();
         if (animation.getType() != AnimationHolder.Type.ANIMATION) {
             cancelCastAnimation = true;
@@ -375,7 +376,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         }, () -> cancelCastAnimation = true);
     }
 
-    private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpellSkill spell) {
+    private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
         AnimationHolder finishAnimation = spell.getCastFinishAnimation();
         if (finishAnimation.getType() == AnimationHolder.Type.PASS) {
             cancelCastAnimation = false;

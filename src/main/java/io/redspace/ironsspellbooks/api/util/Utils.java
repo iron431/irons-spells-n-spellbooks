@@ -20,7 +20,7 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillSlot;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -150,7 +150,7 @@ public class Utils {
         return stringTruncation(time, decimalPlaces) + affix;
     }
 
-    public static boolean handleSpellTeleport(AbstractSpellSkill spell, Entity entity, Vec3 destination) {
+    public static boolean handleSpellTeleport(AbstractSpell spell, Entity entity, Vec3 destination) {
         var event = new SpellTeleportEvent(spell, entity, destination.x, destination.y, destination.z);
         NeoForge.EVENT_BUS.post(event);
         boolean canceled = event.isCanceled();

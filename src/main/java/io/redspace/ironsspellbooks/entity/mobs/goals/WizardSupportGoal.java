@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import net.minecraft.util.Mth;
@@ -184,7 +184,7 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob> extends Goa
         }
         int spellLevel = (int) (abstractSpell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
         spellLevel = Math.max(spellLevel, 1);
-        if (abstractSpell instanceof AbstractSpellSkill spellSkill) {
+        if (abstractSpell instanceof AbstractSpell spellSkill) {
             castingMob.initiateCastSpell(spellSkill, spellLevel);
         }
         mob.setSupportTarget(null);

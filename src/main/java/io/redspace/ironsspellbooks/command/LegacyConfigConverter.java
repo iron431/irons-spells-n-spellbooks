@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
@@ -115,7 +115,7 @@ public class LegacyConfigConverter {
             Config config = entry.getValue();
             Map<String, Object> jsonEntry = new HashMap<>();
 //            jsonEntry.put(SpellConfigManager.ID_FIELD, spellId.toString());
-            if (!(SpellRegistry.getSpell(spellId) instanceof AbstractSpellSkill)) {
+            if (!(SpellRegistry.getSpell(spellId) instanceof AbstractSpell)) {
                 IronsSpellbooks.LOGGER.info("[Config Converter] Skipping spell {}, not a valid spell", spellId);
                 continue;
             }
@@ -173,7 +173,7 @@ public class LegacyConfigConverter {
                 throw new RuntimeException("Failed to read rarity entry for spell " + spellId.toString());
             }
         }
-        if (!(SpellRegistry.getSpell(spellId) instanceof AbstractSpellSkill spellSkill)) {
+        if (!(SpellRegistry.getSpell(spellId) instanceof AbstractSpell spellSkill)) {
             return false;
         }
         return toCompare.equals(SpellConfigManager.getSpellDefaultConfigValue(spellSkill, param));

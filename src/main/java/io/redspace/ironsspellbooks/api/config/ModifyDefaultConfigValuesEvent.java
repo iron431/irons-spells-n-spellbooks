@@ -1,14 +1,14 @@
 package io.redspace.ironsspellbooks.api.config;
 
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.neoforged.bus.api.Event;
 
 public class ModifyDefaultConfigValuesEvent extends Event {
 
-    private final AbstractSpellSkill spell;
+    private final AbstractSpell spell;
     private final SpellConfigHolder config;
 
-    public ModifyDefaultConfigValuesEvent(AbstractSpellSkill spell, SpellConfigHolder spellConfigHolder) {
+    public ModifyDefaultConfigValuesEvent(AbstractSpell spell, SpellConfigHolder spellConfigHolder) {
         this.spell = spell;
         this.config = spellConfigHolder;
     }
@@ -17,7 +17,7 @@ public class ModifyDefaultConfigValuesEvent extends Event {
         config.setDefaultValue(type, value);
     }
 
-    public AbstractSpellSkill getSpell() {
+    public AbstractSpell getSpell() {
         return spell;
     }
 }

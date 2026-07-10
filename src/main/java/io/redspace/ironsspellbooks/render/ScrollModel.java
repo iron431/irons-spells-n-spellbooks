@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.render;
 
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +19,7 @@ public class ScrollModel extends NBTOverrideItemModel {
     Optional<ResourceLocation> getModelFromStack(ItemStack itemStack) {
         if (ISkillContainer.isSkillContainer(itemStack)) {
             var skillData = ISkillContainer.get(itemStack).getSkillAtIndex(0);
-            if (skillData != null && skillData.getSkill() instanceof AbstractSpellSkill spellSkill) {
+            if (skillData != null && skillData.getSkill() instanceof AbstractSpell spellSkill) {
                 return Optional.of(getScrollModelLocation(spellSkill.getSchoolType()));
             }
         }

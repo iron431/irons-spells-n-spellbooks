@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.command;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class SpellBalanceDebugger {
-    record Info(AbstractSpellSkill spell, Map<String, String> values) {
+    record Info(AbstractSpell spell, Map<String, String> values) {
     }
 
     Map<String, Integer> trackedProperties;
@@ -35,7 +35,7 @@ public class SpellBalanceDebugger {
         trackedProperties.put(property, occurrences);
     }
 
-    private Map<String, String> getValuesFromSpell(AbstractSpellSkill spell) {
+    private Map<String, String> getValuesFromSpell(AbstractSpell spell) {
         // fixme skillcasting: unique info and mana cost now require a CastContext; needs a caster-free context builder to restore these columns
         List<Component> info = List.of();
         var map = new HashMap<String, String>();
@@ -108,7 +108,7 @@ public class SpellBalanceDebugger {
     }
 
     public void run() {
-        for (AbstractSpellSkill spell : SpellRegistry.getEnabledSpells()) {
+        for (AbstractSpell spell : SpellRegistry.getEnabledSpells()) {
             spellInfo.add(new Info(spell, getValuesFromSpell(spell)));
         }
         try {

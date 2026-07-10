@@ -10,8 +10,7 @@ import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.network.ScrollForgeSelectSpellPacket;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -46,7 +45,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     private List<SpellCardInfo> availableSpells;
     private ItemStack[] oldMenuSlots = {ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
 
-    private @Nullable AbstractSpellSkill selectedSpell =null;
+    private @Nullable AbstractSpell selectedSpell =null;
     private int scrollOffset;
     private boolean isScrollbarHeld;
 
@@ -176,7 +175,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             var spells = SchoolRegistry
                     .getSchoolsFromFocus(focusStack).stream()
                     .flatMap(school -> SpellRegistry.getSpellsForSchool(school).stream())
-                    .filter(AbstractSpellSkill::allowCrafting)
+                    .filter(AbstractSpell::allowCrafting)
                     .toList();
             for (int i = 0; i < spells.size(); i++) {
                 int tempIndex = i;
@@ -188,7 +187,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         }
     }
 
-    private void setSelectedSpell(AbstractSpellSkill spell) {
+    private void setSelectedSpell(AbstractSpell spell) {
         selectedSpell = spell;
         PacketDistributor.sendToServer(new ScrollForgeSelectSpellPacket(this.menu.blockEntity.getBlockPos(), spell.getSkillId().toString()));
     }
@@ -201,7 +200,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         }
     }
 
-    public AbstractSpellSkill getSelectedSpell() {
+    public AbstractSpell getSelectedSpell() {
         return selectedSpell;
     }
 
@@ -245,13 +244,13 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         }
 
         ActivityState activityState = ActivityState.DISABLED;
-        AbstractSpellSkill spell;
+        AbstractSpell spell;
         int spellLevel;
         SpellRarity rarity;
         Button button;
         int index;
 
-        SpellCardInfo(AbstractSpellSkill spell, int spellLevel, int index, Button button) {
+        SpellCardInfo(AbstractSpell spell, int spellLevel, int index, Button button) {
             this.spell = spell;
             this.spellLevel = spellLevel;
             this.index = index;

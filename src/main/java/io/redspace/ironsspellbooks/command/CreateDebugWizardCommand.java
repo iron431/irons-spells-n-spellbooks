@@ -9,7 +9,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.debug_wizard.DebugWizard;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -42,7 +42,7 @@ public class CreateDebugWizardCommand {
             spellId = IronsSpellbooks.MODID + ":" + spellId;
         }
 
-        if (!(SpellRegistry.getSpell(ResourceLocation.parse(spellId)) instanceof AbstractSpellSkill spell)) {
+        if (!(SpellRegistry.getSpell(ResourceLocation.parse(spellId)) instanceof AbstractSpell spell)) {
             throw ERROR_FAILED.create();
         }
 

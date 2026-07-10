@@ -12,8 +12,8 @@ import io.redspace.skillcasting.data.ISkillContainerMutable;
 import io.redspace.skillcasting.data.SkillContainer;
 import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.data.SkillSlot;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
-import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -51,11 +51,11 @@ public class Scroll extends Item {
         return new SkillContainer(1, false, false, new SkillSlot[]{new SkillSlot(skillData, 0)});
     }
 
-    public static void applyScrollToStack(ItemStack stack, AbstractSpellSkill spell, int level) {
+    public static void applyScrollToStack(ItemStack stack, AbstractSpell spell, int level) {
         ISkillContainer.set(stack, createScrollContainer(new SkillData(spell, level)));
     }
 
-    public static void applyImbuedToStack(ItemStack stack, AbstractSpellSkill spell, int level) {
+    public static void applyImbuedToStack(ItemStack stack, AbstractSpell spell, int level) {
         ISkillContainer.set(stack, ISkillContainer.create(false, new SkillData(spell, level, true)));
     }
 
@@ -82,7 +82,7 @@ public class Scroll extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         var spellSlot = getSpellSlotFromStack(stack);
-        if (spellSlot == null || !(spellSlot.getSkill() instanceof AbstractSpellSkill spell)) {
+        if (spellSlot == null || !(spellSlot.getSkill() instanceof AbstractSpell spell)) {
             return InteractionResultHolder.fail(stack);
         }
         SkillcastingManager.attemptInitiateCast(

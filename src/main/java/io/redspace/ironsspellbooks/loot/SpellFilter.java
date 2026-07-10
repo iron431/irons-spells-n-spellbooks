@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;
@@ -21,11 +21,11 @@ import java.util.function.Predicate;
 
 public class SpellFilter {
     SchoolType schoolType = null;
-    List<AbstractSpellSkill> spells = new ArrayList<>();
+    List<AbstractSpell> spells = new ArrayList<>();
     final boolean force;
 
-    static final Map<SchoolType, List<AbstractSpellSkill>> SPELLS_FOR_SCHOOL = new HashMap<>();
-    static final Map<SchoolType, List<AbstractSpellSkill>> SPELLS_FOR_SCHOOL_FORCED = new HashMap<>();
+    static final Map<SchoolType, List<AbstractSpell>> SPELLS_FOR_SCHOOL = new HashMap<>();
+    static final Map<SchoolType, List<AbstractSpell>> SPELLS_FOR_SCHOOL_FORCED = new HashMap<>();
 
     public SpellFilter(boolean force, SchoolType schoolType) {
         this.force = force;
@@ -36,12 +36,12 @@ public class SpellFilter {
         this(false, type);
     }
 
-    public SpellFilter(boolean force, List<AbstractSpellSkill> spells) {
+    public SpellFilter(boolean force, List<AbstractSpell> spells) {
         this.force = force;
         this.spells = spells;
     }
 
-    public SpellFilter(List<AbstractSpellSkill> spells) {
+    public SpellFilter(List<AbstractSpell> spells) {
         this(false, spells);
     }
 
@@ -49,8 +49,8 @@ public class SpellFilter {
         this.force = false;
     }
 
-    private static final Codec<AbstractSpellSkill> SPELL_SKILL_CODEC = SkillcastingRegistries.SKILL_REGISTRY.byNameCodec().flatXmap(
-            skill -> skill instanceof AbstractSpellSkill spellSkill
+    private static final Codec<AbstractSpell> SPELL_SKILL_CODEC = SkillcastingRegistries.SKILL_REGISTRY.byNameCodec().flatXmap(
+            skill -> skill instanceof AbstractSpell spellSkill
                     ? DataResult.success(spellSkill)
                     : DataResult.error(() -> "Skill is not a spell: " + skill.getSkillId()),
             skill -> DataResult.success((AbstractSkill) skill));
@@ -65,17 +65,17 @@ public class SpellFilter {
     private static final Codec<SpellFilter> NO_FILTER_CODEC = Codec.unit(new SpellFilter());
     public static final Codec<SpellFilter> CODEC = Codec.withAlternative(SCHOOL_CODEC, SPELLS_CODEC);
 
-    private boolean isSpellAllowed(AbstractSpellSkill spell) {
+    private boolean isSpellAllowed(AbstractSpell spell) {
         return spell.isEnabled() && (force || spell.allowLooting());
     }
 
-    public List<AbstractSpellSkill> getApplicableSpells() {
+    public List<AbstractSpell> getApplicableSpells() {
         if (!spells.isEmpty()) {
-            return spells.stream().filter(AbstractSpellSkill::isEnabled).toList();
+            return spells.stream().filter(AbstractSpell::isEnabled).toList();
         } else if (schoolType != null) {
             if (force) {
                 return SPELLS_FOR_SCHOOL_FORCED.computeIfAbsent(this.schoolType,
-                        school -> SpellRegistry.getSpellsForSchool(school).stream().filter(AbstractSpellSkill::isEnabled).toList()
+                        school -> SpellRegistry.getSpellsForSchool(school).stream().filter(AbstractSpell::isEnabled).toList()
                 );
             } else {
                 return SPELLS_FOR_SCHOOL.computeIfAbsent(this.schoolType,
@@ -88,7 +88,7 @@ public class SpellFilter {
     }
 
     @Nullable
-    public AbstractSpellSkill getRandomSpell(RandomSource random, Predicate<AbstractSpellSkill> filter) {
+    public AbstractSpell getRandomSpell(RandomSource random, Predicate<AbstractSpell> filter) {
         var spells = getApplicableSpells().stream().filter(filter).toList();
         if (spells.isEmpty()) {
             return null;
@@ -97,7 +97,7 @@ public class SpellFilter {
     }
 
     @Nullable
-    public AbstractSpellSkill getRandomSpell(RandomSource randomSource) {
+    public AbstractSpell getRandomSpell(RandomSource randomSource) {
         return getRandomSpell(randomSource, (spell -> spell.isEnabled() && spell.allowLooting()));
     }
 }

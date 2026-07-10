@@ -12,8 +12,8 @@ import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.SkillData;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
-import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
@@ -73,7 +73,7 @@ public class TooltipsUtils {
     }
 
     public static List<MutableComponent> formatActiveSpellTooltip(ItemStack stack, SkillData spellData, CastSource castSource, @Nonnull LocalPlayer player) {
-        if (!(spellData.getSkill() instanceof AbstractSpellSkill spell)) {
+        if (!(spellData.getSkill() instanceof AbstractSpell spell)) {
             return new ArrayList<>();
         }
         // todo: move tooltip generation logic and helpers to expose as skillcasting helpers
@@ -107,7 +107,7 @@ public class TooltipsUtils {
             return List.of();
         }
         SkillData spellData = Scroll.getSpellSlotFromStack(stack);
-        if (spellData == null || !(spellData.getSkill() instanceof AbstractSpellSkill spell)) {
+        if (spellData == null || !(spellData.getSkill() instanceof AbstractSpell spell)) {
             return List.of();
         }
         CastContext context = SkillcastingManager.buildCastContext(CasterRef.entity(player), spell.holder(), spellData.getLevel(), CastSource.of(SpellCastSources.SCROLL, ""));
@@ -165,7 +165,7 @@ public class TooltipsUtils {
     }
 
     private static final Style INFO_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);
-    private static final Style OBFUSCATED_STYLE = AbstractSpellSkill.ELDRITCH_OBFUSCATED_STYLE.applyTo(INFO_STYLE);
+    private static final Style OBFUSCATED_STYLE = AbstractSpell.ELDRITCH_OBFUSCATED_STYLE.applyTo(INFO_STYLE);
 
     public static MutableComponent getLevelComponenet(SkillData spellData, LivingEntity caster, CastContext context) {
         int baseLevel = spellData.getLevel();
@@ -200,13 +200,13 @@ public class TooltipsUtils {
     public static MutableComponent getTitleComponent(SkillData spellData, @NotNull LocalPlayer player, CastContext context) {
         var levelText = getLevelComponenet(spellData, player, context);
         var skill = spellData.getSkill();
-        Style schoolStyle = skill instanceof AbstractSpellSkill spell ? spell.getSchoolType().getDisplayName().getStyle() : Style.EMPTY;
+        Style schoolStyle = skill instanceof AbstractSpell spell ? spell.getSchoolType().getDisplayName().getStyle() : Style.EMPTY;
         return Component.translatable("tooltip.irons_spellbooks.selected_spell",
                 skill.getDisplayName(player),
                 levelText).withStyle(schoolStyle);
     }
 
-    public static List<FormattedCharSequence> createSpellDescriptionTooltip(AbstractSpellSkill spell, Font font) {
+    public static List<FormattedCharSequence> createSpellDescriptionTooltip(AbstractSpell spell, Font font) {
         Player player = MinecraftInstanceHelper.instance.player();
         var name = spell.getDisplayName(player);
         var description = font.split(Component.translatable(String.format("%s.guide", spell.getDescriptionId())).withStyle(ChatFormatting.GRAY), 180);
@@ -218,7 +218,7 @@ public class TooltipsUtils {
         return hoverText;
     }
 
-    public static Style getStyleFor(Player player, AbstractSpellSkill spell) {
+    public static Style getStyleFor(Player player, AbstractSpell spell) {
         return spell.obfuscateStats(player) ? OBFUSCATED_STYLE : INFO_STYLE;
     }
 

@@ -16,8 +16,8 @@ import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.recast.RecastConfig;
 import io.redspace.skillcasting.api.recast.RecastResult;
 import io.redspace.skillcasting.api.skill.CastType;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
-import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -36,7 +36,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.List;
 import java.util.Optional;
 
-public class PortalSpell extends AbstractSpellSkill {
+public class PortalSpell extends AbstractSpell {
 
     public static final int PORTAL_RECAST_COUNT = 2;
     private static final int RECAST_DURATION_TICKS = 20 * 120;

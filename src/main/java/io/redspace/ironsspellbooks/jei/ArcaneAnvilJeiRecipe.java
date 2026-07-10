@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +33,7 @@ public class ArcaneAnvilJeiRecipe {
     @Nullable
     Item rightItem;
     @Nullable
-    AbstractSpellSkill spell;
+    AbstractSpell spell;
     int level;
 
     public ArcaneAnvilJeiRecipe(Item leftItem, Item rightItem) {
@@ -42,19 +42,19 @@ public class ArcaneAnvilJeiRecipe {
         this.type = Type.Item_Upgrade;
     }
 
-    public ArcaneAnvilJeiRecipe(Item leftItem, AbstractSpellSkill spell) {
+    public ArcaneAnvilJeiRecipe(Item leftItem, AbstractSpell spell) {
         this.leftItem = leftItem;
         this.spell = spell;
         this.type = Type.Imbue;
     }
 
-    public ArcaneAnvilJeiRecipe(AbstractSpellSkill spell, int baseLevel) {
+    public ArcaneAnvilJeiRecipe(AbstractSpell spell, int baseLevel) {
         this.spell = spell;
         this.level = baseLevel;
         this.type = Type.Scroll_Upgrade;
     }
 
-    public ArcaneAnvilJeiRecipe(AbstractSpellSkill spell) {
+    public ArcaneAnvilJeiRecipe(AbstractSpell spell) {
         this.spell = spell;
         this.type = Type.Affinity_Ring_Attune;
     }

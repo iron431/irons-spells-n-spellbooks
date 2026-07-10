@@ -9,7 +9,7 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillContainer;
 import io.redspace.skillcasting.data.SkillData;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -49,7 +49,7 @@ public class CreateSpellBookCommand {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
             var spellContainer = new SkillContainer(slots, true, true).mutableCopy();
             for (int i = 0; i < slots; i++) {
-                AbstractSpellSkill spell;
+                AbstractSpell spell;
                 boolean added;
                 do {
                     spell = new SpellFilter().getRandomSpell(source.getLevel().random);

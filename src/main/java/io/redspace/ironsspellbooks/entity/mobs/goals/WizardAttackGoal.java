@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.core.BlockPos;
@@ -42,7 +42,7 @@ public class WizardAttackGoal extends Goal {
     protected int spellAttackDelay = -1;
     protected int projectileCount;
 
-    protected @Nullable AbstractSpellSkill singleUseSpell = null;
+    protected @Nullable AbstractSpell singleUseSpell = null;
     protected int singleUseDelay;
     protected int singleUseLevel;
 
@@ -50,11 +50,11 @@ public class WizardAttackGoal extends Goal {
     protected boolean allowFleeing;
     protected int fleeCooldown;
 
-    protected final ArrayList<AbstractSpellSkill> attackSpells = new ArrayList<>();
-    protected final ArrayList<AbstractSpellSkill> defenseSpells = new ArrayList<>();
-    protected final ArrayList<AbstractSpellSkill> movementSpells = new ArrayList<>();
-    protected final ArrayList<AbstractSpellSkill> supportSpells = new ArrayList<>();
-    protected ArrayList<AbstractSpellSkill> lastSpellCategory = attackSpells;
+    protected final ArrayList<AbstractSpell> attackSpells = new ArrayList<>();
+    protected final ArrayList<AbstractSpell> defenseSpells = new ArrayList<>();
+    protected final ArrayList<AbstractSpell> movementSpells = new ArrayList<>();
+    protected final ArrayList<AbstractSpell> supportSpells = new ArrayList<>();
+    protected ArrayList<AbstractSpell> lastSpellCategory = attackSpells;
 
     protected float minSpellQuality = .1f;
     protected float maxSpellQuality = .4f;
@@ -84,7 +84,7 @@ public class WizardAttackGoal extends Goal {
         allowFleeing = true;
     }
 
-    public WizardAttackGoal setSpells(List<AbstractSpellSkill> attackSpells, List<AbstractSpellSkill> defenseSpells, List<AbstractSpellSkill> movementSpells, List<AbstractSpellSkill> supportSpells) {
+    public WizardAttackGoal setSpells(List<AbstractSpell> attackSpells, List<AbstractSpell> defenseSpells, List<AbstractSpell> movementSpells, List<AbstractSpell> supportSpells) {
         this.attackSpells.clear();
         this.defenseSpells.clear();
         this.movementSpells.clear();
@@ -104,7 +104,7 @@ public class WizardAttackGoal extends Goal {
         return this;
     }
 
-    public WizardAttackGoal setSingleUseSpell(AbstractSpellSkill abstractSpell, int minDelay, int maxDelay, int minLevel, int maxLevel) {
+    public WizardAttackGoal setSingleUseSpell(AbstractSpell abstractSpell, int minDelay, int maxDelay, int minLevel, int maxLevel) {
         this.singleUseSpell = abstractSpell;
         this.singleUseDelay = Utils.random.nextIntBetweenInclusive(minDelay, maxDelay);
         this.singleUseLevel = Utils.random.nextIntBetweenInclusive(minLevel, maxLevel);
@@ -317,8 +317,8 @@ public class WizardAttackGoal extends Goal {
         }
     }
 
-    protected @Nullable AbstractSpellSkill getNextSpellType() {
-        NavigableMap<Integer, ArrayList<AbstractSpellSkill>> weightedSpells = new TreeMap<>();
+    protected @Nullable AbstractSpell getNextSpellType() {
+        NavigableMap<Integer, ArrayList<AbstractSpell>> weightedSpells = new TreeMap<>();
         int attackWeight = getAttackWeight();
         int defenseWeight = getDefenseWeight() - (lastSpellCategory == defenseSpells ? 100 : 0);
         int movementWeight = getMovementWeight() - (lastSpellCategory == movementSpells ? 50 : 0);

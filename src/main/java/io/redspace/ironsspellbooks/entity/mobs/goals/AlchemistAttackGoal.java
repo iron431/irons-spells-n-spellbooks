@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
@@ -36,7 +36,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
     }
 
     @Override
-    public AlchemistAttackGoal setSpells(List<AbstractSpellSkill> attackSpells, List<AbstractSpellSkill> defenseSpells, List<AbstractSpellSkill> movementSpells, List<AbstractSpellSkill> supportSpells) {
+    public AlchemistAttackGoal setSpells(List<AbstractSpell> attackSpells, List<AbstractSpell> defenseSpells, List<AbstractSpell> movementSpells, List<AbstractSpell> supportSpells) {
         return (AlchemistAttackGoal) super.setSpells(attackSpells, defenseSpells, movementSpells, supportSpells);
     }
 
@@ -46,7 +46,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
     }
 
     @Override
-    public AlchemistAttackGoal setSingleUseSpell(AbstractSpellSkill spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
+    public AlchemistAttackGoal setSingleUseSpell(AbstractSpell spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
         return (AlchemistAttackGoal) super.setSingleUseSpell(spellType, minDelay, maxDelay, minLevel, maxLevel);
     }
 

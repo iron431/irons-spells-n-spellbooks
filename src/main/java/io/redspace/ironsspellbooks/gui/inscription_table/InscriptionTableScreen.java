@@ -10,7 +10,7 @@ import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillSlot;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -229,7 +229,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
             //show description if hovering
             if (spellSelected && isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY)
-                    && spellSlots.get(selectedSpellIndex).spellSlot.getSkill() instanceof AbstractSpellSkill hoveredSpell) {
+                    && spellSlots.get(selectedSpellIndex).spellSlot.getSkill() instanceof AbstractSpell hoveredSpell) {
                 guiHelper.renderTooltip(font, TooltipsUtils.createSpellDescriptionTooltip(hoveredSpell, font), mouseX, mouseY);
             }
 
@@ -250,7 +250,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         var colorCast = Style.EMPTY.withColor(0x115511);
         var colorCooldown = Style.EMPTY.withColor(0x115511);
         var spell = spellSlots.get(selectedSpellIndex).spellSlot.getSkill();
-        if (!(spell instanceof AbstractSpellSkill spellSkill)) {
+        if (!(spell instanceof AbstractSpell spellSkill)) {
             return;
         }
         var spellLevel = spellSlots.get(selectedSpellIndex).spellSlot.getLevel();

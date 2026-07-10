@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillData;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -293,7 +293,7 @@ public class AdditionalWanderingTrades {
                             if (stack.getItem() instanceof Scroll) {
                                 var container = ISkillContainer.get(stack);
                                 SkillData skillData = container == null ? null : container.getSkillAtIndex(0);
-                                if (skillData != null && skillData.getSkill() instanceof AbstractSpellSkill spellSkill) {
+                                if (skillData != null && skillData.getSkill() instanceof AbstractSpell spellSkill) {
                                     quality += spellSkill.getRarity(skillData.getLevel()).getValue() + 1;
                                 }
                             }
@@ -339,7 +339,7 @@ public class AdditionalWanderingTrades {
         @Nullable
         @Override
         public MerchantOffer getOffer(Entity pTrader, RandomSource random) {
-            AbstractSpellSkill spell = spellFilter.getRandomSpell(random);
+            AbstractSpell spell = spellFilter.getRandomSpell(random);
             if (spell == null) {
                 return null;
             }

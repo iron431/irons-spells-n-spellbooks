@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.network.spells.LearnSpellPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -61,7 +61,7 @@ public class EldritchResearchScreen extends Screen {
         this.activeHand = activeHand;
     }
 
-    List<AbstractSpellSkill> learnableSpells;
+    List<AbstractSpell> learnableSpells;
     List<SpellNode> nodes;
     Vec2 maxViewportOffset;
     Vec2 viewportOffset;
@@ -236,7 +236,7 @@ public class EldritchResearchScreen extends Screen {
     private static final Component ALREADY_LEARNED = Component.translatable("ui.irons_spellbooks.research_already_learned").withStyle(ChatFormatting.DARK_AQUA);
     private static final Component UNLEARNED = Component.translatable("ui.irons_spellbooks.research_warning").withStyle(ChatFormatting.RED);
 
-    public static List<FormattedCharSequence> buildTooltip(AbstractSpellSkill spell, Font font) {
+    public static List<FormattedCharSequence> buildTooltip(AbstractSpell spell, Font font) {
         boolean learned = spell.isLearned(Minecraft.getInstance().player);
         var name = spell.getDisplayName(null).withStyle(learned ? ChatFormatting.DARK_AQUA : ChatFormatting.RED);
         var description = font.split(Component.translatable(String.format("%s.guide", spell.getDescriptionId())).withStyle(ChatFormatting.GRAY), 180);
@@ -392,7 +392,7 @@ public class EldritchResearchScreen extends Screen {
         return mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
     }
 
-    record SpellNode(AbstractSpellSkill spell, int x, int y) {
+    record SpellNode(AbstractSpell spell, int x, int y) {
     }
 
     record NodeConnection(SpellNode node1, SpellNode node2) {

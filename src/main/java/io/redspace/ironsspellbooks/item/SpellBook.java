@@ -12,7 +12,7 @@ import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingDataComponents;
@@ -113,9 +113,9 @@ public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,
         if (spellbookData != null && !spellbookData.isEmpty()) {
             var player = MinecraftInstanceHelper.getPlayer();
             return spellbookData.getActiveSkills().stream()
-                    .filter(slot -> slot.getSkill() instanceof AbstractSpellSkill)
+                    .filter(slot -> slot.getSkill() instanceof AbstractSpell)
                     .map(slot -> {
-                        var spell = (AbstractSpellSkill) slot.getSkill();
+                        var spell = (AbstractSpell) slot.getSkill();
                         var color = spell.getSchoolType().getDisplayName().getStyle().getColor().getValue();
                         color = RenderHelper.colorLerp(.6f, color, 0);
                         var titleStyle = Style.EMPTY.withColor(color).withUnderlined(true).withBold(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/iron431"));

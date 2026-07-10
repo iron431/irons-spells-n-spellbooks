@@ -17,7 +17,7 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.RecipeRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -507,7 +507,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             return null;
         }
         var spellData = spellContainer.getSkillAtIndex(0);
-        if(!(spellData.getSkill() instanceof AbstractSpellSkill spell)){
+        if(!(spellData.getSkill() instanceof AbstractSpell spell)){
             return null;
         }
         SpellRarity rarity =spell.getRarity(spellData.getLevel());

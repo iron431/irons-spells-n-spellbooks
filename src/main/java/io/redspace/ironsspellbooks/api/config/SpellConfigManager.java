@@ -13,7 +13,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.network.SyncJsonConfigPacket;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
@@ -65,7 +65,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     /**
      * @return The spell's active configuration value for this world, or the parameter's default if none is defined.
      */
-    public static <T> T getSpellConfigValue(AbstractSpellSkill spell, SpellConfigParameter<T> parameterType) {
+    public static <T> T getSpellConfigValue(AbstractSpell spell, SpellConfigParameter<T> parameterType) {
         if (!INSTANCE.config.containsKey(spell)) {
             return parameterType.defaultValue().get();
         }
@@ -75,7 +75,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     /**
      * @return The spell's default preset configuration value for this parameter, or the parameter's default if none is defined.
      */
-    public static <T> T getSpellDefaultConfigValue(AbstractSpellSkill spell, SpellConfigParameter<T> parameterType) {
+    public static <T> T getSpellDefaultConfigValue(AbstractSpell spell, SpellConfigParameter<T> parameterType) {
         if (!INSTANCE.config.containsKey(spell)) {
             return parameterType.defaultValue().get();
         }
@@ -91,7 +91,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     /**
      * A non-sparse map containing all spells and their fully defined config holders
      */
-    private ImmutableMap<AbstractSpellSkill, SpellConfigHolder> config = ImmutableMap.of();
+    private ImmutableMap<AbstractSpell, SpellConfigHolder> config = ImmutableMap.of();
 
     public SpellConfigManager() {
         super(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create(), "irons_spellbooks_spell_config");
@@ -286,11 +286,11 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     @SuppressWarnings("unchecked")
     private <T> boolean buildConfigManager(Map<ResourceLocation, JsonElement> configEntries, boolean applyGlobalConfig) {
         boolean hasErrors = false;
-        ImmutableMap.Builder<AbstractSpellSkill, SpellConfigHolder> builder = ImmutableMap.builder();
+        ImmutableMap.Builder<AbstractSpell, SpellConfigHolder> builder = ImmutableMap.builder();
         RegistryOps<JsonElement> registryops = this.makeConditionalOps();
         Map<SpellConfigParameter<?>, Object> globalValues = applyGlobalConfig ?
                 readGlobalConfig(registryops) : Collections.emptyMap();
-        for (AbstractSpellSkill spell : SpellRegistry.getAllSpells()) {
+        for (AbstractSpell spell : SpellRegistry.getAllSpells()) {
             // Manually build defaults from static data object
             SpellConfigHolder config = new SpellConfigHolder();
             DefaultConfig raw = spell.getDefaultConfig();
@@ -334,7 +334,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
         config = builder.build();
         // Second pass for events. Allows for full context (can reference existing default and modified config values)
-        for (AbstractSpellSkill spell : SpellRegistry.getAllSpells()) {
+        for (AbstractSpell spell : SpellRegistry.getAllSpells()) {
             NeoForge.EVENT_BUS.post(new ModifyDefaultConfigValuesEvent(spell, config.get(spell)));
         }
         return !hasErrors;
@@ -445,7 +445,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         }
     }
 
-    public static <T> Pair<Boolean, File> generateSpellConfigFile(Gson gson, AbstractSpellSkill spell, boolean full, boolean override) {
+    public static <T> Pair<Boolean, File> generateSpellConfigFile(Gson gson, AbstractSpell spell, boolean full, boolean override) {
         ResourceLocation resourceLocation = spell.getSkillId();
         try {
             File spellConfigDir = getSpellConfigDir();

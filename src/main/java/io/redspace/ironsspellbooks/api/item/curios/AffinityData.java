@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.ChatFormatting;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public record AffinityData(Map<Holder<AbstractSpellSkill>, Integer> affinityData) {
+public record AffinityData(Map<Holder<AbstractSpell>, Integer> affinityData) {
 
     private static final Codec<Map<Holder<AbstractSkill>, Integer>> SKILL_BONUSES_CODEC =
             Codec.unboundedMap(SkillcastingRegistries.SKILL_HOLDER_CODEC, Codec.INT);
@@ -41,11 +41,11 @@ public record AffinityData(Map<Holder<AbstractSpellSkill>, Integer> affinityData
 
     public static final AffinityData NONE = new AffinityData(Map.of());
 
-    public AffinityData(AbstractSpellSkill skill) {
+    public AffinityData(AbstractSpell skill) {
         this(skill, 1);
     }
 
-    public AffinityData(AbstractSpellSkill skill, int bonus) {
+    public AffinityData(AbstractSpell skill, int bonus) {
         this(Map.of(spellHolder(skill), bonus));
     }
 
@@ -54,15 +54,15 @@ public record AffinityData(Map<Holder<AbstractSpellSkill>, Integer> affinityData
     }
 
     public static AffinityData of(Map<? extends Holder<? extends AbstractSkill>, Integer> bonuses) {
-        Map<Holder<AbstractSpellSkill>, Integer> copy = HashMap.newHashMap(bonuses.size());
+        Map<Holder<AbstractSpell>, Integer> copy = HashMap.newHashMap(bonuses.size());
         bonuses.forEach((holder, bonus) -> copy.put(requireSpellSkillHolder(holder), bonus));
         return new AffinityData(Map.copyOf(copy));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static AffinityData ofHolders(Map<DeferredHolder<AbstractSkill, ? extends AbstractSpellSkill>, Integer> bonuses) {
-        HashMap<Holder<AbstractSpellSkill>, Integer> copy = new HashMap<>(bonuses.size());
-        bonuses.forEach((holder, i) -> copy.put((Holder<AbstractSpellSkill>) (Holder) holder, i));
+    public static AffinityData ofHolders(Map<DeferredHolder<AbstractSkill, ? extends AbstractSpell>, Integer> bonuses) {
+        HashMap<Holder<AbstractSpell>, Integer> copy = new HashMap<>(bonuses.size());
+        bonuses.forEach((holder, i) -> copy.put((Holder<AbstractSpell>) (Holder) holder, i));
         return new AffinityData(copy);
     }
 
@@ -70,11 +70,11 @@ public record AffinityData(Map<Holder<AbstractSpellSkill>, Integer> affinityData
         return stack.has(ComponentRegistry.AFFINITY_COMPONENT) ? stack.get(ComponentRegistry.AFFINITY_COMPONENT) : AffinityData.NONE;
     }
 
-    public static void setAffinityData(ItemStack stack, AbstractSpellSkill skill) {
+    public static void setAffinityData(ItemStack stack, AbstractSpell skill) {
         set(stack, new AffinityData(skill));
     }
 
-    public static void setAffinityData(ItemStack stack, AbstractSpellSkill skill, int bonus) {
+    public static void setAffinityData(ItemStack stack, AbstractSpell skill, int bonus) {
         set(stack, new AffinityData(skill, bonus));
     }
 
@@ -86,34 +86,34 @@ public record AffinityData(Map<Holder<AbstractSpellSkill>, Integer> affinityData
         return itemStack.has(ComponentRegistry.AFFINITY_COMPONENT);
     }
 
-    public int getBonusFor(AbstractSpellSkill skill) {
+    public int getBonusFor(AbstractSpell skill) {
         return getBonusFor(spellHolder(skill));
     }
 
     public int getBonusFor(Holder<? extends AbstractSkill> skill) {
-        if (!(skill.value() instanceof AbstractSpellSkill)) {
+        if (!(skill.value() instanceof AbstractSpell)) {
             return 0;
         }
         return affinityData.getOrDefault(requireSpellSkillHolder(skill), 0);
     }
 
-    public boolean hasBonusFor(AbstractSpellSkill skill) {
+    public boolean hasBonusFor(AbstractSpell skill) {
         return getBonusFor(skill) != 0;
     }
 
-    public @Nullable AbstractSpellSkill getFirstSpell() {
+    public @Nullable AbstractSpell getFirstSpell() {
         return affinityData.keySet().stream().findFirst().map(Holder::value).orElse(null);
     }
 
     public String getNameForItem() {
-        AbstractSpellSkill firstSkill = getFirstSpell();
+        AbstractSpell firstSkill = getFirstSpell();
         return firstSkill == null
                 ? Component.translatable("tooltip.irons_spellbooks.no_affinity").getString()
                 : firstSkill.getSchoolType().getDisplayName().getString();
     }
 
     public List<MutableComponent> getDescriptionComponent() {
-        HashMultimap<Integer, AbstractSpellSkill> byLevel = HashMultimap.create();
+        HashMultimap<Integer, AbstractSpell> byLevel = HashMultimap.create();
         affinityData.forEach((key, value) -> byLevel.put(value, key.value()));
         return byLevel.keySet().stream().map(key -> {
             MutableComponent spellListComponent = Component.literal("").withStyle(ChatFormatting.YELLOW);
@@ -132,8 +132,8 @@ public record AffinityData(Map<Holder<AbstractSpellSkill>, Integer> affinityData
     }
 
     @SuppressWarnings("unchecked")
-    public static Holder<AbstractSpellSkill> spellHolder(AbstractSpellSkill skill) {
-        return (Holder<AbstractSpellSkill>) (Holder<?>) SkillRegistry.holder(skill);
+    public static Holder<AbstractSpell> spellHolder(AbstractSpell skill) {
+        return (Holder<AbstractSpell>) (Holder<?>) SkillRegistry.holder(skill);
     }
 
     private static AffinityData fromSkillMap(Map<Holder<AbstractSkill>, Integer> bonuses) {
@@ -148,11 +148,11 @@ public record AffinityData(Map<Holder<AbstractSpellSkill>, Integer> affinityData
     }
 
     @SuppressWarnings("unchecked")
-    private static Holder<AbstractSpellSkill> requireSpellSkillHolder(Holder<? extends AbstractSkill> holder) {
-        if (!(holder.value() instanceof AbstractSpellSkill)) {
+    private static Holder<AbstractSpell> requireSpellSkillHolder(Holder<? extends AbstractSkill> holder) {
+        if (!(holder.value() instanceof AbstractSpell)) {
             throw new IllegalArgumentException("Not a spell skill: " + holder.getRegisteredName());
         }
-        return (Holder<AbstractSpellSkill>) (Holder<?>) holder;
+        return (Holder<AbstractSpell>) (Holder<?>) holder;
     }
 
     @Override

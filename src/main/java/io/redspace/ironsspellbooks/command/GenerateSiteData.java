@@ -16,7 +16,7 @@ import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecipe;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -514,7 +514,7 @@ public class GenerateSiteData {
         }
     }
 
-    private static List<String> processUniqueInfo(AbstractSpellSkill spell) {
+    private static List<String> processUniqueInfo(AbstractSpell spell) {
         List<String> text = new ArrayList<>();
         // fixme skillcasting: unique info now requires a CastContext; needs a caster-free context builder to restore level-scaled ranges
         List<net.minecraft.network.chat.MutableComponent> uniqueInfoMin = List.of();

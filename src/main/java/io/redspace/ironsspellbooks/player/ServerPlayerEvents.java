@@ -42,8 +42,8 @@ import io.redspace.skillcasting.api.event.SkillCastCompleteEvent;
 import io.redspace.skillcasting.api.event.SkillSelectionPriority;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
-import io.redspace.skillcasting.irons_spellbooks.SpellcastingComponentTypes;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
@@ -369,7 +369,7 @@ public class ServerPlayerEvents {
 
         if (livingEntity instanceof ServerPlayer player) {
             SkillcastingData data = SkillcastingData.get(player);
-            if (data.isCasting() && data.getActiveSkill() instanceof AbstractSpellSkill spell &&
+            if (data.isCasting() && data.getActiveSkill() instanceof AbstractSpell spell &&
                     spell.canBeInterrupted(player) &&
                     !event.getSource().is(DamageTypeTagGenerator.LONG_CAST_IGNORE)) {
                 SkillcastingManager.cancelCast(CasterRef.entity(player), CastEndReason.INTERRUPTED);

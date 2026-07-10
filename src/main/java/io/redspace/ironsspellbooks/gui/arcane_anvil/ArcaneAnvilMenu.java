@@ -18,7 +18,7 @@ import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillData;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -84,7 +84,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
         if (!baseItemStack.isEmpty() && !modifierItemStack.isEmpty()) {
             if (ServerConfigs.SCROLL_MERGING.get() && baseItemStack.getItem() instanceof Scroll && modifierItemStack.getItem() instanceof InkItem inkItem) {
                 SkillData spell1 = ISkillContainer.get(baseItemStack).getSkillAtIndex(0);
-                if (spell1 != null && spell1.getSkill() instanceof AbstractSpellSkill spellSkill) {
+                if (spell1 != null && spell1.getSkill() instanceof AbstractSpell spellSkill) {
                     if (spell1.getLevel() < spellSkill.getMaxLevel()) {
                         SpellRarity nextRarity = spellSkill.getRarity(spell1.getLevel() + 1);
                         if (nextRarity.equals(inkItem.getRarity())) {
@@ -154,7 +154,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             } else if (baseItemStack.getItem() instanceof AffinityRing && modifierItemStack.getItem() instanceof Scroll) {
                 result = baseItemStack.copy();
                 SkillData scrollSlot = ISkillContainer.get(modifierItemStack).getSkillAtIndex(0);
-                if (scrollSlot != null && scrollSlot.getSkill() instanceof AbstractSpellSkill spellSkill) {
+                if (scrollSlot != null && scrollSlot.getSkill() instanceof AbstractSpell spellSkill) {
                     AffinityData.set(result, new AffinityData(spellSkill));
                 }
             }

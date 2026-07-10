@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +43,7 @@ public final class ScrollForgeRecipeMaker {
                     var inkOutputs = new ArrayList<ItemStack>();
 
                     inkItems.forEach(ink -> {
-                        for (AbstractSpellSkill spell : spells) {
+                        for (AbstractSpell spell : spells) {
                             if (spell.isEnabled() && spell.allowCrafting()) {
                                 var spellLevel = spell.getMinLevelForRarity(ink.getRarity());
                                 if (spellLevel > 0) {
@@ -60,7 +60,7 @@ public final class ScrollForgeRecipeMaker {
         return recipes.toList();
     }
 
-    private static ItemStack getScrollStack(AbstractSpellSkill spell, int spellLevel) {
+    private static ItemStack getScrollStack(AbstractSpell spell, int spellLevel) {
         var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
         Scroll.applyScrollToStack(scrollStack, spell, spellLevel);
         return scrollStack;

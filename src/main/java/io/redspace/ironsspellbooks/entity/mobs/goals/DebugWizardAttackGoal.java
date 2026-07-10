@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -9,13 +9,13 @@ import net.minecraft.world.entity.ai.goal.Goal;
 public class DebugWizardAttackGoal extends Goal {
     private final PathfinderMob mob;
     private final AbstractSpellCastingMob spellCastingMob;
-    private final AbstractSpellSkill spell;
+    private final AbstractSpell spell;
     private final int spellLevel;
     private final int cancelCastAfterTicks;
     private int tickCount = 0;
     private int castingTicks = 0;
 
-    public DebugWizardAttackGoal(Mob abstractSpellCastingMob, AbstractSpellSkill spell, int spellLevel, int cancelCastAfterTicks) {
+    public DebugWizardAttackGoal(Mob abstractSpellCastingMob, AbstractSpell spell, int spellLevel, int cancelCastAfterTicks) {
         if (abstractSpellCastingMob instanceof PathfinderMob pathfinderMob && abstractSpellCastingMob instanceof AbstractSpellCastingMob castingMob) {
             this.mob = pathfinderMob;
             this.spellCastingMob = castingMob;

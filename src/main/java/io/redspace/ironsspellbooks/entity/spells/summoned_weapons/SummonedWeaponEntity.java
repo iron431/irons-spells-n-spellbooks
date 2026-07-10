@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.summoned_weapons;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
@@ -45,7 +45,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob implements IMagicSummon, IAnimatedAttacker {
     @Override
-    public void initiateCastSpell(AbstractSpellSkill spell, int spellLevel) {
+    public void initiateCastSpell(AbstractSpell spell, int spellLevel) {
         // no spellcasting
         return;
     }

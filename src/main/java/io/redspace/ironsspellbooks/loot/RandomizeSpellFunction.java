@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -46,7 +46,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             }
             var spellList = getWeightedSpellList(applicableSpells);
             int total = spellList.floorKey(Integer.MAX_VALUE);
-            AbstractSpellSkill spell = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
+            AbstractSpell spell = spellList.higherEntry(lootContext.getRandom().nextInt(total)).getValue();
             if (spell == null) {
                 return fallback;
             }
@@ -65,11 +65,11 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
         return itemStack;
     }
 
-    private NavigableMap<Integer, AbstractSpellSkill> getWeightedSpellList(List<AbstractSpellSkill> entries) {
+    private NavigableMap<Integer, AbstractSpell> getWeightedSpellList(List<AbstractSpell> entries) {
         int total = 0;
-        NavigableMap<Integer, AbstractSpellSkill> weightedSpells = new TreeMap<>();
+        NavigableMap<Integer, AbstractSpell> weightedSpells = new TreeMap<>();
 
-        for (AbstractSpellSkill entry : entries) {
+        for (AbstractSpell entry : entries) {
             total += getWeightFromRarity(SpellRarity.values()[entry.getMinRarity()]);
             weightedSpells.put(total, entry);
 

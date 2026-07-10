@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.api.events;
 
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.Event;
 import org.jetbrains.annotations.Nullable;
@@ -16,12 +16,12 @@ import org.jetbrains.annotations.Nullable;
  **/
 public class ModifySpellLevelEvent extends Event {
 
-    final AbstractSpellSkill spell;
+    final AbstractSpell spell;
     final LivingEntity caster;
     final int baseLevel;
     int totalLevel;
 
-    public ModifySpellLevelEvent(AbstractSpellSkill spell, LivingEntity caster, int baseLevel, int totalLevel) {
+    public ModifySpellLevelEvent(AbstractSpell spell, LivingEntity caster, int baseLevel, int totalLevel) {
         this.spell = spell;
         this.caster = caster;
         this.baseLevel = baseLevel;
@@ -59,7 +59,7 @@ public class ModifySpellLevelEvent extends Event {
     /**
      * @return Returns the spell type associated with the level query
      */
-    public AbstractSpellSkill getSpell() {
+    public AbstractSpell getSpell() {
         return spell;
     }
 

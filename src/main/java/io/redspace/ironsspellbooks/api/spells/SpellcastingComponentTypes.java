@@ -1,4 +1,4 @@
-package io.redspace.skillcasting.irons_spellbooks;
+package io.redspace.ironsspellbooks.api.spells;
 
 import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;

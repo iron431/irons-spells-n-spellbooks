@@ -7,10 +7,9 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
-import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.skill.CastType;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
-import io.redspace.skillcasting.irons_spellbooks.SpellSkillDamageSource;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellSkillDamageSource;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.RaycastBuilder;
 import it.unimi.dsi.fastutil.ints.IntImmutableList;
@@ -28,7 +27,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class FirecrackerSpell extends AbstractSpellSkill {
+public class FirecrackerSpell extends AbstractSpell {
 
     private static final int[] DYE_COLORS = {
             11546150,

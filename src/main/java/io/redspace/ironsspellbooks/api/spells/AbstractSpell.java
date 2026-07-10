@@ -1,4 +1,4 @@
-package io.redspace.skillcasting.irons_spellbooks;
+package io.redspace.ironsspellbooks.api.spells;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
@@ -7,9 +7,6 @@ import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
-import io.redspace.ironsspellbooks.api.spells.SpellCastSources;
-import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
@@ -56,7 +53,7 @@ import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.ANIMATION_I
 import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.ANIMATION_LONG_CAST;
 import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.ANIMATION_LONG_CAST_FINISH;
 
-public abstract class AbstractSpellSkill extends AbstractSkill {
+public abstract class AbstractSpell extends AbstractSkill {
     public static final Style ELDRITCH_OBFUSCATED_STYLE = Style.EMPTY.withObfuscated(true).withFont(ResourceLocation.withDefaultNamespace("alt"));
 
     protected float baseSpellPower, spellPowerPerLevel;
@@ -156,7 +153,7 @@ public abstract class AbstractSpellSkill extends AbstractSkill {
     }
 
     /**
-     * @return Scaled spell power value based on the {@link AbstractSpellSkill#baseSpellPower} and {@link AbstractSpellSkill#spellPowerPerLevel}
+     * @return Scaled spell power value based on the {@link AbstractSpell#baseSpellPower} and {@link AbstractSpell#spellPowerPerLevel}
      */
     public float getSpellPower(CastContext castContext) {
         return (baseSpellPower + spellPowerPerLevel * (castContext.getSkillLevel() - 1)) * getSpellPowerMultiplier(castContext);

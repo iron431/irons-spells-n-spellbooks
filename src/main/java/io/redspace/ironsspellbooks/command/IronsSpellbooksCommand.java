@@ -20,7 +20,7 @@ import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -187,7 +187,7 @@ public class IronsSpellbooksCommand {
         }
         var source = context.getSource();
         AbstractSkill spell = SpellRegistry.getSpell(ResourceLocation.parse(spellid));
-        if (!(spell instanceof AbstractSpellSkill spellSkill)) {
+        if (!(spell instanceof AbstractSpell spellSkill)) {
             source.sendFailure(Component.translatable("commands.irons_spellbooks.generic.unknown_spell", spellid));
             return 0;
         }

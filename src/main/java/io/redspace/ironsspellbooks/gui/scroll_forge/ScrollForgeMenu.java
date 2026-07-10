@@ -9,7 +9,7 @@ import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillData;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -42,7 +42,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
     private final Slot resultSlot;
 
     @Nullable
-    private AbstractSpellSkill spellRecipeSelection;
+    private AbstractSpell spellRecipeSelection;
 
     public ScrollForgeMenu(int containerId, Inventory inv, BlockEntity entity) {
         super(MenuRegistry.SCROLL_FORGE_MENU.get(), containerId);
@@ -102,7 +102,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         }
     }
 
-    private void setupResultSlot(@Nullable AbstractSpellSkill spell) {
+    private void setupResultSlot(@Nullable AbstractSpell spell) {
         ItemStack scrollStack = this.blankScrollSlot.getItem();
         ItemStack inkStack = this.inkSlot.getItem();
         ItemStack focusStack = this.focusSlot.getItem();
@@ -126,7 +126,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
         }
     }
 
-    public void setRecipeSpell(@Nullable AbstractSpellSkill spell) {
+    public void setRecipeSpell(@Nullable AbstractSpell spell) {
         this.spellRecipeSelection = spell;
         setupResultSlot(spell);
     }

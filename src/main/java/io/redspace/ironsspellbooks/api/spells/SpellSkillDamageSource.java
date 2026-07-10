@@ -1,4 +1,4 @@
-package io.redspace.skillcasting.irons_spellbooks;
+package io.redspace.ironsspellbooks.api.spells;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -14,14 +14,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class SpellSkillDamageSource extends DamageSource {
-    AbstractSpellSkill spell;
+    AbstractSpell spell;
     float lifesteal;
     int freezeTicks;
     int fireTime;
     int iFrames = -1;
     boolean indirectOverride;
 
-    protected SpellSkillDamageSource(Holder<DamageType> damageType, @Nullable Entity directEntity, @Nullable Entity causingEntity, @Nullable Vec3 damageSourcePosition, AbstractSpellSkill spell) {
+    protected SpellSkillDamageSource(Holder<DamageType> damageType, @Nullable Entity directEntity, @Nullable Entity causingEntity, @Nullable Vec3 damageSourcePosition, AbstractSpell spell) {
         super(damageType, directEntity, causingEntity, damageSourcePosition);
         this.spell = spell;
     }
@@ -61,11 +61,11 @@ public class SpellSkillDamageSource extends DamageSource {
         }
     }
 
-    public static SpellSkillDamageSource source(Level level, @Nullable Entity entity, @NotNull AbstractSpellSkill spell) {
+    public static SpellSkillDamageSource source(Level level, @Nullable Entity entity, @NotNull AbstractSpell spell) {
         return source(level, entity, entity, spell);
     }
 
-    public static SpellSkillDamageSource source(Level level, @Nullable Entity directEntity, @Nullable Entity causingEntity, @NotNull AbstractSpellSkill spell) {
+    public static SpellSkillDamageSource source(Level level, @Nullable Entity directEntity, @Nullable Entity causingEntity, @NotNull AbstractSpell spell) {
         return new SpellSkillDamageSource(getHolderFromResource(level, spell.getSchoolType().getDamageType()), directEntity, causingEntity, null, spell);
     }
 
@@ -103,7 +103,7 @@ public class SpellSkillDamageSource extends DamageSource {
         return !indirectOverride && super.isDirect();
     }
 
-    public AbstractSpellSkill spell() {
+    public AbstractSpell spell() {
         return this.spell;
     }
 

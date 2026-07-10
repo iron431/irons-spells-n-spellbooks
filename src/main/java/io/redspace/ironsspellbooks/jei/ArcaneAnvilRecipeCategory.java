@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -121,7 +121,7 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilJei
         var inputSpellData = leftScroll.getSkillAtIndex(0);
         var outputSpellData = outputScroll.getSkillAtIndex(0);
 
-        if (!(inputSpellData.getSkill() instanceof AbstractSpellSkill inputSpell) || !(outputSpellData.getSkill() instanceof AbstractSpellSkill outputSpell)) {
+        if (!(inputSpellData.getSkill() instanceof AbstractSpell inputSpell) || !(outputSpellData.getSkill() instanceof AbstractSpell outputSpell)) {
             return;
         }
         var inputText = String.format("L%d", inputSpellData.getLevel());

@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.block.scroll_forge;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeMenu;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
@@ -73,7 +73,7 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider, Cleara
 
     public void setRecipeSpell(String spellId) {
         var skill = SpellRegistry.getSpell(ResourceLocation.parse(spellId));
-        if (skill instanceof AbstractSpellSkill spellSkill) {
+        if (skill instanceof AbstractSpell spellSkill) {
             menu.setRecipeSpell(spellSkill);
         } else {
             menu.setRecipeSpell(null);

@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.skillcasting.irons_spellbooks.AbstractSpellSkill;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -120,7 +120,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     }
 
     @Override
-    public WarlockAttackGoal setSpells(List<AbstractSpellSkill> attackSpells, List<AbstractSpellSkill> defenseSpells, List<AbstractSpellSkill> movementSpells, List<AbstractSpellSkill> supportSpells) {
+    public WarlockAttackGoal setSpells(List<AbstractSpell> attackSpells, List<AbstractSpell> defenseSpells, List<AbstractSpell> movementSpells, List<AbstractSpell> supportSpells) {
         return (WarlockAttackGoal) super.setSpells(attackSpells, defenseSpells, movementSpells, supportSpells);
     }
 
@@ -130,7 +130,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     }
 
     @Override
-    public WarlockAttackGoal setSingleUseSpell(AbstractSpellSkill spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
+    public WarlockAttackGoal setSingleUseSpell(AbstractSpell spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
         return (WarlockAttackGoal) super.setSingleUseSpell(spellType, minDelay, maxDelay, minLevel, maxLevel);
     }
 
