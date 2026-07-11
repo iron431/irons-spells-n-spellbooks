@@ -387,7 +387,7 @@ public abstract class AbstractSpell extends AbstractSkill {
         if (rarityWeights == null) {
             initializeRarityWeights();
         }
-
+        // fixme: doesn't respect minlevel.
         int maxLevel = getMaxLevel();
         int maxRarity = getMaxRarity();
         if (maxLevel == 1) {
@@ -409,6 +409,11 @@ public abstract class AbstractSpell extends AbstractSkill {
         return SpellRarity.COMMON;
     }
 
+    @Override
+    public int getMaxLevel() {
+        return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.MAX_LEVEL);
+    }
+
     public Component getLockedMessage() {
         // fixme: expose parameters?
         return Component.translatable("ui.irons_spellbooks.unlearned_error");
@@ -421,9 +426,9 @@ public abstract class AbstractSpell extends AbstractSkill {
         return !requiresLearning() || isLearned(player);
     }
 
-    /**
-     * Returns an additional condition for whether this spell can be crafted in the scroll forge, or whether it will be omitted
-     */
+
+    @Deprecated
+    ///change return type
     public int getMinRarity() {
         return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.MIN_RARITY).getValue();
     }

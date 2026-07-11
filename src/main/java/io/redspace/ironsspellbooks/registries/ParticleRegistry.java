@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.particle.EnderSlashParticleOptions;
 import io.redspace.ironsspellbooks.particle.FallingBlockParticleOption;
 import io.redspace.ironsspellbooks.particle.FlameStrikeParticleOptions;
 import io.redspace.ironsspellbooks.particle.FogParticleOptions;
+import io.redspace.ironsspellbooks.particle.RayOfFrostRayParticleOptions;
 import io.redspace.ironsspellbooks.particle.ShockwaveParticleOptions;
 import io.redspace.ironsspellbooks.particle.SoulfireRayParticleOptions;
 import io.redspace.ironsspellbooks.particle.SparkParticleOptions;
@@ -163,6 +164,24 @@ public class ParticleRegistry {
 
         public StreamCodec<? super RegistryFriendlyByteBuf, SoulfireRayParticleOptions> streamCodec() {
             return SoulfireRayParticleOptions.STREAM_CODEC;
+        }
+    });
+    public static final Supplier<ParticleType<RayOfFrostRayParticleOptions>> RAY_OF_FROST_OUTER_PARTICLE = PARTICLE_TYPES.register("ray_of_frost_outer", () -> new ParticleType<>(false) {
+        public MapCodec<RayOfFrostRayParticleOptions> codec() {
+            return RayOfFrostRayParticleOptions.codec((ParticleType<RayOfFrostRayParticleOptions>) this);
+        }
+
+        public StreamCodec<? super RegistryFriendlyByteBuf, RayOfFrostRayParticleOptions> streamCodec() {
+            return RayOfFrostRayParticleOptions.streamCodec((ParticleType<RayOfFrostRayParticleOptions>) this);
+        }
+    });
+    public static final Supplier<ParticleType<RayOfFrostRayParticleOptions>> RAY_OF_FROST_INNER_PARTICLE = PARTICLE_TYPES.register("ray_of_frost_inner", () -> new ParticleType<>(false) {
+        public MapCodec<RayOfFrostRayParticleOptions> codec() {
+            return RayOfFrostRayParticleOptions.codec((ParticleType<RayOfFrostRayParticleOptions>) this);
+        }
+
+        public StreamCodec<? super RegistryFriendlyByteBuf, RayOfFrostRayParticleOptions> streamCodec() {
+            return RayOfFrostRayParticleOptions.streamCodec((ParticleType<RayOfFrostRayParticleOptions>) this);
         }
     });
     public static final Supplier<SimpleParticleType> SOUL_FIRE_PARTICLE = PARTICLE_TYPES.register("soul_fire", () -> new SimpleParticleType(false));

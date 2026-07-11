@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
@@ -39,6 +40,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public class AbstractSkillProjectile extends Projectile implements ISkillProjectile, IEntityWithComplexSpawn {
     private static final EntityDataAccessor<Boolean> DATA_CURSOR_HOMING = SynchedEntityData.defineId(AbstractSkillProjectile.class, EntityDataSerializers.BOOLEAN);
@@ -497,22 +499,29 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
             return false;
         }
         Vec3 deltaMovement = getDeltaMovement();
-        Vec3 vec = deltaMovement.normalize();
         Entity owner = getOwner();
         Entity hit = entityHitResult.getEntity();
-        List<Entity> potentialTargets = level.getEntities(this, this.getBoundingBox().inflate(3).expandTowards(vec.scale(16)),
-                entity -> entity != hit && (
-                        (owner == null || !Utils.shouldHealEntity(owner, entity))
-                                || entity.getClass() == hit.getClass()
-                ) && entity.canBeHitByProjectile() && entity.getBoundingBox().getCenter().subtract(position()).normalize().dot(vec) > 0.6 && Utils.hasLineOfSight(level, this, entity, false));
-        if (potentialTargets.isEmpty()) {
+        Optional<Vec3> ricochetDirection = findRicochetDirection(level, this.position(), this.getDeltaMovement().normalize(), 16,
+                entity -> entity != hit && ((owner == null || !Utils.shouldHealEntity(owner, entity)) || entity.getClass() == hit.getClass()),
+                owner);
+        if (ricochetDirection.isEmpty()) {
             return false;
         }
-        potentialTargets.sort(Comparator.comparing(entity -> entity.distanceToSqr(this)));
-        Entity target = potentialTargets.get((this.getId() % potentialTargets.size()) % 3); // use deterministic random to keep client and server in sync. limit to closest 3.
-        setDeltaMovement(target.getBoundingBox().getCenter().subtract(this.position()).normalize().scale(deltaMovement.length()));
+        setDeltaMovement(ricochetDirection.get().scale(deltaMovement.length()));
         consumeRicochetCharge();
         return true;
+    }
+
+    public static Optional<Vec3> findRicochetDirection(Level level, Vec3 position, Vec3 direction, float range, Predicate<Entity> filter, @Nullable Entity owner) {
+        Vec3 end = position.add(direction.scale(range));
+        List<Entity> potentialTargets = level.getEntities(owner, new AABB(position, end).inflate(3),
+                entity -> filter.test(entity) && entity.canBeHitByProjectile() && entity.getBoundingBox().getCenter().subtract(position).normalize().dot(direction) > 0.6 && Utils.hasLineOfSight(level, position, entity.getBoundingBox().getCenter(), false));
+        if (potentialTargets.isEmpty()) {
+            return Optional.empty();
+        }
+        potentialTargets.sort(Comparator.comparing(entity -> entity.distanceToSqr(position)));
+        Entity target = potentialTargets.get(0);
+        return Optional.of(target.getBoundingBox().getCenter().subtract(position).normalize());
     }
 
     private void consumeRicochetCharge() {
