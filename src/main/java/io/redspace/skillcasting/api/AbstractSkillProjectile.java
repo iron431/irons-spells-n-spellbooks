@@ -513,9 +513,14 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
     }
 
     public static Optional<Vec3> findRicochetDirection(Level level, Vec3 position, Vec3 direction, float range, Predicate<Entity> filter, @Nullable Entity owner) {
-        Vec3 end = position.add(direction.scale(range));
+        Vec3 end = position.add(direction.normalize().scale(range));
+        float rangeSqr = range * range;
         List<Entity> potentialTargets = level.getEntities(owner, new AABB(position, end).inflate(3),
-                entity -> filter.test(entity) && entity.canBeHitByProjectile() && entity.getBoundingBox().getCenter().subtract(position).normalize().dot(direction) > 0.6 && Utils.hasLineOfSight(level, position, entity.getBoundingBox().getCenter(), false));
+                entity -> filter.test(entity) &&
+                        entity.canBeHitByProjectile() &&
+                        entity.distanceToSqr(position) <= rangeSqr &&
+                        entity.getBoundingBox().getCenter().subtract(position).normalize().dot(direction.normalize()) >= 0.6 &&
+                        Utils.hasLineOfSight(level, position, entity.getBoundingBox().getCenter(), false));
         if (potentialTargets.isEmpty()) {
             return Optional.empty();
         }

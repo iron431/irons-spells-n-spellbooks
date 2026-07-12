@@ -1,6 +1,8 @@
 package io.redspace.skillcasting.util;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.item.CastingItem;
+import io.redspace.skillcasting.api.AbstractSkillProjectile;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -11,6 +13,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -18,8 +21,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 public final class RaycastBuilder {
@@ -30,7 +36,7 @@ public final class RaycastBuilder {
     private Vec3 end;
     private boolean checkForBlocks = false;
     private float bbInflation = 0;
-    private Predicate<? super Entity> filter = Utils::canHitWithRaycast;
+    private Predicate<Entity> filter = Utils::canHitWithRaycast;
 
     public RaycastBuilder(Level level, @Nullable Entity originEntity) {
         this.level = level;
@@ -77,7 +83,7 @@ public final class RaycastBuilder {
         return this;
     }
 
-    public RaycastBuilder filter(Predicate<? super Entity> filter) {
+    public RaycastBuilder filter(Predicate<Entity> filter) {
         this.filter = filter;
         return this;
     }
@@ -127,6 +133,81 @@ public final class RaycastBuilder {
             return blockHitResult;
         } else {
             return BlockHitResult.miss(rayEnd, Direction.UP, BlockPos.containing(rayEnd));
+        }
+    }
+
+    /**
+     * Performs the raycast with the current parameters. Start and end must have been set.
+     *
+     * @return raycast HitResults
+     */
+    public List<HitResult> performRaycastWithRicochet(int ricochetLevel) {
+        Objects.requireNonNull(start, "Start must be set to perform raycast");
+        Objects.requireNonNull(end, "End must be set to perform raycast");
+        if (ricochetLevel < 0) {
+            // approximate infinite ricochet as 64 passes
+            ricochetLevel = 64;
+        }
+        if (ricochetLevel > 64) {
+            ricochetLevel = 64;
+        }
+        int castCount = 1 + ricochetLevel;
+
+        float rangeRemaining = Math.max(1.0f, (float) start.distanceTo(end));
+        Vec3 castStart = start;
+        Vec3 castEnd = end;
+        List<HitResult> hitResults = new ArrayList<>();
+        BlockHitResult lastBlockHitMiss = null;
+        HashSet<UUID> hitEntities = new HashSet<>();
+        ricochetCast:
+        for (int i = 0; i < castCount && rangeRemaining > 0.5; i++) {
+            if (checkForBlocks) {
+                lastBlockHitMiss = level.clip(new ClipContext(castStart, castEnd, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, originEntity == null ? CollisionContext.empty() : CollisionContext.of(originEntity)));
+                castEnd = lastBlockHitMiss.getLocation();
+            }
+            AABB collider = new AABB(castStart, castEnd).inflate(2);
+            List<? extends Entity> entities = level.getEntities(originEntity, collider, filter);
+            boolean work = false;
+            var distanceAnchor = castStart;
+            entities.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(distanceAnchor)));
+            for (Entity target : entities) {
+                if (hitEntities.contains(target.getUUID())) {
+                    continue;
+                }
+                HitResult hit = Utils.checkEntityIntersecting(target, castStart, castEnd, bbInflation);
+                if (hit.getType() != HitResult.Type.MISS) {
+                    work = true;
+                    hitResults.add(hit);
+                    if (i == castCount - 1) {
+                        break;
+                    }
+                    if (hit instanceof EntityHitResult entityHitResult) {
+                        hitEntities.add(entityHitResult.getEntity().getUUID());
+                    }
+                    Vec3 direction = castEnd.subtract(castStart).normalize();
+                    rangeRemaining -= (float) castStart.distanceTo(hit.getLocation());
+                    castStart = hit.getLocation();
+                    Optional<Vec3> ricochet = AbstractSkillProjectile.findRicochetDirection(level, castStart, direction, rangeRemaining, filter, hit instanceof EntityHitResult entityHitResult ? entityHitResult.getEntity() : originEntity);
+                    if (ricochet.isEmpty()) {
+                        break ricochetCast;
+                    }
+                    castEnd = castStart.add(ricochet.get().scale(rangeRemaining));
+                    break;
+                }
+            }
+            if (!work) {
+                break ricochetCast;
+            }
+        }
+        if (hitResults.isEmpty()) {
+            if (checkForBlocks) {
+                assert lastBlockHitMiss != null; // loop is guaranteed to run, and block hit is guaranteed to be cast if checkForBlocks is set
+                return List.of(lastBlockHitMiss);
+            } else {
+                return List.of(BlockHitResult.miss(end, Direction.UP, BlockPos.containing(end)));
+            }
+        } else {
+            return hitResults;
         }
     }
 }

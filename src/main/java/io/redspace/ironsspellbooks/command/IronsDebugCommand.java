@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.command;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import io.redspace.ironslib.util.Color;
@@ -16,10 +17,12 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -78,7 +81,15 @@ public class IronsDebugCommand {
                     ItemRegistry.THE_CHRONICLE.get().clearCache();
                     return 1;
                 }))
-                .then(Commands.literal("attribute_test_give").executes(IronsDebugCommand::giveAttributeTest))
+                .then(Commands.literal("attribute_test")
+                        .then(Commands.literal("give").executes(IronsDebugCommand::giveAttributeTest))
+                        .then(Commands.literal("add")
+                                .then(Commands.argument("attribute", ResourceLocationArgument.id())
+                                        .suggests((ctx, builder) -> SharedSuggestionProvider.suggestResource(BuiltInRegistries.ATTRIBUTE.keySet(), builder))
+                                        .then(Commands.argument("amount", DoubleArgumentType.doubleArg())
+                                                .then(Commands.argument("modifier", StringArgumentType.word())
+                                                        .suggests((ctx, builder) -> SharedSuggestionProvider.suggest(Arrays.stream(AttributeModifier.Operation.values()).map(AttributeModifier.Operation::getSerializedName), builder))
+                                                        .executes(IronsDebugCommand::addAttributeModifier))))))
                 .then(Commands.literal("summons").then(Commands.literal("set_self_as_owner").then(
                         Commands.argument("target", EntityArgument.entity())
                                 .executes(commandContext -> {
@@ -130,6 +141,58 @@ public class IronsDebugCommand {
 
         source.sendSuccess(() -> Component.literal("Gave attribute test sticks for applyAttributesToContext"), true);
         return 1;
+    }
+
+    private static int addAttributeModifier(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        if (!(source.getPlayer() instanceof ServerPlayer player)) {
+            source.sendFailure(Component.literal("Must be run by a player"));
+            return 0;
+        }
+
+        ItemStack stack = player.getMainHandItem();
+        if (stack.isEmpty()) {
+            source.sendFailure(Component.literal("Must be holding an item in the main hand"));
+            return 0;
+        }
+
+        ResourceLocation attributeId = ResourceLocationArgument.getId(context, "attribute");
+        var attributeHolder = BuiltInRegistries.ATTRIBUTE.getHolder(attributeId);
+        if (attributeHolder.isEmpty()) {
+            source.sendFailure(Component.literal("Unknown attribute: " + attributeId));
+            return 0;
+        }
+
+        double amount = DoubleArgumentType.getDouble(context, "amount");
+        String modifierName = StringArgumentType.getString(context, "modifier");
+        AttributeModifier.Operation operation = parseOperation(modifierName);
+        if (operation == null) {
+            source.sendFailure(Component.literal("Unknown modifier operation: " + modifierName + " (expected one of add_value, add_multiplied_base, add_multiplied_total)"));
+            return 0;
+        }
+
+        Holder<Attribute> attribute = attributeHolder.get();
+        ResourceLocation modifierId = IronsSpellbooks.id("debug_" + attributeId.getPath() + "_" + Long.toHexString(System.nanoTime()));
+        ItemAttributeModifiers current = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+        ItemAttributeModifiers updated = current.withModifierAdded(
+                attribute,
+                new AttributeModifier(modifierId, amount, operation),
+                EquipmentSlotGroup.MAINHAND
+        );
+        stack.set(DataComponents.ATTRIBUTE_MODIFIERS, updated);
+
+        source.sendSuccess(() -> Component.literal(String.format("Added %s %s %s to held item", attributeId, amount, operation.getSerializedName())), true);
+        return 1;
+    }
+
+    @Nullable
+    private static AttributeModifier.Operation parseOperation(String name) {
+        for (AttributeModifier.Operation operation : AttributeModifier.Operation.values()) {
+            if (operation.getSerializedName().equalsIgnoreCase(name)) {
+                return operation;
+            }
+        }
+        return null;
     }
 
     private static ItemStack createAttributeTestStick(Holder<Attribute> attribute, boolean includeMultiplyTotal) {
