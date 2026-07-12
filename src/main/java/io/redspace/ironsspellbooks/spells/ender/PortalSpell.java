@@ -77,7 +77,7 @@ public class PortalSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<RecastConfig> getRecastConfig(CastContext castContext) {
+    public Optional<RecastConfig> provideRecastConfig(CastContext castContext) {
         return Optional.of(new RecastConfig(PORTAL_RECAST_COUNT, RECAST_DURATION_TICKS));
     }
 

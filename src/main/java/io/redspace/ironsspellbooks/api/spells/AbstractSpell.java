@@ -135,12 +135,12 @@ public abstract class AbstractSpell extends AbstractSkill {
         if (castContext.getRecastsRemaining() > 0) {
             castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
         }
-        if (castContext.find(SkillcastingComponentTypes.CAST_SOURCE).filter(source -> source.name().equals(SpellCastSources.SCROLL)).isPresent()) {
+        if (castContext.getCastSource().name().equals(SpellCastSources.SCROLL)) {
             castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
             // todo: likely remove anti-cooldown in future balance patch.
             castContext.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
             if (castContext.asEntityCaster() instanceof ServerPlayer serverPlayer) {
-                EquipmentSlot slot = EquipmentSlot.CODEC.byName(castContext.getOrDefault(SkillcastingComponentTypes.CAST_SOURCE, CastSource.EMPTY).equipmentSlot());
+                EquipmentSlot slot = EquipmentSlot.CODEC.byName(castContext.getCastSource().equipmentSlot());
                 if (slot != null) {
                     castContext.set(SpellcastingComponentTypes.SCROLL_STACK, serverPlayer.getItemBySlot(slot));
                 }
@@ -185,6 +185,9 @@ public abstract class AbstractSpell extends AbstractSkill {
         if (this.requiresLearning() && !isLearned(castContext.caster().get())) {
             return CastResult.failure(Component.translatable("ui.irons_spellbooks.cast_error_unlearned", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED));
         }
+        if (castContext.has(SkillcastingComponentTypes.RECAST_CONFIG) && castContext.getCastSource().name().equals(SpellCastSources.SCROLL) && !((castContext.asEntityCaster() instanceof Player player && player.isCreative()))) {
+            return CastResult.failure(Component.translatable("ui.irons_spellbooks.cast_error_scroll", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED));
+        }
         int manaCost = getManaCost(castContext);
         if (manaCost > magicData.getMana()) {
             return CastResult.failure(Component.translatable("ui.irons_spellbooks.cast_error_mana", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED));
@@ -223,13 +226,12 @@ public abstract class AbstractSpell extends AbstractSkill {
 
     @Override
     public int getCooldownTicks() {
-        // fixme: full skill takeover (config)
-        return (int) (getDefaultConfig().cooldownInSeconds * 20);
+        return (int) (SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.COOLDOWN_IN_SECONDS) * 20);
     }
 
     public SchoolType getSchoolType() {
-        // fixme: full skill takeover (config)
-        return SchoolRegistry.getSchool(getDefaultConfig().schoolResource);
+        return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.SCHOOL);
+
     }
 
     @Override
@@ -254,7 +256,7 @@ public abstract class AbstractSpell extends AbstractSkill {
     @Override
     public void onClientCastStart(CastContext castContext) {
         super.onClientCastStart(castContext);
-        MagicData.get(castContext.caster().get()).setCachedCastingEquipmentSlot(castContext.getOrDefault(SkillcastingComponentTypes.CAST_SOURCE, CastSource.EMPTY).equipmentSlot());
+        MagicData.get(castContext.caster().get()).setCachedCastingEquipmentSlot(castContext.getCastSource().equipmentSlot());
         handleCastStartAnimation(castContext);
     }
 

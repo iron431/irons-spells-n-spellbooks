@@ -55,7 +55,7 @@ public class FlamingBarrageSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<RecastConfig> getRecastConfig(CastContext castContext) {
+    public Optional<RecastConfig> provideRecastConfig(CastContext castContext) {
         // todo: should this scale? eldritch blast style?
         return Optional.of(new RecastConfig(5, 120));
     }

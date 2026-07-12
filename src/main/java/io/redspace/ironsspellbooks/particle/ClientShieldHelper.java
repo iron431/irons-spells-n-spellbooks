@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.particle;
 
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.entity.spells.AbstractShieldEntity;
+import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
@@ -20,14 +21,14 @@ public class ClientShieldHelper {
 
     @SubscribeEvent
     public static synchronized void trackShieldCreated(EntityJoinLevelEvent event) {
-        if (event.getEntity() instanceof AbstractShieldEntity ase) {
+        if (event.getEntity() instanceof ShieldEntity ase) {
             trackedEntities.add(ase);
         }
     }
 
     @SubscribeEvent
     public static synchronized void trackShieldRemoved(EntityLeaveLevelEvent event) {
-        if (event.getEntity() instanceof AbstractShieldEntity ase) {
+        if (event.getEntity() instanceof ShieldEntity ase) {
             trackedEntities.remove(ase);
         }
     }

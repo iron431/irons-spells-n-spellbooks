@@ -48,9 +48,9 @@ public class LearnSpellPacket implements CustomPacketPayload {
                     data.add(spell);
                     if (!serverPlayer.getAbilities().instabuild) {
                         itemStack.shrink(1);
-                        // fixme: dedicated single ack would be more efficient than chunking this across the wire
-                        serverPlayer.syncData(DataAttachmentRegistry.MAGIC_DATA);
                     }
+                    // fixme: dedicated single ack would be more efficient than chunking this across the wire
+                    serverPlayer.syncData(DataAttachmentRegistry.MAGIC_DATA);
                 }
             }
         });

@@ -87,7 +87,7 @@ public class PortalSkill extends AbstractSkill {
         float portalRotation = 90 + Utils.getAngle(portalLocation.x, portalLocation.z, castContext.position().x, castContext.position().y) * Mth.RAD_TO_DEG;
         if (!castContext.has(SpellcastingComponentTypes.PORTAL_DATA)) {
             PortalData portalData = new PortalData();
-            portalData.setPortalDuration(getRecastConfig(castContext).map(RecastConfig::durationTicks).orElse(100) + 10);
+            portalData.setPortalDuration(provideRecastConfig(castContext).map(RecastConfig::durationTicks).orElse(100) + 10);
             PortalEntity portalEntity = setupPortalEntity(castContext, portalData, portalLocation, portalRotation);
             portalData.globalPos1 = PortalPos.of(serverLevel.dimension(), portalLocation, portalRotation);
             portalData.portalEntityId1 = portalEntity.getUUID();
@@ -116,7 +116,7 @@ public class PortalSkill extends AbstractSkill {
     }
 
     @Override
-    public Optional<RecastConfig> getRecastConfig(CastContext castContext) {
+    public Optional<RecastConfig> provideRecastConfig(CastContext castContext) {
         return Optional.of(new RecastConfig(2, 20 * 10));
     }
 

@@ -74,8 +74,8 @@ public class EldritchBlastSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<RecastConfig> getRecastConfig(CastContext castContext) {
-        return Optional.of(new RecastConfig(2 + castContext.getSkillLevel(), 80));
+    public Optional<RecastConfig> provideRecastConfig(CastContext castContext) {
+        return Optional.of(new RecastConfig(castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_COUNT, 0), 80));
     }
 
     @Override
@@ -83,6 +83,7 @@ public class EldritchBlastSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 30f);
+        castContext.set(SkillcastingComponentTypes.PROJECTILE_COUNT, 2 + castContext.getSkillLevel());
     }
 
     @Override
@@ -95,7 +96,7 @@ public class EldritchBlastSpell extends AbstractSpell {
         Vec3 spawn = castContext.position(PositionAnchor.CASTING_POSITION).subtract(castContext.direction().scale(.5));
         float yRot = castContext.getYRot() * Mth.RAD_TO_DEG;
         float xRot = castContext.getXRot() * Mth.RAD_TO_DEG;
-        level.addFreshEntity(new EldritchBlastVisualEntity(level, spawn.subtract(0,0.65,0), hitResult.getLocation(), -yRot, -xRot));
+        level.addFreshEntity(new EldritchBlastVisualEntity(level, spawn.subtract(0, 0.65, 0), hitResult.getLocation(), -yRot, -xRot));
 
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();

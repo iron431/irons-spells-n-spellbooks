@@ -80,7 +80,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
                 int count = this.random.nextIntBetweenInclusive(1, 2);
                 for (int j = 0; j < count; j++) {
                     Vec3 offset = partPositions.get(i + 1).subtract(pos).scale(Utils.random.nextFloat()).add(Utils.getRandomVec3(.1));
-                    level.addParticle(ParticleHelper.FIRE, pos.x + offset.x, pos.y + Utils.random.nextFloat() * .25 + .1, pos.z + offset.z, 0, Math.random() * .25 + 0.05, 0);
+                    level.addParticle(ParticleHelper.FIRE_EMITTER, pos.x + offset.x, pos.y + Utils.random.nextFloat() * .25 + .2, pos.z + offset.z, 0, Math.random() * .25 + 0.05, 0);
                 }
             } else {
                 for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, subEntity.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {

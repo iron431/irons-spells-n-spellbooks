@@ -5,6 +5,8 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
+import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.api.recast.RecastResult;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -157,8 +159,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
                 var spellId = SpellRegistry.PORTAL_SPELL;
                 var recastInstance = playerRecasts.get(spellId.get());
                 if (recastInstance != null) {
-                    //fixme: cancel recast
-//                    playerRecasts.
+                    playerRecasts.removeRecast(CasterRef.entity(player), spellId, RecastResult.INTERRUPTED);
                 }
             }
         });

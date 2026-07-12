@@ -198,10 +198,6 @@ ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onStartTracking(final PlayerEvent.StartTracking event) {
-        // fixme: with an auto-synced attachment, this is done for us, surely?
-//        if (event.getEntity() instanceof ServerPlayer serverPlayer && event.getTarget() instanceof ServerPlayer targetPlayer) {
-//            MagicData.get(serverPlayer).getSyncedData().syncToPlayer(targetPlayer);
-//        }
         if (event.getEntity() instanceof ServerPlayer serverPlayerRecipient) {
             if (event.getTarget() instanceof LivingEntity livingEntity) {
                 for (var inst : livingEntity.getActiveEffects()) {
@@ -217,8 +213,6 @@ ServerPlayerEvents {
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
             CameraShakeManager.doSync(serverPlayer);
-            // fixme: will we still need dedicated packet?
-//            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(MagicData.get(serverPlayer)));
         }
     }
 

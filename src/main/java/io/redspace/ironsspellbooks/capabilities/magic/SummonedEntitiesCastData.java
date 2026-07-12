@@ -4,7 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.ICastDataSerializable;
+import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.recast.RecastInstance;
+import io.redspace.skillcasting.api.recast.RecastResult;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
@@ -45,11 +48,10 @@ public class SummonedEntitiesCastData implements ICastDataSerializable {
         }
     }
 
-    public void handleRemove(UUID uuid, MagicData ownerData, RecastInstance recastInstance) {
+    public void handleRemove(UUID uuid, CasterRef casterRef, RecastInstance recastInstance) {
         summons.remove(uuid);
         if (summons.isEmpty()) {
-            //fixme: remove recast
-//            ownerData.getPlayerRecasts().removeRecast(recastInstance, RecastResult.USED_ALL_RECASTS);
+            casterRef.skillcastingData().recasts().removeRecast(casterRef, recastInstance.skill(), RecastResult.USED_ALL_RECASTS);
         }
     }
 

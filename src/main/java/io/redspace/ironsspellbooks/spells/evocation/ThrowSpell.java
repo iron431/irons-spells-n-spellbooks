@@ -93,7 +93,7 @@ public class ThrowSpell extends AbstractSpell {
         Entity caster = castContext.asEntityCaster();
         ItemStack stack = ItemStack.EMPTY;
         if (caster instanceof LivingEntity living) {
-            boolean offhand = SkillSelectionManager.OFFHAND.equals(castContext.getOrNull(SkillcastingComponentTypes.CAST_SOURCE));
+            boolean offhand = SkillSelectionManager.OFFHAND.equals(castContext.getCastSource().equipmentSlot());
             stack = offhand ? living.getOffhandItem() : living.getMainHandItem();
         }
 

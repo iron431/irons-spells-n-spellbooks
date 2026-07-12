@@ -11,7 +11,6 @@ import io.redspace.skillcasting.api.event.SkillPreCastEvent;
 import io.redspace.skillcasting.api.recast.RecastConfig;
 import io.redspace.skillcasting.api.recast.RecastInstance;
 import io.redspace.skillcasting.api.recast.RecastManager;
-import io.redspace.skillcasting.api.recast.RecastResult;
 import io.redspace.skillcasting.api.resolver.CasterDirectionResolver;
 import io.redspace.skillcasting.api.resolver.CasterPositionResolver;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
@@ -69,12 +68,15 @@ public final class SkillcastingManager {
         context.set(SkillcastingComponentTypes.CAST_TIME, skill.getCastTimeTicks());
         context.set(SkillcastingComponentTypes.COOLDOWN_TICKS, skill.getCooldownTicks());
         context.set(SkillcastingComponentTypes.CAST_SOURCE, castSource);
+
         BuildCastContextEvent.Level levelEvent = new BuildCastContextEvent.Level(context, baseLevel);
         NeoForge.EVENT_BUS.post(levelEvent);
         context.set(SkillcastingComponentTypes.SKILL_LEVEL, levelEvent.getLevel());
 
         skill.buildContextComponents(context);
         NeoForge.EVENT_BUS.post(new BuildCastContextEvent.Post(context));
+
+        skill.provideRecastConfig(context).ifPresent(recast -> context.set(SkillcastingComponentTypes.RECAST_CONFIG, recast));
         return context;
     }
 
@@ -93,8 +95,6 @@ public final class SkillcastingManager {
         RecastManager recastManager = skillcastingData.recasts();
         if (recastManager.hasRecast(skillHolder)) {
             castContext.components().applyFrom(recastManager.get(skillHolder).components());
-        } else {
-            skill.getRecastConfig(castContext).ifPresent(recast -> castContext.set(SkillcastingComponentTypes.RECAST_CONFIG, recast));
         }
         if (skillcastingData.getActiveCast() != null) {
             endCast(caster, skillcastingData, skillcastingData.getActiveCast(), CastEndReason.INTERRUPTED);
@@ -189,17 +189,6 @@ public final class SkillcastingManager {
 
     public static void serverStopped() {
         TRACKED.clear();
-    }
-
-    // fixme: surely this should live on recast manager
-    @Deprecated(forRemoval = true)
-    public static void removeRecast(CasterRef caster, RecastInstance instance, RecastResult result) {
-        var skill = instance.skill();
-        CastContext castContext = new CastContext(skill, caster, caster.level());
-        castContext.components().applyFrom(instance.components());
-        skill.value().onRecastFinished(castContext, result);
-        triggerCooldown(castContext);
-        SkillcastingNetwork.syncRecastRemove(caster, skill);
     }
 
     private static void tickActiveCast(CasterRef caster, SkillcastingData data, ActiveCast active) {

@@ -51,8 +51,12 @@ public class DragonBreathSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage",
-                Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)));
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.damage",
+                        Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)),
+                Component.translatable("ui.irons_spellbooks.cast_range",
+                        Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f), 2))
+        );
     }
 
     @Override
@@ -79,22 +83,20 @@ public class DragonBreathSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, 1 + getSpellPower(castContext) * 0.75f);
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 8f);
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Vec3 origin = SkillcastingUtils.defaultConeOrigin(castContext);
         Set<Entity> entities = SkillcastingUtils.collectConeTargets(castContext,
-                target -> SkillcastingUtils.isConeProjectileTarget(level, origin, target));
+                target -> target.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(castContext.asEntityCaster(), target));
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         entities.forEach(entity -> {
-            if (!DamageSources.isFriendlyFireBetween(castContext.asEntityCaster(), entity)) {
-                if (entity instanceof LivingEntity livingEntity) {
-                    DamageSources.ignoreNextKnockback(livingEntity);
-                }
-                if (DamageSources.applyDamage(entity, damage, getDamageSource(level, null, castContext.asEntityCaster())) && castContext.level().getRandom().nextFloat() < 0.3f) {
-                    createDragonBreathPuddle(castContext, entity.position());
-                }
+            if (entity instanceof LivingEntity livingEntity) {
+                DamageSources.ignoreNextKnockback(livingEntity);
+            }
+            if (DamageSources.applyDamage(entity, damage, getDamageSource(level, null, castContext.asEntityCaster())) && castContext.level().getRandom().nextFloat() < 0.3f) {
+                createDragonBreathPuddle(castContext, entity.position());
             }
         });
     }
@@ -116,8 +118,11 @@ public class DragonBreathSpell extends AbstractSpell {
         CastContext castContext = activeCast.context();
         Vec3 rotation = castContext.direction();
         var pos = castContext.position(PositionAnchor.CASTING_POSITION_CENTER).add(rotation.scale(1.5));
-        for (int i = 0; i < 12; i++) {
+        float rangeMultiplier = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 8f) / 8f;
+
+        for (int i = 0; i < 12 * rangeMultiplier; i++) {
             double speed = casterRef.level().getRandom().nextDouble() * .35 + .25;
+            speed *= rangeMultiplier;
             double offset = .15;
             double ox = Math.random() * 2 * offset - offset;
             double oy = Math.random() * 2 * offset - offset;

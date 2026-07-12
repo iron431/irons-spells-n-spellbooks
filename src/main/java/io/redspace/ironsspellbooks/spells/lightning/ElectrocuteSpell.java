@@ -49,8 +49,11 @@ public class ElectrocuteSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage",
-                Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)));
+        return List.of(
+                Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)),
+                Component.translatable("ui.irons_spellbooks.cast_range", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f), 2))
+
+        );
     }
 
     @Override
@@ -72,6 +75,7 @@ public class ElectrocuteSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, 1 + getSpellPower(castContext) * 0.75f);
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, 10f);
         castContext.set(SkillcastingComponentTypes.RANDOM_SEED, castContext.level().random.nextInt(Integer.MAX_VALUE));
     }
 
@@ -83,30 +87,25 @@ public class ElectrocuteSpell extends AbstractSpell {
                 castContext.caster(),
                 (poseStack, buf, partialTick, caster, data, cast) -> {
                     // fixme: pretty sure this kills the server
-                    SpellRenderingHelper.renderElectrocute(caster.level(), poseStack, castContext.position(PositionAnchor.CASTING_POSITION).subtract(
-                                    castContext.position(PositionAnchor.ORIGIN)
-                            ).subtract(castContext.direction().scale(0.25)).subtract(0, 0.25, 0),
-                            castContext.direction(), buf, castContext.getOrDefault(SkillcastingComponentTypes.RANDOM_SEED, 0), partialTick);
+                    float rangeMultiplier = cast.context().getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 8f) / 9f;
+                    SpellRenderingHelper.renderElectrocute(caster.level(), poseStack, rangeMultiplier, buf, castContext.getOrDefault(SkillcastingComponentTypes.RANDOM_SEED, 0), partialTick);
                 }
         );
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Vec3 origin = SkillcastingUtils.defaultConeOrigin(castContext);
         Set<Entity> entities = SkillcastingUtils.collectConeTargets(castContext,
-                target -> SkillcastingUtils.isConeProjectileTarget(level, origin, target));
+                target -> target.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(castContext.asEntityCaster(), target));
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         entities.forEach(entity -> {
-            if (!DamageSources.isFriendlyFireBetween(castContext.asEntityCaster(), entity)) {
-                if (entity instanceof LivingEntity livingEntity) {
-                    DamageSources.ignoreNextKnockback(livingEntity);
-                }
-                if (DamageSources.applyDamage(entity, damage, getDamageSource(level, null, castContext.asEntityCaster()))) {
-                    MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY,
-                            entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(),
-                            10, entity.getBbWidth() / 3, entity.getBbHeight() / 3, entity.getBbWidth() / 3, 0.1, false);
-                }
+            if (entity instanceof LivingEntity livingEntity) {
+                DamageSources.ignoreNextKnockback(livingEntity);
+            }
+            if (DamageSources.applyDamage(entity, damage, getDamageSource(level, null, castContext.asEntityCaster()))) {
+                MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY,
+                        entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(),
+                        10, entity.getBbWidth() / 3, entity.getBbHeight() / 3, entity.getBbWidth() / 3, 0.1, false);
             }
         });
     }

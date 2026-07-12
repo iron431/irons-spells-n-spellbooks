@@ -105,7 +105,7 @@ public class CounterspellSpell extends AbstractSpell {
                         RecastManager recasts = casterRef.skillcastingData().recasts();
                         for (RecastInstance instance : recasts.getActiveRecasts()) {
                             if (!instance.components().has(SpellcastingComponentTypes.SUMMONED_ENTITY_DATA.get())) {
-                                SkillcastingManager.removeRecast(casterRef, instance, RecastResult.INTERRUPTED);
+                                recasts.removeRecast(casterRef, instance.skill(), RecastResult.INTERRUPTED);
                             }
                         }
                     }

@@ -89,7 +89,7 @@ public final class RaycastBuilder {
     }
 
     /**
-     * Executes the raycast with the current parameters. Start and end must have been set.
+     * Executes the raycast with the current parameters. Start and end must be set.
      *
      * @return the hit result (entity hit, block hit, or miss)
      */
@@ -98,7 +98,7 @@ public final class RaycastBuilder {
     }
 
     /**
-     * Performs the raycast with the current parameters. Start and end must have been set.
+     * Performs the raycast with the current parameters. Start and end must be set.
      *
      * @return raycast HitResult
      */
@@ -137,7 +137,7 @@ public final class RaycastBuilder {
     }
 
     /**
-     * Performs the raycast with the current parameters. Start and end must have been set.
+     * Performs the raycast with the current parameters. Start and end be been set.
      *
      * @return raycast HitResults
      */
@@ -153,9 +153,11 @@ public final class RaycastBuilder {
         }
         int castCount = 1 + ricochetLevel;
 
+        // tracks the state of the live cast segment
         float rangeRemaining = Math.max(1.0f, (float) start.distanceTo(end));
         Vec3 castStart = start;
         Vec3 castEnd = end;
+
         List<HitResult> hitResults = new ArrayList<>();
         BlockHitResult lastBlockHitMiss = null;
         HashSet<UUID> hitEntities = new HashSet<>();
@@ -179,6 +181,7 @@ public final class RaycastBuilder {
                     work = true;
                     hitResults.add(hit);
                     if (i == castCount - 1) {
+                        // we are at the final cast, no need to calculate future ricochet
                         break;
                     }
                     if (hit instanceof EntityHitResult entityHitResult) {
@@ -209,5 +212,51 @@ public final class RaycastBuilder {
         } else {
             return hitResults;
         }
+    }
+
+    /**
+     * Performs the raycast with the current parameters. Start and end must be set.
+     *
+     * @return raycast HitResults
+     */
+    public List<HitResult> performRaycastWithPiercing(int pierceLevel) {
+        Objects.requireNonNull(start, "Start must be set to perform raycast");
+        Objects.requireNonNull(end, "End must be set to perform raycast");
+        if (pierceLevel < 0) {
+            // approximate infinite piercing as 64 passes
+            pierceLevel = 64;
+        }
+        if (pierceLevel > 64) {
+            pierceLevel = 64;
+        }
+        Vec3 castStart = start;
+        Vec3 castEnd = end;
+        List<HitResult> hitResults = new ArrayList<>();
+        BlockHitResult endHit;
+        if (checkForBlocks) {
+            endHit = level.clip(new ClipContext(castStart, castEnd, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, originEntity == null ? CollisionContext.empty() : CollisionContext.of(originEntity)));
+            castEnd = endHit.getLocation();
+        } else {
+            endHit = BlockHitResult.miss(end, Direction.UP, BlockPos.containing(end));
+        }
+        AABB collider = new AABB(castStart, castEnd).inflate(2);
+        List<? extends Entity> entities = level.getEntities(originEntity, collider, filter);
+        entities.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(castStart)));
+        boolean exhaustedPiercing = false;
+        for (Entity target : entities) {
+            HitResult hit = Utils.checkEntityIntersecting(target, castStart, castEnd, bbInflation);
+            if (hit.getType() != HitResult.Type.MISS) {
+                hitResults.add(hit);
+                if (pierceLevel == 0) {
+                    exhaustedPiercing = true;
+                    break;
+                }
+                pierceLevel--;
+            }
+        }
+        if (!exhaustedPiercing) {
+            hitResults.add(endHit);
+        }
+        return hitResults;
     }
 }

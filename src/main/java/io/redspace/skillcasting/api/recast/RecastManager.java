@@ -6,6 +6,7 @@ import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
+import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.core.Holder;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +29,21 @@ public final class RecastManager {
     }
 
     private final Map<Holder<AbstractSkill>, RecastInstance> recasts = new HashMap<>();
+
+    public void removeRecast(CasterRef caster, Holder<AbstractSkill> skill, RecastResult result) {
+        RecastInstance instance = recasts.remove(skill);
+        if (instance == null) {
+            return;
+        }
+        if (caster.level().isClientSide) {
+            return;
+        }
+        CastContext castContext = new CastContext(skill, caster, caster.level());
+        castContext.components().applyFrom(instance.components());
+        skill.value().onRecastFinished(castContext, result);
+        SkillcastingManager.triggerCooldown(castContext);
+        SkillcastingNetwork.syncRecastRemove(caster, skill);
+    }
 
     public void addRecast(RecastInstance instance) {
         recasts.put(instance.skill(), instance);
@@ -124,16 +140,11 @@ public final class RecastManager {
         ActiveCast activeCast = casterRef.skillcastingData().getActiveCast();
         Holder<AbstractSkill> castingSkill = activeCast == null ? null : activeCast.context().skill();
 
-        Iterator<Map.Entry<Holder<AbstractSkill>, RecastInstance>> it = recasts.entrySet().iterator();
-        while (it.hasNext()) {
-            RecastInstance instance = it.next().getValue();
+        for (RecastInstance instance : this.getActiveRecasts()) {
             instance.tick();
             boolean isCastingSelf = instance.skill().equals(castingSkill);
             if (instance.isTimedOut() && !isCastingSelf) {
-                it.remove();
-                if(!casterRef.level().isClientSide) {
-                    SkillcastingManager.removeRecast(casterRef, instance, RecastResult.TIMEOUT);
-                }
+                removeRecast(casterRef, instance.skill(), RecastResult.TIMEOUT);
                 changed = true;
             }
         }

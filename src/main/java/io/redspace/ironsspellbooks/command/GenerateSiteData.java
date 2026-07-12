@@ -23,6 +23,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -517,8 +518,8 @@ public class GenerateSiteData {
     private static List<String> processUniqueInfo(AbstractSpell spell) {
         List<String> text = new ArrayList<>();
         // fixme skillcasting: unique info now requires a CastContext; needs a caster-free context builder to restore level-scaled ranges
-        List<net.minecraft.network.chat.MutableComponent> uniqueInfoMin = List.of();
-        List<net.minecraft.network.chat.MutableComponent> uniqueInfoMax = List.of();
+        List<MutableComponent> uniqueInfoMin = List.of();
+        List<MutableComponent> uniqueInfoMax = List.of();
         for (int i = 0; i < uniqueInfoMax.size(); i++) {
             var lineMinLevel = uniqueInfoMin.get(i).getString().split(" ");
             var lineMaxLevel = uniqueInfoMax.get(i).getString().split(" ");

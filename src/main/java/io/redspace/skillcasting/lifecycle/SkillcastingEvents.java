@@ -105,7 +105,7 @@ public final class SkillcastingEvents {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onUseItem(PlayerInteractEvent.RightClickItem event) {
         if (SkillcastingData.has(event.getEntity()) && SkillcastingData.get(event.getEntity()).isCasting() &&
-                !SkillcastingData.get(event.getEntity()).getActiveCast().context().find(SkillcastingComponentTypes.CAST_SOURCE).filter(source -> source.isFromSlot(event.getHand())).isPresent()) {
+                !SkillcastingData.get(event.getEntity()).getActiveCast().context().getCastSource().isFromSlot(event.getHand())) {
             event.setCanceled(true);
         }
     }

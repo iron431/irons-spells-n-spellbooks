@@ -3,6 +3,7 @@ package io.redspace.skillcasting.client;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import net.minecraft.client.Minecraft;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 
@@ -15,8 +16,15 @@ public class SkillcastClientTickManager {
 
     private static final List<Wrapped> TICKING = new ArrayList<>();
 
+    public static void clear() {
+        TICKING.clear();
+    }
+
     @SubscribeEvent
     public static void tick(ClientTickEvent.Pre event) {
+        if (Minecraft.getInstance().isSingleplayer() && Minecraft.getInstance().isPaused()) {
+            return;
+        }
         if (TICKING.isEmpty()) {
             return;
         }

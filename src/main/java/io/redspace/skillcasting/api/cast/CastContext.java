@@ -8,6 +8,7 @@ import io.redspace.skillcasting.api.resolver.CasterPositionResolver;
 import io.redspace.skillcasting.api.resolver.DirectionResolver;
 import io.redspace.skillcasting.api.resolver.PositionResolver;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.Holder;
@@ -15,6 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -68,6 +70,10 @@ public final class CastContext {
      * QOL shortcuts
      */
 
+    public @NotNull CastSource getCastSource() {
+        return getOrDefault(SkillcastingComponentTypes.CAST_SOURCE, CastSource.EMPTY);
+    }
+
     public SkillcastingData getSkillcastingData() {
         return caster.skillcastingData();
     }
@@ -92,7 +98,7 @@ public final class CastContext {
     }
 
     /**
-     * @return If the context owner is a {@link EntityCasterRef}, returns the {@link Entity} behind it. Otherwise, <code>null</code>
+     * @return If the context owner is an {@link EntityCasterRef}, returns the {@link Entity} behind it. Otherwise, <code>null</code>
      */
     public @Nullable Entity asEntityCaster() {
         return caster instanceof EntityCasterRef entity ? entity.entity() : null;

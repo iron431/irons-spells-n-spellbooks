@@ -1,6 +1,10 @@
 package io.redspace.skillcasting.util;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
+import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.component.TargetedEntitiesData;
@@ -16,6 +20,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,22 +29,22 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.PartEntity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class SkillcastingUtils {
 
-    /**
-     * Unpositioned cone layer templates matching {@code AbstractConeProjectile} part sizes.
-     */
     private static final List<AABB> CONE_LAYER_TEMPLATES = List.of(
             new AABB(0, 0, 0, 1, 1, 1),
             new AABB(0, 0, 0, 2.5, 1.5, 2.5),
@@ -47,16 +52,6 @@ public final class SkillcastingUtils {
             new AABB(0, 0, 0, 4.5, 3, 4.5)
     );
 
-    /**
-     * @return Cone origin used by breath/cone continuous skills (slightly below cast position).
-     */
-    public static Vec3 defaultConeOrigin(CastContext castContext) {
-        return castContext.position().subtract(0, 0.5, 0);
-    }
-
-    /**
-     * Builds world-space AABBs for a forward-facing cone emanating from {@code origin} along {@code direction}.
-     */
     public static List<AABB> buildConeHitboxes(Vec3 origin, Vec3 direction) {
         List<AABB> coneColliders = new ArrayList<>(CONE_LAYER_TEMPLATES.size());
         for (AABB template : CONE_LAYER_TEMPLATES) {
@@ -72,29 +67,63 @@ public final class SkillcastingUtils {
         return coneColliders;
     }
 
-    /**
-     * Collects unique entities intersecting a cone, excluding {@code caster}.
-     */
-    public static Set<Entity> collectConeTargets(Level level, @Nullable Entity caster, Vec3 origin, Vec3 direction, Predicate<Entity> filter) {
-        return buildConeHitboxes(origin, direction).stream()
-                .flatMap(aabb -> level.getEntities(caster, aabb).stream())
-                .filter(filter)
-                .collect(Collectors.toSet());
+    public static Set<Entity> collectConeTargets(Level level, @Nullable Entity caster, Vec3 origin, Vec3 direction, float range, Predicate<Entity> filter) {
+        float radius = range / 2;
+        Vec3 end = origin.add(direction.scale(range));
+        Vec3 up = new Vec3(0, 1, 0);
+        Vec3 right;
+        if (Math.abs(up.dot(direction)) > .99) {
+            up = new Vec3(1, 0, 0);
+            right = new Vec3(0, 0, 1);
+        } else {
+            right = direction.cross(up).normalize();
+            up = right.cross(direction).normalize();
+        }
+        AABB box = new AABB(end, origin)
+                .expandTowards(up.scale(radius))
+                .expandTowards(up.scale(-radius))
+                .expandTowards(right.scale(radius))
+                .expandTowards(right.scale(-radius))
+                .inflate(1);
+        float heightRatio = 4.5f / 3f; // magic numbers based on the original cone height/width ratio
+        List<? extends Entity> entities = level.getEntities(caster, box, filter);
+        HashSet<Entity> set = new HashSet<>();
+        float threshold = Mth.cos(30 * Mth.DEG_TO_RAD);
+        for (Entity e : entities) {
+            Vec3 delta = e.getBoundingBox().getCenter().subtract(origin.subtract(direction));
+            if (delta.lengthSqr() <= (range + 1) * (range + 1) &&
+                    delta.multiply(1, heightRatio, 1).normalize().dot(direction) >= threshold &&
+                    Utils.hasLineOfSight(level, origin, e.getBoundingBox().getCenter(), true)
+            ) {
+                set.add(e);
+            }
+        }
+        boolean debugParticles = false;
+        if (debugParticles) {
+            float density = 1f;
+            for (float x = 0; x < box.getXsize(); x += density) {
+                for (float y = 0; y < box.getYsize(); y += density) {
+                    for (float z = 0; z < box.getZsize(); z += density) {
+                        Vec3 particle = box.getMinPosition().add(x, y, z);
+                        Vec3 delta = particle.subtract(origin);
+                        boolean predicate = (delta.lengthSqr() <= range * range && delta.multiply(1, heightRatio, 1).normalize().dot(direction) >= threshold);
+                        MagicManager.spawnParticles(level, predicate ? ParticleHelper.ELECTRICITY : ParticleHelper.SNOWFLAKE, particle.x, particle.y, particle.z, 1, 0, 0, 0, 0, true);
+                    }
+                }
+            }
+        }
+        return set;
     }
 
     public static Set<Entity> collectConeTargets(CastContext castContext, Predicate<Entity> filter) {
         return collectConeTargets(
                 castContext.level(),
                 castContext.asEntityCaster(),
-                defaultConeOrigin(castContext),
+                castContext.position(PositionAnchor.CASTING_POSITION_CENTER),
                 castContext.direction(),
+                castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 7.75f),
                 filter
         );
-    }
-
-    public static boolean isConeProjectileTarget(Level level, Vec3 origin, Entity target) {
-        return target.canBeHitByProjectile()
-                && io.redspace.ironsspellbooks.api.util.Utils.hasLineOfSight(level, origin, target.getBoundingBox().getCenter(), true);
     }
 
     public static boolean isSameItemSameComponentsIgnoreDurability(ItemStack a, ItemStack b) {

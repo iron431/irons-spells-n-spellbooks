@@ -42,7 +42,7 @@ public class RayOfFrostParticle extends TextureSheetParticle {
         this.setSize(1, 1);
         this.quadSize = 1f;
         this.destination = options.getDestination();
-        this.lifetime = 100;
+        this.lifetime = 8;
         this.rCol = 1;
         this.gCol = 1;
         this.bCol = 1;

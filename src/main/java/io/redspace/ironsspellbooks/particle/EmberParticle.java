@@ -16,10 +16,7 @@ public class EmberParticle extends TextureSheetParticle {
     private final boolean mirrored;
 
     public EmberParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, double xd, double yd, double zd) {
-
         super(level, xCoord, yCoord, zCoord, xd, yd, zd);
-
-
         this.xd = xd;
         this.yd = yd;
         this.zd = zd;
@@ -29,7 +26,6 @@ public class EmberParticle extends TextureSheetParticle {
         this.setSpriteFromAge(spriteSet);
         this.gravity = -0.1F;
         this.mirrored = this.random.nextBoolean();
-
     }
 
     @Override

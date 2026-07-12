@@ -13,7 +13,6 @@
     "EntityMixin",
     "IItemExtensionMixin",
     "ItemMixin",
-    "ItemStackMixin",
     "LecternBlockEntityMixin",
     "LevelMixin",
     "LivingEntityAccessor",

@@ -8,8 +8,10 @@ import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.Log;
 import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.recast.RecastInstance;
 import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
+import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -20,6 +22,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.NeoForge;
@@ -170,22 +173,20 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
         }
     }
 
-    /**
-     * Iterates over summoner's recast data until finding where the given summon lives, and handles {@link SummonedEntitiesCastData#handleRemove(UUID, MagicData, RecastInstance)}
-     */
     private static void removeFromRecastData(ServerLevel level, UUID ownerUuid, UUID summonUuid) {
-        // fixme: recasts and summon management
-//        if (!(level.getEntity(ownerUuid) instanceof Player player)) return;
-//        var playerMagicData = MagicData.get(player);
-//        var recasts = playerMagicData.getPlayerRecasts();
-//        for (RecastInstance recastInstance : recasts.getActiveRecasts()) {
-//            if (recastInstance.getCastData() instanceof SummonedEntitiesCastData summonData) {
-//                if (summonData.getSummons().contains(summonUuid)) {
-//                    summonData.handleRemove(summonUuid, playerMagicData, recastInstance);
-//                    break;
-//                }
-//            }
-//        }
+        if (!(level.getEntity(ownerUuid) instanceof Player player)) {
+            return;
+        }
+        var recasts = SkillcastingData.get(player).recasts();
+        for (RecastInstance recastInstance : recasts.getActiveRecasts()) {
+            if (recastInstance.components().has(SpellcastingComponentTypes.SUMMONED_ENTITY_DATA.get())) {
+                SummonedEntitiesCastData summonData = recastInstance.components().getOrNull(SpellcastingComponentTypes.SUMMONED_ENTITY_DATA.get());
+                if (summonData.getSummons().contains(summonUuid)) {
+                    summonData.handleRemove(summonUuid, CasterRef.entity(player), recastInstance);
+                    break;
+                }
+            }
+        }
     }
 
     /**

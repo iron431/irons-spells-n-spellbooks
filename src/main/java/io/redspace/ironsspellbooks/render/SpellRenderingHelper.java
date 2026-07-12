@@ -74,10 +74,10 @@ public class SpellRenderingHelper {
         poseStack.popPose();
     }
 
-    public static void renderElectrocute(Level level, PoseStack poseStack, Vec3 offset, Vec3 direction, MultiBufferSource bufferSource, int seed, float partialTicks) {
+    public static void renderElectrocute(Level level, PoseStack poseStack, float rangeMultiplier, MultiBufferSource bufferSource, int seed, float partialTicks) {
         poseStack.pushPose();
         poseStack.translate(0, -0.125, 0.25);
-
+        poseStack.scale(1,1,rangeMultiplier);
         var pose = poseStack.last();
         List<Vec3> segments = generateElectrocuteBeams(RandomSource.create(level.getGameTime() + seed));
         float width = .3f;

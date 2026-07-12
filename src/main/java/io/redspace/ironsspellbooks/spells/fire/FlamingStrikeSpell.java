@@ -124,8 +124,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
                 }
             }
         }
-        // fixme: cast source helper
-        boolean mirrored = SkillSelectionManager.OFFHAND.equals(castContext.getOrNull(SkillcastingComponentTypes.CAST_SOURCE));
+        boolean mirrored = SkillSelectionManager.OFFHAND.equals(castContext.getCastSource().equipmentSlot());
         MagicManager.spawnParticles(level, new FlameStrikeParticleOptions((float) forward.x, (float) forward.y, (float) forward.z, mirrored, false, 1f),
                 hitLocation.x, hitLocation.y + 0.5, hitLocation.z, 1, 0, 0, 0, 0, true);
     }

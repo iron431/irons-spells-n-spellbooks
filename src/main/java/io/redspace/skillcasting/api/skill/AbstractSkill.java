@@ -203,7 +203,7 @@ public abstract class AbstractSkill {
         createClientTicker().ifPresent(ticker -> SkillcastClientTickManager.track(castContext.caster(), ticker));
     }
 
-    public Optional<RecastConfig> getRecastConfig(CastContext castContext) {
+    public Optional<RecastConfig> provideRecastConfig(CastContext castContext) {
         return Optional.empty();
     }
 

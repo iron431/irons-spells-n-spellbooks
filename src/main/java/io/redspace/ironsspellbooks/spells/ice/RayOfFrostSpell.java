@@ -88,60 +88,12 @@ public class RayOfFrostSpell extends AbstractSpell {
 
         int ricochetCount = castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_RICOCHET, 0);
         int piercingCount = castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_PIERCE, 0);
-        List<HitResult> hitResults = new ArrayList<>();
-        List<Vec3> rayInflectionPoints = new ArrayList<>(List.of(castContext.position(PositionAnchor.BOTTOM_CENTER).lerp(castContext.position(PositionAnchor.CASTING_POSITION), 0.8f)));
-        HitResult lastHitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
+        List<HitResult> hitResults = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
                 .bbInflation(.15f)
-                .build();
-        Vec3 lastOrigin = castContext.position();
-        float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f);
-        for (int i = 0; i <= ricochetCount; i++) {
-            Entity entity = lastHitResult instanceof EntityHitResult entityHitResult ? entityHitResult.getEntity() : castContext.asEntityCaster();
-            hitResults.add(lastHitResult);
-            Vec3 direction = lastHitResult.getLocation().subtract(lastOrigin).normalize();
-            if (i == ricochetCount) {
-                break;
-            }
-            Optional<Vec3> ricochet = AbstractSkillProjectile.findRicochetDirection(level, lastOrigin, direction, range, Utils::canHitWithRaycast, entity);
-            if (ricochet.isEmpty()) {
-                break;
-            }
-            rayInflectionPoints.add(lastHitResult.getLocation());
-            lastOrigin = lastHitResult.getLocation();
-            lastHitResult = RaycastBuilder.begin(level, entity)
-                    .start(lastOrigin)
-                    .end(ricochet.get(), range)
-                    .checkForBlocks(true)
-                    .bbInflation(.15f)
-                    .build();
-        }
-        Vec3 direction = lastHitResult.getLocation().subtract(lastOrigin).normalize();
-        Vec3 raystart = lastOrigin;
-        Vec3 rayend = lastOrigin.add(direction.scale(range));
-        HitResult clippedEnd = Utils.raycastForBlock(level, raystart, rayend, ClipContext.Fluid.NONE);
-        rayend = clippedEnd.getLocation();
-        List<? extends Entity> entities = level.getEntities(castContext.asEntityCaster(), new AABB(raystart, rayend).inflate(2), Utils::canHitWithRaycast);
-        entities.sort(Comparator.comparingDouble(o -> o.position().distanceToSqr(raystart)));
-        for (int i = 0; i < entities.size() && piercingCount > 0; i++) {
-            var target = entities.get(i);
-            HitResult hit = Utils.checkEntityIntersecting(target, raystart, rayend, 0.15f);
-            if (hit.getType() != HitResult.Type.MISS) {
-                hitResults.add(hit);
-                piercingCount--;
-            }
-        }
-        if (piercingCount >= 1) {
-            hitResults.add(clippedEnd);
-        }
-        if (hitResults.isEmpty()) {
-            rayInflectionPoints.add(rayend);
-        } else {
-            rayInflectionPoints.add(hitResults.get(hitResults.size() - 1).getLocation());
-        }
-
-//        List<Vec3> chainPositions = new ArrayList<>(List.of(castContext.position(PositionAnchor.BOTTOM_CENTER).lerp(castContext.position(PositionAnchor.CASTING_POSITION), 0.8f)));
-//        chainPositions.addAll(hitResults.stream().map(HitResult::getLocation).toList());
+                .performRaycastWithRicochet(ricochetCount);
+        List<Vec3> rayInflectionPoints = new ArrayList<>(List.of(castContext.position(PositionAnchor.BOTTOM_CENTER).lerp(castContext.position(PositionAnchor.CASTING_POSITION), 0.8f)));
+        hitResults.stream().map(HitResult::getLocation).forEach(rayInflectionPoints::add);
         for (int i = 0; i < rayInflectionPoints.size() - 1; i++) {
             Vec3 start = rayInflectionPoints.get(i);
             Vec3 end = rayInflectionPoints.get(i + 1);
@@ -158,7 +110,10 @@ public class RayOfFrostSpell extends AbstractSpell {
                     getDamageSourceIndirect(castContext).setFreezeTicks(target.getTicksRequiredToFreeze() + getFreezeTime(castContext)));
             MagicManager.spawnParticles(level, ParticleHelper.SNOW_DUST, entityhit.getLocation().x, entityhit.getLocation().y, entityhit.getLocation().z, 10, 0, .1, 0, .06, false);
         }
-        MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, lastHitResult.getLocation().x, lastHitResult.getLocation().y, lastHitResult.getLocation().z, 50, 0, 0, 0, .3, false);
+        if (!hitResults.isEmpty()) {
+            var lastHitResult = hitResults.get(hitResults.size() - 1);
+            MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, lastHitResult.getLocation().x, lastHitResult.getLocation().y, lastHitResult.getLocation().z, 50, 0, 0, 0, .3, false);
+        }
     }
 
     private int getFreezeTime(CastContext castContext) {

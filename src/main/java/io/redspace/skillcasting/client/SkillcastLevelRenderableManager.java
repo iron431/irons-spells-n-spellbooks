@@ -46,6 +46,10 @@ public class SkillcastLevelRenderableManager {
         }
     }
 
+    public static void clear() {
+        RENDERABLES.clear();
+    }
+
     @SubscribeEvent
     public static void levelRender(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) {
