@@ -8,7 +8,6 @@ import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.data.ISkillContainerMutable;
 import io.redspace.skillcasting.data.SkillContainer;
 import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.data.SkillSlot;
@@ -53,17 +52,6 @@ public class Scroll extends Item {
 
     public static void applyScrollToStack(ItemStack stack, AbstractSpell spell, int level) {
         ISkillContainer.set(stack, createScrollContainer(new SkillData(spell, level)));
-    }
-
-    public static void applyImbuedToStack(ItemStack stack, AbstractSpell spell, int level) {
-        ISkillContainer.set(stack, ISkillContainer.create(false, new SkillData(spell, level, true)));
-    }
-
-    public static ISkillContainerMutable getOrCreateContainer(ItemStack stack, int maxSlots, boolean spellWheel, boolean mustEquip) {
-        if (!ISkillContainer.isSkillContainer(stack)) {
-            ISkillContainer.set(stack, new SkillContainer(maxSlots, spellWheel, mustEquip));
-        }
-        return ISkillContainer.get(stack).mutableCopy();
     }
 
     public static void removeScrollAfterCast(ServerPlayer serverPlayer, ItemStack stack) {

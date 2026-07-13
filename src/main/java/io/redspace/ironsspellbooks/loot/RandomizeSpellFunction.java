@@ -59,7 +59,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             if (itemStack.getItem() instanceof Scroll) {
                 Scroll.applyScrollToStack(itemStack, spell, spellLevel);
             } else {
-                Scroll.applyImbuedToStack(itemStack, spell, spellLevel);
+                Utils.applyImbueToStack(itemStack, spell, spellLevel);
             }
         }
         return itemStack;

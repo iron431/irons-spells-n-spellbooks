@@ -18,6 +18,7 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.data.SkillSlot;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
@@ -919,4 +920,7 @@ public class Utils {
         );
     }
 
+    public static void applyImbueToStack(ItemStack stack, AbstractSpell spell, int level) {
+        ISkillContainer.set(stack, ISkillContainer.create(false, new SkillData(spell, level, true)));
+    }
 }

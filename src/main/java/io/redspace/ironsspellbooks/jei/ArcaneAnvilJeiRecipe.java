@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.jei;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
@@ -77,7 +78,7 @@ public class ArcaneAnvilJeiRecipe {
                         var scroll = new ItemStack(ItemRegistry.SCROLL.get());
                         Scroll.applyScrollToStack(scroll, spell, i);
                         var result = new ItemStack(leftItem);
-                        Scroll.applyImbuedToStack(result, spell, i);
+                        Utils.applyImbueToStack(result, spell, i);
                         tuple.b.add(scroll);
                         tuple.c.add(result);
                     });
