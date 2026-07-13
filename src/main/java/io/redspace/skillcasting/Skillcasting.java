@@ -18,14 +18,6 @@ import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
-/**
- * Bootstrap and shared constants for the standalone skillcasting API.
- *
- * <p>This package ({@code io.redspace.skillcasting.**}) is dependency-isolated: it MUST NOT import
- * any {@code io.redspace.ironsspellbooks.**} type. Wiring flows one way only, from the consuming mod
- * into {@link #init(IEventBus)}. This is the extraction guarantee that lets the package become a
- * standalone library with its own {@code @Mod} entry later.
- */
 public final class Skillcasting {
     public static final String NAMESPACE = "skillcasting";
     public static final Logger LOGGER = LogUtils.getLogger();
@@ -33,10 +25,7 @@ public final class Skillcasting {
     private Skillcasting() {
     }
 
-    /**
-     * Single entry point for a host mod. Registers all skillcasting registries, the attachment,
-     * component types, the payload registrar, and NeoForge lifecycle listeners.
-     */
+
     public static void init(IEventBus modEventBus) {
         SkillcastingResolverTypes.register(modEventBus);
         SkillcastingComponentTypes.register(modEventBus);

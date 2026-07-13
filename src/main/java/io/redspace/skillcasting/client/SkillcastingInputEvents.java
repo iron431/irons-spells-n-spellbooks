@@ -16,12 +16,9 @@ import org.lwjgl.glfw.GLFW;
 
 import static io.redspace.skillcasting.client.KeyMappings.*;
 
-public final class ClientInputEvents {
+public final class SkillcastingInputEvents {
     public static boolean hasReleasedSinceCasting;
     private static boolean showExpandedTooltip;
-
-    private ClientInputEvents() {
-    }
 
     @SubscribeEvent
     public static void onMouseScrolled(InputEvent.MouseScrollingEvent event) {
@@ -61,11 +58,6 @@ public final class ClientInputEvents {
                 event.setSwingHand(false);
                 event.setCanceled(true);
             }
-        } else if (event.isAttack()) {
-            if (SkillcastingData.get(Minecraft.getInstance().player).isCasting()) {
-                event.setSwingHand(false);
-                event.setCanceled(true);
-            }
         }
     }
 
@@ -76,9 +68,17 @@ public final class ClientInputEvents {
 
     private static boolean wasSkillWheelDown;
 
+    private static boolean isAllowedToCast() {
+        //todo: implement better combat compat
+        //return ((MinecraftClient_BetterCombat) Minecraft.getInstance()).getSwingProgress() == 1.0f;
+        return true;
+    }
+
     private static void handleKeybinds() {
         while (CAST_SELECTED_SKILL_KEYMAP.consume()) {
-            PacketDistributor.sendToServer(new ServerboundCastSelectedSkillPacket());
+            if (isAllowedToCast()) {
+                PacketDistributor.sendToServer(new ServerboundCastSelectedSkillPacket());
+            }
         }
         while (SKILL_WHEEL_KEYMAP.consume()) {
             if (!wasSkillWheelDown) {
@@ -95,7 +95,9 @@ public final class ClientInputEvents {
         }
         for (int i = 0; i < QUICK_CAST_MAPPINGS.size(); i++) {
             if (QUICK_CAST_MAPPINGS.get(i).consume()) {
-                PacketDistributor.sendToServer(new ServerboundQuickCastSkillPacket(i));
+                if (isAllowedToCast()) {
+                    PacketDistributor.sendToServer(new ServerboundQuickCastSkillPacket(i));
+                }
                 break;
             }
         }

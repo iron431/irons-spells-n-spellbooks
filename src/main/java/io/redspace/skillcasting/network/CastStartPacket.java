@@ -7,7 +7,7 @@ import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastType;
-import io.redspace.skillcasting.client.ClientInputEvents;
+import io.redspace.skillcasting.client.SkillcastingInputEvents;
 import io.redspace.skillcasting.client.ClientSkillCastHelper;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
@@ -52,7 +52,7 @@ public record CastStartPacket(
             if (localPlayer != null && packet.casterId().equals(CasterRef.entity(localPlayer).id())) {
                 if (packet.skill().value().getCastType() == CastType.CONTINUOUS) {
                     ClientSkillCastHelper.setSuppressRightClicks(true);
-                    ClientInputEvents.hasReleasedSinceCasting = false;
+                    SkillcastingInputEvents.hasReleasedSinceCasting = false;
                 }
             }
             castContext.skill().value().onClientCastStart(castContext);
