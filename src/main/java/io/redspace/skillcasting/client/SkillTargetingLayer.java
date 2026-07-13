@@ -28,10 +28,10 @@ public final class SkillTargetingLayer {
             "irons_spellbooks", "textures/entity/target/heal.png");
 
     public static Optional<Vector3f> shouldRender(@NotNull Entity target) {
-        EntityCasterRef entityCasterRef = Minecraft.getInstance().player == null ? null : CasterRef.entity(Minecraft.getInstance().player);
-        if (entityCasterRef == null) {
+        if (Minecraft.getInstance().player == null || target == Minecraft.getInstance().player) {
             return Optional.empty();
         }
+        EntityCasterRef entityCasterRef = CasterRef.entity(Minecraft.getInstance().player);
         SkillcastingData data = entityCasterRef.skillcastingData();
         ActiveCast activeCast = entityCasterRef.skillcastingData().getActiveCast();
         if (activeCast != null) {
