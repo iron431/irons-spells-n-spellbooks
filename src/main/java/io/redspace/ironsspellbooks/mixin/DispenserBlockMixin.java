@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.mixin;
 
+import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.skillcasting.api.cast.CastEndReason;
@@ -10,11 +11,13 @@ import io.redspace.skillcasting.data.SkillSlot;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillRegistry;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DirectionalBlock;
@@ -76,6 +79,8 @@ public class DispenserBlockMixin {
         ItemStack stack = selectedEntry.getValue();
         var caster = CasterRef.block(dispenserblockentity);
         var context = SkillcastingManager.buildCastContext(caster, SkillRegistry.holder(skillSlot.getSkill()), skillSlot.getLevel(), CastSource.of("dispenser", ""));
+        context.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
+        context.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
         if (stack.is(ItemRegistry.SCROLL)) {
             stack.shrink(1);
         }
