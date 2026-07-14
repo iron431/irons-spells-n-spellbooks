@@ -66,6 +66,6 @@ public class GustDefenseGoal extends Goal {
         this.attackCooldown = 40 + mob.getRandom().nextInt(30);
         int spellLevel = (int) (SpellRegistry.GUST_SPELL.get().getMaxLevel() * .5f);
         var spellType = SpellRegistry.GUST_SPELL.get();
-        spellCastingMob.initiateCastSpell(spellType, spellLevel);
+        spellCastingMob.initiateCastSpell(spellType, spellLevel, null);
     }
 }

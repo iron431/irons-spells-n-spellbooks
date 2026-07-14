@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
+import io.redspace.ironsspellbooks.api.entity.IAnimatedCastingMob;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
@@ -263,16 +264,17 @@ public abstract class AbstractSpell extends AbstractSkill {
     protected void handleCastFinishAnimation(CastContext castContext, CastEndReason castEndReason) {
         AnimationHolder finishAnimation = castContext.getOrDefault(SpellcastingComponentTypes.CAST_FINISH_ANIMATION, AnimationHolder.pass());
         boolean cancelled = castEndReason == CastEndReason.INTERRUPTED;
-        // fixme: need pipeline for mobs to starting and canceling animations
         if (finishAnimation.getType() == AnimationHolder.Type.PASS && !cancelled) {
             return;
         }
         if (castContext.asEntityCaster() instanceof Player player) {
             if (finishAnimation.getAnimationResource().isPresent() && !cancelled) {
                 AnimationHelper.animatePlayerStart(player, finishAnimation.getAnimationResource().get());
-            } else if (finishAnimation.getType() == AnimationHolder.Type.STOP || cancelled) {
+            } else/* if (finishAnimation.getType() == AnimationHolder.Type.STOP || cancelled)*/ {
                 AnimationHelper.cancelPlayerAnimation((AbstractClientPlayer) player);
             }
+        } else if (castContext.asEntityCaster() instanceof IAnimatedCastingMob animatedCastingMob) {
+            animatedCastingMob.playCastingAnimation(cancelled ? AnimationHolder.stop() : finishAnimation);
         }
     }
 
@@ -283,8 +285,8 @@ public abstract class AbstractSpell extends AbstractSkill {
         }
         if (castContext.asEntityCaster() instanceof Player player) {
             animation.getAnimationResource().ifPresent(resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation));
-        } else if (castContext.asEntityCaster() instanceof IAnimatedAttacker animatedAttacker) {
-            //fixme: need dedicated pipeline for animating mobs, or rename IAnimatedAttacker or something
+        } else if (castContext.asEntityCaster() instanceof IAnimatedCastingMob animatedCastingMob) {
+            animatedCastingMob.playCastingAnimation(animation);
         }
     }
 

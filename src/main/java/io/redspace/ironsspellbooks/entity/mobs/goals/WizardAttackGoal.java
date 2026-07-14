@@ -302,7 +302,7 @@ public class WizardAttackGoal extends Goal {
     protected void doSpellAction() {
         if (!spellCastingMob.getHasUsedSingleAttack() && singleUseSpell != null && singleUseDelay <= 0) {
             spellCastingMob.setHasUsedSingleAttack(true);
-            spellCastingMob.initiateCastSpell(singleUseSpell, singleUseLevel);
+            spellCastingMob.initiateCastSpell(singleUseSpell, singleUseLevel, null);
             fleeCooldown = 7 + singleUseSpell.getCastTimeTicks();
         } else {
             var spell = getNextSpellType();
@@ -312,7 +312,7 @@ public class WizardAttackGoal extends Goal {
             int spellLevel = (int) (spell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
             spellLevel = Math.max(spellLevel, 1);
 
-            spellCastingMob.initiateCastSpell(spell, spellLevel);
+            spellCastingMob.initiateCastSpell(spell, spellLevel, null);
             fleeCooldown = 7 + spell.getCastTimeTicks();
         }
     }

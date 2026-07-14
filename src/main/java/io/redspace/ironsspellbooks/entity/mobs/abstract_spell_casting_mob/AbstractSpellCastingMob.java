@@ -1,11 +1,13 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.entity.IAnimatedCastingMob;
 import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.CastSource;
@@ -14,6 +16,7 @@ import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillRegistry;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -42,7 +45,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 
-public abstract class AbstractSpellCastingMob extends PathfinderMob implements GeoEntity/*, IMagicEntity */ {
+public abstract class AbstractSpellCastingMob extends PathfinderMob implements GeoEntity, IAnimatedCastingMob {
     public static final ResourceLocation modelResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/abstract_casting_mob.geo.json");
     public static final ResourceLocation textureResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
     public static final ResourceLocation animationInstantCast = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/casting_animations.json");
@@ -165,16 +168,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     }
 
-    public void initiateCastSpell(@Nullable AbstractSpell spell, int spellLevel) {
+    public void initiateCastSpell(AbstractSpell spell, int spellLevel, @Nullable CastComponentMap componentPatch) {
         if (spell == null) {
-            return;
-        }
-
-        if (level.isClientSide) {
-            cancelCastAnimation = false;
-            if (spell.getCastType() == CastType.INSTANT) {
-                instantCastSpellType = spell;
-            }
             return;
         }
 
@@ -185,10 +180,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         CasterRef casterRef = CasterRef.entity(this);
         var castContext = SkillcastingManager.buildCastContext(casterRef, SkillRegistry.holder(spell), spellLevel, CastSource.EMPTY);
         castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
-        castContext.set(io.redspace.skillcasting.registry.SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
-
-        if (!spell.checkPreCastConditions(castContext)) {
-            return;
+        castContext.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
+        if (componentPatch != null) {
+            castContext.components().applyFrom(componentPatch);
         }
 
         SkillcastingManager.initiateCast(casterRef, castContext);
@@ -198,19 +192,10 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         SkillcastingManager.cancelCast(CasterRef.entity(this), CastEndReason.INTERRUPTED);
     }
 
-    @Nullable
-    private AbstractSpell getCastingSpellSkill() {
-        ActiveCast activeCast = SkillcastingData.get(this).getActiveCast();
-        if (activeCast == null) {
-            return null;
-        }
-        AbstractSkill skill = activeCast.context().skill().value();
-        return skill instanceof AbstractSpell spellSkill ? spellSkill : null;
-    }
-
     public void notifyDangerousProjectile(Projectile projectile) {
     }
 
+    //fixme custom teleport solver
     public boolean setTeleportLocationBehindTarget(int distance) {
         var target = getTarget();
         boolean valid = false;
@@ -273,24 +258,11 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
      **/
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    @Nullable
-    private AbstractSpell lastCastSpellType;
-    @Nullable
-    private AbstractSpell instantCastSpellType;
-    private boolean cancelCastAnimation = false;
     private boolean animatingLegs = false;
-    private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
-    private final AnimationController animationControllerInstantCast = new AnimationController(this, "instant_casting", 0, this::instantCastingPredicate);
-    private final AnimationController animationControllerLongCast = new AnimationController(this, "long_casting", 0, this::longCastingPredicate);
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return this.cache;
-    }
-
-    @Override
-    public void triggerAnim(@org.jetbrains.annotations.Nullable String controllerName, String animName) {
-        GeoEntity.super.triggerAnim(controllerName, animName);
     }
 
     @Override
@@ -299,102 +271,37 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     @Override
+    public void playCastingAnimation(AnimationHolder animation) {
+        if (animation.getType() != AnimationHolder.Type.PASS) {
+            this.queuedCastingAnimation = animation;
+            this.animatingLegs = animation.isAnimatesLegs();
+        }
+    }
+
+    @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-        controllerRegistrar.add(animationControllerOtherCast);
-        controllerRegistrar.add(animationControllerInstantCast);
-        controllerRegistrar.add(animationControllerLongCast);
-        //controllerRegistrar.add(new AnimationController(this, "idle", 0, this::idlePredicate));
+        controllerRegistrar.add(castingController);
     }
 
-    private PlayState instantCastingPredicate(AnimationState event) {
-        if (cancelCastAnimation) {
-            return PlayState.STOP;
-        }
+    AnimationHolder queuedCastingAnimation = null;
+    private final AnimationController<AbstractSpellCastingMob> castingController = new AnimationController<>(this, "casting_controller", 0, this::castingAnimationPredicate);
 
+    private PlayState castingAnimationPredicate(AnimationState<AbstractSpellCastingMob> event) {
         var controller = event.getController();
-        if (instantCastSpellType != null && controller.getAnimationState() == AnimationController.State.STOPPED) {
-            setStartAnimationFromSpell(controller, instantCastSpellType);
-            instantCastSpellType = null;
-        }
-        return PlayState.CONTINUE;
-    }
-
-    private PlayState longCastingPredicate(AnimationState event) {
-        var controller = event.getController();
-
-        //fixme: mob animations
-
-//        if (cancelCastAnimation || (controller.getAnimationState() == AnimationController.State.STOPPED && !(isCasting() && castingSpell != null && castingSpell.getSpell().getCastType() == CastType.LONG))) {
-//            return PlayState.STOP;
-//        }
-
-        if (isCasting()) {
-            AbstractSpell castingSpell = getCastingSpellSkill();
-            if (castingSpell != null && controller.getAnimationState() == AnimationController.State.STOPPED) {
-                setStartAnimationFromSpell(controller, castingSpell);
+        if (this.queuedCastingAnimation != null) {
+            if (this.queuedCastingAnimation.getAnimationResource().isPresent()) {
+                controller.forceAnimationReset();
+                controller.setAnimation(RawAnimation.begin().thenPlay(queuedCastingAnimation.getAnimationResource().get().getPath()));
+            } else {
+                controller.stop();
             }
-        } else if (lastCastSpellType != null && lastCastSpellType.getCastType() == CastType.LONG) {
-            setFinishAnimationFromSpell(controller, lastCastSpellType);
+            queuedCastingAnimation = null;
         }
-
-        return PlayState.CONTINUE;
-    }
-
-    private PlayState otherCastingPredicate(AnimationState event) {
-        if (cancelCastAnimation) {
-            return PlayState.STOP;
-        }
-
-        var controller = event.getController();
-        if (isCasting() && controller.getAnimationState() == AnimationController.State.STOPPED) {
-            AbstractSpell castingSpell = getCastingSpellSkill();
-            if (castingSpell != null && castingSpell.getCastType() == CastType.CONTINUOUS) {
-                setStartAnimationFromSpell(controller, castingSpell);
-            }
-            return PlayState.CONTINUE;
-        }
-
-        if (isCasting()) {
-            return PlayState.CONTINUE;
-        } else {
-            return PlayState.STOP;
-        }
-    }
-
-    private void setStartAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
-        AnimationHolder animation = spell.getCastStartAnimation();
-        if (animation.getType() != AnimationHolder.Type.ANIMATION) {
-            cancelCastAnimation = true;
-            return;
-        }
-        animation.getAnimationResource().ifPresentOrElse(resourceLocation -> {
-            controller.forceAnimationReset();
-            controller.setAnimation(RawAnimation.begin().thenPlay(resourceLocation.getPath()));
-            lastCastSpellType = spell;
-            cancelCastAnimation = false;
-            animatingLegs = animation.isAnimatesLegs();
-        }, () -> cancelCastAnimation = true);
-    }
-
-    private void setFinishAnimationFromSpell(AnimationController controller, AbstractSpell spell) {
-        AnimationHolder finishAnimation = spell.getCastFinishAnimation();
-        if (finishAnimation.getType() == AnimationHolder.Type.PASS) {
-            cancelCastAnimation = false;
-            return;
-        }
-        finishAnimation.getAnimationResource().ifPresentOrElse(resourceLocation -> {
-            controller.forceAnimationReset();
-            controller.setAnimation(RawAnimation.begin().thenPlay(resourceLocation.getPath()));
-            lastCastSpellType = null;
-            cancelCastAnimation = false;
-        }, () -> cancelCastAnimation = true);
+        return controller.getAnimationState() == AnimationController.State.STOPPED ? PlayState.STOP : PlayState.CONTINUE;
     }
 
     public boolean isAnimating() {
-        return isCasting()
-                || (animationControllerLongCast.getAnimationState() == AnimationController.State.RUNNING)
-                || (animationControllerOtherCast.getAnimationState() == AnimationController.State.RUNNING)
-                || (animationControllerInstantCast.getAnimationState() == AnimationController.State.RUNNING);
+        return isCasting() || (castingController.getAnimationState() == AnimationController.State.RUNNING);
     }
 
     public boolean shouldBeExtraAnimated() {
@@ -407,10 +314,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     public boolean shouldAlwaysAnimateLegs() {
         return !animatingLegs;
-    }
-
-    public boolean shouldPointArmsWhileCasting() {
-        return true;
     }
 
     public boolean bobBodyWhileWalking() {

@@ -14,6 +14,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.GenericOwnerHurtByTargetGoa
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericOwnerHurtTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericProtectOwnerTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
+import io.redspace.skillcasting.api.component.CastComponentMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.tags.DamageTypeTags;
@@ -43,9 +44,11 @@ import software.bernie.geckolib.animation.PlayState;
 import software.bernie.geckolib.animation.RawAnimation;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import javax.annotation.Nullable;
+
 public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob implements IMagicSummon, IAnimatedAttacker {
     @Override
-    public void initiateCastSpell(AbstractSpell spell, int spellLevel) {
+    public void initiateCastSpell(AbstractSpell spell, int spellLevel, @Nullable CastComponentMap castComponentMap) {
         // no spellcasting
         return;
     }

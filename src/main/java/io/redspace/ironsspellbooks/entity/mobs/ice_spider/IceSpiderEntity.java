@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -13,6 +14,7 @@ import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.api.skill.CastType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -277,7 +279,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     @Override
-    public void initiateCastSpell(AbstractSpell spell, int spellLevel) {
+    public void initiateCastSpell(AbstractSpell spell, int spellLevel, @Nullable CastComponentMap componentMap) {
         if (!wantsToCastSpells) {
             return;
         }
@@ -286,9 +288,13 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         } else {
             serverTriggerAnimation("long_cast");
         }
-        super.initiateCastSpell(spell, spellLevel);
+        super.initiateCastSpell(spell, spellLevel, componentMap);
     }
 
+    @Override
+    public void playCastingAnimation(AnimationHolder animation) {
+        return;
+    }
 
     @Override
     public float maxUpStep() {

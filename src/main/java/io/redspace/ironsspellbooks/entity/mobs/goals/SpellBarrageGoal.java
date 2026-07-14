@@ -99,7 +99,7 @@ public class SpellBarrageGoal extends Goal {
             //IronsSpellbooks.LOGGER.debug("SpellBarrageGoal ({}) initiate cast on tick {}", this.hashCode(), attackTime);
             this.mob.getLookControl().setLookAt(this.target, 45, 45);
             if (spell instanceof AbstractSpell spellSkill) {
-                spellCastingMob.initiateCastSpell(spellSkill, mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel));
+                spellCastingMob.initiateCastSpell(spellSkill, mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel), null);
             }
             stop();
         }

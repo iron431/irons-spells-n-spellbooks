@@ -12,6 +12,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.particle.FlameStrikeParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -108,7 +109,9 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
                 if (!isActing()) {
                     // insta-cast that fireball
                     mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION).addOrUpdateTransientModifier(MODIFIER_FIRE_BALLER);
-                    mob.initiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), mob.isSoulMode() ? 6 : 5);
+                    // todo: can do customization with components now
+                    CastComponentMap components = new CastComponentMap();
+                    mob.initiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), mob.isSoulMode() ? 6 : 5, components);
                     fireballcooldown = 20 * 10;
                     return;
                 }
