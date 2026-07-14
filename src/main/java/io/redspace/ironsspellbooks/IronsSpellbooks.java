@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicHelper;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -109,6 +110,7 @@ public class IronsSpellbooks {
         PoiTypeRegistry.register(modEventBus);
         FluidRegistry.register(modEventBus);
         RecipeRegistry.register(modEventBus);
+        SpellcastingComponentTypes.register(modEventBus);
 
         // Standalone skillcasting API bootstrap (only mod -> api touch point; api never imports the mod).
         Skillcasting.init(modEventBus);

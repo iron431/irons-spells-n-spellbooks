@@ -1,10 +1,5 @@
 package io.redspace.skillcasting.util;
 
-import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
-import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.component.TargetedEntitiesData;
@@ -14,6 +9,8 @@ import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -24,13 +21,16 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.neoforge.entity.PartEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,8 +40,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public final class SkillcastingUtils {
 
@@ -93,23 +91,9 @@ public final class SkillcastingUtils {
             Vec3 delta = e.getBoundingBox().getCenter().subtract(origin.subtract(direction));
             if (delta.lengthSqr() <= (range + 1) * (range + 1) &&
                     delta.multiply(1, heightRatio, 1).normalize().dot(direction) >= threshold &&
-                    Utils.hasLineOfSight(level, origin, e.getBoundingBox().getCenter(), true)
+                    SkillcastingUtils.hasLineOfSight(level, origin, e.getBoundingBox().getCenter(), true)
             ) {
                 set.add(e);
-            }
-        }
-        boolean debugParticles = false;
-        if (debugParticles) {
-            float density = 1f;
-            for (float x = 0; x < box.getXsize(); x += density) {
-                for (float y = 0; y < box.getYsize(); y += density) {
-                    for (float z = 0; z < box.getZsize(); z += density) {
-                        Vec3 particle = box.getMinPosition().add(x, y, z);
-                        Vec3 delta = particle.subtract(origin);
-                        boolean predicate = (delta.lengthSqr() <= range * range && delta.multiply(1, heightRatio, 1).normalize().dot(direction) >= threshold);
-                        MagicManager.spawnParticles(level, predicate ? ParticleHelper.ELECTRICITY : ParticleHelper.SNOWFLAKE, particle.x, particle.y, particle.z, 1, 0, 0, 0, 0, true);
-                    }
-                }
             }
         }
         return set;
@@ -245,10 +229,81 @@ public final class SkillcastingUtils {
                 && filter.test(livingParent)) {
             return livingParent;
         }
-        if (entityHit.getEntity() instanceof PreventDismount
-                && entityHit.getEntity().getFirstPassenger() instanceof LivingEntity livingRooted) {
-            return livingRooted;
-        }
+        // fixme: is this something that skillcasting needs to support? what edge case was this addressing?
+//        if (entityHit.getEntity() instanceof PreventDismount
+//                && entityHit.getEntity().getFirstPassenger() instanceof LivingEntity livingRooted) {
+//            return livingRooted;
+//        }
         return null;
+    }
+
+    public static boolean isFriendlyFireBetween(@Nullable Entity attacker, @Nullable Entity target) {
+        if (attacker == null || target == null) {
+            return false;
+        }
+        if (attacker.isPassengerOfSameVehicle(target)) {
+            return true;
+        }
+        if (attacker instanceof Player playerAttacker && target instanceof Player playertarget
+                && !playerAttacker.canHarmPlayer(playertarget)) {
+            return true;
+        }
+        var team = attacker.getTeam();
+        if (team != null) {
+            return team.isAlliedTo(target.getTeam()) && !team.isAllowFriendlyFire();
+        }
+        return attacker.isAlliedTo(target);
+    }
+
+    public static Vec3 slerp(double t, Vec3 from, Vec3 to) {
+        from = from.normalize();
+        to = to.normalize();
+        double dot = from.dot(to);
+        double theta = Math.acos(dot) * t;
+        Vec3 relative = to.subtract(from.scale(dot)).normalize();
+        Vec3 result = from.scale(Math.cos(theta)).add(relative.scale(Math.sin(theta)));
+        return result;
+    }
+
+    public static HitResult checkEntityIntersecting(Entity entity, Vec3 start, Vec3 end, float bbInflation) {
+        if (entity.isMultipartEntity()) {
+            for (PartEntity<?> p : entity.getParts()) {
+                var hit = p == null ? null : p.getBoundingBox().inflate(bbInflation).clip(start, end).orElse(null);
+                if (hit != null) {
+                    return new EntityHitResult(entity, hit);
+                }
+            }
+        } else {
+            var hit = entity.getBoundingBox().inflate(bbInflation).clip(start, end).orElse(null);
+            if (hit != null) {
+                return new EntityHitResult(entity, hit);
+            }
+        }
+        return BlockHitResult.miss(end, Direction.getNearest(start.subtract(end)), BlockPos.containing(end));
+    }
+
+    public static boolean canHitWithRaycast(Entity entity) {
+        return entity.isPickable() && entity.isAlive() && !entity.isSpectator();
+    }
+
+    public static boolean hasLineOfSight(Level level, Vec3 start, Vec3 end, boolean checkForCollidableEntities) {
+        if (checkForCollidableEntities) {
+            List<Entity> collisions = level.getEntities((Entity) null, new AABB(start, end), Entity::canBeCollidedWith);
+            if (collisions.size() > 0) {
+                var impact = checkEntityIntersecting(collisions.get(0), start, end, 0);
+                if (impact.getType() != HitResult.Type.MISS) {
+                    return false;
+                }
+            }
+        }
+        return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType() == HitResult.Type.MISS;
+    }
+
+    /**
+     * adds a horizontal asymptote of y = 2 to soft-cap reductive attribute calculations
+     */
+    public static double softCapFormula(double x) {
+        // fixme: duplicated code with iss
+        return x <= 1.5 ? x : -.25 * (1 / (x - 1)) + 2;
     }
 }

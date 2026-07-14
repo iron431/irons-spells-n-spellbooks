@@ -14,6 +14,8 @@ import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -33,6 +35,13 @@ public class SummonedEntitiesCastData implements ICastDataSerializable {
         data.maxHealthPool = maxHealthPool;
         return data;
     }));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SummonedEntitiesCastData> SUMMONED_ENTITIES_CAST_DATA = StreamCodec.of(
+            (buf, data) -> data.writeToBuffer(buf),
+            buf -> {
+                SummonedEntitiesCastData data = new SummonedEntitiesCastData();
+                data.readFromBuffer(buf);
+                return data;
+            });
 
     protected Set<UUID> summons;
     protected float maxHealthPool;

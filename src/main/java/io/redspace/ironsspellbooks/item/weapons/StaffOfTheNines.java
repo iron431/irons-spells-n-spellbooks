@@ -3,10 +3,10 @@ package io.redspace.ironsspellbooks.item.weapons;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
-import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.util.RaycastBuilder;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -39,7 +39,7 @@ public class StaffOfTheNines extends Item {
             level.playSound(null, player.blockPosition(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 4, 1.5f);
             level.playSound(null, player.blockPosition(), SoundEvents.FIREWORK_ROCKET_BLAST_FAR, SoundSource.PLAYERS, 6, 1.5f);
             var hit = RaycastBuilder.begin(level, player)
-                    .range(64f)
+                    .end(player.getForward(), 64f)
                     .checkForBlocks(true)
                     .bbInflation(0.1f)
                     .build();

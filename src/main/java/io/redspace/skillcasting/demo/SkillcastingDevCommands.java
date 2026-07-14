@@ -47,29 +47,11 @@ public final class SkillcastingDevCommands {
 
         dispatcher.register(Commands.literal("skillcasting")
                 .requires(source -> source.hasPermission(2))
-                .then(Commands.literal("cast")
-                        .executes(ctx -> cast(ctx.getSource(), SkillRegistry.DEMO_PROJECTILE.get().getSkillId(), 1))
-                        .then(skillArg
-                                .executes(ctx -> cast(
-                                        ctx.getSource(),
-                                        ResourceLocationArgument.getId(ctx, "skill"),
-                                        1))
-                                .then(Commands.argument("level", IntegerArgumentType.integer(1))
-                                        .executes(ctx -> cast(
-                                                ctx.getSource(),
-                                                ResourceLocationArgument.getId(ctx, "skill"),
-                                                IntegerArgumentType.getInteger(ctx, "level"))))))
                 .then(Commands.literal("cancel").executes(ctx -> cancel(ctx.getSource())))
                 .then(Commands.literal("status").executes(ctx -> status(ctx.getSource())))
                 .then(Commands.literal("hud").executes(ctx -> toggleHud(ctx.getSource())))
                 .then(Commands.literal("refresh").executes(ctx -> refresh(ctx.getSource())))
-                .then(Commands.literal("bind_demo")
-                        .executes(ctx -> bindSkill(ctx.getSource(), SkillRegistry.DEMO_PROJECTILE.get().getSkillId(), 1))
-                        .then(Commands.argument("level", IntegerArgumentType.integer(1))
-                                .executes(ctx -> bindSkill(
-                                        ctx.getSource(),
-                                        SkillRegistry.DEMO_PROJECTILE.get().getSkillId(),
-                                        IntegerArgumentType.getInteger(ctx, "level")))))
+
                 .then(Commands.literal("bind")
                         .then(skillArg
                                 .executes(ctx -> bindSkill(

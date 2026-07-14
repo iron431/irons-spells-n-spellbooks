@@ -33,6 +33,7 @@ import io.redspace.ironsspellbooks.effect.ThunderstormEffect;
 import io.redspace.ironsspellbooks.effect.TrueInvisibilityEffect;
 import io.redspace.ironsspellbooks.effect.VoltStrikeEffect;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltEffect;
+import io.redspace.skillcasting.registry.SkillcastingAttributes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -79,13 +80,13 @@ public class MobEffectRegistry {
     public static final DeferredHolder<MobEffect, MobEffect> HASTENED = MOB_EFFECT_DEFERRED_REGISTER.register("hastened", () -> new HastenedEffect(MobEffectCategory.BENEFICIAL, 0xD9C043)
             .addAttributeModifier(Attributes.MOVEMENT_SPEED, IronsSpellbooks.id("mobeffect_haste"), HastenedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
             .addAttributeModifier(Attributes.ATTACK_SPEED, IronsSpellbooks.id("mobeffect_haste"), HastenedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-            .addAttributeModifier(AttributeRegistry.CAST_TIME_REDUCTION, IronsSpellbooks.id("mobeffect_haste"), HastenedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+            .addAttributeModifier(SkillcastingAttributes.CAST_TIME_REDUCTION, IronsSpellbooks.id("mobeffect_haste"), HastenedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
             .addAttributeModifier(IronsLibRegistries.AttributeRegistry.MINING_SPEED, IronsSpellbooks.id("mobeffect_haste"), HastenedEffect.PERCENT_PER_AMPLIFIER * 2, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
     );
     public static final DeferredHolder<MobEffect, MobEffect> SLOWED = MOB_EFFECT_DEFERRED_REGISTER.register("slowed", () -> new SlowedEffect(MobEffectCategory.HARMFUL, 0x5A6C81)
             .addAttributeModifier(Attributes.MOVEMENT_SPEED, IronsSpellbooks.id("mobeffect_slow"), -SlowedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
             .addAttributeModifier(Attributes.ATTACK_SPEED, IronsSpellbooks.id("mobeffect_slow"), -SlowedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
-            .addAttributeModifier(AttributeRegistry.CAST_TIME_REDUCTION, IronsSpellbooks.id("mobeffect_slow"), -SlowedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+            .addAttributeModifier(SkillcastingAttributes.CAST_TIME_REDUCTION, IronsSpellbooks.id("mobeffect_slow"), -SlowedEffect.PERCENT_PER_AMPLIFIER, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
             .addAttributeModifier(IronsLibRegistries.AttributeRegistry.MINING_SPEED, IronsSpellbooks.id("mobeffect_slow"), -SlowedEffect.PERCENT_PER_AMPLIFIER * 2, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
     );
     public static final DeferredHolder<MobEffect, MobEffect> CHILLED = MOB_EFFECT_DEFERRED_REGISTER.register("chilled", () -> new ChilledEffect(MobEffectCategory.HARMFUL, 0xd0f9ff)

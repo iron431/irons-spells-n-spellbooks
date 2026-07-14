@@ -131,7 +131,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                         int nextSlotIndex = spellContainer.getIndexForSkill(scrollSlot.getSkill());
                         if (nextSlotIndex != -1) {
                             SkillData data = spellContainer.getSkillAtIndex(nextSlotIndex);
-                            if (data != null && data.getHolder().equals(scrollSlot.getHolder()) && data.getLevel() < scrollSlot.getLevel()) {
+                            if (data != null && data.isLocked() && data.getHolder().equals(scrollSlot.getHolder()) && data.getLevel() < scrollSlot.getLevel()) {
                                 result = baseItemStack.copy();
                                 spellContainer.removeSpellAtIndex(nextSlotIndex);
                                 spellContainer.setSpellAtIndex(new SkillData(scrollSlot.getSkill(), scrollSlot.getLevel(), false), nextSlotIndex);

@@ -2,8 +2,7 @@ package io.redspace.skillcasting.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
@@ -11,7 +10,6 @@ import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -80,15 +78,16 @@ public class SkillcastLevelRenderableManager {
             wrapped.renderInfo.handleUpdate(castingPosition, castingDirection);
             Vec3 renderPos = wrapped.renderInfo.oldPos.lerp(castingPosition, partialTick).subtract(event.getCamera().getPosition());
             Vec3 renderDir = wrapped.renderInfo.oldDir.lerp(castingDirection, partialTick);
-            Vec2 renderRot = Utils.rotationFromDirection(renderDir);
+            float pitch = (float) Math.asin(renderDir.y);
+            float yaw = (float) Math.atan2(renderDir.x, renderDir.z);
 
             poseStack.translate(renderPos.x, renderPos.y, renderPos.z);
-            poseStack.mulPose(Axis.YP.rotationDegrees(renderRot.y * Mth.RAD_TO_DEG));
-            poseStack.mulPose(Axis.XP.rotationDegrees(-renderRot.x * Mth.RAD_TO_DEG));
+            poseStack.mulPose(Axis.YP.rotationDegrees(yaw * Mth.RAD_TO_DEG));
+            poseStack.mulPose(Axis.XP.rotationDegrees(-pitch * Mth.RAD_TO_DEG));
             try {
                 renderable.render(poseStack, buf, partialTick, casterRef, data, activeCast);
             } catch (Exception e) {
-                IronsSpellbooks.LOGGER.error("Failed to render renderable for skillcast {}: {}", activeCast.context(), e.getMessage());
+                Skillcasting.LOGGER.error("Failed to render renderable for skillcast {}: {}", activeCast.context(), e.getMessage());
                 toRemove.add(wrapped);
             }
         }

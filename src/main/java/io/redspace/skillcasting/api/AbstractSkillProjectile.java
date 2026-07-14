@@ -1,19 +1,18 @@
 package io.redspace.skillcasting.api;
 
 import io.netty.util.internal.UnstableApi;
-import io.redspace.ironsspellbooks.api.util.RaycastBuilder;
-import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.entity.spells.ShieldPart;
-import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
-import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.util.RaycastBuilder;
+import io.redspace.skillcasting.util.SkillcastingTags;
+import io.redspace.skillcasting.util.SkillcastingUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -24,13 +23,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
-import net.minecraft.core.Holder;
-import net.minecraft.sounds.SoundEvent;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -177,7 +173,7 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
     }
 
     public boolean canRicochet() {
-        return !getType().is(ModTags.CANT_RICOCHET) && getRicochetLevel() != 0;
+        return !getType().is(SkillcastingTags.CANT_RICOCHET) && getRicochetLevel() != 0;
     }
 
     @Override
@@ -283,7 +279,7 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
             if (hitEntities.contains(target)) {
                 continue;
             }
-            HitResult hit = Utils.checkEntityIntersecting(target, position, destination, getHitDetectionInflation());
+            HitResult hit = SkillcastingUtils.checkEntityIntersecting(target, position, destination, getHitDetectionInflation());
             if (hit.getType() != HitResult.Type.MISS) {
                 hits.add(hit);
                 hitEntities.add(target);
@@ -354,7 +350,7 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
                 .end(end)
                 .checkForBlocks(true)
                 .bbInflation(0.5f)
-                .filter(entity -> Utils.canHitWithRaycast(entity) && !DamageSources.isFriendlyFireBetween(entity, owner) && !(entity instanceof ShieldEntity || entity instanceof ShieldPart))
+                .filter(entity -> SkillcastingUtils.canHitWithRaycast(entity) && !SkillcastingUtils.isFriendlyFireBetween(entity, owner) )
                 .build();
         Vec3 target = hitresult instanceof EntityHitResult entityHit ? entityHit.getEntity().getBoundingBox().getCenter() : hitresult.getLocation();
         // todo: expose parameter
@@ -371,7 +367,7 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
         var speed = this.getDeltaMovement().length();
         var currentMotion = this.getDeltaMovement().normalize();
         var wantedMotion = target.subtract(this.position()).normalize();
-        var newMotion = Utils.slerp(strength, currentMotion, wantedMotion).scale(speed);
+        var newMotion = SkillcastingUtils.slerp(strength, currentMotion, wantedMotion).scale(speed);
         this.setDeltaMovement(newMotion);
         return newMotion;
     }
@@ -502,7 +498,7 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
         Entity owner = getOwner();
         Entity hit = entityHitResult.getEntity();
         Optional<Vec3> ricochetDirection = findRicochetDirection(level, this.position(), this.getDeltaMovement().normalize(), 16,
-                entity -> entity != hit && ((owner == null || !Utils.shouldHealEntity(owner, entity)) || entity.getClass() == hit.getClass()),
+                entity -> entity != hit && ((!SkillcastingUtils.isFriendlyFireBetween(owner, entity)) || entity.getClass() == hit.getClass()),
                 owner);
         if (ricochetDirection.isEmpty()) {
             return false;
@@ -520,7 +516,7 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
                         entity.canBeHitByProjectile() &&
                         entity.distanceToSqr(position) <= rangeSqr &&
                         entity.getBoundingBox().getCenter().subtract(position).normalize().dot(direction.normalize()) >= 0.6 &&
-                        Utils.hasLineOfSight(level, position, entity.getBoundingBox().getCenter(), false));
+                        SkillcastingUtils.hasLineOfSight(level, position, entity.getBoundingBox().getCenter(), false));
         if (potentialTargets.isEmpty()) {
             return Optional.empty();
         }

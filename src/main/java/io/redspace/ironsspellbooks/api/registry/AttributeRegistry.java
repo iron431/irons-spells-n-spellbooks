@@ -1,15 +1,11 @@
 package io.redspace.ironsspellbooks.api.registry;
 
-import io.redspace.ironslib.attribute.AttributeEventsHandler;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
-import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.api.util.TickRepresentativeAttribute;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.component.ComponentType;
 import io.redspace.skillcasting.api.event.BuildCastContextEvent;
-import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -42,18 +38,12 @@ public class AttributeRegistry {
             () -> (new RangedAttribute("attribute.irons_spellbooks.max_mana", 100.0D, 0.0D, MILLION).setSyncable(true)));
     public static final DeferredHolder<Attribute, Attribute> MANA_REGEN = ATTRIBUTES.register("mana_regen",
             () -> (new PercentageAttribute("attribute.irons_spellbooks.mana_regen", 1.0D, 0.0D, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> COOLDOWN_REDUCTION = ATTRIBUTES.register("cooldown_reduction",
-            () -> (new PercentageAttribute("attribute.irons_spellbooks.cooldown_reduction", 1.0D, -100.0D, 100.0D).setSyncable(true)));
     public static final DeferredHolder<Attribute, Attribute> SPELL_POWER = ATTRIBUTES.register("spell_power",
             () -> (new PercentageAttribute("attribute.irons_spellbooks.spell_power", 1.0D, -100, 100.0D).setSyncable(true)));
     public static final DeferredHolder<Attribute, Attribute> SPELL_RESIST = ATTRIBUTES.register("spell_resist",
             () -> (new PercentageAttribute("attribute.irons_spellbooks.spell_resist", 1.0D, -100, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> CAST_TIME_REDUCTION = ATTRIBUTES.register("cast_time_reduction",
-            () -> (new PercentageAttribute("attribute.irons_spellbooks.cast_time_reduction", 1.0D, -100, 100.0D).setSyncable(true)));
     public static final DeferredHolder<Attribute, Attribute> SUMMON_DAMAGE = ATTRIBUTES.register("summon_damage",
             () -> (new PercentageAttribute("attribute.irons_spellbooks.summon_damage", 1.0D, -100, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> CASTING_MOVESPEED = ATTRIBUTES.register("casting_movespeed",
-            () -> (new PercentageAttribute("attribute.irons_spellbooks.casting_movespeed", 1, 0, 100.0D).setSyncable(true)));
 
     public static final DeferredHolder<Attribute, Attribute> SPELL_RADIUS = ATTRIBUTES.register("spell_radius",
             () -> (new RangedAttribute("attribute.irons_spellbooks.spell_radius", 0, -MILLION, MILLION).setSyncable(true)));

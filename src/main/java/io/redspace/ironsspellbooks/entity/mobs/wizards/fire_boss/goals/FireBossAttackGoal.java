@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -14,6 +13,7 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.registry.SkillcastingAttributes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -89,7 +89,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     @Override
     public void stop() {
         super.stop();
-        mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION).removeModifier(MODIFIER_FIRE_BALLER);
+        mob.getAttribute(SkillcastingAttributes.CAST_TIME_REDUCTION).removeModifier(MODIFIER_FIRE_BALLER);
     }
 
     public int fireballcooldown;
@@ -100,7 +100,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
         if (fireballcooldown > 0) {
             // poor man's way to clean up the fireball attribute
             if (fireballcooldown == 20 * 10 - 20) {
-                mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION).removeModifier(MODIFIER_FIRE_BALLER);
+                mob.getAttribute(SkillcastingAttributes.CAST_TIME_REDUCTION).removeModifier(MODIFIER_FIRE_BALLER);
             }
             fireballcooldown--;
         } else {
@@ -108,7 +108,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
             if (!mob.onGround() && distanceSquared > meleeRange * meleeRange * 2 * 2) {
                 if (!isActing()) {
                     // insta-cast that fireball
-                    mob.getAttribute(AttributeRegistry.CAST_TIME_REDUCTION).addOrUpdateTransientModifier(MODIFIER_FIRE_BALLER);
+                    mob.getAttribute(SkillcastingAttributes.CAST_TIME_REDUCTION).addOrUpdateTransientModifier(MODIFIER_FIRE_BALLER);
                     // todo: can do customization with components now
                     CastComponentMap components = new CastComponentMap();
                     mob.initiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), mob.isSoulMode() ? 6 : 5, components);

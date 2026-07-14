@@ -5,6 +5,7 @@ import io.redspace.skillcasting.client.SkillcastingClient;
 import io.redspace.skillcasting.lifecycle.SkillcastingEvents;
 import io.redspace.skillcasting.network.SkillcastingPayloads;
 import io.redspace.skillcasting.registry.SkillcastingAttachments;
+import io.redspace.skillcasting.registry.SkillcastingAttributes;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingResolverTypes;
 import io.redspace.skillcasting.registry.SkillcastingDataComponents;
@@ -30,8 +31,8 @@ public final class Skillcasting {
         SkillcastingResolverTypes.register(modEventBus);
         SkillcastingComponentTypes.register(modEventBus);
         SkillcastingDataComponents.register(modEventBus);
-        SkillRegistry.register(modEventBus);
         SkillcastingAttachments.register(modEventBus);
+        SkillcastingAttributes.register(modEventBus);
 
         modEventBus.addListener(SkillcastingRegistries::registerRegistries);
         modEventBus.addListener(SkillcastingPayloads::register);

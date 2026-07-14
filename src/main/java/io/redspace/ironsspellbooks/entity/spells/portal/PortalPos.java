@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.entity.spells.portal;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -14,6 +16,16 @@ public class PortalPos {
             Vec3.CODEC.fieldOf("pos").forGetter(PortalPos::pos),
             Codec.FLOAT.fieldOf("rotation").forGetter(PortalPos::rotation)
     ).apply(builder, PortalPos::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, PortalPos> PORTAL_CAST_POS = StreamCodec.of(
+            (buf, pos) -> {
+                buf.writeResourceKey(pos.dimension());
+                buf.writeVec3(pos.pos());
+                buf.writeFloat(pos.rotation());
+            },
+            buf -> of(
+                    buf.readResourceKey(Registries.DIMENSION),
+                    buf.readVec3(),
+                    buf.readFloat()));
 
     private final ResourceKey<Level> dimension;
     private final Vec3 pos;

@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.item.armor;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.skillcasting.registry.SkillcastingAttributes;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -22,7 +23,7 @@ public enum UpgradeTypes implements UpgradeType {
     BLOOD_SPELL_POWER("blood_power", ItemRegistry.BLOOD_UPGRADE_ORB, AttributeRegistry.BLOOD_SPELL_POWER, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, .05f),
     EVOCATION_SPELL_POWER("evocation_power", ItemRegistry.EVOCATION_UPGRADE_ORB, AttributeRegistry.EVOCATION_SPELL_POWER, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, .05f),
     NATURE_SPELL_POWER("nature_power", ItemRegistry.NATURE_UPGRADE_ORB, AttributeRegistry.NATURE_SPELL_POWER, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, .05f),
-    COOLDOWN("cooldown", ItemRegistry.COOLDOWN_UPGRADE_ORB, AttributeRegistry.COOLDOWN_REDUCTION, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, .05f),
+    COOLDOWN("cooldown", ItemRegistry.COOLDOWN_UPGRADE_ORB, SkillcastingAttributes.COOLDOWN_REDUCTION, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, .05f),
     SPELL_RESISTANCE("spell_resistance", ItemRegistry.PROTECTION_UPGRADE_ORB, AttributeRegistry.SPELL_RESIST, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, .05f),
     MANA("mana", ItemRegistry.MANA_UPGRADE_ORB, AttributeRegistry.MAX_MANA, AttributeModifier.Operation.ADD_VALUE, 50),
     ATTACK_DAMAGE("melee_damage", Optional.empty(), Attributes.ATTACK_DAMAGE, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, .05f),

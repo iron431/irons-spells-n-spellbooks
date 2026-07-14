@@ -2,6 +2,8 @@ package io.redspace.ironsspellbooks.spells;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -23,6 +25,26 @@ public final class FireWallCastComponent {
     public final List<Vec3> anchorPoints = new ArrayList<>();
     public float maxTotalDistance;
     public float accumulatedDistance;
+    public static final StreamCodec<RegistryFriendlyByteBuf, FireWallCastComponent> FIRE_WALL_CAST_DATA = StreamCodec.of(
+            (buf, data) -> {
+                buf.writeFloat(data.maxTotalDistance);
+                buf.writeFloat(data.accumulatedDistance);
+                buf.writeVarInt(data.anchorPoints.size());
+                for (Vec3 vec : data.anchorPoints) {
+                    buf.writeFloat((float) vec.x);
+                    buf.writeFloat((float) vec.y);
+                    buf.writeFloat((float) vec.z);
+                }
+            },
+            buf -> {
+                FireWallCastComponent data = new FireWallCastComponent(buf.readFloat());
+                data.accumulatedDistance = buf.readFloat();
+                int length = buf.readVarInt();
+                for (int i = 0; i < length; i++) {
+                    data.anchorPoints.add(new Vec3(buf.readFloat(), buf.readFloat(), buf.readFloat()));
+                }
+                return data;
+            });
 
     public FireWallCastComponent(float maxTotalDistance) {
         this.maxTotalDistance = maxTotalDistance;

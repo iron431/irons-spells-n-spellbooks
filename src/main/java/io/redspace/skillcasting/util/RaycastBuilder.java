@@ -1,7 +1,5 @@
 package io.redspace.skillcasting.util;
 
-import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.skillcasting.api.AbstractSkillProjectile;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
@@ -36,7 +34,7 @@ public final class RaycastBuilder {
     private Vec3 end;
     private boolean checkForBlocks = false;
     private float bbInflation = 0;
-    private Predicate<Entity> filter = Utils::canHitWithRaycast;
+    private Predicate<Entity> filter = SkillcastingUtils::canHitWithRaycast;
 
     public RaycastBuilder(Level level, @Nullable Entity originEntity) {
         this.level = level;
@@ -119,7 +117,7 @@ public final class RaycastBuilder {
         List<? extends Entity> entities = level.getEntities(originEntity, range, filter);
 
         for (Entity target : entities) {
-            HitResult hit = Utils.checkEntityIntersecting(target, start, rayEnd, bbInflation);
+            HitResult hit = SkillcastingUtils.checkEntityIntersecting(target, start, rayEnd, bbInflation);
             if (hit.getType() != HitResult.Type.MISS) {
                 hits.add(hit);
             }
@@ -176,7 +174,7 @@ public final class RaycastBuilder {
                 if (hitEntities.contains(target.getUUID())) {
                     continue;
                 }
-                HitResult hit = Utils.checkEntityIntersecting(target, castStart, castEnd, bbInflation);
+                HitResult hit = SkillcastingUtils.checkEntityIntersecting(target, castStart, castEnd, bbInflation);
                 if (hit.getType() != HitResult.Type.MISS) {
                     work = true;
                     hitResults.add(hit);
@@ -244,7 +242,7 @@ public final class RaycastBuilder {
         entities.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(castStart)));
         boolean exhaustedPiercing = false;
         for (Entity target : entities) {
-            HitResult hit = Utils.checkEntityIntersecting(target, castStart, castEnd, bbInflation);
+            HitResult hit = SkillcastingUtils.checkEntityIntersecting(target, castStart, castEnd, bbInflation);
             if (hit.getType() != HitResult.Type.MISS) {
                 hitResults.add(hit);
                 if (pierceLevel == 0) {

@@ -2,6 +2,8 @@ package io.redspace.skillcasting.api.component;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,6 +18,22 @@ import java.util.UUID;
 public final class TargetedEntitiesData {
     public static final Codec<TargetedEntitiesData> CODEC =
             Codec.list(UUIDUtil.CODEC).xmap(TargetedEntitiesData::new, TargetedEntitiesData::getTargets);
+    public static final StreamCodec<RegistryFriendlyByteBuf, TargetedEntitiesData> TARGETED_ENTITIES = StreamCodec.of(
+            (buf, component) -> {
+                List<UUID> targets = component.getTargets();
+                buf.writeVarInt(targets.size());
+                for (UUID uuid : targets) {
+                    buf.writeUUID(uuid);
+                }
+            },
+            buf -> {
+                int count = buf.readVarInt();
+                TargetedEntitiesData component = new TargetedEntitiesData();
+                for (int i = 0; i < count; i++) {
+                    component.addTarget(buf.readUUID());
+                }
+                return component;
+            });
 
     private final List<UUID> targetUUIDs;
 

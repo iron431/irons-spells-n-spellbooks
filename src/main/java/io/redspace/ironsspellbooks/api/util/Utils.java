@@ -49,7 +49,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.NeutralMob;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
@@ -95,7 +94,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.COOLDOWN_REDUCTION;
+import static io.redspace.skillcasting.registry.SkillcastingAttributes.COOLDOWN_REDUCTION;
 
 public class Utils {
 
@@ -162,9 +161,6 @@ public class Utils {
      */
     public static double softCapFormula(double x) {
         return x <= 1.5 ? x : -.25 * (1 / (x - 1)) + 2;
-
-        //Softcap (https://www.desmos.com/calculator/tuooig12pf)
-        //return x <= 1.75 ? x : 1 / (-16 * (x - 1.5)) + 2;
     }
 
     @Nullable
@@ -368,7 +364,6 @@ public class Utils {
     }
 
     public static boolean canHitWithRaycast(Entity entity) {
-        //IronsSpellbooks.LOGGER.debug("Utils.canHitWithRaycast: {} - {}", entity.getName().getString(), !(entity instanceof Projectile || entity instanceof AreaEffectCloud || entity instanceof ConePart));
         return entity.isPickable() && entity.isAlive() && !entity.isSpectator();
     }
 

@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
+import io.redspace.skillcasting.registry.SkillcastingAttributes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -65,7 +66,7 @@ public class UpgradeOrbTypeRegistry {
         bootstrap.register(NATURE_SPELL_POWER,
                 new UpgradeOrbType(AttributeRegistry.NATURE_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.NATURE_UPGRADE_ORB));
         bootstrap.register(COOLDOWN,
-                new UpgradeOrbType(AttributeRegistry.COOLDOWN_REDUCTION, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.COOLDOWN_UPGRADE_ORB));
+                new UpgradeOrbType(SkillcastingAttributes.COOLDOWN_REDUCTION, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.COOLDOWN_UPGRADE_ORB));
         bootstrap.register(SPELL_RESISTANCE,
                 new UpgradeOrbType(AttributeRegistry.SPELL_RESIST, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.PROTECTION_UPGRADE_ORB));
         bootstrap.register(MANA,

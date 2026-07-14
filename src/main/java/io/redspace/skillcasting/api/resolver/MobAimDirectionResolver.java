@@ -2,7 +2,7 @@ package io.redspace.skillcasting.api.resolver;
 
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
-import io.redspace.skillcasting.network.ComponentSyncCodecs;
+import io.redspace.skillcasting.network.StreamCodecUtils;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingResolverTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class MobAimDirectionResolver implements DirectionResolver {
     public static final StreamCodec<RegistryFriendlyByteBuf, MobAimDirectionResolver> STREAM_CODEC = StreamCodec.composite(
-            ComponentSyncCodecs.VEC3, MobAimDirectionResolver::getAimPosition,
+            StreamCodecUtils.VEC3, MobAimDirectionResolver::getAimPosition,
             MobAimDirectionResolver::new);
 
     private Vec3 aimPosition;

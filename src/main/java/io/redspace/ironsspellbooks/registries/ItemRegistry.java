@@ -76,6 +76,7 @@ import io.redspace.ironsspellbooks.item.weapons.TwilightGaleItem;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffItem;
 import io.redspace.ironsspellbooks.render.CinderousRarity;
 import io.redspace.skillcasting.data.SkillData;
+import io.redspace.skillcasting.registry.SkillcastingAttributes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
@@ -116,13 +117,13 @@ public class ItemRegistry {
             (properties) -> new SpellBook(12, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
     public static final DeferredHolder<Item, Item> NETHERITE_SPELL_BOOK = registerItem("netherite_spell_book",
             (properties) -> new SpellBook(12, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant())
-                    .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.COOLDOWN_REDUCTION, .20, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
+                    .withSpellbookAttributes(new AttributeContainer(SkillcastingAttributes.COOLDOWN_REDUCTION, .20, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> DIAMOND_SPELL_BOOK = registerItem("diamond_spell_book",
             (properties) -> new SpellBook(10, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant())
                     .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.MAX_MANA, 100, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> GOLD_SPELL_BOOK = registerItem("gold_spell_book",
             (properties) -> new SpellBook(8, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant())
-                    .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 50, AttributeModifier.Operation.ADD_VALUE)));
+                    .withSpellbookAttributes(new AttributeContainer(SkillcastingAttributes.CAST_TIME_REDUCTION, .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 50, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> IRON_SPELL_BOOK = registerItem("iron_spell_book",
             (properties) -> new SpellBook(6, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
     public static final DeferredHolder<Item, Item> COPPER_SPELL_BOOK = registerItem("copper_spell_book",
@@ -140,7 +141,7 @@ public class ItemRegistry {
                     .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.NATURE_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> VILLAGER_SPELL_BOOK = registerItem("villager_spell_book",
             (properties) -> new SpellBook(10, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant())
-                    .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.HOLY_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
+                    .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.HOLY_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(SkillcastingAttributes.CAST_TIME_REDUCTION, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
     public static final DeferredHolder<Item, Item> ICE_SPELL_BOOK = registerItem("ice_spell_book",
             (properties) -> new SpellBook(12, properties.stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant())
                     .withSpellbookAttributes(new AttributeContainer(AttributeRegistry.ICE_SPELL_POWER, .10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE), new AttributeContainer(AttributeRegistry.MAX_MANA, 200, AttributeModifier.Operation.ADD_VALUE)));
@@ -550,9 +551,9 @@ public class ItemRegistry {
     public static final Supplier<CurioBaseItem> SILVER_RING = registerItem("silver_ring",
             (properties) -> new CurioBaseItem(properties.stacksTo(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.MAX_MANA, 25, AttributeModifier.Operation.ADD_VALUE)));
     public static final Supplier<CurioBaseItem> COOLDOWN_RING = registerItem("cooldown_ring",
-            (properties) -> new CurioBaseItem(properties.stacksTo(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.COOLDOWN_REDUCTION, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
+            (properties) -> new CurioBaseItem(properties.stacksTo(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(SkillcastingAttributes.COOLDOWN_REDUCTION, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
     public static final Supplier<CurioBaseItem> CAST_TIME_RING = registerItem("cast_time_ring",
-            (properties) -> new CurioBaseItem(properties.stacksTo(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(AttributeRegistry.CAST_TIME_REDUCTION, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
+            (properties) -> new CurioBaseItem(properties.stacksTo(1)).withAttributes(Curios.RING_SLOT, new AttributeContainer(SkillcastingAttributes.CAST_TIME_REDUCTION, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
     public static final Supplier<CurioBaseItem> HEAVY_CHAIN = registerItem("heavy_chain_necklace",
             (properties) -> new CurioBaseItem(properties.stacksTo(1)).withAttributes(Curios.NECKLACE_SLOT, new AttributeContainer(AttributeRegistry.SPELL_RESIST, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
     public static final Supplier<CurioBaseItem> EMERALD_STONEPLATE_RING = registerItem("emerald_stoneplate_ring",

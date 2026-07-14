@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.eldritch;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -45,7 +46,7 @@ public class SculkTentaclesSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
-        int rings = castContext.getOrDefault(SkillcastingComponentTypes.RING_COUNT, 0);
+        int rings = castContext.getOrDefault(SpellcastingComponentTypes.RING_COUNT, 0);
         return List.of(
                 Component.translatable("ui.irons_spellbooks.aoe_damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f), 2)),
                 Component.translatable("ui.irons_spellbooks.radius", Utils.stringTruncation(rings * 1.3f, 1))
@@ -83,12 +84,12 @@ public class SculkTentaclesSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
         castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, baseSpellPower * getSpellPowerMultiplier(castContext));
-        castContext.set(SkillcastingComponentTypes.RING_COUNT, 1 + castContext.getSkillLevel());
+        castContext.set(SpellcastingComponentTypes.RING_COUNT, 1 + castContext.getSkillLevel());
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        int rings = castContext.getOrDefault(SkillcastingComponentTypes.RING_COUNT, 0);
+        int rings = castContext.getOrDefault(SpellcastingComponentTypes.RING_COUNT, 0);
         int count = 2;
         Vec3 center = SkillcastingUtils.getTargetedEntityPosition(level, castContext)
                 .orElse(RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)

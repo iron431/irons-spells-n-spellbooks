@@ -8,6 +8,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
@@ -20,6 +22,39 @@ public class PortalData implements ICastDataSerializable {
     public UUID portalEntityId2;
     public int ticksToLive;
     public boolean isBlock;
+    public static final StreamCodec<RegistryFriendlyByteBuf, PortalData> PORTAL_CAST_DATA = StreamCodec.of(
+            (buf, data) -> {
+                buf.writeVarInt(data.ticksToLive);
+                if (data.globalPos1 != null && data.portalEntityId1 != null) {
+                    buf.writeBoolean(true);
+                    PortalPos.PORTAL_CAST_POS.encode(buf, data.globalPos1);
+                    buf.writeUUID(data.portalEntityId1);
+                    if (data.globalPos2 != null && data.portalEntityId2 != null) {
+                        buf.writeBoolean(true);
+                        PortalPos.PORTAL_CAST_POS.encode(buf, data.globalPos2);
+                        buf.writeUUID(data.portalEntityId2);
+                    } else {
+                        buf.writeBoolean(false);
+                    }
+                } else {
+                    buf.writeBoolean(false);
+                }
+                buf.writeBoolean(data.isBlock);
+            },
+            buf -> {
+                PortalData data = new PortalData();
+                data.ticksToLive = buf.readVarInt();
+                if (buf.readBoolean()) {
+                    data.globalPos1 = PortalPos.PORTAL_CAST_POS.decode(buf);
+                    data.portalEntityId1 = buf.readUUID();
+                    if (buf.readBoolean()) {
+                        data.globalPos2 = PortalPos.PORTAL_CAST_POS.decode(buf);
+                        data.portalEntityId2 = buf.readUUID();
+                    }
+                }
+                data.isBlock = buf.readBoolean();
+                return data;
+            });
     public static final Codec<UUID> UUID_CODEC = Codec.STRING.xmap(UUID::fromString, UUID::toString);
 
     public static final Codec<PortalData> CODEC = RecordCodecBuilder.create(builder -> builder.group(

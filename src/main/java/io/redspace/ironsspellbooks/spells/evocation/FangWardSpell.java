@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.spells.evocation;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.ExtendedEvokerFang;
 import io.redspace.skillcasting.api.cast.CastContext;
@@ -29,7 +30,7 @@ public class FangWardSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
-                Component.translatable("ui.irons_spellbooks.ring_count", castContext.getOrDefault(SkillcastingComponentTypes.RING_COUNT, 0)),
+                Component.translatable("ui.irons_spellbooks.ring_count", castContext.getOrDefault(SpellcastingComponentTypes.RING_COUNT, 0)),
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2))
         );
     }
@@ -69,12 +70,12 @@ public class FangWardSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         int level = castContext.getSkillLevel();
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        castContext.set(SkillcastingComponentTypes.RING_COUNT, 2 + (level - 1) / 3);
+        castContext.set(SpellcastingComponentTypes.RING_COUNT, 2 + (level - 1) / 3);
     }
 
     @Override
     public void onCast(ServerLevel world, CastContext castContext) {
-        int rings = castContext.getOrDefault(SkillcastingComponentTypes.RING_COUNT, 0);
+        int rings = castContext.getOrDefault(SpellcastingComponentTypes.RING_COUNT, 0);
         int count = 5;
         Vec3 center = castContext.position();
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
@@ -99,7 +100,7 @@ public class FangWardSpell extends AbstractSpell {
 
     @Override
     public boolean shouldAIStopCasting(ActiveCast activeCast, Mob mob, LivingEntity target) {
-        float d = 1.5f * (activeCast.context().getOrDefault(SkillcastingComponentTypes.RING_COUNT, 0) + 1);
+        float d = 1.5f * (activeCast.context().getOrDefault(SpellcastingComponentTypes.RING_COUNT, 0) + 1);
         return mob.distanceToSqr(target) > d * d * 1.2f;
     }
 }
