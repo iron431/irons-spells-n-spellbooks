@@ -17,6 +17,8 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
  * <br>
  * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
  **/
+// fixme: an event for controlling whether a spell can be inscribed is cool. forcing an inscription to silent-fail is dumb.
+@Deprecated(forRemoval = true)
 public class InscribeSpellEvent extends PlayerEvent implements ICancellableEvent {
     private final SkillData spellData;
 

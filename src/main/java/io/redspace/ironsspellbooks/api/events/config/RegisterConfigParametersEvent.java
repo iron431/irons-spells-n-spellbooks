@@ -1,5 +1,6 @@
-package io.redspace.ironsspellbooks.api.config;
+package io.redspace.ironsspellbooks.api.events.config;
 
+import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
 import net.neoforged.bus.api.Event;
 
 import java.util.function.Consumer;

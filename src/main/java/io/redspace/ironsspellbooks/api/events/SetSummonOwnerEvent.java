@@ -7,6 +7,7 @@ import net.neoforged.bus.api.Event;
  * Fired on the game event bus after {@link io.redspace.ironsspellbooks.capabilities.magic.SummonManager#setOwner}
  * has updated ownership maps. Not cancellable.
  */
+@Deprecated(forRemoval = true)
 public class SetSummonOwnerEvent extends Event {
     private final Entity owner;
     private final Entity summon;

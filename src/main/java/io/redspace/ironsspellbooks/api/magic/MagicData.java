@@ -90,17 +90,6 @@ public class MagicData implements IHolderSensitiveData {
             this.mana = mana;
             return;
         }
-        //fixme: mana event for any entity? just players?
-//        ChangeManaEvent e = new ChangeManaEvent(this.serverPlayer, this, this.mana, mana);
-//        if (this.serverPlayer == null || !NeoForge.EVENT_BUS.post(e).isCanceled()) {
-//            this.mana = e.getNewMana();
-//        }
-//        if (this.serverPlayer != null) {
-//            float maxMana = (float) serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA);
-//            if (this.mana > maxMana) {
-//                this.mana = maxMana;
-//            }
-//        }
         float maxMana = (float) livingEntity.getAttributeValue(AttributeRegistry.MAX_MANA);
         this.mana = Math.min(maxMana, mana);
 

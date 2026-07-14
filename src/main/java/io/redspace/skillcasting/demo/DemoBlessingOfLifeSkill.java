@@ -48,9 +48,6 @@ public final class DemoBlessingOfLifeSkill extends AbstractSkill {
             return;
         }
         float healAmount = getHealAmount(castContext.getSkillLevel());
-        if (castContext.caster() instanceof EntityCasterRef entityCasterRef && entityCasterRef.get() instanceof LivingEntity caster) {
-            NeoForge.EVENT_BUS.post(new SpellHealEvent(caster, target, healAmount, SchoolRegistry.HOLY.get()));
-        }
         target.heal(healAmount);
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(target, new HealParticlesPacket(target.position()));
     }

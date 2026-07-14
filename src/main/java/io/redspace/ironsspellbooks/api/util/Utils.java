@@ -522,7 +522,6 @@ public class Utils {
     }
 
     public static boolean validAntiMagicTarget(Entity entity) {
-        // fixme: might want to be more specific about whether they have active magic effects, or are actually casting a (spell) skill
         return !entity.isSpectator() &&
                 (entity instanceof AntiMagicSusceptible ||
                         MagicData.has(entity) ||

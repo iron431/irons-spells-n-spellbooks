@@ -1,41 +1,48 @@
 package io.redspace.ironsspellbooks.api.events;
 
 
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.skillcasting.api.cast.CasterRef;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.bus.api.ICancellableEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 
+import javax.annotation.Nullable;
 
-/**
- * SpellHealEvent is fired whenever a spell heals a player.<br>
- * <br>
- * This event is not {@link Cancelable}.<br>
- * <br>
- * This event does not have a result. {@link HasResult}<br>
- * <br>
- * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
- **/
-public class SpellHealEvent extends LivingEvent {
-    private final LivingEntity targetEntity;
-    private final float healAmount;
-    private SchoolType schoolType;
 
-    public SpellHealEvent(LivingEntity castingEntity, LivingEntity targetEntity, float healAmount, SchoolType schoolType) {
-        super(castingEntity);
-        this.targetEntity = targetEntity;
+public class SpellHealEvent extends LivingEvent implements ICancellableEvent {
+    private final @Nullable CasterRef caster;
+    private float healAmount;
+    private final AbstractSpell spell;
+
+    public SpellHealEvent(@Nullable CasterRef caster, LivingEntity targetEntity, float healAmount, AbstractSpell spell) {
+        super(targetEntity);
+        this.caster = caster;
         this.healAmount = healAmount;
-        this.schoolType = schoolType;
+        this.spell = spell;
+    }
+
+    public SpellHealEvent(@Nullable LivingEntity caster, LivingEntity targetEntity, float healAmount, AbstractSpell spell) {
+        this(caster == null ? null : CasterRef.entity(caster), targetEntity, healAmount, spell);
     }
 
     public LivingEntity getTargetEntity() {
-        return this.targetEntity;
+        return this.getEntity();
     }
 
     public float getHealAmount() {
-        return this.healAmount;
+        return this.isCanceled() ? 0 : this.healAmount;
     }
 
-    public SchoolType getSchoolType() {
-        return this.schoolType;
+    public void setHealAmount(float healAmount) {
+        this.healAmount = healAmount;
+    }
+
+    public AbstractSpell getSpell() {
+        return this.spell;
+    }
+
+    public @Nullable CasterRef getCaster() {
+        return caster;
     }
 }

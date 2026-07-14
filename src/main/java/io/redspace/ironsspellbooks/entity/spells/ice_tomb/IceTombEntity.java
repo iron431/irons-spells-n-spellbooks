@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.ice_tomb;
 import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
@@ -130,8 +131,7 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
 
     public void doPositiveEffects(Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
-            NeoForge.EVENT_BUS.post(new SpellHealEvent(livingEntity, livingEntity, this.healing, SchoolRegistry.ICE.get()));
-            livingEntity.heal(this.healing);
+            livingEntity.heal(NeoForge.EVENT_BUS.post(new SpellHealEvent(livingEntity, livingEntity, this.healing, SpellRegistry.ICE_TOMB_SPELL.get())).getHealAmount());
         }
     }
 

@@ -10,6 +10,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.events.config.ModifyDefaultConfigValuesEvent;
+import io.redspace.ironsspellbooks.api.events.config.RegisterConfigParametersEvent;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.network.SyncJsonConfigPacket;

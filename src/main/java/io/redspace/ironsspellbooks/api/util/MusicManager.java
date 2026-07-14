@@ -37,7 +37,6 @@ public class MusicManager {
     }
 
     public static void stopEvent(UUID uuid) {
-        // while we only create events per-dimension, if something in any dimension calls for a specific uuid to be cancelled, we cancel it
         for (MusicManager manager : MUSIC_MANAGERS.values()) {
             if (manager.musicHandlers.containsKey(uuid)) {
                 manager.musicHandlers.remove(uuid).stop();

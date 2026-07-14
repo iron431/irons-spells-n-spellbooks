@@ -35,7 +35,7 @@ public class BurningDashSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
-        return List.of(Component.translatable("ui.irons_spellbooks.damage", castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f)));
+        return List.of(Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)));
     }
 
     private final DefaultConfig defaultConfig = new DefaultConfig()

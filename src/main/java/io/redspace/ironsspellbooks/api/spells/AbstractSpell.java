@@ -10,7 +10,6 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -20,7 +19,6 @@ import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
-import io.redspace.skillcasting.api.component.ComponentType;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastResult;
 import io.redspace.skillcasting.api.skill.CastType;
@@ -42,11 +40,9 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
@@ -202,17 +198,13 @@ public abstract class AbstractSpell extends AbstractSkill {
         MagicData magicData = castContext.caster().get().getData(DataAttachmentRegistry.MAGIC_DATA);
         int manaCost = getManaCost(castContext);
         magicData.setMana(magicData.getMana() - manaCost);
-        // fixme: is mana player-only? (blocks default to 0 mana and immediately cancel)
-        if (castContext.asEntityCaster() instanceof Player && castContext.skill().value().getCastType() == CastType.CONTINUOUS && manaCost > magicData.getMana()) {
+        if (castContext.skill().value().getCastType() == CastType.CONTINUOUS && manaCost > magicData.getMana()) {
             SkillcastingManager.cancelCast(castContext.caster(), CastEndReason.INTERRUPTED);
             if (castContext.asEntityCaster() instanceof ServerPlayer serverPlayer) {
                 serverPlayer.displayClientMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED), true);
             }
         }
-        // fixme: blocks should be able to have magic data as well (post magic data refactor)
-        if (castContext.asEntityCaster() instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(magicData));
-        }
+        SyncManaPacket.syncFor(castContext.caster());
     }
 
     @Override

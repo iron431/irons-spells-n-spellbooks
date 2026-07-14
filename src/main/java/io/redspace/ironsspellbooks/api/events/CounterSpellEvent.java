@@ -1,15 +1,36 @@
 package io.redspace.ironsspellbooks.api.events;
 
-import net.minecraft.world.entity.Entity;
+import io.redspace.skillcasting.api.cast.CasterRef;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.ICancellableEvent;
 
-public class CounterSpellEvent extends Event implements ICancellableEvent {
-    public final Entity caster;
-    public final Entity target;
+public abstract class CounterSpellEvent extends Event {
+    private final CasterRef caster;
 
-    public CounterSpellEvent(Entity caster, Entity target) {
+    private final CasterRef target;
+
+    public CasterRef getTarget() {
+        return target;
+    }
+
+    public CasterRef getCaster() {
+        return caster;
+    }
+
+    public CounterSpellEvent(CasterRef caster, CasterRef target) {
         this.caster = caster;
         this.target = target;
+    }
+
+    public static class Pre extends CounterSpellEvent implements ICancellableEvent {
+        public Pre(CasterRef caster, CasterRef target) {
+            super(caster, target);
+        }
+    }
+
+    public static class Post extends CounterSpellEvent {
+        public Post(CasterRef caster, CasterRef target) {
+            super(caster, target);
+        }
     }
 }

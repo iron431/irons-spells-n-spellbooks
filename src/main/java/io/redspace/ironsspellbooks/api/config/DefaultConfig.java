@@ -13,8 +13,8 @@ public class DefaultConfig {
     public double cooldownInSeconds = -1;
     public boolean allowCrafting = true;
 
-    public DefaultConfig(Consumer<DefaultConfig> intialize) throws RuntimeException {
-        intialize.accept(this);
+    public DefaultConfig(Consumer<DefaultConfig> initialize) throws RuntimeException {
+        initialize.accept(this);
         build();
     }
 

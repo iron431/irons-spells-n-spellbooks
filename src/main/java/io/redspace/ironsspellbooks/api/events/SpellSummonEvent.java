@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 
+@Deprecated(forRemoval = true)
 public class SpellSummonEvent<K extends LivingEntity> extends LivingEvent {
     private LivingEntity caster = null;
     private K creature = null;

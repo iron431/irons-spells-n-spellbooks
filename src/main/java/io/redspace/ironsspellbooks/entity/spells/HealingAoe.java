@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells;
 import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.player.ClientSpellCastHelper;
@@ -34,8 +35,7 @@ public class HealingAoe extends AoeEntity implements AntiMagicSusceptible {
     public void applyEffect(LivingEntity target) {
         if (getOwner() instanceof LivingEntity owner && Utils.shouldHealEntity(owner, target)) {
             float healAmount = getDamage();
-            NeoForge.EVENT_BUS.post(new SpellHealEvent((LivingEntity) getOwner(), target, healAmount, SchoolRegistry.HOLY.get()));
-            target.heal(healAmount);
+            target.heal(NeoForge.EVENT_BUS.post(new SpellHealEvent(owner, target, healAmount, SpellRegistry.HEALING_CIRCLE_SPELL.get())).getHealAmount());
         }
     }
 

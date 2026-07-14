@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.damage;
 
 import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
-import io.redspace.ironsspellbooks.api.events.SpellDamageEvent;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -44,11 +43,6 @@ public class DamageSources {
 
     public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource) {
         if (target instanceof LivingEntity livingTarget && damageSource instanceof SpellDamageSource spellDamageSource) {
-            var e = new SpellDamageEvent(livingTarget, baseAmount, spellDamageSource);
-            if (NeoForge.EVENT_BUS.post(e).isCanceled()) {
-                return false;
-            }
-            baseAmount = e.getAmount();
             float adjustedDamage = baseAmount * getResist(livingTarget, spellDamageSource.spell().getSchoolType());
             if (damageSource.getDirectEntity() instanceof NoKnockbackProjectile) {
                 ignoreNextKnockback(livingTarget);

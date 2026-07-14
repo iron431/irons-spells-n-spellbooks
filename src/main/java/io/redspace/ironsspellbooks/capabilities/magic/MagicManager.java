@@ -3,6 +3,8 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
+import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.api.cast.EntityCasterRef;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,7 +40,7 @@ public class MagicManager {
                 if (player instanceof ServerPlayer serverPlayer) {
                     MagicData playerMagicData = MagicData.get(serverPlayer);
                     if (regenPlayerMana(serverPlayer, playerMagicData)) {
-                        PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(playerMagicData));
+                        SyncManaPacket.syncFor(CasterRef.entity(serverPlayer));
                     }
                 }
             });

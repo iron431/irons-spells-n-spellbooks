@@ -72,10 +72,7 @@ public class BlessingOfLifeSpell extends AbstractSpell {
             return;
         }
         float healAmount = castContext.getOrDefault(SkillcastingComponentTypes.HEALING, 0f);
-        if (castContext.asEntityCaster() instanceof LivingEntity caster) {
-            NeoForge.EVENT_BUS.post(new SpellHealEvent(caster, target, healAmount, getSchoolType()));
-        }
-        target.heal(healAmount);
+        target.heal(NeoForge.EVENT_BUS.post(new SpellHealEvent(castContext.caster(), target, healAmount, this)).getHealAmount());
         castContext.caster().distributeToClients(new HealParticlesPacket(target.position()));
     }
 

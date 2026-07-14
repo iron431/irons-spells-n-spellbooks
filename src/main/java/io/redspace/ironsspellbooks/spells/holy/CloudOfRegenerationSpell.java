@@ -89,10 +89,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
         level.getEntitiesOfClass(LivingEntity.class, AABB.ofSize(center, radius * 2, radius * 2, radius * 2))
                 .forEach(target -> {
                     if (center.distanceToSqr(target.position()) < radius * radius && Utils.shouldHealEntity(caster, target)) {
-                        if (caster instanceof LivingEntity livingCaster) {
-                            NeoForge.EVENT_BUS.post(new SpellHealEvent(livingCaster, target, healAmount, getSchoolType()));
-                        }
-                        target.heal(healAmount);
+                        target.heal(NeoForge.EVENT_BUS.post(new SpellHealEvent(castContext.caster(), target, healAmount, this)).getHealAmount());
                         castContext.caster().distributeToClients(new HealParticlesPacket(target.position()));
                     }
                 });

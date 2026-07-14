@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.system.macosx.LibC;
 
 public class InstantManaEffect extends CustomDescriptionMobEffect {
     public static final int manaPerAmplifier = 25;
@@ -36,17 +37,12 @@ public class InstantManaEffect extends CustomDescriptionMobEffect {
 
     @Override
     public void applyInstantenousEffect(@Nullable Entity pSource, @Nullable Entity pIndirectSource, LivingEntity livingEntity, int pAmplifier, double pHealth) {
-        //IronsSpellbooks.LOGGER.debug("Instant mana applying effect");
         int i = pAmplifier + 1;
         int maxMana = (int) livingEntity.getAttributeValue(AttributeRegistry.MAX_MANA);
         int manaAdd = (int) (i * manaPerAmplifier + (maxMana * (i * manaPerAmplifierPercent)));
         MagicData pmg = MagicData.get(livingEntity);
-        //IronsSpellbooks.LOGGER.debug("old mana: {}", pmg.getMana());
         pmg.setMana(pmg.getMana() + manaAdd);
-        if (livingEntity instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(pmg));
-        }
-        //IronsSpellbooks.LOGGER.debug("new mana: {}", pmg.getMana());
+        SyncManaPacket.syncFor(livingEntity);
 
     }
 
