@@ -1,7 +1,5 @@
 package io.redspace.skillcasting.api.skill;
 
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
@@ -12,7 +10,6 @@ import io.redspace.skillcasting.client.ClientSkillCastHelper;
 import io.redspace.skillcasting.client.ClientSkillTicker;
 import io.redspace.skillcasting.client.SkillcastClientTickManager;
 import io.redspace.skillcasting.data.PlayableSound;
-import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingAttributes;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -116,15 +113,9 @@ public abstract class AbstractSkill {
         getOnCastSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.ON_CAST_SOUND, sound));
         castContext.set(SkillcastingComponentTypes.CASTING_MOVESPEED_MULTIPLIER, getBaseCastingMovespeedMultiplier());
         if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
-            // fixme: migrate attributes to skillcasting
-            // todo: castContext#mutate?
-            castContext.find(SkillcastingComponentTypes.COOLDOWN_TICKS).ifPresent(ticks -> castContext.set(SkillcastingComponentTypes.COOLDOWN_TICKS,
-                    (int) (ticks * (2 - SkillcastingUtils.softCapFormula(livingEntity.getAttributeValue(SkillcastingAttributes.COOLDOWN_REDUCTION))))));
-            castContext.find(SkillcastingComponentTypes.CAST_TIME).ifPresent(ticks -> castContext.set(SkillcastingComponentTypes.CAST_TIME,
-                    (int) (ticks * (2 - SkillcastingUtils.softCapFormula(livingEntity.getAttributeValue(SkillcastingAttributes.CAST_TIME_REDUCTION))))));
-            castContext.find(SkillcastingComponentTypes.CASTING_MOVESPEED_MULTIPLIER).ifPresent(multiplier -> castContext.set(SkillcastingComponentTypes.CASTING_MOVESPEED_MULTIPLIER,
-                    multiplier + (float) livingEntity.getAttributeValue(SkillcastingAttributes.CASTING_MOVESPEED) - 1));
-            // todo: all attributes (piercing, ricochet, etc)
+            castContext.mutate(SkillcastingComponentTypes.COOLDOWN_TICKS, ticks -> (int) (ticks * (2 - SkillcastingUtils.softCapFormula(livingEntity.getAttributeValue(SkillcastingAttributes.COOLDOWN_REDUCTION)))));
+            castContext.mutate(SkillcastingComponentTypes.CAST_TIME, ticks -> (int) (ticks * (2 - SkillcastingUtils.softCapFormula(livingEntity.getAttributeValue(SkillcastingAttributes.CAST_TIME_REDUCTION)))));
+            castContext.mutate(SkillcastingComponentTypes.CASTING_MOVESPEED_MULTIPLIER, multiplier -> multiplier + (float) livingEntity.getAttributeValue(SkillcastingAttributes.CASTING_MOVESPEED) - 1);
         }
     }
 

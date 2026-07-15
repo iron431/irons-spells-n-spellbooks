@@ -14,8 +14,8 @@ import io.redspace.ironsspellbooks.api.events.config.ModifyDefaultConfigValuesEv
 import io.redspace.ironsspellbooks.api.events.config.RegisterConfigParametersEvent;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.network.SyncJsonConfigPacket;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.network.SyncJsonConfigPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;

@@ -132,14 +132,13 @@ public class AttributeRegistry {
         if (attribute == null) {
             return;
         }
-        castContext.find(componentType).ifPresent(
+        castContext.mutate(componentType,
                 value -> {
                     AttributeInstance simulated = new AttributeInstance(attribute.getAttribute(), (atr) -> {
                     });
                     simulated.replaceFrom(attribute);
                     simulated.setBaseValue(simulated.getBaseValue() + value.doubleValue());
-                    value = (float) simulated.getValue();
-                    castContext.set(componentType, value);
+                    return (float) simulated.getValue();
                 }
         );
     }
@@ -148,14 +147,13 @@ public class AttributeRegistry {
         if (attribute == null) {
             return;
         }
-        castContext.find(componentType).ifPresent(
+        castContext.mutate(componentType,
                 value -> {
                     AttributeInstance simulated = new AttributeInstance(attribute.getAttribute(), (atr) -> {
                     });
                     simulated.replaceFrom(attribute);
                     simulated.setBaseValue(simulated.getBaseValue() + value.doubleValue());
-                    value = (int) simulated.getValue();
-                    castContext.set(componentType, value);
+                    return (int) simulated.getValue();
                 }
         );
     }

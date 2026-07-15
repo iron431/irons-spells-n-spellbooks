@@ -1,6 +1,5 @@
 package io.redspace.skillcasting.client;
 
-import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.network.ServerboundCancelSkillCastPacket;

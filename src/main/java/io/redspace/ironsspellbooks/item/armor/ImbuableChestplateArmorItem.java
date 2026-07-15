@@ -21,18 +21,4 @@ public abstract class ImbuableChestplateArmorItem extends ExtendedArmorItem {
     public ImbuableChestplateArmorItem(Holder<ArmorMaterial> pMaterial, Type pType, Properties pProperties, AttributeContainer... attributes) {
         super(pMaterial, pType, setupImbueIfChestplate(pType, pProperties), attributes);
     }
-
-//    @Override
-//    public void initializeSpellContainer(ItemStack itemStack) {
-//        if (itemStack == null) {
-//            return;
-//        }
-//
-//        if (itemStack.getItem() instanceof ArmorItem armorItem && armorItem.getType() == Type.CHESTPLATE) {
-//            if (!ISpellContainer.isSpellContainer(itemStack)) {
-//                var spellContainer = ISpellContainer.create(1, true, true);
-//                ISpellContainer.set(itemStack, spellContainer);
-//            }
-//        }
-//    }
 }

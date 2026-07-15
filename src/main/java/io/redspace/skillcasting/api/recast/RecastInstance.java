@@ -2,8 +2,8 @@ package io.redspace.skillcasting.api.recast;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.api.component.CastComponentMap;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.core.Holder;

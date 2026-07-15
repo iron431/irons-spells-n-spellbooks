@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public final class CastContext {
@@ -136,5 +137,13 @@ public final class CastContext {
 
     public <T> T remove(Supplier<ComponentType<T>> type) {
         return components.remove(type.get());
+    }
+
+    public <T> void mutate(Supplier<ComponentType<T>> type, Function<T, T> mutator) {
+        Optional<T> baseValue = find(type);
+        if (baseValue.isPresent()) {
+            T updatedValue = mutator.apply(baseValue.get());
+            set(type, updatedValue);
+        }
     }
 }

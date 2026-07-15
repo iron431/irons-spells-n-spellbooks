@@ -29,16 +29,5 @@ public class TarnishedCrownArmorItem extends ExtendedArmorItem {
     public GeoArmorRenderer<?> supplyRenderer() {
         return new GenericCustomArmorRenderer<>(new TarnishedCrownModel());
     }
-//
-//    @Override
-//    public void initializeSpellContainer(ItemStack itemStack) {
-//        if (itemStack == null) {
-//            return;
-//        }
-//
-//        if (!ISpellContainer.isSpellContainer(itemStack)) {
-//            var spellContainer = ISpellContainer.create(1, true, true);
-//            ISpellContainer.set(itemStack, spellContainer);
-//        }
-//    }
+
 }

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellCastSources;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
@@ -10,7 +11,6 @@ import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.skillcasting.registry.SkillcastingDataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;

@@ -39,14 +39,10 @@ public record UpgradeOrbType(
     }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, UpgradeOrbType> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.holderRegistry(Registries.ATTRIBUTE),
-            type -> type.attribute,
-            ByteBufCodecs.DOUBLE,
-            type -> type.amount,
-            AttributeModifier.Operation.STREAM_CODEC,
-            type -> type.operation,
-            ByteBufCodecs.optional(ByteBufCodecs.fromCodec(ITEM_OR_ITEMSTACK_CODEC)),
-            type -> type.containerItem,
+            ByteBufCodecs.holderRegistry(Registries.ATTRIBUTE), type -> type.attribute,
+            ByteBufCodecs.DOUBLE, type -> type.amount,
+            AttributeModifier.Operation.STREAM_CODEC, type -> type.operation,
+            ByteBufCodecs.optional(ByteBufCodecs.fromCodec(ITEM_OR_ITEMSTACK_CODEC)), type -> type.containerItem,
             UpgradeOrbType::new
     );
 }

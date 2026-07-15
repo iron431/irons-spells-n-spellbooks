@@ -7,7 +7,6 @@ import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.demo.SkillcastingDevCommands;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillcastingAttachments;
-import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingDataComponents;
 import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.server.level.ServerPlayer;

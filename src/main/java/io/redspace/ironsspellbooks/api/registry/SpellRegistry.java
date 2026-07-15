@@ -1,9 +1,8 @@
 package io.redspace.ironsspellbooks.api.registry;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.spells.SchoolType;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.spells.blood.AcupunctureSpell;
 import io.redspace.ironsspellbooks.spells.blood.BloodNeedlesSpell;
 import io.redspace.ironsspellbooks.spells.blood.BloodSlashSpell;
@@ -115,6 +114,7 @@ import io.redspace.ironsspellbooks.spells.nature.RootSpell;
 import io.redspace.ironsspellbooks.spells.nature.SpiderAspectSpell;
 import io.redspace.ironsspellbooks.spells.nature.StompSpell;
 import io.redspace.ironsspellbooks.spells.nature.TouchDigSpell;
+import io.redspace.skillcasting.api.skill.AbstractSkill;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;

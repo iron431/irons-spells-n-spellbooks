@@ -4,13 +4,11 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.skillcasting.api.cast.CasterRef;
-import io.redspace.skillcasting.api.cast.EntityCasterRef;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MANA_REGEN;
 import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MAX_MANA;

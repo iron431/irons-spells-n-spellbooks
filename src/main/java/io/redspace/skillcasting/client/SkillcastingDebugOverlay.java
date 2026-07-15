@@ -2,13 +2,13 @@ package io.redspace.skillcasting.client;
 
 import io.redspace.skillcasting.api.component.ComponentType;
 import io.redspace.skillcasting.api.recast.RecastInstance;
-import io.redspace.skillcasting.selection.SkillSelectionManager;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
 import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.cooldown.CooldownInstance;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.selection.SkillSelectionManager;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

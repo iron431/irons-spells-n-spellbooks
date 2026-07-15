@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.render;
 
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.resources.ResourceLocation;

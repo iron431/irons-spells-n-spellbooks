@@ -1,7 +1,6 @@
 package io.redspace.skillcasting.data;
 
 import io.redspace.skillcasting.api.skill.AbstractSkill;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A skill stored at a fixed index inside a {@link SkillContainer}.

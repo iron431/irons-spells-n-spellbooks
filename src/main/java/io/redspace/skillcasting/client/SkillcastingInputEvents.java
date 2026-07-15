@@ -14,7 +14,11 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
-import static io.redspace.skillcasting.client.KeyMappings.*;
+import static io.redspace.skillcasting.client.KeyMappings.CAST_SELECTED_SKILL_KEYMAP;
+import static io.redspace.skillcasting.client.KeyMappings.QUICK_CAST_MAPPINGS;
+import static io.redspace.skillcasting.client.KeyMappings.SKILLBAR_SCROLL_MODIFIER_KEYMAP;
+import static io.redspace.skillcasting.client.KeyMappings.SKILL_WHEEL_KEYMAP;
+import static io.redspace.skillcasting.client.KeyMappings.SKILL_WHEEL_TOGGLE_KEYMAP;
 
 public final class SkillcastingInputEvents {
     public static boolean hasReleasedSinceCasting;
