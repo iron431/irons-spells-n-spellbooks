@@ -33,11 +33,6 @@ public class SmallMagicArrow extends AbstractMagicProjectile {
         setOwner(shooter);
     }
 
-    @Override
-    public void shoot(Vec3 rotation) {
-        this.setDeltaMovement(rotation);
-    }
-
     public int shakeTime;
     protected boolean inGround;
 

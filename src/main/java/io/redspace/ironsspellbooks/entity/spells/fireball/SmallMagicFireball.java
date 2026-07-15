@@ -35,13 +35,6 @@ public class SmallMagicFireball extends AbstractMagicProjectile {
         this.setOwner(pShooter);
     }
 
-    public void shoot(Vec3 rotation, float inaccuracy) {
-        var speed = rotation.length();
-        Vec3 offset = Utils.getRandomVec3(1).normalize().scale(inaccuracy);
-        var motion = rotation.normalize().add(offset).normalize().scale(speed);
-        super.shoot(motion);
-    }
-
     @Override
     public void trailParticles() {
         if (tickCount <= 3) {

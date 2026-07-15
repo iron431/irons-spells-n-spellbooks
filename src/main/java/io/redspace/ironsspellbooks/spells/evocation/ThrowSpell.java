@@ -99,13 +99,10 @@ public class ThrowSpell extends AbstractSpell {
 
         ThrownItemProjectile thrownItem = new ThrownItemProjectile(level, stack);
         thrownItem.setOwner(caster);
-        Vec3 spawn = caster != null
-                ? caster.position().add(0, caster.getEyeHeight() - thrownItem.getBoundingBox().getYsize() * 0.5f, 0)
-                : castContext.position(PositionAnchor.CASTING_POSITION);
+        Vec3 spawn = castContext.position(PositionAnchor.CASTING_POSITION);
         thrownItem.setPos(spawn);
-        thrownItem.shoot(castContext.direction());
-        thrownItem.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f)
-                + castContext.getOrDefault(SkillcastingComponentTypes.WEAPON_DAMAGE, 0f));
+        thrownItem.shootFromContext(thrownItem, castContext);
+        thrownItem.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f) + castContext.getOrDefault(SkillcastingComponentTypes.WEAPON_DAMAGE, 0f));
         thrownItem.setScale(caster instanceof LivingEntity living ? living.getScale() : 1f);
         level.addFreshEntity(thrownItem);
     }

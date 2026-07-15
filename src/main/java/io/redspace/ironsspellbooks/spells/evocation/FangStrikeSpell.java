@@ -16,7 +16,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.ClipContext;
@@ -81,8 +80,7 @@ public class FangStrikeSpell extends AbstractSpell {
 
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         int count = castContext.getOrDefault(SkillcastingComponentTypes.SPIKE_COUNT, 0);
-        Entity caster = castContext.asEntityCaster();
-        float yRotDegrees = caster != null ? caster.getYRot() : castContext.getYRot() * Mth.RAD_TO_DEG;
+        float yRotDegrees = -castContext.getYRot() * Mth.RAD_TO_DEG;
         float fangYaw = (yRotDegrees - 90) * Mth.DEG_TO_RAD;
         for (int i = 0; i < count; i++) {
             Vec3 spawn = start.add(forward.scale(i));

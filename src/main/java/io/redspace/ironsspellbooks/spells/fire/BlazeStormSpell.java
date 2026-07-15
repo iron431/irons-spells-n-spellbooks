@@ -83,8 +83,7 @@ public class BlazeStormSpell extends AbstractSpell {
         Vec3 origin = castContext.position().add(castContext.direction().scale(.4f));
         SmallMagicFireball fireball = new SmallMagicFireball(level, castContext.asEntityCaster());
         fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));
-        fireball.shoot(castContext.direction(), .05f);
-        fireball.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
+        fireball.shootFromContext(fireball, castContext, 4.5f);
         level.addFreshEntity(fireball);
     }
 

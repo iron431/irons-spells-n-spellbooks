@@ -41,7 +41,7 @@ public class ArrowVolleyEntity extends AbstractMagicProjectile {
                     SmallMagicArrow arrow = new SmallMagicArrow(this.level, this.getOwner());
                     var spawn = this.position().add(orth.scale(distance));
                     arrow.setPos(spawn);
-                    arrow.shoot(motion.add(Utils.getRandomVec3(.04f)));
+                    arrow.shoot(motion.x, motion.y, motion.z, speed, 3f);
                     arrow.setOwner(this.getOwner());
                     arrow.copyFrom(this);
                     level.addFreshEntity(arrow);

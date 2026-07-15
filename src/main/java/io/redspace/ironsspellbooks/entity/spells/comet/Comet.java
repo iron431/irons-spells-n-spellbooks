@@ -32,11 +32,6 @@ public class Comet extends AbstractMagicProjectile {
         this.setOwner(pShooter);
     }
 
-    public void shoot(Vec3 rotation, float innaccuracy) {
-        Vec3 offset = Utils.getRandomVec3(1).normalize().scale(innaccuracy);
-        super.shoot(rotation.add(offset));
-    }
-
     @Override
     public void trailParticles() {
         var vec = getDeltaMovement();

@@ -114,7 +114,11 @@ public abstract class AbstractSkill {
         castContext.set(SkillcastingComponentTypes.CASTING_MOVESPEED_MULTIPLIER, getBaseCastingMovespeedMultiplier());
         if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
             castContext.mutate(SkillcastingComponentTypes.COOLDOWN_TICKS, ticks -> (int) (ticks * (2 - SkillcastingUtils.softCapFormula(livingEntity.getAttributeValue(SkillcastingAttributes.COOLDOWN_REDUCTION)))));
-            castContext.mutate(SkillcastingComponentTypes.CAST_TIME, ticks -> (int) (ticks * (2 - SkillcastingUtils.softCapFormula(livingEntity.getAttributeValue(SkillcastingAttributes.CAST_TIME_REDUCTION)))));
+            if (getCastType() == CastType.CONTINUOUS) {
+                castContext.mutate(SkillcastingComponentTypes.CAST_TIME, ticks -> (int) (ticks * livingEntity.getAttributeValue(SkillcastingAttributes.CAST_TIME_REDUCTION)));
+            } else {
+                castContext.mutate(SkillcastingComponentTypes.CAST_TIME, ticks -> (int) (ticks * (2 - SkillcastingUtils.softCapFormula(livingEntity.getAttributeValue(SkillcastingAttributes.CAST_TIME_REDUCTION)))));
+            }
             castContext.mutate(SkillcastingComponentTypes.CASTING_MOVESPEED_MULTIPLIER, multiplier -> multiplier + (float) livingEntity.getAttributeValue(SkillcastingAttributes.CASTING_MOVESPEED) - 1);
         }
     }

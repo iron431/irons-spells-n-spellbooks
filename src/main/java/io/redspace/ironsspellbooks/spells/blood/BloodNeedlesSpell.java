@@ -18,6 +18,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -79,7 +80,8 @@ public class BloodNeedlesSpell extends AbstractSpell {
             int rotation = degreesPerNeedle * i - (degreesPerNeedle / 2);
             needle.setZRot(rotation);
             // fixme: hardcoded y offset
-            Vec3 spawn = castContext.position().add(0,0.25,0).add(new Vec3(0, 1.5, 0).zRot(rotation * Mth.DEG_TO_RAD).xRot(castContext.getXRot()).yRot(castContext.getYRot()));
+            Vec2 direction = castContext.rotation();
+            Vec3 spawn = castContext.position().add(0,0.25,0).add(new Vec3(0, 1.5, 0).zRot(rotation * Mth.DEG_TO_RAD).xRot(direction.x).yRot(direction.y));
             needle.moveTo(spawn);
             needle.applyContext(castContext);
             // fixme: speed handling

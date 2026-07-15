@@ -34,7 +34,7 @@ public interface ISkillProjectile {
         // Healing is not expected to be a commonly supported feature, so implementation is not required
     }
 
-    default void copyFrom(ISkillProjectile parent){
+    default void copyFrom(ISkillProjectile parent) {
         this.setRadius(parent.getRadius());
         this.setDamage(parent.getDamage());
         this.setPierceLevel(parent.getPierceLevel());
@@ -58,7 +58,12 @@ public interface ISkillProjectile {
     }
 
     default void shootFromContext(Projectile self, CastContext castContext) {
+        shootFromContext(self, castContext, 0f);
+    }
+
+    default void shootFromContext(Projectile self, CastContext castContext, float inaccuracy) {
         applyContext(castContext);
-        self.setDeltaMovement(castContext.direction().scale(castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.0f)));
+        var trajectory = castContext.direction();
+        self.shoot(trajectory.x, trajectory.y, trajectory.z, castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.0f), inaccuracy);
     }
 }

@@ -71,8 +71,7 @@ public class BloodSlashSpell extends AbstractSpell {
     public void onCast(ServerLevel level, CastContext castContext) {
         BloodSlashProjectile bloodSlash = new BloodSlashProjectile(level, castContext.asEntityCaster());
         bloodSlash.setPos(castContext.position(PositionAnchor.CASTING_POSITION));
-        bloodSlash.shoot(castContext.direction());
-        bloodSlash.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
+        bloodSlash.shootFromContext(bloodSlash, castContext);
         bloodSlash.setYRot(castContext.getYRot() * Mth.RAD_TO_DEG);
         bloodSlash.setXRot(castContext.getXRot() * Mth.RAD_TO_DEG);
         level.addFreshEntity(bloodSlash);

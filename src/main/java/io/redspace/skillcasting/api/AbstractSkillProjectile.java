@@ -107,12 +107,8 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
         }
     }
 
-    /**
-     * fixme: this no longer works with the projectile speed pipeline
-     */
-    @Deprecated(forRemoval = true)
-    public void shoot(Vec3 trajectory) {
-        this.setDeltaMovement(trajectory);
+    public void shoot(Vec3 trajectory, float velocity) {
+        shoot(trajectory.x, trajectory.y, trajectory.z, velocity, 0f);
     }
 
     @Nullable
@@ -350,7 +346,7 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
                 .end(end)
                 .checkForBlocks(true)
                 .bbInflation(0.5f)
-                .filter(entity -> SkillcastingUtils.canHitWithRaycast(entity) && !SkillcastingUtils.isFriendlyFireBetween(entity, owner) )
+                .filter(entity -> SkillcastingUtils.canHitWithRaycast(entity) && !SkillcastingUtils.isFriendlyFireBetween(entity, owner))
                 .build();
         Vec3 target = hitresult instanceof EntityHitResult entityHit ? entityHit.getEntity().getBoundingBox().getCenter() : hitresult.getLocation();
         // todo: expose parameter

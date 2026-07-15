@@ -60,6 +60,7 @@ public class SnowballSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 3.5f + castContext.getSkillLevel() * .5f);
         castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, (int) (200 * Mth.sqrt(getSpellPowerMultiplier(castContext))));
+        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1f);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class SnowballSpell extends AbstractSpell {
     public void onCast(ServerLevel level, CastContext castContext) {
         Snowball orb = new Snowball(level, castContext.asEntityCaster());
         orb.setPos(castContext.position().add(castContext.direction()));
-        orb.shoot(castContext.direction());
+        orb.shootFromContext(orb, castContext);
         orb.setDeltaMovement(orb.getDeltaMovement().add(0, 0.2, 0));
         orb.setRadius(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f));
         // use damage as duration

@@ -87,7 +87,7 @@ public class AcupunctureSpell extends AbstractSpell {
             BloodNeedle needle = new BloodNeedle(level, castContext.asEntityCaster());
             needle.moveTo(spawn);
             needle.applyContext(castContext);
-            needle.shoot(motion.scale(castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 1f)));
+            needle.shoot(motion, castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 1f));
             needle.setScale(0.4f);
             level.addFreshEntity(needle);
         }

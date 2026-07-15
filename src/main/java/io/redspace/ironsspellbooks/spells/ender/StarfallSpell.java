@@ -173,7 +173,7 @@ public class StarfallSpell extends AbstractSpell {
     private void shootComet(Level level, CastContext castContext, Vec3 spawn, Vec3 trajectory) {
         Comet comet = new Comet(level, castContext.asEntityCaster());
         comet.setPos(spawn.add(-1, 0, 0));
-        comet.shoot(trajectory, 0.075f);
+        comet.shoot(trajectory.x, trajectory.y, trajectory.z, 1f, 6f);
         comet.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         comet.setRadius(2f);
         level.addFreshEntity(comet);

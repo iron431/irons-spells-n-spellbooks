@@ -671,7 +671,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             Vec3 origin = position().subtract(0, fireball.getBbHeight() / 2, 0).add(0, this.getBoundingBox().getYsize() * 1.25, 0);
             Vec3 trajectory = getTarget() == null ? this.getForward() : getTarget().position().subtract(origin).normalize();
             fireball.setPos(origin);
-            fireball.shoot(trajectory);
+            fireball.shoot(trajectory, 1f);
             level.addFreshEntity(fireball);
             this.playSound(SoundRegistry.FIRE_BOSS_FIREBALL.get(), 4, 1f);
         }
