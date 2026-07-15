@@ -1,14 +1,13 @@
 package io.redspace.ironsspellbooks.item;
 
+import io.redspace.skillcasting.registry.SkillcastingDataComponents;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import static io.redspace.ironsspellbooks.registries.ComponentRegistry.CASTING_IMPLEMENT;
-
 public class CastingItem extends Item {
     public CastingItem(Properties pProperties) {
-        super(pProperties.component(CASTING_IMPLEMENT, Unit.INSTANCE)/*.component(MULTIHAND_WEAPON, Unit.INSTANCE)*/);
+        super(pProperties.component(SkillcastingDataComponents.CASTING_IMPLEMENT, Unit.INSTANCE));
     }
 
     @Override

@@ -22,7 +22,8 @@
     "PlayerMixin",
     "SmithingRecipeMixin",
     "TridentItemMixin",
-    "VaultServerDataAccessor"
+    "VaultServerDataAccessor",
+    "skillcasting.SmithingRecipeMixin"
   ],
   "client": [
     "ClientBookAccessMixin",

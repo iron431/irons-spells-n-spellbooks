@@ -170,10 +170,11 @@ public class SkillContainer implements ISkillContainer {
 
         @Override
         public boolean setSpellAtIndex(SkillData skillData, int index) {
-            if (index > -1 && index < maxSpells &&
-                    Arrays.stream(slots).noneMatch(s -> s != null && skillData.getHolder().equals(s.skillData().getHolder()))) {
+            if (index > -1 && index < maxSpells && Arrays.stream(slots).noneMatch(s -> s != null && skillData.getHolder().equals(s.skillData().getHolder()))) {
+                if(slots[index] == null){
+                    activeSlots++;
+                }
                 slots[index] = SkillSlot.of(skillData, index);
-                activeSlots++;
                 return true;
             }
             return false;

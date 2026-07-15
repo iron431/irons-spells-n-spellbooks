@@ -9,7 +9,9 @@ import net.minecraft.world.item.Item;
 
 public abstract class ImbuableChestplateArmorItem extends ExtendedArmorItem {
 
+    @Deprecated
     public static Item.Properties setupImbueIfChestplate(Type type, Properties properties) {
+        // fixme: surely this is stupid right
         if (type == Type.CHESTPLATE) {
             properties.component(SkillcastingDataComponents.SKILL_CONTAINER, ISkillContainer.create(true, 1));
         }

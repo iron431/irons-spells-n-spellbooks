@@ -100,10 +100,6 @@ public class ClientPlayerEvents {
             if (stack.has(ComponentRegistry.UPGRADE_ORB_TYPE)) {
                 handleUpgradeOrbTooltip(stack, player, lines, advanced);
             }
-            // Active Spell Tooltip
-            if (stack.has(ComponentRegistry.CASTING_IMPLEMENT)) {
-                handleCastingImplementTooltip(stack, player, lines, advanced);
-            }
             // Imbued Spell Tooltip
             if (ISkillContainer.isSkillContainer(stack) && !(stack.getItem() instanceof SpellBook)) {
                 handleImbuedSpellTooltip(stack, player, lines, advanced);
@@ -152,22 +148,7 @@ public class ClientPlayerEvents {
         }
     }
 
-    private static void handleCastingImplementTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
-        // fixme skillcasting: rewrite ig
-//
-//        var spellSlot = ClientMagicData.getSpellSelectionManager().getSelection();
-//        if (spellSlot != null && spellSlot.spellData != SpellData.EMPTY) {
-//            var additionalLines = TooltipsUtils.formatActiveSpellTooltip(stack, spellSlot.spellData, spellSlot.getCastSource(), player);
-//            //Add header
-//            additionalLines.add(1, Component.translatable("tooltip.irons_spellbooks.casting_implement_tooltip").withStyle(ChatFormatting.GRAY));
-//            //Indent the title because we have an additional header
-//            additionalLines.set(2, Component.literal(" ").append(additionalLines.get(2)));
-//            //Keybind notification
-//            additionalLines.add(Component.literal(" ").append(Component.translatable("tooltip.irons_spellbooks.press_to_cast_active", Component.keybind("key.use")).withStyle(ChatFormatting.GOLD)));
-//            int i = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
-//            lines.addAll(i < 0 ? lines.size() : i, additionalLines);
-//        }
-    }
+
 
     private static void handleUpgradeOrbTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
         var upgradeKey = stack.get(ComponentRegistry.UPGRADE_ORB_TYPE);

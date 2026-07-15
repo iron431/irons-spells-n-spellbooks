@@ -130,19 +130,7 @@ import java.util.List;
 import java.util.UUID;
 
 @EventBusSubscriber
-public class
-ServerPlayerEvents {
-
-    //    @SubscribeEvent
-//    public static void onPlayerAttack(AttackEntityEvent event) {
-//        TODO: this only gets called when the player successfully hits something. we want it to cancel if they even try.
-//              granted, the input even should be cancelled already, but better combat skips that due to custom weapon handling.
-//        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-//            if (PlayerMagicData.get(serverPlayer).isCasting()) {
-//                Utils.serverSideCancelCast(serverPlayer);
-//            }
-//        }
-//    }
+public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onLevelLoaded(LevelEvent.Load event) {

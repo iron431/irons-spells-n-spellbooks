@@ -8,8 +8,10 @@ import io.redspace.skillcasting.demo.SkillcastingDevCommands;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillcastingAttachments;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.registry.SkillcastingDataComponents;
 import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -102,11 +104,24 @@ public final class SkillcastingEvents {
         }
     }
 
+    @SubscribeEvent
+    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            SkillcastingNetwork.syncAll(player);
+        }
+    }
+
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onUseItem(PlayerInteractEvent.RightClickItem event) {
         if (SkillcastingData.has(event.getEntity()) && SkillcastingData.get(event.getEntity()).isCasting() &&
                 !SkillcastingData.get(event.getEntity()).getActiveCast().context().getCastSource().isFromSlot(event.getHand())) {
             event.setCanceled(true);
+        }
+        if (event.getItemStack().has(SkillcastingDataComponents.CASTING_IMPLEMENT)) {
+            if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+                SkillcastingManager.attemptInitiateFromSelection(CasterRef.entity(serverPlayer));
+            }
+            event.setCancellationResult(InteractionResult.CONSUME);
         }
     }
 }

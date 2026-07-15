@@ -13,6 +13,8 @@ import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 public class ClearCooldownCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
@@ -28,19 +30,19 @@ public class ClearCooldownCommand {
     }
 
     private static int clearCooldowns(CommandSourceStack source, @Nullable Collection<ServerPlayer> targets) {
-        if (targets != null && !targets.isEmpty()) {
-            targets.forEach((serverPlayer -> {
-                SkillcastingData skillcastingData = SkillcastingData.get(serverPlayer);
-                skillcastingData.cooldowns().clear();
-                SkillcastingNetwork.syncAllCooldowns(CasterRef.entity(serverPlayer),skillcastingData);
-            }));
-
-            if (!targets.isEmpty()) {
-                source.sendSuccess(() -> Component.translatable("commands.clearCooldown.success"), true);
-            }
-
-            return targets.size();
+        if (targets == null || targets.isEmpty()) {
+            targets = List.of(Objects.requireNonNull(source.getPlayer(), "Player required"));
         }
-        return 0;
+        targets.forEach((serverPlayer -> {
+            SkillcastingData skillcastingData = SkillcastingData.get(serverPlayer);
+            skillcastingData.cooldowns().clear();
+            SkillcastingNetwork.syncAllCooldowns(CasterRef.entity(serverPlayer), skillcastingData);
+        }));
+
+        if (!targets.isEmpty()) {
+            source.sendSuccess(() -> Component.translatable("commands.clearCooldown.success"), true);
+        }
+
+        return targets.size();
     }
 }

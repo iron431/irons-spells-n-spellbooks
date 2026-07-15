@@ -12,9 +12,9 @@ public class EvokerSpellBook extends SpellBook {
     public EvokerSpellBook(Properties properties) {
         super(properties.component(SkillcastingDataComponents.SKILL_CONTAINER, ISkillContainer.create(true,
                 7,
-                new SkillData(SpellRegistry.FANG_STRIKE_SPELL, 6),
-                new SkillData(SpellRegistry.FANG_WARD_SPELL, 4),
-                new SkillData(SpellRegistry.SUMMON_VEX_SPELL, 4)
+                new SkillData(SpellRegistry.FANG_STRIKE_SPELL, 6, true),
+                new SkillData(SpellRegistry.FANG_WARD_SPELL, 4, true),
+                new SkillData(SpellRegistry.SUMMON_VEX_SPELL, 4, true)
 
         )));
         withSpellbookAttributes(

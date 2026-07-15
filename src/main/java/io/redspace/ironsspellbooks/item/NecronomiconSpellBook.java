@@ -23,10 +23,10 @@ public class NecronomiconSpellBook extends SpellBook {
     public NecronomiconSpellBook(Item.Properties properties) {
         super(properties.component(SkillcastingDataComponents.SKILL_CONTAINER, ISkillContainer.create(true,
                 6,
-                new SkillData(SpellRegistry.BLOOD_SLASH_SPELL, 5),
-                new SkillData(SpellRegistry.BLOOD_STEP_SPELL, 5),
-                new SkillData(SpellRegistry.RAY_OF_SIPHONING_SPELL, 5),
-                new SkillData(SpellRegistry.BLAZE_STORM_SPELL, 5)
+                new SkillData(SpellRegistry.BLOOD_SLASH_SPELL, 5, true),
+                new SkillData(SpellRegistry.BLOOD_STEP_SPELL, 5, true),
+                new SkillData(SpellRegistry.RAY_OF_SIPHONING_SPELL, 5, true),
+                new SkillData(SpellRegistry.BLAZE_STORM_SPELL, 5, true)
 
         )).component(ComponentRegistry.AFFINITY_COMPONENT.get(), AffinityData.ofHolders(Map.of(
                 SpellRegistry.RAISE_DEAD_SPELL, 2

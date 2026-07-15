@@ -5,21 +5,17 @@ import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillContainer;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.Unit;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.UnaryOperator;
 
-/**
- * Item data components owned by the skillcasting API (skill containers on items).
- */
 public final class SkillcastingDataComponents {
     private static final DeferredRegister<DataComponentType<?>> DATA_COMPONENTS =
             DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, Skillcasting.NAMESPACE);
-
-    private SkillcastingDataComponents() {
-    }
 
     public static void register(IEventBus eventBus) {
         DATA_COMPONENTS.register(eventBus);
@@ -33,4 +29,9 @@ public final class SkillcastingDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> SKILL_CONTAINER =
             registerDataComponent("skill_container",
                     builder -> builder.persistent(SkillContainer.CODEC).cacheEncoding());
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> CASTING_IMPLEMENT =
+            registerDataComponent("casting_implement",
+                    (builder) -> builder.persistent(Unit.CODEC).networkSynchronized(StreamCodec.unit(Unit.INSTANCE)).cacheEncoding());
+
 }

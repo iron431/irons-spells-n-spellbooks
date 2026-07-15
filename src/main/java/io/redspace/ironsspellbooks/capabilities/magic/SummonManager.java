@@ -11,6 +11,7 @@ import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.recast.RecastInstance;
 import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
+import io.redspace.skillcasting.api.recast.RecastResult;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.HolderLookup;
@@ -153,12 +154,13 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
     /**
      * Handles unsummon functionality of a Recast Finishing, including manual recast or recast timing out. Takes item buffs into account.
      */
-    public static void recastFinishedHelper(CastContext castContext, io.redspace.skillcasting.api.recast.RecastResult recastResult) {
+    public static void recastFinishedHelper(CastContext castContext, RecastResult recastResult) {
         // summons automatically die on timeout, only handle other cases
-        if (recastResult != io.redspace.skillcasting.api.recast.RecastResult.TIMEOUT) {
+        if (recastResult != RecastResult.TIMEOUT) {
             SummonedEntitiesCastData summonedEntitiesCastData = castContext.getOrNull(SpellcastingComponentTypes.SUMMONED_ENTITY_DATA);
             if (summonedEntitiesCastData != null && castContext.level() instanceof ServerLevel serverLevel) {
-                summonedEntitiesCastData.getSummons().forEach(uuid -> {
+                Set<UUID> uuids = Set.copyOf(summonedEntitiesCastData.getSummons());
+                uuids.forEach(uuid -> {
                     var toRemove = serverLevel.getEntity(uuid);
                     if (toRemove instanceof IMagicSummon summon) {
                         summon.onUnSummon();
