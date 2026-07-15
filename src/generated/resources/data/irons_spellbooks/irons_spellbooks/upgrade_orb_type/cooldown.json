@@ -1,6 +1,6 @@
 {
   "amount": 0.05,
-  "attribute": "irons_spellbooks:cooldown_reduction",
+  "attribute": "skillcasting:cooldown_reduction",
   "containerItem": {
     "count": 1,
     "id": "irons_spellbooks:cooldown_upgrade_orb"
