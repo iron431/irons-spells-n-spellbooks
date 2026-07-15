@@ -156,8 +156,8 @@ public class RaiseHellSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean shouldAIStopCasting(ActiveCast cast, Mob mob, LivingEntity target) {
-        float range = cast.context().getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 8f) * 1.1f;
+    public boolean shouldAIStopCasting(CastContext castContext, Mob mob, LivingEntity target) {
+        float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 8f) * 1.1f;
         return Utils.raycastForBlock(mob.level(), mob.position(), mob.position().subtract(0, 0.5, 0), ClipContext.Fluid.NONE).getType() == HitResult.Type.MISS
                 || target.distanceToSqr(mob) > range * range;
     }

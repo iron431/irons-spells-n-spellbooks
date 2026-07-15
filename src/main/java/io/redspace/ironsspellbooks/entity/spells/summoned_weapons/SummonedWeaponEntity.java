@@ -48,9 +48,9 @@ import javax.annotation.Nullable;
 
 public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob implements IMagicSummon, IAnimatedAttacker {
     @Override
-    public void initiateCastSpell(AbstractSpell spell, int spellLevel, @Nullable CastComponentMap castComponentMap) {
+    public boolean attemptInitiateCastSpell(AbstractSpell spell, int spellLevel, @Nullable CastComponentMap castComponentMap) {
         // no spellcasting
-        return;
+        return false;
     }
 
     GenericAnimatedWarlockAttackGoal<? extends SummonedWeaponEntity> attackGoal;

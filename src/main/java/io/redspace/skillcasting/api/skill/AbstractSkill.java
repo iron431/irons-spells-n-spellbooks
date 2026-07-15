@@ -1,8 +1,11 @@
 package io.redspace.skillcasting.api.skill;
 
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.spells.target_area.TargetedAreaEntity;
 import io.redspace.skillcasting.api.PositionAnchor;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CastEndReason;
+import io.redspace.skillcasting.api.component.TargetedEntitiesData;
 import io.redspace.skillcasting.api.recast.RecastConfig;
 import io.redspace.skillcasting.api.recast.RecastResult;
 import io.redspace.skillcasting.client.ClientSkillCastHelper;
@@ -244,7 +247,7 @@ public abstract class AbstractSkill {
     /**
      * Mob-oriented helper where skills can provide hooks for when to terminate a skillcast based on certain context, such as if a skill has a max range which the target has exceeded.
      */
-    public boolean shouldAIStopCasting(ActiveCast cast, Mob mob, LivingEntity target) {
+    public boolean shouldAIStopCasting(CastContext castContext, Mob mob, LivingEntity target) {
         return false;
     }
 
@@ -265,5 +268,14 @@ public abstract class AbstractSkill {
 
     public Holder<AbstractSkill> holder() {
         return SkillRegistry.holder(this);
+    }
+
+    /**
+     * Provides hook before a mob initiates a cast in order to tailor its behavior
+     */
+    public void setupAIContext(CastContext castContext, Mob mob, LivingEntity target) {
+        if (!castContext.has(SkillcastingComponentTypes.TARGETED_ENTITIES)) {
+            castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES, new TargetedEntitiesData(target));
+        }
     }
 }

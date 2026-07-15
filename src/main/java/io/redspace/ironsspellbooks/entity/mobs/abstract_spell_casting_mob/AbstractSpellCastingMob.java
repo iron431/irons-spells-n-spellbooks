@@ -8,11 +8,8 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.component.CastComponentMap;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
-import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.data.CastSource;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillRegistry;
@@ -22,6 +19,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
@@ -34,6 +32,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
@@ -49,12 +48,11 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     public static final ResourceLocation modelResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/abstract_casting_mob.geo.json");
     public static final ResourceLocation textureResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
     public static final ResourceLocation animationInstantCast = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/casting_animations.json");
-    //private static final EntityDataAccessor<SyncedSpellData> DATA_SPELL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SyncedSpellData.SYNCED_SPELL_DATA);
     private static final EntityDataAccessor<Boolean> DATA_DRINKING_POTION = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private static final AttributeModifier SPEED_MODIFIER_DRINKING = new AttributeModifier(IronsSpellbooks.id("potion_slowdown"), -0.15D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     private int drinkTime;
-    public boolean hasUsedSingleAttack;
+    public long singleAttackCooldownTimestamp;
 
     protected AbstractSpellCastingMob(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -62,19 +60,17 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         this.lookControl = createLookControl();
     }
 
-    public boolean getHasUsedSingleAttack() {
-        return hasUsedSingleAttack;
+    public boolean canUseSingleAttack() {
+        return level.getGameTime() >= singleAttackCooldownTimestamp;
     }
 
-    public void setHasUsedSingleAttack(boolean hasUsedSingleAttack) {
-        this.hasUsedSingleAttack = hasUsedSingleAttack;
+    public void setSingleAttackCooldown() {
+        setSingleAttackCooldown(5L * 20 * 60);
     }
 
-    //FIXME: 1.21: is #getPassengerRidingPosition the new name for this method?
-    //@Override
-    //public double getMyRidingOffset() {
-    //    return -0.5;
-    //}
+    public void setSingleAttackCooldown(long delay) {
+        this.singleAttackCooldownTimestamp = level.getGameTime() + delay;
+    }
 
     @Override
     public void rideTick() {
@@ -135,13 +131,17 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        pCompound.putBoolean("usedSpecial", hasUsedSingleAttack);
+        if (!canUseSingleAttack()) {
+            pCompound.putLong("usedSpecial", singleAttackCooldownTimestamp);
+        }
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        hasUsedSingleAttack = pCompound.getBoolean("usedSpecial");
+        if (pCompound.contains("usedSpecial")) {
+            singleAttackCooldownTimestamp = pCompound.getLong("usedSpecial");
+        }
     }
 
     public boolean isCasting() {
@@ -157,7 +157,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
                 finishDrinkingPotion();
             } else if (drinkTime % 4 == 0) {
                 if (!this.isSilent()) {
-                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_DRINK, this.getSoundSource(), 1.0F, Utils.random.nextFloat() * 0.1F + 0.9F);
+                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(), getPotionDrinkingSound(), this.getSoundSource(), 1.0F, Utils.random.nextFloat() * 0.1F + 0.9F);
                 }
             }
         }
@@ -168,9 +168,13 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     }
 
-    public void initiateCastSpell(AbstractSpell spell, int spellLevel, @Nullable CastComponentMap componentPatch) {
-        if (spell == null) {
-            return;
+    public @NotNull SoundEvent getPotionDrinkingSound() {
+        return SoundEvents.GENERIC_DRINK;
+    }
+
+    public boolean attemptInitiateCastSpell(AbstractSpell spell, int spellLevel, @Nullable CastComponentMap componentPatch) {
+        if (spell == null || getTarget() == null) {
+            return false;
         }
 
         if (getTarget() != null) {
@@ -184,8 +188,11 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         if (componentPatch != null) {
             castContext.components().applyFrom(componentPatch);
         }
-
-        SkillcastingManager.initiateCast(casterRef, castContext);
+        if (spell.shouldAIStopCasting(castContext, this, this.getTarget())) {
+            return false;
+        }
+        spell.setupAIContext(castContext, this, this.getTarget());
+        return SkillcastingManager.initiateCast(casterRef, castContext);
     }
 
     public void cancelCast() {

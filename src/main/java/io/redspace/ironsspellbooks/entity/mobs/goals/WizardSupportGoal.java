@@ -148,10 +148,9 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob> extends Goa
         }
         if (SkillcastingData.get(mob).isCasting()) {
             var spellData = SkillcastingData.get(mob).getActiveCast();
-            if (target.isDeadOrDying() || spellData.context().skill().value().shouldAIStopCasting(spellData, mob, target)) {
+            if (target.isDeadOrDying() || spellData.context().skill().value().shouldAIStopCasting(spellData.context(), mob, target)) {
                 SkillcastingManager.cancelCast(CasterRef.entity(mob), CastEndReason.INTERRUPTED);
             }
-
         }
     }
 
@@ -185,7 +184,7 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob> extends Goa
         int spellLevel = (int) (abstractSpell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
         spellLevel = Math.max(spellLevel, 1);
         if (abstractSpell instanceof AbstractSpell spellSkill) {
-            castingMob.initiateCastSpell(spellSkill, spellLevel, null);
+            castingMob.attemptInitiateCastSpell(spellSkill, spellLevel, null);
         }
         mob.setSupportTarget(null);
     }

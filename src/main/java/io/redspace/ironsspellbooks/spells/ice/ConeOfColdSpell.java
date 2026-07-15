@@ -130,7 +130,8 @@ public class ConeOfColdSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean shouldAIStopCasting(ActiveCast cast, Mob mob, LivingEntity target) {
-        return mob.distanceToSqr(target) > (10 * 10) * 1.2;
+    public boolean shouldAIStopCasting(CastContext castContext, Mob mob, LivingEntity target) {
+        float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f);
+        return mob.distanceToSqr(target) > range * range * 1.2;
     }
 }

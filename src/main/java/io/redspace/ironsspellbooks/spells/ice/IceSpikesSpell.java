@@ -126,8 +126,8 @@ public class IceSpikesSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean shouldAIStopCasting(ActiveCast activeCast, Mob mob, LivingEntity target) {
-        float f = activeCast.context().getOrDefault(SkillcastingComponentTypes.SPIKE_COUNT, 0) * 1.5f;
+    public boolean shouldAIStopCasting(CastContext castContext, Mob mob, LivingEntity target) {
+        float f = castContext.getOrDefault(SkillcastingComponentTypes.SPIKE_COUNT, 0) * 1.5f;
         return mob.distanceToSqr(target) > (f * f);
     }
 }

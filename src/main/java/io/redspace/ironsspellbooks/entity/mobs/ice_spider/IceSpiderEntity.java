@@ -279,20 +279,22 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     @Override
-    public void initiateCastSpell(AbstractSpell spell, int spellLevel, @Nullable CastComponentMap componentMap) {
+    public boolean attemptInitiateCastSpell(AbstractSpell spell, int spellLevel, @Nullable CastComponentMap componentMap) {
         if (!wantsToCastSpells) {
-            return;
+            return false;
         }
         if (spell.getCastType() == CastType.INSTANT) {
             serverTriggerAnimation("attack_fang_basic");
         } else {
             serverTriggerAnimation("long_cast");
         }
-        super.initiateCastSpell(spell, spellLevel, componentMap);
+        wantsToCastSpells = false;
+        return super.attemptInitiateCastSpell(spell, spellLevel, componentMap);
     }
 
     @Override
     public void playCastingAnimation(AnimationHolder animation) {
+        // disable humanoid casting animations
         return;
     }
 

@@ -111,7 +111,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
                     mob.getAttribute(SkillcastingAttributes.CAST_TIME_REDUCTION).addOrUpdateTransientModifier(MODIFIER_FIRE_BALLER);
                     // todo: can do customization with components now
                     CastComponentMap components = new CastComponentMap();
-                    mob.initiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), mob.isSoulMode() ? 6 : 5, components);
+                    mob.attemptInitiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), mob.isSoulMode() ? 6 : 5, components);
                     fireballcooldown = 20 * 10;
                     return;
                 }

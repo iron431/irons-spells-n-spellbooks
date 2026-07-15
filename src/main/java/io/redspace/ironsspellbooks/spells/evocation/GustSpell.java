@@ -122,8 +122,8 @@ public class GustSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean shouldAIStopCasting(ActiveCast activeCast, Mob mob, LivingEntity target) {
-        float range = activeCast.context().getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 8f);
-        return target.distanceToSqr(mob) > range * range * 1.25;
+    public boolean shouldAIStopCasting(CastContext castContext, Mob mob, LivingEntity target) {
+        float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f);
+        return mob.distanceToSqr(target) > range * range * 1.2;
     }
 }

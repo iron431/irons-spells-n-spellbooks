@@ -39,7 +39,7 @@ public class CreateFangSwirlGoal extends Goal {
         }
         CastComponentMap componentMap = new CastComponentMap();
         componentMap.set(SkillcastingComponentTypes.TARGETED_ENTITIES.get(), new TargetedEntitiesData(target));
-        mob.initiateCastSpell(SpellRegistry.FANG_SWIRL_SPELL.get(), (int) (8 * mob.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE)), componentMap);
+        mob.attemptInitiateCastSpell(SpellRegistry.FANG_SWIRL_SPELL.get(), (int) (8 * mob.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE)), componentMap);
     }
 
     @Override

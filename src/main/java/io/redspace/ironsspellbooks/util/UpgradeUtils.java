@@ -11,6 +11,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.neoforged.fml.loading.FMLLoader;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
@@ -42,8 +43,8 @@ public class UpgradeUtils {
 
     public static String getRelevantEquipmentSlot(ItemStack itemStack) {
         if (itemStack.getItem() instanceof ICurioItem curioItem) {
-            var tags = CuriosApi.getCuriosHelper().getCurioTags((Item) curioItem);
-            var slot = tags.stream().findFirst();
+            var slotTypes = CuriosApi.getItemStackSlots(itemStack, FMLLoader.getDist().isClient());
+            var slot = slotTypes.keySet().stream().findFirst();
             if (slot.isPresent()) {
                 return slot.get();
             }

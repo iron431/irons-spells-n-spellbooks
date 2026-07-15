@@ -63,10 +63,6 @@ public class WizardAttackGoal extends Goal {
     protected final PathfinderMob mob;
     protected final AbstractSpellCastingMob spellCastingMob;
 
-//    public WizardAttackGoal(IMagicEntity abstractSpellCastingMob, double pSpeedModifier, int pAttackInterval) {
-//        this(abstractSpellCastingMob, pSpeedModifier, pAttackInterval, pAttackInterval);
-//    }
-
     public WizardAttackGoal(Mob abstractSpellCastingMob, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Flag.TARGET));
         if (abstractSpellCastingMob instanceof PathfinderMob pathfinderMob && abstractSpellCastingMob instanceof AbstractSpellCastingMob castingMob) {
@@ -126,10 +122,7 @@ public class WizardAttackGoal extends Goal {
         return this;
     }
 
-    /**
-     * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
-     * method as well.
-     */
+    @Override
     public boolean canUse() {
         LivingEntity livingentity = this.mob.getTarget();
         if (livingentity != null && livingentity.isAlive()) {
@@ -141,16 +134,7 @@ public class WizardAttackGoal extends Goal {
         }
     }
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    public boolean canContinueToUse() {
-        return this.canUse();
-    }
-
-    /**
-     * Reset the task's internal state. Called when this task is interrupted by another one
-     */
+    @Override
     public void stop() {
         this.target = null;
         this.seeTime = 0;
@@ -160,13 +144,12 @@ public class WizardAttackGoal extends Goal {
         this.mob.getNavigation().stop();
     }
 
+    @Override
     public boolean requiresUpdateEveryTick() {
         return true;
     }
 
-    /**
-     * Keep ticking a continuous task that has already been started
-     */
+    @Override
     public void tick() {
         if (target == null) {
             return;
@@ -214,7 +197,7 @@ public class WizardAttackGoal extends Goal {
         }
         if (spellCastingMob.isCasting() && target != null) {
             ActiveCast activeCast = SkillcastingData.get(mob).getActiveCast();
-            if (target.isDeadOrDying() || (activeCast != null && activeCast.context().skill().value().shouldAIStopCasting(activeCast, mob, target))) {
+            if (target.isDeadOrDying() || (activeCast != null && activeCast.context().skill().value().shouldAIStopCasting(activeCast.context(), mob, target))) {
                 spellCastingMob.cancelCast();
             }
         }
@@ -276,15 +259,11 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void tryJump() {
-        //mob.getJumpControl().jump();
         Vec3 nextBlock = new Vec3(mob.xxa, 0, mob.zza).normalize();
-        //IronsSpellbooks.LOGGER.debug("{}", nextBlock);
 
         BlockPos blockpos = BlockPos.containing(mob.position().add(nextBlock));
         BlockState blockstate = this.mob.level.getBlockState(blockpos);
         VoxelShape voxelshape = blockstate.getCollisionShape(this.mob.level, blockpos);
-        //IronsSpellbooks.LOGGER.debug("{}", mob.getDeltaMovement());
-        //IronsSpellbooks.LOGGER.debug("{}", blockstate.getBlock().getName().getString());
         if (!voxelshape.isEmpty() && !blockstate.is(BlockTags.DOORS) && !blockstate.is(BlockTags.FENCES)) {
             BlockPos blockposAbove = blockpos.above();
             BlockState blockstateAbove = this.mob.level.getBlockState(blockposAbove);
@@ -300,9 +279,9 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doSpellAction() {
-        if (!spellCastingMob.getHasUsedSingleAttack() && singleUseSpell != null && singleUseDelay <= 0) {
-            spellCastingMob.setHasUsedSingleAttack(true);
-            spellCastingMob.initiateCastSpell(singleUseSpell, singleUseLevel, null);
+        if (spellCastingMob.canUseSingleAttack() && singleUseSpell != null && singleUseDelay <= 0) {
+            spellCastingMob.setSingleAttackCooldown();
+            spellCastingMob.attemptInitiateCastSpell(singleUseSpell, singleUseLevel, null);
             fleeCooldown = 7 + singleUseSpell.getCastTimeTicks();
         } else {
             var spell = getNextSpellType();
@@ -311,8 +290,7 @@ public class WizardAttackGoal extends Goal {
             }
             int spellLevel = (int) (spell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
             spellLevel = Math.max(spellLevel, 1);
-
-            spellCastingMob.initiateCastSpell(spell, spellLevel, null);
+            spellCastingMob.attemptInitiateCastSpell(spell, spellLevel, null);
             fleeCooldown = 7 + spell.getCastTimeTicks();
         }
     }

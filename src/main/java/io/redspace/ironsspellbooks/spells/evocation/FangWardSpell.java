@@ -99,8 +99,8 @@ public class FangWardSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean shouldAIStopCasting(ActiveCast activeCast, Mob mob, LivingEntity target) {
-        float d = 1.5f * (activeCast.context().getOrDefault(SpellcastingComponentTypes.RING_COUNT, 0) + 1);
+    public boolean shouldAIStopCasting(CastContext castContext, Mob mob, LivingEntity target) {
+        float d = 1.5f * (castContext.getOrDefault(SpellcastingComponentTypes.RING_COUNT, 0) + 1);
         return mob.distanceToSqr(target) > d * d * 1.2f;
     }
 }

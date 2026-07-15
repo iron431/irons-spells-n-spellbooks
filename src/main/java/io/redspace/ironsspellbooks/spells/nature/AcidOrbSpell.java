@@ -109,7 +109,7 @@ public class AcidOrbSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean shouldAIStopCasting(ActiveCast cast, Mob mob, LivingEntity target) {
+    public boolean shouldAIStopCasting(CastContext cast, Mob mob, LivingEntity target) {
         return target.getAttributeValue(Attributes.ARMOR) < 4;
     }
 }

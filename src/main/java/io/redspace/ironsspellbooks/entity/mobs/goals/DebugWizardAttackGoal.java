@@ -41,7 +41,7 @@ public class DebugWizardAttackGoal extends Goal {
 
     public void tick() {
         if (tickCount++ % 200 == 0) {
-            spellCastingMob.initiateCastSpell(spell, spellLevel, null);
+            spellCastingMob.attemptInitiateCastSpell(spell, spellLevel, null);
             castingTicks = 0;
         }
 
