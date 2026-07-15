@@ -36,8 +36,7 @@
     "SimpleTextureMixin",
     "SpellParticleProviderMixin",
     "SpinAttackEffectLayerMixin",
-    "skillcasting.EntityRenderDispatcherMixin",
-    "skillcasting.LocalPlayerMixin"
+    "skillcasting.EntityRenderDispatcherMixin"
   ],
   "injectors": {
     "defaultRequire": 1

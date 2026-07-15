@@ -270,7 +270,8 @@ public final class SkillcastingUtils {
                 && filter.test(livingParent)) {
             return livingParent;
         }
-        // fixme: is this something that skillcasting needs to support? what edge case was this addressing?
+        // fixme: does prevent dismount need to become a skillcasting feature? or do we just need to ignore roots in raycasts?
+        //  this creates its own edge cases for things like ice tomb vs ice spider
 //        if (entityHit.getEntity() instanceof PreventDismount
 //                && entityHit.getEntity().getFirstPassenger() instanceof LivingEntity livingRooted) {
 //            return livingRooted;
@@ -330,8 +331,8 @@ public final class SkillcastingUtils {
     public static boolean hasLineOfSight(Level level, Vec3 start, Vec3 end, boolean checkForCollidableEntities) {
         if (checkForCollidableEntities) {
             List<Entity> collisions = level.getEntities((Entity) null, new AABB(start, end), Entity::canBeCollidedWith);
-            if (collisions.size() > 0) {
-                var impact = checkEntityIntersecting(collisions.get(0), start, end, 0);
+            for(var e : collisions){
+                var impact = checkEntityIntersecting(e, start, end, 0);
                 if (impact.getType() != HitResult.Type.MISS) {
                     return false;
                 }
