@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
@@ -219,7 +220,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onSpellTeleport(SpellTeleportEvent event) {
         if (event.getEntity() instanceof LivingEntity livingEntity) {
-            if (ItemRegistry.TELEPORTATION_AMULET.get().isEquippedBy(livingEntity)) {
+            if (event.getSpell() != SpellRegistry.EVASION_SPELL.get() && ItemRegistry.TELEPORTATION_AMULET.get().isEquippedBy(livingEntity)) {
                 livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION, 3 * 20, 0, false, false, true));
             }
         }
