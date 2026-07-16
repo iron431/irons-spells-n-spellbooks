@@ -83,6 +83,13 @@ public class SkillContainer implements ISkillContainer {
     }
 
     @Override
+    public String toString() {
+        return String.format(
+                "SkillContainer[maxSpells:%d, activeSlots:%d, spellWheel:%s, mustEquip:%s, slots:%s]",
+                maxSpells, activeSlots, spellWheel, mustEquip, Arrays.toString(slots));
+    }
+
+    @Override
     public int getMaxSkillCount() {
         return maxSpells;
     }

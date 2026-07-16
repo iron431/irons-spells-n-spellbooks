@@ -1,32 +1,50 @@
 package io.redspace.ironsspellbooks.mixin.skillcasting;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.registry.SkillcastingDataComponents;
+import io.redspace.skillcasting.data.ISkillContainerMutable;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Optional;
 
 @Mixin(SmithingTransformRecipe.class)
 public class SmithingRecipeMixin {
-    @Inject(method = "Lnet/minecraft/world/item/crafting/SmithingTransformRecipe;assemble(Lnet/minecraft/world/item/crafting/SmithingRecipeInput;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/world/item/ItemStack;", at = @At(value = "RETURN"), cancellable = true)
-    public void fixSkillContainerCount(SmithingRecipeInput pInput, HolderLookup.Provider pRegistries, CallbackInfoReturnable<ItemStack> cir) {
-        ItemStack result = cir.getReturnValue();
-        ItemStack input = pInput.base();
-        ISkillContainer defaultResultContainer = result.getItem().getDefaultInstance().get(SkillcastingDataComponents.SKILL_CONTAINER);
-        ISkillContainer baseContainer = input.get(SkillcastingDataComponents.SKILL_CONTAINER);
-        if (defaultResultContainer != null && baseContainer != null) {
-            //copy previous spells using new container vessel
-            var mutable = defaultResultContainer.mutableCopy();
-            for (var slot : baseContainer.getActiveSkills()) {
-                mutable.setSpellAtIndex(slot.skillData(), slot.index());
-            }
-            ISkillContainer.set(result, mutable.toImmutable());
-            cir.setReturnValue(result);
-        }
+    @WrapMethod(method = "Lnet/minecraft/world/item/crafting/SmithingTransformRecipe;assemble(Lnet/minecraft/world/item/crafting/SmithingRecipeInput;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/world/item/ItemStack;")
+    public <T extends ISkillContainer> ItemStack fixSkillContainerCount(SmithingRecipeInput recipe, HolderLookup.Provider registries, Operation<ItemStack> original) {
+        ItemStack result = original.call(recipe, registries);
+        ItemStack input = recipe.base();
+        DataComponentMap resultDefaultComponents = result.getItem().components();
+        DataComponentPatch inputComponentPatch = input.getComponentsPatch();
+        resultDefaultComponents.stream().forEach(
+                typedDataComponent -> {
+                    try {
+                        if (typedDataComponent.value() instanceof ISkillContainer resultSkillContainer) {
+                            DataComponentType<T> type = (DataComponentType<T>) typedDataComponent.type();
+                            Optional<? extends T> inputContainer = inputComponentPatch.get(type);
+                            if (inputContainer != null && inputContainer.isPresent()) {
+                                //copy previous spells using new container vessel
+                                ISkillContainerMutable mutable = resultSkillContainer.mutableCopy();
+                                for (var slot : inputContainer.get().getActiveSkills()) {
+                                    mutable.setSpellAtIndex(slot.skillData(), slot.index());
+                                }
+                                result.set(type, (T) mutable.toImmutable());
+                            }
+                        }
+                    } catch (Exception e) {
+                        Skillcasting.LOGGER.error("Failed to transfer Skill Container data for component {}: {}", BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(typedDataComponent.type()), e.getMessage());
+                    }
+                }
+        );
+        return result;
     }
 }
