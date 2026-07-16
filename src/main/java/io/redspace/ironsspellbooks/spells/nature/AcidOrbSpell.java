@@ -91,9 +91,6 @@ public class AcidOrbSpell extends AbstractSpell {
         orb.setPos(origin.add(castContext.direction()).subtract(0, orb.getBoundingBox().getYsize() * 0.5f, 0));
         orb.shootFromContext(orb, castContext);
         orb.setDeltaMovement(orb.getDeltaMovement().add(0, 0.2, 0));
-        orb.setRadius(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f));
-        orb.setRendLevel(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0));
-        orb.setRendDuration(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0));
         level.addFreshEntity(orb);
     }
 

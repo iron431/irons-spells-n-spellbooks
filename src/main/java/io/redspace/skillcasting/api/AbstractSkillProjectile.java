@@ -47,6 +47,8 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
 
     protected float damage;
     protected float radius;
+    protected int effectDuration;
+    protected int effectAmplifier;
 
     @Nullable
     protected Entity cachedHomingTarget;
@@ -89,6 +91,26 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
     @Override
     public void setRadius(float radius) {
         this.radius = radius;
+    }
+
+    @Override
+    public int getEffectDuration() {
+        return effectDuration;
+    }
+
+    @Override
+    public void setEffectDuration(int effectDuration) {
+        this.effectDuration = effectDuration;
+    }
+
+    @Override
+    public int getEffectAmplifier() {
+        return effectAmplifier;
+    }
+
+    @Override
+    public void setEffectAmplifier(int effectAmplifier) {
+        this.effectAmplifier = effectAmplifier;
     }
 
     public int getPierceLevel() {
@@ -408,6 +430,12 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
         if (radius != 0) {
             tag.putFloat("Radius", radius);
         }
+        if (effectDuration != 0) {
+            tag.putInt("EffectDuration", effectDuration);
+        }
+        if (effectAmplifier != 0) {
+            tag.putInt("EffectAmplifier", effectAmplifier);
+        }
         if (getPierceLevel() != 0) {
             tag.putInt("PierceLevel", getPierceLevel());
         }
@@ -426,6 +454,12 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
         this.damage = tag.getFloat("Damage");
         if (tag.contains("Radius")) {
             this.radius = tag.getFloat("Radius");
+        }
+        if (tag.contains("EffectDuration")) {
+            this.effectDuration = tag.getInt("EffectDuration");
+        }
+        if (tag.contains("EffectAmplifier")) {
+            this.effectAmplifier = tag.getInt("EffectAmplifier");
         }
         if (tag.contains("PierceLevel")) {
             this.setPierceLevel(tag.getInt("PierceLevel"));
@@ -525,9 +559,6 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
         int r = getRicochetLevel();
         if (r > 0) {
             setRicochetLevel(r - 1);
-            //todo: ye or ne? ne for now, cringe hidden mechanic
-//            damage *= 0.85f;
-//            explosionRadius *= 0.85f;
         }
     }
 

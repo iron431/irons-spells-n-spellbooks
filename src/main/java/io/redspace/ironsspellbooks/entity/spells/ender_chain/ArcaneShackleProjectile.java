@@ -6,9 +6,9 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.api.ISkillProjectile;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.data.PlayableSound;
-import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
@@ -30,7 +30,6 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
     private static final int CHAIN_COUNT = 3;
 
     private float chainHealth = 10f;
-    private int chainLifetime = 200;
     private float restraintStrength = 0.015f;
 
     public ArcaneShackleProjectile(EntityType<? extends ArcaneShackleProjectile> type, Level level) {
@@ -47,10 +46,6 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
         this.chainHealth = chainHealth;
     }
 
-    public void setChainLifetime(int chainLifetime) {
-        this.chainLifetime = chainLifetime;
-    }
-
     public void setLashRadius(float lashRadius) {
         setRadius(lashRadius);
     }
@@ -63,7 +58,6 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
     public void applyContext(CastContext context) {
         super.applyContext(context);
         context.find(SpellcastingComponentTypes.CONSTRUCT_HEALTH).ifPresent(this::setChainHealth);
-        context.find(SkillcastingComponentTypes.EFFECT_DURATION_TICKS).ifPresent(this::setChainLifetime);
     }
 
     @Override
@@ -165,7 +159,7 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
         anchor = Utils.raycastForBlock(victim.level, this.position(), anchor, ClipContext.Fluid.NONE).getLocation();
         EnderChain chain = new EnderChain(level, getOwner(), victim, anchor);
         chain.setHealth(chainHealth);
-        chain.setLifetime(chainLifetime);
+        chain.setLifetime(getEffectDuration());
         chain.setRestraintStrength(restraintStrength);
         level.addFreshEntity(chain);
     }

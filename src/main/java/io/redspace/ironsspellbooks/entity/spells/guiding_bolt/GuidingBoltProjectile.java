@@ -53,7 +53,6 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHitBlock(BlockHitResult blockHitResult) {
         super.onHitBlock(blockHitResult);
-        //irons_spellbooks.LOGGER.debug("MagicMissileProjectile.onHitBlock");
         discard();
 
     }
@@ -61,11 +60,9 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        //irons_spellbooks.LOGGER.debug("MagicMissileProjectile.onHitEntity");
-
         if (DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.GUIDING_BOLT_SPELL.get().getDamageSource(this.level(), this, getOwner()))) {
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
-                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.GUIDING_BOLT, 25 * 20));
+                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.GUIDING_BOLT, getEffectDuration()));
             }
         }
         consumeEntityImpact(entityHitResult, true);

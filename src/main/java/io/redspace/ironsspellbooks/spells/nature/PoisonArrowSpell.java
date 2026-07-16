@@ -76,6 +76,7 @@ public class PoisonArrowSpell extends AbstractSpell {
         castContext.set(SkillcastingComponentTypes.DAMAGE, power);
         castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, power * 0.2f);
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, PROJECTILE_BASE_SPEED);
+        castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 200);
     }
 
     @Override
@@ -84,8 +85,6 @@ public class PoisonArrowSpell extends AbstractSpell {
         magicArrow.setPos(castContext.position(PositionAnchor.CASTING_POSITION)
                 .add(castContext.direction())
                 .add(0, magicArrow.getBoundingBox().getYsize() * -0.5f, 0));
-        magicArrow.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
-        magicArrow.setDotDamage(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));
         magicArrow.shootFromContext(magicArrow, castContext);
         level.addFreshEntity(magicArrow);
     }

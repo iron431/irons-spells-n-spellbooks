@@ -76,20 +76,24 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
     @Override
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        pCompound.putString("spellId", spell.getSkillId().toString());
-        pCompound.putInt("spellLevel", spellLevel);
-        pCompound.putBoolean("targetsPlayer", targetsPlayer);
-        pCompound.putInt("cancelCastAfterTicks", cancelCastAfterTicks);
+        if(spell != null){
+            pCompound.putString("spellId", spell.getSkillId().toString());
+            pCompound.putInt("spellLevel", spellLevel);
+            pCompound.putBoolean("targetsPlayer", targetsPlayer);
+            pCompound.putInt("cancelCastAfterTicks", cancelCastAfterTicks);
+        }
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        spell = (AbstractSpell) SpellRegistry.getSpell(ResourceLocation.parse(pCompound.getString("spellId")));
-        spellLevel = pCompound.getInt("spellLevel");
-        targetsPlayer = pCompound.getBoolean("targetsPlayer");
-        cancelCastAfterTicks = pCompound.getInt("cancelCastAfterTicks");
-        initGoals();
+        if(pCompound.contains("spellId")){
+            spell = (AbstractSpell) SpellRegistry.getSpell(ResourceLocation.parse(pCompound.getString("spellId")));
+            spellLevel = pCompound.getInt("spellLevel");
+            targetsPlayer = pCompound.getBoolean("targetsPlayer");
+            cancelCastAfterTicks = pCompound.getInt("cancelCastAfterTicks");
+            initGoals();
+        }
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {

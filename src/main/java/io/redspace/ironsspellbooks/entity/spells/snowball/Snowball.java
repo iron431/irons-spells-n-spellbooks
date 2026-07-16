@@ -79,7 +79,7 @@ public class Snowball extends AbstractMagicProjectile {
         if (!level.isClientSide) {
             FrostField fire = new FrostField(level);
             fire.setOwner(getOwner());
-            fire.setDuration((int) getDamage());
+            fire.setDuration(getEffectDuration());
             fire.setRadius(getRadius());
             fire.setCircular();
             fire.moveTo(location);

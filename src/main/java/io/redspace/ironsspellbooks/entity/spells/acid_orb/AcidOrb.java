@@ -8,7 +8,6 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.data.PlayableSound;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -28,26 +27,6 @@ public class AcidOrb extends AbstractMagicProjectile {
     public AcidOrb(Level level, Entity shooter) {
         this(EntityRegistry.ACID_ORB.get(), level);
         setOwner(shooter);
-    }
-
-    int rendLevel;
-    int rendDuration;
-
-
-    public int getRendLevel() {
-        return rendLevel;
-    }
-
-    public void setRendLevel(int rendLevel) {
-        this.rendLevel = rendLevel;
-    }
-
-    public int getRendDuration() {
-        return rendDuration;
-    }
-
-    public void setRendDuration(int rendDuration) {
-        this.rendDuration = rendDuration;
     }
 
     @Override
@@ -77,7 +56,7 @@ public class AcidOrb extends AbstractMagicProjectile {
                 double distance = entity.position().distanceTo(hitresult.getLocation());
                 if (distance < explosionRadius && Utils.hasLineOfSight(level, hitresult.getLocation(), entity.getEyePosition(), true)) {
                     if (entity instanceof LivingEntity livingEntity && livingEntity != getOwner())
-                        livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REND, getRendDuration(), getRendLevel()));
+                        livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REND, getEffectDuration(), getEffectAmplifier()));
                 }
             }
             this.discardHelper(hitresult);
@@ -89,17 +68,4 @@ public class AcidOrb extends AbstractMagicProjectile {
         return impactSound(SoundRegistry.ACID_ORB_IMPACT);
     }
 
-    @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        tag.putInt("RendLevel", rendLevel);
-        tag.putInt("RendDuration", rendDuration);
-    }
-
-    @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        this.rendLevel = tag.getInt("RendLevel");
-        this.rendDuration = tag.getInt("RendDuration");
-    }
 }

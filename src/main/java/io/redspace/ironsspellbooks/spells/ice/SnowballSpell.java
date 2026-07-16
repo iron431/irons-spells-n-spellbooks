@@ -74,9 +74,6 @@ public class SnowballSpell extends AbstractSpell {
         orb.setPos(castContext.position().add(castContext.direction()));
         orb.shootFromContext(orb, castContext);
         orb.setDeltaMovement(orb.getDeltaMovement().add(0, 0.2, 0));
-        orb.setRadius(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f));
-        // use damage as duration
-        orb.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0));
         level.addFreshEntity(orb);
     }
 

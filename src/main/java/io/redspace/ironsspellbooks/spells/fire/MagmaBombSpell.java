@@ -75,13 +75,13 @@ public class MagmaBombSpell extends AbstractSpell {
         castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, 1 + getSpellPower(castContext) * 0.1f);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 3 + getSpellPowerMultiplier(castContext));
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.0f);
+        castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 200);
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         FireBomb orb = new FireBomb(level, castContext.asEntityCaster());
         orb.applyContext(castContext);
-        orb.setDotDamage(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         orb.setPos(origin.add(castContext.direction()).subtract(0, orb.getBbHeight() / 2, 0));
         orb.shootFromContext(orb, castContext);

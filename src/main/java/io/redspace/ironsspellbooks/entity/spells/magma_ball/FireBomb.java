@@ -6,7 +6,9 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
+import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
@@ -74,7 +76,7 @@ public class FireBomb extends AbstractMagicProjectile {
         if (!level.isClientSide) {
             FireField fire = new FireField(level);
             fire.setOwner(getOwner());
-            fire.setDuration(200);
+            fire.setDuration(getEffectDuration());
             fire.setDamage(dotDamage);
             fire.setRadius(getRadius());
             fire.setCircular();
@@ -91,6 +93,12 @@ public class FireBomb extends AbstractMagicProjectile {
 
     public float getDotDamage() {
         return dotDamage;
+    }
+
+    @Override
+    public void applyContext(CastContext context) {
+        super.applyContext(context);
+        setDotDamage(context.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));
     }
 
     @Override

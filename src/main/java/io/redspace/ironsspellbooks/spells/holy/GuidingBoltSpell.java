@@ -65,6 +65,7 @@ public class GuidingBoltSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.3f);
+        castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 25 * 20);
     }
 
     @Override
@@ -72,7 +73,6 @@ public class GuidingBoltSpell extends AbstractSpell {
         GuidingBoltProjectile guidingBolt = new GuidingBoltProjectile(level, castContext.asEntityCaster());
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         guidingBolt.setPos(origin);
-        guidingBolt.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         guidingBolt.shootFromContext(guidingBolt, castContext);
         level.addFreshEntity(guidingBolt);
     }

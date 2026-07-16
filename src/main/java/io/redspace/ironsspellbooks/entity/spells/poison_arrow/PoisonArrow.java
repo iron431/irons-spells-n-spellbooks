@@ -7,7 +7,9 @@ import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonCloud;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
+import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -81,6 +83,12 @@ public class PoisonArrow extends AbstractMagicProjectile {
         return dotDamage;
     }
 
+    @Override
+    public void applyContext(CastContext context) {
+        super.applyContext(context);
+        setDotDamage(context.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));
+    }
+
     private boolean shouldFall() {
         return this.inGround && this.level().noCollision((new AABB(this.position(), this.position())).inflate(0.06D));
     }
@@ -140,7 +148,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
         if (!level().isClientSide) {
             PoisonCloud cloud = new PoisonCloud(level());
             cloud.setOwner(getOwner());
-            cloud.setDuration(200);
+            cloud.setDuration(getEffectDuration());
             cloud.setDamage(dotDamage);
             cloud.moveTo(location);
             level().addFreshEntity(cloud);
