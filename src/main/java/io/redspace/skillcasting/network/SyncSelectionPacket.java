@@ -1,8 +1,8 @@
 package io.redspace.skillcasting.network;
 
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.lifecycle.SkillcastingData;
-import io.redspace.skillcasting.selection.SkillSelectionManager;
+import io.redspace.skillcasting.data.SkillcastingData;
+import io.redspace.skillcasting.data.selection.SkillSelectionManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;

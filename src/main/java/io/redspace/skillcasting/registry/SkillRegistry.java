@@ -1,6 +1,6 @@
 package io.redspace.skillcasting.registry;
 
-import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.data.AbstractSkill;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 

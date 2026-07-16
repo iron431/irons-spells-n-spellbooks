@@ -14,7 +14,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.GenericOwnerHurtByTargetGoa
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericOwnerHurtTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericProtectOwnerTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
-import io.redspace.skillcasting.api.component.CastComponentMap;
+import io.redspace.skillcasting.data.component.CastComponentMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.tags.DamageTypeTags;

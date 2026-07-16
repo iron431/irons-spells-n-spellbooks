@@ -1,8 +1,8 @@
 package io.redspace.skillcasting.util;
 
-import io.redspace.skillcasting.api.AbstractSkillProjectile;
-import io.redspace.skillcasting.api.PositionAnchor;
-import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.data.skill.AbstractSkillProjectile;
+import io.redspace.skillcasting.data.cast.PositionAnchor;
+import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

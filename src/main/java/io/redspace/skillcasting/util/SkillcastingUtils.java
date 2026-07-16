@@ -1,12 +1,12 @@
 package io.redspace.skillcasting.util;
 
-import io.redspace.skillcasting.api.PositionAnchor;
-import io.redspace.skillcasting.api.cast.CastContext;
-import io.redspace.skillcasting.api.component.TargetedEntitiesData;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
-import io.redspace.skillcasting.data.CastSource;
-import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.lifecycle.ActiveCast;
+import io.redspace.skillcasting.data.cast.PositionAnchor;
+import io.redspace.skillcasting.data.CastContext;
+import io.redspace.skillcasting.data.component.TargetedEntitiesData;
+import io.redspace.skillcasting.data.AbstractSkill;
+import io.redspace.skillcasting.data.cast.CastSource;
+import io.redspace.skillcasting.data.skill.ISkillContainer;
+import io.redspace.skillcasting.data.cast.ActiveCast;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;

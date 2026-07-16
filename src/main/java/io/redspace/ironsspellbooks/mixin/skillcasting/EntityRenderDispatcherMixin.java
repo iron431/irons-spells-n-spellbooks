@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.mixin.skillcasting;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import io.redspace.skillcasting.client.SkillTargetingLayer;
+import io.redspace.skillcasting.client.render.SkillTargetingLayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.world.entity.Entity;

@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.Nullable;

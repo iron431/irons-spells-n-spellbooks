@@ -75,7 +75,7 @@ import io.redspace.ironsspellbooks.item.weapons.StaffTier;
 import io.redspace.ironsspellbooks.item.weapons.TwilightGaleItem;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffItem;
 import io.redspace.ironsspellbooks.render.CinderousRarity;
-import io.redspace.skillcasting.data.SkillData;
+import io.redspace.skillcasting.data.skill.SkillData;
 import io.redspace.skillcasting.registry.SkillcastingAttributes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;

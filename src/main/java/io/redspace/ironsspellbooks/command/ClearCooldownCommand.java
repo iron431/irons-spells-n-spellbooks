@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import io.redspace.skillcasting.api.cast.CasterRef;
-import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.data.cast.CasterRef;
+import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;

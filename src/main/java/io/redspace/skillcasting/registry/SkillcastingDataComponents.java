@@ -24,10 +24,6 @@ public final class SkillcastingDataComponents {
         return DATA_COMPONENTS.register(name, () -> builder.apply(DataComponentType.builder()).build());
     }
 
-//    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> SKILL_CONTAINER =
-//            registerDataComponent("skill_container",
-//                    builder -> builder.persistent(SkillContainer.CODEC).cacheEncoding());
-
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> CASTING_IMPLEMENT =
             registerDataComponent("casting_implement",
                     (builder) -> builder.persistent(Unit.CODEC).networkSynchronized(StreamCodec.unit(Unit.INSTANCE)).cacheEncoding());

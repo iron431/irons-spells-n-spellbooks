@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.item.armor;
 
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.skill.ISkillContainer;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;

@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.network;
 
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.api.cast.CasterId;
-import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.data.cast.CasterId;
+import io.redspace.skillcasting.data.cast.CasterRef;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

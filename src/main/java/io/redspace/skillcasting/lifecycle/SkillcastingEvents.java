@@ -1,8 +1,9 @@
 package io.redspace.skillcasting.lifecycle;
 
 
-import io.redspace.skillcasting.api.cast.CastEndReason;
-import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.data.SkillcastingData;
+import io.redspace.skillcasting.data.cast.CastEndReason;
+import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillcastingAttachments;
 import io.redspace.skillcasting.registry.SkillcastingDataComponents;

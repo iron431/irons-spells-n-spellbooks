@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
-import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.data.AbstractSkill;
+import io.redspace.skillcasting.data.SkillcastingData;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;

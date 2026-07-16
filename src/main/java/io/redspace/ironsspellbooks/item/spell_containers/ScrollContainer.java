@@ -2,10 +2,10 @@ package io.redspace.ironsspellbooks.item.spell_containers;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.data.SkillContainer;
-import io.redspace.skillcasting.data.SkillData;
-import io.redspace.skillcasting.data.SkillSlot;
+import io.redspace.skillcasting.data.skill.ISkillContainer;
+import io.redspace.skillcasting.data.skill.SkillContainer;
+import io.redspace.skillcasting.data.skill.SkillData;
+import io.redspace.skillcasting.data.skill.SkillSlot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 

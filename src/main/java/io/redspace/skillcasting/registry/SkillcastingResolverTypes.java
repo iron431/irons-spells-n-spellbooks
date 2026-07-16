@@ -1,13 +1,13 @@
 package io.redspace.skillcasting.registry;
 
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.api.resolver.CasterDirectionResolver;
-import io.redspace.skillcasting.api.resolver.CasterPositionResolver;
-import io.redspace.skillcasting.api.resolver.DirectionResolver;
-import io.redspace.skillcasting.api.resolver.FixedDirectionResolver;
-import io.redspace.skillcasting.api.resolver.FixedPositionResolver;
-import io.redspace.skillcasting.api.resolver.MobAimDirectionResolver;
-import io.redspace.skillcasting.api.resolver.PositionResolver;
+import io.redspace.skillcasting.data.resolver.CasterDirectionResolver;
+import io.redspace.skillcasting.data.resolver.CasterPositionResolver;
+import io.redspace.skillcasting.data.resolver.DirectionResolver;
+import io.redspace.skillcasting.data.resolver.FixedDirectionResolver;
+import io.redspace.skillcasting.data.resolver.FixedPositionResolver;
+import io.redspace.skillcasting.data.resolver.MobAimDirectionResolver;
+import io.redspace.skillcasting.data.resolver.PositionResolver;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;

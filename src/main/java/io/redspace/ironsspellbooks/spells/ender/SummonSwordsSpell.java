@@ -16,11 +16,11 @@ import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedSwordE
 import io.redspace.ironsspellbooks.entity.spells.summoned_weapons.SummonedWeaponEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.skillcasting.api.PositionAnchor;
-import io.redspace.skillcasting.api.cast.CastContext;
-import io.redspace.skillcasting.api.recast.RecastConfig;
-import io.redspace.skillcasting.api.recast.RecastResult;
-import io.redspace.skillcasting.api.skill.CastType;
+import io.redspace.skillcasting.data.cast.PositionAnchor;
+import io.redspace.skillcasting.data.CastContext;
+import io.redspace.skillcasting.data.recast.RecastConfig;
+import io.redspace.skillcasting.data.recast.RecastResult;
+import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;

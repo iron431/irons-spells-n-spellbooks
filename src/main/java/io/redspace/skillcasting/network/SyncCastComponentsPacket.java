@@ -1,13 +1,13 @@
 package io.redspace.skillcasting.network;
 
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.api.cast.CasterId;
-import io.redspace.skillcasting.api.cast.CasterRef;
-import io.redspace.skillcasting.api.component.CastComponentMap;
-import io.redspace.skillcasting.api.recast.RecastInstance;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
-import io.redspace.skillcasting.lifecycle.ActiveCast;
-import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.data.cast.CasterId;
+import io.redspace.skillcasting.data.cast.CasterRef;
+import io.redspace.skillcasting.data.component.CastComponentMap;
+import io.redspace.skillcasting.data.recast.RecastInstance;
+import io.redspace.skillcasting.data.AbstractSkill;
+import io.redspace.skillcasting.data.cast.ActiveCast;
+import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;

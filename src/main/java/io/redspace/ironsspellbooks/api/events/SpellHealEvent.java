@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.api.events;
 
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.data.cast.CasterRef;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.ICancellableEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;

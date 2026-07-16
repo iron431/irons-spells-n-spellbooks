@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.TelekinesisData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.spells.FireWallCastComponent;
 import io.redspace.ironsspellbooks.spells.StarfallCastComponent;
-import io.redspace.skillcasting.api.component.ComponentType;
+import io.redspace.skillcasting.data.component.ComponentType;
 import io.redspace.skillcasting.network.StreamCodecUtils;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.resources.ResourceLocation;

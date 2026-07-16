@@ -4,8 +4,8 @@ import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.data.SkillData;
+import io.redspace.skillcasting.data.skill.ISkillContainer;
+import io.redspace.skillcasting.data.skill.SkillData;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 public class EvokerSpellBook extends SpellBook {

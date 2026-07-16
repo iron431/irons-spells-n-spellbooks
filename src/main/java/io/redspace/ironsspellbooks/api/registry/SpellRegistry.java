@@ -114,7 +114,7 @@ import io.redspace.ironsspellbooks.spells.nature.RootSpell;
 import io.redspace.ironsspellbooks.spells.nature.SpiderAspectSpell;
 import io.redspace.ironsspellbooks.spells.nature.StompSpell;
 import io.redspace.ironsspellbooks.spells.nature.TouchDigSpell;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.data.AbstractSkill;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;

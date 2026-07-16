@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.api.events;
 
-import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.data.cast.CasterRef;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.ICancellableEvent;
 

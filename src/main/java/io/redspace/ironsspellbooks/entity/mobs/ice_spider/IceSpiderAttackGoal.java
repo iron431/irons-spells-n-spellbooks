@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.data.SkillcastingData;
 import net.minecraft.world.entity.LivingEntity;
 
 public class IceSpiderAttackGoal extends GenericAnimatedWarlockAttackGoal<IceSpiderEntity> {

@@ -1,6 +1,6 @@
 package io.redspace.skillcasting.api.event;
 
-import io.redspace.skillcasting.api.cast.CastContext;
+import io.redspace.skillcasting.data.CastContext;
 import net.neoforged.bus.api.Event;
 
 /**

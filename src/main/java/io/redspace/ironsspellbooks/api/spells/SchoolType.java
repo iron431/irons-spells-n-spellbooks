@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.api.spells;
 
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.skillcasting.api.component.ComponentType;
+import io.redspace.skillcasting.data.component.ComponentType;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;

@@ -1,6 +1,6 @@
 package io.redspace.skillcasting.api.event;
 
-import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.skill.ISkillContainer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;

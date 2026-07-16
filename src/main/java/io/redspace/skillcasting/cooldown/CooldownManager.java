@@ -1,7 +1,7 @@
 package io.redspace.skillcasting.cooldown;
 
 import com.mojang.serialization.Codec;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.core.Holder;
 import org.jetbrains.annotations.Nullable;

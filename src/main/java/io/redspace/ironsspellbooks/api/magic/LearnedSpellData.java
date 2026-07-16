@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.api.magic;
 
 import com.mojang.serialization.Codec;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.data.AbstractSkill;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;

@@ -1,7 +1,7 @@
 package io.redspace.skillcasting.registry;
 
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.data.SkillcastingData;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;

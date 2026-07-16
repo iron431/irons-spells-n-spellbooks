@@ -1,7 +1,9 @@
 package io.redspace.skillcasting.client;
 
-import io.redspace.skillcasting.lifecycle.ActiveCast;
-import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.client.render.SkillcastClientTickManager;
+import io.redspace.skillcasting.client.render.SkillcastLevelRenderableManager;
+import io.redspace.skillcasting.data.cast.ActiveCast;
+import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.network.ServerboundCancelSkillCastPacket;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingDataComponents;

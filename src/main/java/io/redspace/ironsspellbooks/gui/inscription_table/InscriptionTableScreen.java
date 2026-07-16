@@ -8,9 +8,10 @@ import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.spell_containers.SpellbookContainer;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import io.redspace.skillcasting.api.cast.CastContext;
-import io.redspace.skillcasting.api.cast.CasterRef;
-import io.redspace.skillcasting.data.SkillSlot;
+import io.redspace.skillcasting.data.CastContext;
+import io.redspace.skillcasting.data.cast.CastType;
+import io.redspace.skillcasting.data.cast.CasterRef;
+import io.redspace.skillcasting.data.skill.SkillSlot;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -282,7 +283,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         int manaCost = spellSkill.getManaCost(previewContext);
         int castTimeTicks = previewContext.getOrDefault(SkillcastingComponentTypes.CAST_TIME, spellSkill.getCastTimeTicks());
         descLine += drawStatText(font, guiHelper, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(manaCost + ""), colorMana, textScale);
-        if (spellSkill.getCastType() != io.redspace.skillcasting.api.skill.CastType.INSTANT) {
+        if (spellSkill.getCastType() != CastType.INSTANT) {
             descLine += drawText(font, guiHelper, TooltipsUtils.getCastTimeComponent(spellSkill.getCastType(), Utils.timeFromTicks(castTimeTicks, 1)), x + margin, descLine, textColor.getColor().getValue(), textScale);
         }
         descLine += drawStatText(font, guiHelper, x + margin, descLine, "ui.irons_spellbooks.cooldown", textColor, Component.translatable(Utils.timeFromTicks(spellSkill.getCooldownTicks(), 1)), colorCooldown, textScale);

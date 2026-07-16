@@ -10,10 +10,10 @@ import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonedEntitiesCastData;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedPolarBear;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.skillcasting.api.PositionAnchor;
-import io.redspace.skillcasting.api.cast.CastContext;
-import io.redspace.skillcasting.api.recast.RecastConfig;
-import io.redspace.skillcasting.api.skill.CastType;
+import io.redspace.skillcasting.data.cast.PositionAnchor;
+import io.redspace.skillcasting.data.CastContext;
+import io.redspace.skillcasting.data.recast.RecastConfig;
+import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
@@ -77,7 +77,7 @@ public class SummonPolarBearSpell extends AbstractSpell {
     }
 
     @Override
-    public void onRecastFinished(CastContext castContext, io.redspace.skillcasting.api.recast.RecastResult result) {
+    public void onRecastFinished(CastContext castContext, io.redspace.skillcasting.data.recast.RecastResult result) {
         SummonManager.recastFinishedHelper(castContext, result);
     }
 

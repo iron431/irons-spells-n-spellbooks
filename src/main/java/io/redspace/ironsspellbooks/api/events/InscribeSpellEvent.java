@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.api.events;
 
 
-import io.redspace.skillcasting.data.SkillData;
+import io.redspace.skillcasting.data.skill.SkillData;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.ICancellableEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;

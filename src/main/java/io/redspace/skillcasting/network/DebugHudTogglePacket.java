@@ -1,7 +1,7 @@
 package io.redspace.skillcasting.network;
 
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.client.SkillcastingDebugOverlay;
+import io.redspace.skillcasting.client.overlays.SkillcastingDebugOverlay;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;

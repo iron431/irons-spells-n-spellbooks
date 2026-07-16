@@ -2,10 +2,10 @@ package io.redspace.skillcasting.registry;
 
 import com.mojang.serialization.Codec;
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.api.component.ComponentType;
-import io.redspace.skillcasting.api.resolver.DirectionResolver;
-import io.redspace.skillcasting.api.resolver.PositionResolver;
-import io.redspace.skillcasting.api.skill.AbstractSkill;
+import io.redspace.skillcasting.data.component.ComponentType;
+import io.redspace.skillcasting.data.resolver.DirectionResolver;
+import io.redspace.skillcasting.data.resolver.PositionResolver;
+import io.redspace.skillcasting.data.AbstractSkill;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;

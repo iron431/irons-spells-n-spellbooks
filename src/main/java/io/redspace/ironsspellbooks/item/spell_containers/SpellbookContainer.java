@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.item.spell_containers;
 
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.skill.ISkillContainer;
 import net.minecraft.world.item.ItemStack;
 
 public class SpellbookContainer {

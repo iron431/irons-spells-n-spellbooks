@@ -1,8 +1,8 @@
 package io.redspace.skillcasting.network;
 
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.api.cast.CastEndReason;
-import io.redspace.skillcasting.api.cast.CasterRef;
+import io.redspace.skillcasting.data.cast.CastEndReason;
+import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;

@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.item.weapons;
 
 import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
 import io.redspace.ironsspellbooks.entity.spells.thrown_spear.ThrownSpear;
-import io.redspace.skillcasting.data.SkillData;
+import io.redspace.skillcasting.data.skill.SkillData;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;

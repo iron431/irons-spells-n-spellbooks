@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.item.spell_containers;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.data.SkillData;
+import io.redspace.skillcasting.data.skill.ISkillContainer;
+import io.redspace.skillcasting.data.skill.SkillData;
 import net.minecraft.world.item.ItemStack;
 
 // todo: can simplify that imbued is always spell wheel

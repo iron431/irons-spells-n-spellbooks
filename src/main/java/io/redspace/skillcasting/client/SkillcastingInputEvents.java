@@ -1,10 +1,11 @@
 package io.redspace.skillcasting.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import io.redspace.skillcasting.lifecycle.SkillcastingData;
+import io.redspace.skillcasting.client.overlays.SkillWheelOverlay;
+import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.network.ServerboundCastSelectedSkillPacket;
 import io.redspace.skillcasting.network.ServerboundQuickCastSkillPacket;
-import io.redspace.skillcasting.selection.SkillSelectionManager;
+import io.redspace.skillcasting.data.selection.SkillSelectionManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -14,11 +15,11 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
-import static io.redspace.skillcasting.client.KeyMappings.CAST_SELECTED_SKILL_KEYMAP;
-import static io.redspace.skillcasting.client.KeyMappings.QUICK_CAST_MAPPINGS;
-import static io.redspace.skillcasting.client.KeyMappings.SKILLBAR_SCROLL_MODIFIER_KEYMAP;
-import static io.redspace.skillcasting.client.KeyMappings.SKILL_WHEEL_KEYMAP;
-import static io.redspace.skillcasting.client.KeyMappings.SKILL_WHEEL_TOGGLE_KEYMAP;
+import static io.redspace.skillcasting.client.keybinds.KeyMappings.CAST_SELECTED_SKILL_KEYMAP;
+import static io.redspace.skillcasting.client.keybinds.KeyMappings.QUICK_CAST_MAPPINGS;
+import static io.redspace.skillcasting.client.keybinds.KeyMappings.SKILLBAR_SCROLL_MODIFIER_KEYMAP;
+import static io.redspace.skillcasting.client.keybinds.KeyMappings.SKILL_WHEEL_KEYMAP;
+import static io.redspace.skillcasting.client.keybinds.KeyMappings.SKILL_WHEEL_TOGGLE_KEYMAP;
 
 public final class SkillcastingInputEvents {
     public static boolean hasReleasedSinceCasting;

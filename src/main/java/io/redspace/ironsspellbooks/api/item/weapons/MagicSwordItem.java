@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.api.item.weapons;
 
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.data.SkillData;
+import io.redspace.skillcasting.data.skill.ISkillContainer;
+import io.redspace.skillcasting.data.skill.SkillData;
 import net.minecraft.world.item.Tier;
 
 @Deprecated
