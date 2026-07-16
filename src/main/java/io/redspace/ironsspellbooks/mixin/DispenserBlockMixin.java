@@ -2,11 +2,11 @@ package io.redspace.ironsspellbooks.mixin;
 
 import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
+import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.data.CastSource;
-import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillSlot;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
@@ -66,8 +66,8 @@ public class DispenserBlockMixin {
         //  fine for testing, not fine for gameplay
         Map<SkillSlot, ItemStack> skillOptions = Stream.of(0, 1, 2, 3, 4, 5, 6, 7, 8).flatMap(i -> {
             ItemStack stack = dispenserblockentity.getItem(i);
-            return ISkillContainer.isSkillContainer(stack)
-                    ? ISkillContainer.get(stack).getActiveSkills().stream().map(slot -> Map.entry(slot, stack))
+            return ScrollContainer.has(stack)
+                    ? ScrollContainer.get(stack).getActiveSkills().stream().map(slot -> Map.entry(slot, stack))
                     : Stream.empty();
         }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
         if (skillOptions.isEmpty()) {

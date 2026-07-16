@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilMenu;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
 import io.redspace.ironsspellbooks.gui.scroll_forge.ScrollForgeScreen;
 import io.redspace.ironsspellbooks.item.InkItem;
-import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecipe;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.FluidRegistry;
@@ -122,7 +122,7 @@ public class JeiPlugin implements IModPlugin {
             IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel())
                     .forEach((spellLevel) -> {
                         var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-                        Scroll.applyScrollToStack(scrollStack, spell, spellLevel);
+                        ScrollContainer.set(scrollStack, spell, spellLevel);
                         list.add(scrollStack);
                     });
             registration.addIngredientInfo(list, VanillaTypes.ITEM_STACK, Component.translatable(String.format("%s.guide", spell.getDescriptionId())));

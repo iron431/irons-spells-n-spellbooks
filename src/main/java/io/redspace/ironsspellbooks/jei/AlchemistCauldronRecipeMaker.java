@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.fluids.PotionFluid;
 import io.redspace.ironsspellbooks.item.InkItem;
-import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.RecipeRegistry;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
@@ -112,7 +112,7 @@ public final class AlchemistCauldronRecipeMaker {
 
     private static ItemStack getScrollStack(ItemStack stack, AbstractSpell spell, int spellLevel) {
         var scrollStack = stack.copy();
-        Scroll.applyScrollToStack(scrollStack, spell, spellLevel);
+        ScrollContainer.set(scrollStack, spell, spellLevel);
         return scrollStack;
     }
 

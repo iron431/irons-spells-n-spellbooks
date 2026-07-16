@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.item.CastingItem;
-import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.ironsspellbooks.item.spell_containers.ImbuedContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -99,7 +99,7 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
         var display = ClientConfigs.MANA_BAR_DISPLAY.get();
         return !player.isSpectator() && display != Display.Never &&
                 (display == Display.Always ||
-                        player.isHolding(itemStack -> itemStack.getItem() instanceof CastingItem || (ISkillContainer.isSkillContainer(itemStack) && !ISkillContainer.get(itemStack).mustEquip()))
+                        player.isHolding(itemStack -> itemStack.getItem() instanceof CastingItem || (ImbuedContainer.has(itemStack) && !ImbuedContainer.get(itemStack).mustEquip()))
                         || MagicData.get(player).getMana() < player.getAttributeValue(MAX_MANA));
 
     }

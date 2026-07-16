@@ -5,9 +5,9 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.item.spell_containers.SpellbookContainer;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillContainer;
 import io.redspace.skillcasting.data.SkillData;
 import net.minecraft.commands.CommandSourceStack;
@@ -33,7 +33,7 @@ public class CreateSpellBookCommand {
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
             var spellContainer = new SkillContainer(slots, true, true);
-            ISkillContainer.set(itemstack, spellContainer);
+            SpellbookContainer.set(itemstack, spellContainer);
 
             if (serverPlayer.getInventory().add(itemstack)) {
                 return 1;
@@ -56,7 +56,7 @@ public class CreateSpellBookCommand {
                     added = spell != null && spellContainer.addSpell(new SkillData(spell, source.getLevel().random.nextIntBetweenInclusive(1, spell.getMaxLevel())));
                 } while (!added);
             }
-            ISkillContainer.set(itemstack, spellContainer.toImmutable());
+            SpellbookContainer.set(itemstack, spellContainer.toImmutable());
             if (serverPlayer.getInventory().add(itemstack)) {
                 return 1;
             }

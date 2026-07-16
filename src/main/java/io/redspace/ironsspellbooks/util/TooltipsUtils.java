@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.api.spells.SpellCastSources;
 import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.skill.CastType;
@@ -99,10 +100,7 @@ public class TooltipsUtils {
     }
 
     public static List<Component> formatScrollTooltip(ItemStack stack, Player player) {
-        if (!(stack.getItem() instanceof Scroll)) {
-            return List.of();
-        }
-        SkillData spellData = Scroll.getSpellSlotFromStack(stack);
+        SkillData spellData = ScrollContainer.getScrollData(stack);
         if (spellData == null || !(spellData.getSkill() instanceof AbstractSpell spell)) {
             return List.of();
         }

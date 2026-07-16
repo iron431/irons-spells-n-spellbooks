@@ -4,11 +4,9 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.item.InkItem;
-import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.data.SkillData;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -290,12 +288,9 @@ public class AdditionalWanderingTrades {
                     if (!items.isEmpty()) {
                         int quality = 0;
                         for (ItemStack stack : items) {
-                            if (stack.getItem() instanceof Scroll) {
-                                var container = ISkillContainer.get(stack);
-                                SkillData skillData = container == null ? null : container.getSkillAtIndex(0);
-                                if (skillData != null && skillData.getSkill() instanceof AbstractSpell spellSkill) {
-                                    quality += spellSkill.getRarity(skillData.getLevel()).getValue() + 1;
-                                }
+                            var skillData = ScrollContainer.getScrollData(stack);
+                            if (skillData != null && skillData.getSkill() instanceof AbstractSpell spellSkill) {
+                                quality += spellSkill.getRarity(skillData.getLevel()).getValue() + 1;
                             }
                         }
                         ItemStack forSale = new ItemStack(Items.BUNDLE);
@@ -344,7 +339,7 @@ public class AdditionalWanderingTrades {
                 return null;
             }
             int level = random.nextIntBetweenInclusive(1 + (int) (spell.getMaxLevel() * minQuality), (int) ((spell.getMaxLevel() - 1) * maxQuality) + 1);
-            Scroll.applyScrollToStack(forSale, spell, level);
+            ScrollContainer.set(forSale, spell, level);
             var price = new ItemCost(Items.EMERALD, spell.getRarity(level).getValue() * 5 + random.nextIntBetweenInclusive(4, 7) + level);
             return new MerchantOffer(price, price2, forSale, maxTrades, xp, priceMult);
         }

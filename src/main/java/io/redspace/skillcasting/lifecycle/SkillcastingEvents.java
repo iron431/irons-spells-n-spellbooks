@@ -3,8 +3,6 @@ package io.redspace.skillcasting.lifecycle;
 
 import io.redspace.skillcasting.api.cast.CastEndReason;
 import io.redspace.skillcasting.api.cast.CasterRef;
-import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.demo.SkillcastingDevCommands;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillcastingAttachments;
 import io.redspace.skillcasting.registry.SkillcastingDataComponents;
@@ -46,7 +44,7 @@ public final class SkillcastingEvents {
 
     @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
-        SkillcastingDevCommands.register(event.getDispatcher());
+//        SkillcastingDevCommands.register(event.getDispatcher());
     }
 
     @SubscribeEvent
@@ -76,9 +74,10 @@ public final class SkillcastingEvents {
         if (!(event.getEntity() instanceof ServerPlayer player)) {
             return;
         }
-        if (!ISkillContainer.isSkillContainer(event.getFrom()) && !ISkillContainer.isSkillContainer(event.getTo())) {
+        if (!SkillcastingUtils.hasAnySkillContainers(event.getFrom()) && !SkillcastingUtils.hasAnySkillContainers(event.getTo())) {
             return;
         }
+
         var data = player.getData(SkillcastingAttachments.SKILLCASTING_DATA.get());
         if (data.isCasting()
                 && SkillcastingUtils.shouldCancelCastOnEquipmentChange(

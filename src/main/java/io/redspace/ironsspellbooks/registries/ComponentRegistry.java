@@ -9,6 +9,8 @@ import io.redspace.ironsspellbooks.fluids.PotionFluid;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
+import io.redspace.skillcasting.data.ISkillContainer;
+import io.redspace.skillcasting.data.SkillContainer;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -33,10 +35,14 @@ public class ComponentRegistry {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<AffinityData>> AFFINITY_COMPONENT = register("affinity_data", (builder) -> builder.persistent(AffinityData.CODEC).networkSynchronized(AffinityData.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<FurledMapItem.FurledMapData>> FURLED_MAP_COMPONENT = register("furled_map_data", (builder) -> builder.persistent(FurledMapItem.FurledMapData.CODEC).networkSynchronized(FurledMapItem.FurledMapData.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<UpgradeData>> UPGRADE_DATA = register("upgrade_data", (builder) -> builder.persistent(UpgradeData.CODEC).networkSynchronized(UpgradeData.STREAM_CODEC).cacheEncoding());
-//    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISpellContainer>> SPELL_CONTAINER = register("spell_container", (builder) -> builder.persistent(SpellContainer.CODEC).networkSynchronized(SpellContainer.STREAM_CODEC).cacheEncoding());
+    //    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISpellContainer>> SPELL_CONTAINER = register("spell_container", (builder) -> builder.persistent(SpellContainer.CODEC).networkSynchronized(SpellContainer.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<WaywardCompassData>> WAYWARD_COMPASS = register("wayward_compass", (builder) -> builder.persistent(WaywardCompassData.CODEC).networkSynchronized(WaywardCompassData.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<AutoloaderCrossbow.LoadStateComponent>> CROSSBOW_LOAD_STATE = register("crossbow_load_state", (builder) -> builder.persistent(AutoloaderCrossbow.LoadStateComponent.CODEC).networkSynchronized(AutoloaderCrossbow.LoadStateComponent.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> CLOTHING_VARIANT = register("clothing_variant", (builder) -> builder.persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<UpgradeOrbType>>> UPGRADE_ORB_TYPE = register("upgrade_orb_type", (builder) -> builder.persistent(ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY)).networkSynchronized(ByteBufCodecs.fromCodec(ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY))).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<PotionFluid.BottleType>> POTION_BOTTLE_TYPE = register("potion_bottle_type", (builder) -> builder.persistent(PotionFluid.BottleType.CODEC).networkSynchronized(PotionFluid.BottleType.STREAM_CODEC).cacheEncoding());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> IMBUED_SPELL_CONTAINER = register("imbued_container", (builder) -> builder.persistent(SkillContainer.CODEC)/*.networkSynchronized(SkillContainer.STREAM_CODEC)*/.cacheEncoding());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> SPELLBOOK_CONTAINER = register("spellbook_container", (builder) -> builder.persistent(SkillContainer.CODEC)/*.networkSynchronized(SkillContainer.STREAM_CODEC)*/.cacheEncoding());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> SCROLL_CONTAINER = register("scroll_container", (builder) -> builder.persistent(SkillContainer.CODEC)/*.networkSynchronized(SkillContainer.STREAM_CODEC)*/.cacheEncoding());
+
 }

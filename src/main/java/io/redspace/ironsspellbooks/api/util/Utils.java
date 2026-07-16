@@ -12,14 +12,12 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.item.CastingItem;
-import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.spell_containers.ImbuedContainer;
 import io.redspace.ironsspellbooks.particle.FallingBlockParticleOption;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
-import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.data.SkillData;
 import io.redspace.skillcasting.data.SkillSlot;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import net.minecraft.core.BlockPos;
@@ -475,7 +473,7 @@ public class Utils {
         if (itemStack.getItem() instanceof SwordItem) {
             return true;
         }
-        if (ISkillContainer.isSkillContainer(itemStack) && !(itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SpellBook)) {
+        if (ImbuedContainer.has(itemStack)) {
             return true;
         }
         if (itemStack.is(ModTags.CAN_BE_IMBUED)) {
@@ -495,15 +493,15 @@ public class Utils {
         }
         boolean hasResult = false;
 
-        if (ISkillContainer.isSkillContainer(result) && !(result.getItem() instanceof SpellBook)) {
-            var container = ISkillContainer.get(result).mutableCopy();
+        if (ImbuedContainer.has(result)) {
+            var container = ImbuedContainer.get(result).mutableCopy();
             for (SkillSlot slot : container.getActiveSkills()) {
                 if (!slot.isLocked()) {
                     container.removeSpellAtIndex(slot.index());
                     hasResult = true;
                 }
             }
-            ISkillContainer.set(result, container.toImmutable());
+            ImbuedContainer.set(result, container.toImmutable());
         }
         if (UpgradeData.hasUpgradeData(result)) {
             UpgradeData.removeUpgradeData(result);
@@ -914,7 +912,4 @@ public class Utils {
         );
     }
 
-    public static void applyImbueToStack(ItemStack stack, AbstractSpell spell, int level) {
-        ISkillContainer.set(stack, ISkillContainer.create(false, new SkillData(spell, level, true)));
-    }
 }

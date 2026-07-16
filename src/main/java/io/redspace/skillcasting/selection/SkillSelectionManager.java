@@ -125,9 +125,11 @@ public final class SkillSelectionManager {
 
     private static void addContainerFromSlot(Player player, GatherSkillSelectionEvent event, EquipmentSlot slot, SkillSelectionPriority priority) {
         ItemStack stack = player.getItemBySlot(slot);
-        if (ISkillContainer.isSkillContainer(stack)) {
-            event.addSource(ISkillContainer.get(stack), slot, priority);
-        }
+        stack.getComponents().stream().forEach(component -> {
+            if (component.value() instanceof ISkillContainer skillContainer) {
+                event.addSource(skillContainer, slot, priority);
+            }
+        });
     }
 
     private void addFromContainer(ISkillContainer container, String equipmentSlot, SkillSelectionPriority priority) {

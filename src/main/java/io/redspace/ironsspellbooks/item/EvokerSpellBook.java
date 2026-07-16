@@ -3,14 +3,14 @@ package io.redspace.ironsspellbooks.item;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillData;
-import io.redspace.skillcasting.registry.SkillcastingDataComponents;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 public class EvokerSpellBook extends SpellBook {
     public EvokerSpellBook(Properties properties) {
-        super(properties.component(SkillcastingDataComponents.SKILL_CONTAINER, ISkillContainer.create(true,
+        super(properties.component(ComponentRegistry.SPELLBOOK_CONTAINER, ISkillContainer.create(true,
                 7,
                 new SkillData(SpellRegistry.FANG_STRIKE_SPELL, 6, true),
                 new SkillData(SpellRegistry.FANG_WARD_SPELL, 4, true),

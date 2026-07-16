@@ -3,14 +3,13 @@ package io.redspace.ironsspellbooks.player;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.FogManager;
 import io.redspace.ironsspellbooks.api.util.MusicManager;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.effect.ISyncedMobEffect;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand.CursedArmorStandModel;
 import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.UpgradeOrbItem;
+import io.redspace.ironsspellbooks.item.spell_containers.ImbuedContainer;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
@@ -81,10 +80,8 @@ public class ClientPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void imbuedWeaponTooltips(ItemTooltipEvent event) {
+    public static void handleTooltips(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
-
-        if (stack.getItem() instanceof Scroll) return;
         MinecraftInstanceHelper.ifPlayerPresent((player1) -> {
             var player = (LocalPlayer) player1;
             var lines = event.getToolTip();
@@ -94,21 +91,17 @@ public class ClientPlayerEvents {
                 handleUpgradeOrbTooltip(stack, player, lines, advanced);
             }
             // Imbued Spell Tooltip
-            if (ISkillContainer.isSkillContainer(stack) && !(stack.getItem() instanceof SpellBook)) {
-                handleImbuedSpellTooltip(stack, player, lines, advanced);
+            if (ImbuedContainer.has(stack)) {
+                var spellContainer = ImbuedContainer.get(stack);
+                handleImbuedSpellTooltip(stack, player, spellContainer, lines, advanced);
+                // "Can be Imbued" tooltip
+                lines.add(1, Component.translatable("tooltip.irons_spellbooks.can_be_imbued_frame", Component.translatable("tooltip.irons_spellbooks.can_be_imbued_number", spellContainer.getActiveSkillCount(), spellContainer.getMaxSkillCount()).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GOLD));
             }
-            // "Can be Imbued" tooltip
-            if (ISkillContainer.isSkillContainer(stack) && Utils.canImbue(stack)) {
-                var spellContainer = ISkillContainer.get(stack);
-                if (spellContainer != null) {
-                    lines.add(1, Component.translatable("tooltip.irons_spellbooks.can_be_imbued_frame", Component.translatable("tooltip.irons_spellbooks.can_be_imbued_number", spellContainer.getActiveSkillCount(), spellContainer.getMaxSkillCount()).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GOLD));
-                }
-            }
+            // Scroll Tooltip
         });
     }
 
-    private static void handleImbuedSpellTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
-        var spellContainer = ISkillContainer.get(stack);
+    private static void handleImbuedSpellTooltip(ItemStack stack, LocalPlayer player, ISkillContainer spellContainer, List<Component> lines, boolean advanced) {
         int tooltipInjectIndex = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
         // fixme: not respecting "imbued" source and therefore buffs
         CastSource castSource = CastSource.EMPTY;
@@ -140,7 +133,6 @@ public class ClientPlayerEvents {
             lines.addAll(tooltipInjectIndex < 0 ? lines.size() : tooltipInjectIndex, additionalLines);
         }
     }
-
 
 
     private static void handleUpgradeOrbTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {

@@ -1,14 +1,24 @@
 package io.redspace.skillcasting.data;
 
+import com.mojang.datafixers.util.Function4;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.skillcasting.api.skill.AbstractSkill;
-import io.redspace.skillcasting.registry.SkillcastingDataComponents;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public interface ISkillContainer {
+
+    static <T extends ISkillContainer> Codec<T> codec(Function4<Integer, Boolean, Boolean, List<SkillSlot>, T> constructor){
+        return RecordCodecBuilder.create(builder -> builder.group(
+                Codec.INT.fieldOf("size").forGetter(ISkillContainer::getMaxSkillCount),
+                Codec.BOOL.fieldOf("wheel").forGetter(ISkillContainer::isSkillWheel),
+                Codec.BOOL.fieldOf("equip").forGetter(ISkillContainer::mustEquip),
+                Codec.list(SkillContainer.SPELL_SLOT_CODEC).fieldOf("data").forGetter(ISkillContainer::getActiveSkills)
+        ).apply(builder, constructor));
+    }
 
     int getMaxSkillCount();
 
@@ -44,17 +54,17 @@ public interface ISkillContainer {
 
     ISkillContainerMutable mutableCopy();
 
-    static boolean isSkillContainer(@Nullable ItemStack itemStack) {
-        return itemStack != null && itemStack.has(SkillcastingDataComponents.SKILL_CONTAINER);
-    }
-
-    static @Nullable ISkillContainer get(ItemStack itemStack) {
-        return itemStack.get(SkillcastingDataComponents.SKILL_CONTAINER);
-    }
-
-    static void set(ItemStack itemStack, ISkillContainer container) {
-        itemStack.set(SkillcastingDataComponents.SKILL_CONTAINER, container);
-    }
+//    static boolean isSkillContainer(@Nullable ItemStack itemStack) {
+//        return itemStack != null && itemStack.has(SkillcastingDataComponents.SKILL_CONTAINER);
+//    }
+//
+//    static @Nullable ISkillContainer get(ItemStack itemStack) {
+//        return itemStack.get(SkillcastingDataComponents.SKILL_CONTAINER);
+//    }
+//
+//    static void set(ItemStack itemStack, ISkillContainer container) {
+//        itemStack.set(SkillcastingDataComponents.SKILL_CONTAINER, container);
+//    }
 
     static ISkillContainer create(boolean mustEquip, SkillData... skills) {
         return create(mustEquip, 0, skills);

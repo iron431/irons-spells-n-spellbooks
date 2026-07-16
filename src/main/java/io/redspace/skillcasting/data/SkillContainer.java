@@ -37,15 +37,11 @@ public class SkillContainer implements ISkillContainer {
         return container;
     }));
 
-    SkillSlot[] slots;
-    int maxSpells;
-    int activeSlots;
-    boolean spellWheel;
-    boolean mustEquip;
-
-    public SkillContainer() {
-        this(0, false, true);
-    }
+    protected SkillSlot[] slots;
+    protected int maxSpells;
+    protected int activeSlots;
+    protected boolean spellWheel;
+    protected boolean mustEquip;
 
     public SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip) {
         this.maxSpells = maxSpells;
@@ -162,11 +158,7 @@ public class SkillContainer implements ISkillContainer {
 
     public static class Mutable extends SkillContainer implements ISkillContainerMutable {
         public Mutable(SkillContainer container) {
-            this.maxSpells = container.maxSpells;
-            this.activeSlots = container.activeSlots;
-            this.spellWheel = container.spellWheel;
-            this.mustEquip = container.mustEquip;
-            this.slots = Arrays.copyOf(container.slots, container.slots.length);
+            super(container.maxSpells, container.spellWheel, container.mustEquip, Arrays.copyOf(container.slots, container.slots.length));
         }
 
         @Override

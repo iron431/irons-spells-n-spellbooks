@@ -4,9 +4,9 @@ import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.InkItem;
-import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.spell_containers.ImbuedContainer;
+import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.UpgradeUtils;
@@ -66,8 +66,8 @@ public class ArcaneAnvilJeiRecipe {
                 var scroll1 = new ItemStack(ItemRegistry.SCROLL.get());
                 var scroll2 = new ItemStack(ItemRegistry.SCROLL.get());
                 var ink = new ItemStack(InkItem.getInkForRarity(spell.getRarity(level + 1)));
-                Scroll.applyScrollToStack(scroll1, spell, level);
-                Scroll.applyScrollToStack(scroll2, spell, level + 1);
+                ScrollContainer.set(scroll1, spell, level);
+                ScrollContainer.set(scroll2, spell, level + 1);
                 yield new Tuple<>(List.of(scroll1), List.of(ink), List.of(scroll2));
             }
             case Imbue -> {
@@ -76,9 +76,9 @@ public class ArcaneAnvilJeiRecipe {
                 SpellRegistry.getEnabledSpells().forEach(spell -> {
                     IntStream.rangeClosed(spell.getMinLevel(), spell.getMaxLevel()).forEach(i -> {
                         var scroll = new ItemStack(ItemRegistry.SCROLL.get());
-                        Scroll.applyScrollToStack(scroll, spell, i);
+                        ScrollContainer.set(scroll, spell, i);
                         var result = new ItemStack(leftItem);
-                        Utils.applyImbueToStack(result, spell, i);
+                        ImbuedContainer.applyImbue(result, spell, i);
                         tuple.b.add(scroll);
                         tuple.c.add(result);
                     });
@@ -111,7 +111,7 @@ public class ArcaneAnvilJeiRecipe {
                 });
                 IntStream.rangeClosed(this.spell.getMinLevel(), this.spell.getMaxLevel()).forEach(i -> {
                     var scroll = new ItemStack(ItemRegistry.SCROLL.get());
-                    Scroll.applyScrollToStack(scroll, this.spell, i);
+                    ScrollContainer.set(scroll, this.spell, i);
 
                     tuple.b.add(scroll);
                     //tuple.c.add(result);

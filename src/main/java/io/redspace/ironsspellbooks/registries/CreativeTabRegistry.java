@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.registries;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
-import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -297,7 +297,7 @@ public class CreativeTabRegistry {
             SpellRegistry.getEnabledSpells().forEach(spell -> {
                 for (int i = spell.getMinLevel(); i <= spell.getMaxLevel(); i++) {
                     var itemstack = new ItemStack(ItemRegistry.SCROLL.get());
-                    Scroll.applyScrollToStack(itemstack, spell, i);
+                    ScrollContainer.set(itemstack, spell, i);
                     event.accept(itemstack);
                 }
             });

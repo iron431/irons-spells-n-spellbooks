@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.item.weapons;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillData;
-import io.redspace.skillcasting.registry.SkillcastingDataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class HitherThitherWand extends Item {
     public HitherThitherWand(Properties pProperties) {
-        super(pProperties.component(SkillcastingDataComponents.SKILL_CONTAINER, ISkillContainer.create(false, new SkillData(SpellRegistry.PORTAL_SPELL, 1, true))));
+        super(pProperties.component(ComponentRegistry.IMBUED_SPELL_CONTAINER, ISkillContainer.create(false, new SkillData(SpellRegistry.PORTAL_SPELL, 1, true))));
     }
 
     @Override

@@ -4,11 +4,10 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.block.scroll_forge.ScrollForgeTile;
 import io.redspace.ironsspellbooks.item.InkItem;
-import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
-import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillData;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
@@ -114,7 +113,7 @@ public class ScrollForgeMenu extends AbstractContainerMenu {
             if (scrollStack.getItem().equals(Items.PAPER) && inkStack.getItem() instanceof InkItem inkItem) {
                 resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                 resultStack.setCount(1);
-                ISkillContainer.set(resultStack, Scroll.createScrollContainer(new SkillData(spell, spell.getMinLevelForRarity(inkItem.getRarity()))));
+                ScrollContainer.set(resultStack, ScrollContainer.create(new SkillData(spell, spell.getMinLevelForRarity(inkItem.getRarity()))));
             }
         }
 

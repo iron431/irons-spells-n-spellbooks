@@ -6,6 +6,8 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.spell_containers.ImbuedContainer;
+import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import io.redspace.ironsspellbooks.registries.LootRegistry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -57,9 +59,9 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             //quality = quality * Mth.sin(Mth.HALF_PI * quality);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
             if (itemStack.getItem() instanceof Scroll) {
-                Scroll.applyScrollToStack(itemStack, spell, spellLevel);
+                ScrollContainer.set(itemStack, spell, spellLevel);
             } else {
-                Utils.applyImbueToStack(itemStack, spell, spellLevel);
+                ImbuedContainer.applyImbue(itemStack, spell, spellLevel);
             }
         }
         return itemStack;

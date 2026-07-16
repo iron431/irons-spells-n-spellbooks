@@ -33,6 +33,8 @@ import io.redspace.ironsspellbooks.entity.mobs.ice_spider.ICritablePartEntity;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.spell_containers.ImbuedContainer;
+import io.redspace.ironsspellbooks.item.spell_containers.SpellbookContainer;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -47,7 +49,6 @@ import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
 import io.redspace.skillcasting.api.event.SkillCastCompleteEvent;
 import io.redspace.skillcasting.api.event.SkillSelectionPriority;
 import io.redspace.skillcasting.api.skill.CastType;
-import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
@@ -282,11 +283,11 @@ public class ServerPlayerEvents {
         var player = event.getEntity();
         CuriosApi.getCuriosInventory(player).ifPresent(inv -> {
             ItemStack spellbook = Utils.getPlayerSpellbookStack(player);
-            if (spellbook != null && ISkillContainer.isSkillContainer(spellbook)) {
-                event.addSource(ISkillContainer.get(spellbook), Curios.SPELLBOOK_SLOT, SkillSelectionPriority.PRIMARY_SKILL_SOURCE);
+            if (spellbook != null && SpellbookContainer.has(spellbook)) {
+                event.addSource(SpellbookContainer.get(spellbook), Curios.SPELLBOOK_SLOT, SkillSelectionPriority.PRIMARY_SKILL_SOURCE);
             }
-            inv.findCurios(ISkillContainer::isSkillContainer).stream().filter(slot -> !slot.slotContext().identifier().equals(Curios.SPELLBOOK_SLOT)).forEach(
-                    slotResult -> event.addSource(ISkillContainer.get(slotResult.stack()), String.format("%s_%s", slotResult.slotContext().identifier(), slotResult.slotContext().index()), SkillSelectionPriority.CURIO));
+            inv.findCurios(ImbuedContainer::has).stream().filter(slot -> !slot.slotContext().identifier().equals(Curios.SPELLBOOK_SLOT)).forEach(
+                    slotResult -> event.addSource(ImbuedContainer.get(slotResult.stack()), String.format("%s_%s", slotResult.slotContext().identifier(), slotResult.slotContext().index()), SkillSelectionPriority.CURIO));
         });
     }
 
@@ -295,7 +296,7 @@ public class ServerPlayerEvents {
         if (!(event.getEntity() instanceof ServerPlayer player)) {
             return;
         }
-        if ((ISkillContainer.isSkillContainer(event.getFrom()) || ISkillContainer.isSkillContainer(event.getTo()))) {
+        if (ImbuedContainer.has(event.getFrom()) || ImbuedContainer.has(event.getTo()) || SpellbookContainer.has(event.getFrom()) || SpellbookContainer.has(event.getTo())) {
             SkillcastingData.get(player).selectionManager().refresh(player);
             SkillcastingNetwork.syncSelection(player, SkillcastingData.get(player));
         }

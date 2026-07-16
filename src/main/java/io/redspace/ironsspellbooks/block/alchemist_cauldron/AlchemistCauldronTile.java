@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.fluids.PotionFluid;
 import io.redspace.ironsspellbooks.item.InkItem;
+import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import io.redspace.ironsspellbooks.particle.TintedBubblePopParticleOptions;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.BrewAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.EmptyAlchemistCauldronRecipe;
@@ -17,7 +18,6 @@ import io.redspace.ironsspellbooks.registries.FluidRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.RecipeRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
-import io.redspace.skillcasting.data.ISkillContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -499,18 +499,11 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     public static @Nullable InkItem getInkFromScroll(ItemStack scrollStack) {
-        if(!ISkillContainer.isSkillContainer(scrollStack)){
+        var spellData = ScrollContainer.getScrollData(scrollStack);
+        if (spellData == null || !(spellData.getSkill() instanceof AbstractSpell spell)) {
             return null;
         }
-        var spellContainer = ISkillContainer.get(scrollStack);
-        if(spellContainer.isEmpty()){
-            return null;
-        }
-        var spellData = spellContainer.getSkillAtIndex(0);
-        if(!(spellData.getSkill() instanceof AbstractSpell spell)){
-            return null;
-        }
-        SpellRarity rarity =spell.getRarity(spellData.getLevel());
+        SpellRarity rarity = spell.getRarity(spellData.getLevel());
         return InkItem.getInkForRarity(rarity);
     }
 
@@ -678,7 +671,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     private int getFluidTintColor(FluidStack fluid) {
-        if(fluid.is(FluidRegistry.BLOOD.get())){
+        if (fluid.is(FluidRegistry.BLOOD.get())) {
             return 0x570001;
         }
         IClientFluidTypeExtensions clientFluid = IClientFluidTypeExtensions.of(fluid.getFluid());

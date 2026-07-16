@@ -4,6 +4,8 @@ import io.redspace.ironsspellbooks.api.events.InscribeSpellEvent;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
+import io.redspace.ironsspellbooks.item.spell_containers.SpellbookContainer;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
@@ -25,7 +27,6 @@ import net.neoforged.neoforge.common.NeoForge;
 
 
 public class InscriptionTableMenu extends AbstractContainerMenu {
-    //    public final InscriptionTableTile blockEntity;
     private final Player player;
     private final Level level;
     private final Slot spellBookSlot;
@@ -36,20 +37,12 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
 
     protected final ResultContainer resultContainer = new ResultContainer();
     protected final Container scrollContainer = new SimpleContainer(1) {
-        /**
-         * For block entities, ensures the chunk containing the block entity is saved to disk later - the game won't think
-         * it hasn't changed and skip it.
-         */
         public void setChanged() {
             super.setChanged();
             InscriptionTableMenu.this.slotsChanged(this);
         }
     };
     protected final Container spellbookContainer = new SimpleContainer(1) {
-        /**
-         * For block entities, ensures the chunk containing the block entity is saved to disk later - the game won't think
-         * it hasn't changed and skip it.
-         */
         public void setChanged() {
             super.setChanged();
             InscriptionTableMenu.this.slotsChanged(this);
@@ -114,11 +107,10 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
 
             @Override
             public void onTake(Player player, ItemStack stack) {
-                //Ironsspellbooks.logger.debug("InscriptionTableMenu.take spell!");
                 var spellBookStack = spellBookSlot.getItem();
-                var spellList = ISkillContainer.get(spellBookStack).mutableCopy();
+                var spellList = SpellbookContainer.get(spellBookStack).mutableCopy();
                 spellList.removeSpellAtIndex(selectedSpellIndex);
-                ISkillContainer.set(spellBookStack, spellList.toImmutable());
+                SpellbookContainer.set(spellBookStack, spellList.toImmutable());
                 super.onTake(player, spellBookStack);
             }
         };
@@ -126,11 +118,6 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         this.addSlot(spellBookSlot);
         this.addSlot(scrollSlot);
         this.addSlot(resultSlot);
-//        this.blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
-//            this.addSlot(new SlotItemHandler(handler, 0, 17, 21));
-//            this.addSlot(new SlotItemHandler(handler, 1, 17, 53));
-//            this.addSlot(new ScrollExtractionSlot(handler, 2, 208, 136));
-//        });
 
         var spellbookStack = Utils.getPlayerSpellbookStack(inv.player);
         if (spellbookStack != null) {
@@ -170,13 +157,13 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         ItemStack scrollItemStack = getScrollSlot().getItem();
 
         if (spellBookItemStack.getItem() instanceof SpellBook && scrollItemStack.getItem() instanceof Scroll) {
-            ISkillContainer bookContainer = ISkillContainer.get(spellBookItemStack);
-            ISkillContainer scrollContainer = ISkillContainer.get(scrollItemStack);
+            ISkillContainer bookContainer = SpellbookContainer.get(spellBookItemStack);
+            ISkillContainer scrollContainer = ScrollContainer.get(scrollItemStack);
             SkillData scrollSlot = scrollContainer.getSkillAtIndex(0);
             var mutableBookContainer = bookContainer.mutableCopy();
             if (bookContainer.getSkillAtIndex(selectedIndex) == null && mutableBookContainer.setSpellAtIndex(scrollSlot, selectedIndex)) {
                 getScrollSlot().remove(1);
-                ISkillContainer.set(spellBookItemStack, mutableBookContainer.toImmutable());
+                SpellbookContainer.set(spellBookItemStack, mutableBookContainer.toImmutable());
             }
         }
     }
@@ -187,7 +174,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         if (pId < 0) {
             var scrollStack = getScrollSlot().getItem();
             if (selectedSpellIndex >= 0 && scrollStack.getItem() instanceof Scroll scroll) {
-                SkillData spellData = ISkillContainer.get(scrollStack).getSkillAtIndex(0);
+                SkillData spellData = ScrollContainer.get(scrollStack).getSkillAtIndex(0);
                 if (NeoForge.EVENT_BUS.post(new InscribeSpellEvent(pPlayer, spellData)).isCanceled()) {
                     return false;
                 }
@@ -207,14 +194,14 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         ItemStack spellBookStack = spellBookSlot.getItem();
 
         if (spellBookStack.getItem() instanceof SpellBook) {
-            var spellList = ISkillContainer.get(spellBookStack);
+            var spellList = SpellbookContainer.get(spellBookStack);
             if (selectedSpellIndex >= 0) {
                 var spellData = spellList.getSkillAtIndex(selectedSpellIndex);
 
                 if (spellData != null && spellData.canRemove()) {
                     resultStack = new ItemStack(ItemRegistry.SCROLL.get());
                     resultStack.setCount(1);
-                    ISkillContainer.set(resultStack, Scroll.createScrollContainer(spellData));
+                    ScrollContainer.set(resultStack, ScrollContainer.create(spellData));
                 }
             }
         }
@@ -275,8 +262,6 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player pPlayer) {
-//        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
-//                pPlayer, INSCRIPTION_TABLE_BLOCK.get());
         return this.access.evaluate((level, blockPos) -> {
             return !level.getBlockState(blockPos).is(BlockRegistry.INSCRIPTION_TABLE_BLOCK.get()) ? false : pPlayer.distanceToSqr((double) blockPos.getX() + 0.5D, (double) blockPos.getY() + 0.5D, (double) blockPos.getZ() + 0.5D) <= 64.0D;
         }, true);

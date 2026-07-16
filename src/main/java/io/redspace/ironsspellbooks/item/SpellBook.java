@@ -4,14 +4,15 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellCastSources;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
+import io.redspace.ironsspellbooks.item.spell_containers.SpellbookContainer;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.skillcasting.data.CastSource;
 import io.redspace.skillcasting.data.ISkillContainer;
-import io.redspace.skillcasting.registry.SkillcastingDataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
@@ -34,7 +35,7 @@ import java.util.List;
 public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,*/ ILecternPlaceable {
 
     public SpellBook(int maxSpellSlots, Item.Properties properties) {
-        this(properties.component(SkillcastingDataComponents.SKILL_CONTAINER, ISkillContainer.create(true, maxSpellSlots)));
+        this(properties.component(ComponentRegistry.SPELLBOOK_CONTAINER, ISkillContainer.create(true, maxSpellSlots)));
     }
 
     public SpellBook(Item.Properties properties) {
@@ -60,7 +61,7 @@ public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,
             lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", Component.translatable("tooltip.irons_spellbooks.spellbook_unique").withStyle(TooltipsUtils.UNIQUE_STYLE)).withStyle(ChatFormatting.GRAY));
         }
         var player = MinecraftInstanceHelper.getPlayer();
-        var spellList = ISkillContainer.get(itemStack);
+        var spellList = SpellbookContainer.get(itemStack);
         if (player != null && spellList != null) {
             lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_spell_count", spellList.getMaxSkillCount()).withStyle(ChatFormatting.GRAY));
             var activeSpellSlots = spellList.getActiveSkills();
@@ -84,7 +85,7 @@ public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,
 
     @Override
     public List<Component> getPages(ItemStack stack) {
-        var spellbookData = ISkillContainer.get(stack);
+        var spellbookData = SpellbookContainer.get(stack);
         if (spellbookData != null && !spellbookData.isEmpty()) {
             var player = MinecraftInstanceHelper.getPlayer();
             return spellbookData.getActiveSkills().stream()

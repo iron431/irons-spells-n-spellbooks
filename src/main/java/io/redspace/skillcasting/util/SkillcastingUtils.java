@@ -127,8 +127,7 @@ public final class SkillcastingUtils {
             return false;
         }
         CastSource castSource = activeCast.context().getOrNull(SkillcastingComponentTypes.CAST_SOURCE);
-        boolean isChangingActiveCast = castSource != null && castSource.equipmentSlot().equals(changedSlot.getName())
-                || (ISkillContainer.isSkillContainer(from) && (ISkillContainer.get(from).getIndexForSkill(activeCast.context().skill().value()) >= 0));
+        boolean isChangingActiveCast = castSource != null && castSource.equipmentSlot().equals(changedSlot.getName());
         if (!isChangingActiveCast) {
             return false;
         }
@@ -153,6 +152,7 @@ public final class SkillcastingUtils {
 
     /**
      * Raycasts out from the cast context's casting position, and sets {@link SkillcastingComponentTypes#TARGETED_ENTITIES} to the first Living Entity hit
+     *
      * @return <code>true</code> if a Living Entity is hit
      */
     public static boolean preCastTargetHelper(CastContext castContext, float aimAssist) {
@@ -161,6 +161,7 @@ public final class SkillcastingUtils {
 
     /**
      * Raycasts out from the cast context's casting position, and sets {@link SkillcastingComponentTypes#TARGETED_ENTITIES} to the first Living Entity hit
+     *
      * @return <code>true</code> if a Living Entity is hit
      */
     public static boolean preCastTargetHelper(CastContext castContext, float aimAssist, boolean sendFailureMessage) {
@@ -169,6 +170,7 @@ public final class SkillcastingUtils {
 
     /**
      * Raycasts out from the cast context's casting position, and sets {@link SkillcastingComponentTypes#TARGETED_ENTITIES} to the first Living Entity hit according to the filter
+     *
      * @return <code>true</code> if a Living Entity is hit
      */
     public static boolean preCastTargetHelper(
@@ -181,6 +183,7 @@ public final class SkillcastingUtils {
 
     /**
      * Raycasts out from the cast context's casting position to the specified range, and sets {@link SkillcastingComponentTypes#TARGETED_ENTITIES} to the first Living Entity hit
+     *
      * @return <code>true</code> if a Living Entity is hit
      */
     public static boolean preCastTargetHelper(CastContext castContext, float range, float aimAssist) {
@@ -189,6 +192,7 @@ public final class SkillcastingUtils {
 
     /**
      * Raycasts out from the cast context's casting position to the specified range, and sets {@link SkillcastingComponentTypes#TARGETED_ENTITIES} to the first Living Entity hit
+     *
      * @return <code>true</code> if a Living Entity is hit
      */
     public static boolean preCastTargetHelper(CastContext castContext, float range, float aimAssist, boolean sendFailureMessage) {
@@ -197,6 +201,7 @@ public final class SkillcastingUtils {
 
     /**
      * Raycasts out from the cast context's casting position to the specified range, and sets {@link SkillcastingComponentTypes#TARGETED_ENTITIES} to the first Living Entity hit according to the filter
+     *
      * @return <code>true</code> if a Living Entity is hit
      */
     public static boolean preCastTargetHelper(
@@ -331,7 +336,7 @@ public final class SkillcastingUtils {
     public static boolean hasLineOfSight(Level level, Vec3 start, Vec3 end, boolean checkForCollidableEntities) {
         if (checkForCollidableEntities) {
             List<Entity> collisions = level.getEntities((Entity) null, new AABB(start, end), Entity::canBeCollidedWith);
-            for(var e : collisions){
+            for (var e : collisions) {
                 var impact = checkEntityIntersecting(e, start, end, 0);
                 if (impact.getType() != HitResult.Type.MISS) {
                     return false;
@@ -347,5 +352,9 @@ public final class SkillcastingUtils {
     public static double softCapFormula(double x) {
         // fixme: duplicated code with iss
         return x <= 1.5 ? x : -.25 * (1 / (x - 1)) + 2;
+    }
+
+    public static boolean hasAnySkillContainers(ItemStack stack) {
+        return stack.getComponents().stream().anyMatch(component -> component.value() instanceof ISkillContainer);
     }
 }

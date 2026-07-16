@@ -6,6 +6,7 @@ import com.mojang.math.Axis;
 import io.redspace.skillcasting.api.cast.CasterRef;
 import io.redspace.skillcasting.api.cast.EntityCasterRef;
 import io.redspace.skillcasting.api.recast.RecastInstance;
+import io.redspace.skillcasting.api.skill.CastType;
 import io.redspace.skillcasting.lifecycle.ActiveCast;
 import io.redspace.skillcasting.lifecycle.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -34,7 +35,7 @@ public final class SkillTargetingLayer {
         EntityCasterRef entityCasterRef = CasterRef.entity(Minecraft.getInstance().player);
         SkillcastingData data = entityCasterRef.skillcastingData();
         ActiveCast activeCast = entityCasterRef.skillcastingData().getActiveCast();
-        if (activeCast != null) {
+        if (activeCast != null && activeCast.context().skill().value().getCastType() != CastType.INSTANT) {
             if (activeCast.context().find(SkillcastingComponentTypes.TARGETED_ENTITIES).map(
                     targetedEntities -> targetedEntities.isTargeted(target)
             ).orElse(false)) {

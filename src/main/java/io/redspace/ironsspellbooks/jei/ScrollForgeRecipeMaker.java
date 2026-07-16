@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
-import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import net.minecraft.world.item.Item;
@@ -62,7 +62,7 @@ public final class ScrollForgeRecipeMaker {
 
     private static ItemStack getScrollStack(AbstractSpell spell, int spellLevel) {
         var scrollStack = new ItemStack(ItemRegistry.SCROLL.get());
-        Scroll.applyScrollToStack(scrollStack, spell, spellLevel);
+        ScrollContainer.set(scrollStack, spell, spellLevel);
         return scrollStack;
     }
 }

@@ -5,11 +5,11 @@ import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.spell_containers.SpellbookContainer;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.skillcasting.api.cast.CastContext;
 import io.redspace.skillcasting.api.cast.CasterRef;
-import io.redspace.skillcasting.data.ISkillContainer;
 import io.redspace.skillcasting.data.SkillSlot;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillRegistry;
@@ -327,7 +327,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         var spellBookSlot = menu.slots.get(SPELLBOOK_SLOT);
         var spellBookItemStack = spellBookSlot.getItem();
 
-        var spellBookContainer = ISkillContainer.get(spellBookItemStack);
+        var spellBookContainer = SpellbookContainer.get(spellBookItemStack);
         if (spellBookContainer == null) {
             return;
         }
@@ -389,8 +389,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private void onSpellBookSlotChanged() {
         isDirty = true;
         var spellBookStack = menu.slots.get(SPELLBOOK_SLOT).getItem();
-        if (spellBookStack.getItem() instanceof SpellBook) {
-            var spellBookContainer = ISkillContainer.get(spellBookStack);
+        if (SpellbookContainer.has(spellBookStack)) {
+            var spellBookContainer = SpellbookContainer.get(spellBookStack);
             if (spellBookContainer.getMaxSkillCount() <= selectedSpellIndex) {
                 resetSelectedSpell();
             }
@@ -409,9 +409,6 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             //  Is the spell book bricked?
             if (spellSlots.isEmpty())
                 return;
-
-            var scrollContainer = ISkillContainer.get(menu.getScrollSlot().getItem());
-            var scrollSlot = scrollContainer != null ? scrollContainer.getSkillAtIndex(0) : null;
 
             //  Quick inscribe
             if (selectedSpellIndex < 0 || spellSlots.get(selectedSpellIndex).hasSpell()) {

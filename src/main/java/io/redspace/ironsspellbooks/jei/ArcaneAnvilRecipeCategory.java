@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.jei;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.item.Scroll;
+import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.skillcasting.data.ISkillContainer;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -111,8 +112,8 @@ public class ArcaneAnvilRecipeCategory implements IRecipeCategory<ArcaneAnvilJei
             var minecraft = Minecraft.getInstance();
             drawScrollInfo(minecraft,
                     guiGraphics,
-                    ISkillContainer.get(leftStack.get()),
-                    ISkillContainer.get(outputStack.get()));
+                    ScrollContainer.get(leftStack.get()),
+                    ScrollContainer.get(outputStack.get()));
         }
     }
 
