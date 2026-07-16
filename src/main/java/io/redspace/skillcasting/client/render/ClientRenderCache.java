@@ -6,9 +6,6 @@ import net.minecraft.world.phys.Vec2;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Cached spell-bar slot layout for the HUD, ported from the original skillcasting-api client.
- */
 public final class ClientRenderCache {
     public static List<Vec2> relativeSpellBarSlotLocations = new ArrayList<>();
 

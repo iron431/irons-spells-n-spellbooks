@@ -9,9 +9,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.resources.ResourceLocation;
 
-/**
- * Channel cast progress bar, ported from the original skillcasting-api client HUD.
- */
 public final class CastBarOverlay implements LayeredDraw.Layer {
     public static final CastBarOverlay instance = new CastBarOverlay();
 

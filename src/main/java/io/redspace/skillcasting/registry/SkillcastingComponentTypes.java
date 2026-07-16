@@ -10,7 +10,7 @@ import io.redspace.skillcasting.data.resolver.DirectionResolver;
 import io.redspace.skillcasting.data.resolver.PositionResolver;
 import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.PlayableSound;
-import io.redspace.skillcasting.network.StreamCodecUtils;
+import io.redspace.skillcasting.util.StreamCodecUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
 import net.minecraft.world.phys.HitResult;

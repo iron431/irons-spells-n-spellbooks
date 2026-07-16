@@ -27,7 +27,6 @@ public final class ServerboundSelectSkillPacket implements CustomPacketPayload {
         return selection;
     }
 
-    /** Client convenience for HUD selection changes. */
     public static void send(SkillSelection selection) {
         if (Minecraft.getInstance().hasSingleplayerServer() || Minecraft.getInstance().getConnection() != null) {
             PacketDistributor.sendToServer(new ServerboundSelectSkillPacket(selection));

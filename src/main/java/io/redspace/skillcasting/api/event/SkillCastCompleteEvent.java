@@ -4,9 +4,6 @@ import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastEndReason;
 import net.neoforged.bus.api.Event;
 
-/**
- * Fired when a cast ends, with the reason it ended.
- */
 public final class SkillCastCompleteEvent extends Event {
     private final CastContext context;
     private final CastEndReason reason;

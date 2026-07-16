@@ -2,7 +2,7 @@ package io.redspace.skillcasting.data.resolver;
 
 import io.redspace.skillcasting.data.cast.PositionAnchor;
 import io.redspace.skillcasting.data.CastContext;
-import io.redspace.skillcasting.network.StreamCodecUtils;
+import io.redspace.skillcasting.util.StreamCodecUtils;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingResolverTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;

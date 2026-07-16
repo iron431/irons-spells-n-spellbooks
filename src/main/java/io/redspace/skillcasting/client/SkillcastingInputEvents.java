@@ -39,11 +39,6 @@ public final class SkillcastingInputEvents {
         }
     }
 
-    /**
-     * Modifier + scroll to cycle the selected skill on the bar.
-     *
-     * @return whether the scroll was consumed
-     */
     public static boolean handleSkillBarScrollModifier(int direction) {
         SkillSelectionManager manager = SkillcastingData.get(Minecraft.getInstance().player).selectionManager();
         if (manager.getSkillCount() <= 0) {

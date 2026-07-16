@@ -16,9 +16,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
 import org.joml.Vector3f;
 
-/**
- * Recast charge orbs overlay, ported from the original skillcasting-api client HUD.
- */
 public final class RecastOverlay implements LayeredDraw.Layer {
     public static final RecastOverlay instance = new RecastOverlay();
 

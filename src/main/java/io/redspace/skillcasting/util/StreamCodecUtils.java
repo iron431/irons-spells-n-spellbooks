@@ -1,4 +1,4 @@
-package io.redspace.skillcasting.network;
+package io.redspace.skillcasting.util;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
