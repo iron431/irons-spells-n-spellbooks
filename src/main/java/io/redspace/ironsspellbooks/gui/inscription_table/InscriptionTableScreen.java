@@ -318,7 +318,6 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         y /= scale;
         guiHelper.drawWordWrap(font, text, x, y, LORE_PAGE_WIDTH, color);
         return font.wordWrapHeight(text, LORE_PAGE_WIDTH);
-
     }
 
     private int drawStatText(Font font, GuiGraphics guiHelper, int x, int y, String translationKey, Style textStyle, MutableComponent stat, Style statStyle, float scale) {

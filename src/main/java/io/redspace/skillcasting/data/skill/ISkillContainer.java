@@ -16,7 +16,7 @@ public interface ISkillContainer {
                 Codec.INT.fieldOf("size").forGetter(ISkillContainer::getMaxSkillCount),
                 Codec.BOOL.fieldOf("wheel").forGetter(ISkillContainer::isSkillWheel),
                 Codec.BOOL.fieldOf("equip").forGetter(ISkillContainer::mustEquip),
-                Codec.list(SkillContainer.SPELL_SLOT_CODEC).fieldOf("data").forGetter(ISkillContainer::getActiveSkills)
+                Codec.list(SkillSlot.CODEC).fieldOf("data").forGetter(ISkillContainer::getActiveSkills)
         ).apply(builder, constructor));
     }
 

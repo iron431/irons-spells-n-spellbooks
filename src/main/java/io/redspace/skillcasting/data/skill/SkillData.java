@@ -6,6 +6,9 @@ import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.core.Holder;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 
 public final class SkillData implements Comparable<SkillData> {
@@ -14,6 +17,13 @@ public final class SkillData implements Comparable<SkillData> {
             Codec.INT.fieldOf("level").forGetter(SkillData::getLevel),
             Codec.BOOL.optionalFieldOf("locked", false).forGetter(SkillData::isLocked)
     ).apply(builder, SkillData::fromCodec));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, SkillData> STREAM_CODEC = StreamCodec.composite(
+            SkillcastingRegistries.SKILL_HOLDER_STREAM_CODEC, SkillData::getHolder,
+            ByteBufCodecs.VAR_INT, SkillData::getLevel,
+            ByteBufCodecs.BOOL, SkillData::isLocked,
+            SkillData::new
+    );
 
     private final int level;
     private final boolean locked;

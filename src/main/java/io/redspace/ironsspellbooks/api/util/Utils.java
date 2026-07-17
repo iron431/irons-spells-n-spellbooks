@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.api.util;
 
+import io.redspace.ironslib.util.CodecHelper;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
@@ -12,14 +13,16 @@ import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.item.CastingItem;
+import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.spell_containers.ImbuedContainer;
 import io.redspace.ironsspellbooks.particle.FallingBlockParticleOption;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
-import io.redspace.skillcasting.data.skill.SkillSlot;
 import io.redspace.skillcasting.data.SkillcastingData;
+import io.redspace.skillcasting.data.skill.SkillSlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -911,5 +914,19 @@ public class Utils {
                 }
         );
     }
-
+    /**
+     * 1.21.1 legacy component translation layer. to be removed 26.1.2+ */
+    @Deprecated(forRemoval = true)
+    public static void resolveLegacySpellContainer(ItemStack stack) {
+        if (!stack.has(ComponentRegistry.SPELL_CONTAINER)) {
+            return;
+        }
+        if (stack.getItem() instanceof SpellBook) {
+            CodecHelper.replaceLegacy(stack, ComponentRegistry.SPELL_CONTAINER, ComponentRegistry.SPELLBOOK_CONTAINER);
+        } else if (stack.getItem() instanceof Scroll) {
+            CodecHelper.replaceLegacy(stack, ComponentRegistry.SPELL_CONTAINER, ComponentRegistry.SCROLL_CONTAINER);
+        } else {
+            CodecHelper.replaceLegacy(stack, ComponentRegistry.SPELL_CONTAINER, ComponentRegistry.IMBUED_SPELL_CONTAINER);
+        }
+    }
 }

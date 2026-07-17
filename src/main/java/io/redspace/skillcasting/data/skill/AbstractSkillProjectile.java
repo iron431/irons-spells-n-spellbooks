@@ -219,7 +219,7 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
             trailParticles();
         }
         handleEntityHoming();
-        handleCursorHoming();
+        handleCursorHoming(48, .18f);
         handleHitDetection();
         travel();
         rotateWithMotion();
@@ -349,13 +349,11 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
         }
     }
 
-    protected void handleCursorHoming() {
+    protected void handleCursorHoming(float maxRange, float strength) {
         var cursorHoming = isCursorHoming();
         if (!cursorHoming) {
             return;
         }
-        // todo: expose parameter
-        float maxRange = 48;
         var owner = getOwner();
         if (owner == null || position().distanceToSqr(owner.position()) > maxRange * maxRange) {
             setCursorHoming(false);
@@ -371,8 +369,7 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
                 .filter(entity -> SkillcastingUtils.canHitWithRaycast(entity) && !SkillcastingUtils.isFriendlyFireBetween(entity, owner))
                 .build();
         Vec3 target = hitresult instanceof EntityHitResult entityHit ? entityHit.getEntity().getBoundingBox().getCenter() : hitresult.getLocation();
-        // todo: expose parameter
-        homeTowards(target, 0.18f);
+        homeTowards(target, strength);
     }
 
     /**
