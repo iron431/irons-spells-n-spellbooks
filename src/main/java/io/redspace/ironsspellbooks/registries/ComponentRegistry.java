@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.item.WaywardCompassData;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
+import io.redspace.ironsspellbooks.api.util.SCMigrator;
 import io.redspace.ironsspellbooks.fluids.PotionFluid;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
@@ -44,6 +45,6 @@ public class ComponentRegistry {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> SPELLBOOK_CONTAINER = register("spellbook_container", (builder) -> builder.persistent(SkillContainer.CODEC).networkSynchronized(SkillContainer.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> SCROLL_CONTAINER = register("scroll_container", (builder) -> builder.persistent(SkillContainer.CODEC).networkSynchronized(SkillContainer.STREAM_CODEC).cacheEncoding());
     @Deprecated(forRemoval = true)
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> SPELL_CONTAINER = register("spell_container", (builder) -> builder.persistent(SkillContainer.CODEC).networkSynchronized(SkillContainer.STREAM_CODEC).cacheEncoding());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> SPELL_CONTAINER = register("spell_container", (builder) -> builder.persistent(SCMigrator.CODEC)/*.networkSynchronized(SCMigrator.STREAM_CODEC)*/.cacheEncoding());
 
 }

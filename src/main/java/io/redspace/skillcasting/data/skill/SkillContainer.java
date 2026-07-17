@@ -38,7 +38,7 @@ public class SkillContainer implements ISkillContainer {
             SkillContainer::fromSerialized
     );
 
-    private static ISkillContainer fromSerialized(int count, boolean wheel, boolean equip, List<SkillSlot> skills) {
+    public static ISkillContainer fromSerialized(int count, boolean wheel, boolean equip, List<SkillSlot> skills) {
         var container = new SkillContainer(count, wheel, equip);
         skills.forEach(slot -> container.slots[slot.index()] = slot);
         container.activeSlots = skills.size();
