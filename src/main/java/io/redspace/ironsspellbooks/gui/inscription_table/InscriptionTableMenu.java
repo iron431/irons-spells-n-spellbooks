@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.gui.inscription_table;
 
 import io.redspace.ironsspellbooks.api.events.InscribeSpellEvent;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import io.redspace.ironsspellbooks.item.spell_containers.SpellbookContainer;
@@ -29,9 +28,9 @@ import net.neoforged.neoforge.common.NeoForge;
 public class InscriptionTableMenu extends AbstractContainerMenu {
     private final Player player;
     private final Level level;
-    private final Slot spellBookSlot;
-    private final Slot scrollSlot;
-    private final Slot resultSlot;
+    public final Slot spellBookSlot;
+    public final Slot scrollSlot;
+    public final Slot resultSlot;
     private int selectedSpellIndex = -1;
     private boolean fromCurioSlot = false;
 
@@ -152,18 +151,16 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     }
 
     public void doInscription(int selectedIndex) {
-        // This method is called by the inscription packet
         ItemStack spellBookItemStack = getSpellBookSlot().getItem();
         ItemStack scrollItemStack = getScrollSlot().getItem();
-
-        if (spellBookItemStack.getItem() instanceof SpellBook && scrollItemStack.getItem() instanceof Scroll) {
+        if (SpellbookContainer.has(spellBookItemStack) && ScrollContainer.has(scrollItemStack)) {
             ISkillContainer bookContainer = SpellbookContainer.get(spellBookItemStack);
-            ISkillContainer scrollContainer = ScrollContainer.get(scrollItemStack);
-            SkillData scrollSlot = scrollContainer.getSkillAtIndex(0);
+            SkillData scrollSlot = ScrollContainer.getScrollData(scrollItemStack);
             var mutableBookContainer = bookContainer.mutableCopy();
-            if (bookContainer.getSkillAtIndex(selectedIndex) == null && mutableBookContainer.setSpellAtIndex(scrollSlot, selectedIndex)) {
+            if (scrollSlot != null && bookContainer.getSkillAtIndex(selectedIndex) == null && mutableBookContainer.setSpellAtIndex(scrollSlot, selectedIndex)) {
                 getScrollSlot().remove(1);
                 SpellbookContainer.set(spellBookItemStack, mutableBookContainer.toImmutable());
+                setupResultSlot();
             }
         }
     }
@@ -173,9 +170,9 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
         //Called whenever the client clicks on a button. The ID passed in is the spell slot index or -1. If it is positive, it is to select that slot. If it is negative, it is to inscribe
         if (pId < 0) {
             var scrollStack = getScrollSlot().getItem();
-            if (selectedSpellIndex >= 0 && scrollStack.getItem() instanceof Scroll scroll) {
+            if (selectedSpellIndex >= 0 && ScrollContainer.has(scrollStack)) {
                 SkillData spellData = ScrollContainer.get(scrollStack).getSkillAtIndex(0);
-                if (NeoForge.EVENT_BUS.post(new InscribeSpellEvent(pPlayer, spellData)).isCanceled()) {
+                if (NeoForge.EVENT_BUS.post(new InscribeSpellEvent(pPlayer, getSpellBookSlot().getItem(), scrollStack, spellData)).isCanceled()) {
                     return false;
                 }
                 doInscription(selectedSpellIndex);
@@ -187,13 +184,10 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
     }
 
     private void setupResultSlot() {
-        //Ironsspellbooks.logger.debug("InscriptionTableMenu.setupResultSlot");
-        //Ironsspellbooks.logger.debug("InscriptionTableMenu.selected spell index: {}", selectedSpellIndex);
-
         ItemStack resultStack = ItemStack.EMPTY;
         ItemStack spellBookStack = spellBookSlot.getItem();
 
-        if (spellBookStack.getItem() instanceof SpellBook) {
+        if (SpellbookContainer.has(spellBookStack)) {
             var spellList = SpellbookContainer.get(spellBookStack);
             if (selectedSpellIndex >= 0) {
                 var spellData = spellList.getSkillAtIndex(selectedSpellIndex);

@@ -51,7 +51,7 @@ public record SyncCastComponentsPacket(
         });
     }
 
-    private static void applyComponents(SkillcastingData data, Holder<AbstractSkill> skill, CastComponentMap components) {
+    private static synchronized void applyComponents(SkillcastingData data, Holder<AbstractSkill> skill, CastComponentMap components) {
         ActiveCast active = data.getActiveCast();
         if (active != null && skill.equals(active.context().skill())) {
             active.context().components().applyFrom(components);

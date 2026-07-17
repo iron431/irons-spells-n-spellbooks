@@ -1,16 +1,21 @@
 package io.redspace.ironsspellbooks.gui.inscription_table;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.events.InscribeSpellEvent;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import io.redspace.ironsspellbooks.item.spell_containers.SpellbookContainer;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.skillcasting.data.CastContext;
+import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.cast.CasterRef;
+import io.redspace.skillcasting.data.skill.SkillData;
 import io.redspace.skillcasting.data.skill.SkillSlot;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillRegistry;
@@ -31,12 +36,18 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
+import net.neoforged.neoforge.common.NeoForge;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionTableMenu> {
+public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionTableMenu> implements ContainerListener {
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/inscription_table.png");
     //button locations
     private static final int INSCRIBE_BUTTON_X = 43;
@@ -55,13 +66,11 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     private static final int LORE_PAGE_X = 176;
     private static final int LORE_PAGE_WIDTH = 80;
-    private boolean isDirty;
+    private boolean isSpellLayoutDirty;
     protected Button inscribeButton;
-    //protected Button extractButton;
-    private ItemStack lastSpellBookItem = ItemStack.EMPTY;
     protected ArrayList<SpellSlotInfo> spellSlots;
     private int selectedSpellIndex = -1;
-    private int inscriptionErrorCode = 0;
+    private @Nullable Component inscriptionErrorMessage = null;
 
     public InscriptionTableScreen(InscriptionTableMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -70,16 +79,22 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     }
 
+
     @Override
     protected void init() {
         super.init();
         inscribeButton = this.addWidget(
                 Button.builder(CommonComponents.GUI_DONE, (p_169820_) -> this.onInscription()).bounds(0, 0, 14, 14).build()
         );
-        //extractButton = this.addWidget(new Button(0, 0, 14, 14, CommonComponents.GUI_DONE, (p_169820_) -> this.removeSpell()));
         spellSlots = new ArrayList<>();
-        //Ironsspellbooks.logger.debug("InscriptionTableScreen: init");
         generateSpellSlots();
+        this.menu.addSlotListener(this);
+    }
+
+    @Override
+    public void removed() {
+        super.removed();
+        this.menu.removeSlotListener(this);
     }
 
     @Override
@@ -100,58 +115,25 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     @Override
     protected void renderBg(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
-        //setTexture(TEXTURE);
-
         guiHelper.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-
-        inscribeButton.active = isValidInscription() && inscriptionErrorCode == 0;
-        //extractButton.active = isValidExtraction();
+        inscribeButton.active = isValidInscription() && inscriptionErrorMessage == null;
         renderButtons(guiHelper, mouseX, mouseY);
-
-        if (menu.slots.get(SPELLBOOK_SLOT).getItem() != lastSpellBookItem) {
-            onSpellBookSlotChanged();
-            lastSpellBookItem = menu.slots.get(SPELLBOOK_SLOT).getItem();
-        }
-
 
         renderSpells(guiHelper, mouseX, mouseY);
         renderLorePage(guiHelper, partialTick, mouseX, mouseY);
 
-        //Error Message
-        if (menu.slots.get(SPELLBOOK_SLOT).hasItem())
-            inscriptionErrorCode = getErrorCode();
-        else
-            inscriptionErrorCode = 0;
-
-        if (inscriptionErrorCode > 0) {
+        if (inscriptionErrorMessage != null) {
             //X over arrow
             guiHelper.blit(TEXTURE, leftPos + 35, topPos + 51, 0, 213, 28, 22);
             if (isHovering(leftPos + 35, topPos + 51, 28, 22, mouseX, mouseY)) {
-                guiHelper.renderTooltip(font, getErrorMessage(inscriptionErrorCode), mouseX, mouseY);
+                guiHelper.renderTooltip(font, inscriptionErrorMessage, mouseX, mouseY);
             }
         }
     }
 
-    private int getErrorCode() {
-//        if (menu.getSpellBookSlot().getItem().getItem() instanceof SpellBook spellbook && menu.getScrollSlot().getItem().getItem() instanceof Scroll scroll) {
-//            var scrollContainer = ISpellContainer.get(menu.getScrollSlot().getItem());
-//            var spellSlot = scrollContainer.getSpellAtIndex(0);
-//            if (spellbook.getRarity().compareRarity(spellSlot.getSpell().getRarity(spellSlot.getLevel())) < 0)
-//                return 1;
-//        }
-        return 0;
-    }
-
-    private Component getErrorMessage(int code) {
-        if (code == 1)
-            return Component.translatable("ui.irons_spellbooks.inscription_table_rarity_error");
-        else
-            return Component.empty();
-    }
-
     private void renderSpells(GuiGraphics guiHelper, int mouseX, int mouseY) {
-        if (isDirty) {
+        if (isSpellLayoutDirty) {
             generateSpellSlots();
         }
         Vec2 center = new Vec2(SPELL_BG_X + leftPos + SPELL_BG_WIDTH / 2, SPELL_BG_Y + topPos + SPELL_BG_HEIGHT / 2);
@@ -168,9 +150,6 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     }
 
     private void renderButtons(GuiGraphics guiHelper, int mouseX, int mouseY) {
-        //
-        //  Rendering inscription Button
-        //
         inscribeButton.setX(leftPos + INSCRIBE_BUTTON_X);
         inscribeButton.setY(topPos + INSCRIBE_BUTTON_Y);
         if (inscribeButton.active) {
@@ -185,25 +164,25 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             //disabled
             guiHelper.blit(TEXTURE, inscribeButton.getX(), inscribeButton.getY(), 0, 185, 14, 14);
         }
-
     }
 
     private void renderSpellSlot(GuiGraphics guiHelper, Vec2 pos, int mouseX, int mouseY, int index, SpellSlotInfo slot) {
-        //setTexture(TEXTURE);
         boolean hovering = isHovering((int) pos.x, (int) pos.y, 19, 19, mouseX, mouseY);
         int iconToDraw = hovering ? 38 : slot.hasSpell() ? 19 : 0;
         guiHelper.blit(TEXTURE, (int) pos.x, (int) pos.y, iconToDraw, 166, 19, 19);
         if (slot.hasSpell()) {
             drawSpellIcon(guiHelper, pos, slot);
-            if (hovering && !slot.spellSlot.skillData().canRemove())
+            if (hovering && !slot.spellSlot.skillData().canRemove()) {
                 guiHelper.blit(TEXTURE, (int) pos.x, (int) pos.y, 76, 166, 19, 19);
+            }
         }
-        if (index == selectedSpellIndex)
+        if (index == selectedSpellIndex) {
+            // outline
             guiHelper.blit(TEXTURE, (int) pos.x, (int) pos.y, 57, 166, 19, 19);
+        }
     }
 
     private void drawSpellIcon(GuiGraphics guiHelper, Vec2 pos, SpellSlotInfo slot) {
-        //setTexture(slot.containedSpell.getSpellType().getResourceLocation());
         guiHelper.blit(slot.spellSlot.getSkill().getIconLocation(), (int) pos.x + 2, (int) pos.y + 2, 0, 0, 15, 15, 16, 16);
     }
 
@@ -215,10 +194,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         var poseStack = guiHelper.pose();
         //
         // Title
-        //
         boolean spellSelected = selectedSpellIndex >= 0 && selectedSpellIndex < spellSlots.size() && spellSlots.get(selectedSpellIndex).hasSpell();
         var title = selectedSpellIndex < 0 ? Component.translatable("ui.irons_spellbooks.no_selection") : spellSelected ? spellSlots.get(selectedSpellIndex).spellSlot.getSkill().getDisplayName(Minecraft.getInstance().player) : Component.translatable("ui.irons_spellbooks.empty_slot");
-        //font.drawWordWrap(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), titleX, titleY, LORE_PAGE_WIDTH, 0xFFFFFF);
 
         var titleLines = font.split(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);
         int titleY = topPos + 10;
@@ -229,8 +206,8 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             guiHelper.drawString(font, line, titleX, titleY, 0xFFFFFF, false);
 
             //show description if hovering
-            if (spellSelected && isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY)
-                    && spellSlots.get(selectedSpellIndex).spellSlot.getSkill() instanceof AbstractSpell hoveredSpell) {
+            if (spellSelected && isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY) &&
+                    spellSlots.get(selectedSpellIndex).spellSlot.getSkill() instanceof AbstractSpell hoveredSpell) {
                 guiHelper.renderTooltip(font, TooltipsUtils.createSpellDescriptionTooltip(hoveredSpell, font), mouseX, mouseY);
             }
 
@@ -257,40 +234,75 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         var spellLevel = spellSlots.get(selectedSpellIndex).spellSlot.getLevel();
         float textScale = 1f;
         float reverseScale = 1 / textScale;
-
         Component school = spellSkill.getSchoolType().getDisplayName();
         poseStack.scale(textScale, textScale, textScale);
-
-
         //
         //  School
-        //
         drawTextWithShadow(font, guiHelper, school, x + (LORE_PAGE_WIDTH - font.width(school.getString())) / 2, descLine, 0xFFFFFF, 1);
         descLine += font.lineHeight * textScale;
-
         //
         // Level
-        //
         var levelText = Component.translatable("ui.irons_spellbooks.level", spellLevel).withStyle(textColor);
         guiHelper.drawString(font, levelText, x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2, descLine, 0xFFFFFF, false);
         descLine += font.lineHeight * textScale * 2;
-
         //
         // Mana
-        //
         var previewCaster = Minecraft.getInstance().player;
-        CastContext previewContext = SkillcastingManager.buildCastContext(CasterRef.entity(previewCaster), SkillRegistry.holder(spellSkill), spellLevel, null);
-        int manaCost = spellSkill.getManaCost(previewContext);
-        int castTimeTicks = previewContext.getOrDefault(SkillcastingComponentTypes.CAST_TIME, spellSkill.getCastTimeTicks());
+        /*CasterRef noopCaster = new CasterRef() {
+            AttachmentHolder.AsField holder;
+
+            @Override
+            public CasterId id() {
+                return null;
+            }
+
+            @Override
+            public boolean isValid() {
+                return true;
+            }
+
+            @Override
+            public Level level() {
+                return Minecraft.getInstance().level;
+            }
+
+            @Override
+            public Vec3 position(PositionAnchor anchor) {
+                return null;
+            }
+
+            @Override
+            public Vec3 forward() {
+                return null;
+            }
+
+            @Override
+            public void distributeToClients(CustomPacketPayload payload) {
+
+            }
+
+            @Override
+            public IAttachmentHolder get() {
+                return null;
+            }
+
+            @Override
+            public SkillcastingData skillcastingData() {
+                return new SkillcastingData();
+            }
+        };*/
+        CasterRef caster = CasterRef.entity(previewCaster); //noopCaster;
+        CastContext previewContext = SkillcastingManager.buildCastContext(caster, SkillRegistry.holder(spellSkill), spellLevel, CastSource.EMPTY);
+        int manaCost = previewContext.getOrDefault(SpellcastingComponentTypes.MANA_COST, 0);
+        int castTimeTicks = previewContext.getOrDefault(SkillcastingComponentTypes.CAST_TIME, 0);
         descLine += drawStatText(font, guiHelper, x + margin, descLine, "ui.irons_spellbooks.mana_cost", textColor, Component.translatable(manaCost + ""), colorMana, textScale);
         if (spellSkill.getCastType() != CastType.INSTANT) {
             descLine += drawText(font, guiHelper, TooltipsUtils.getCastTimeComponent(spellSkill.getCastType(), Utils.timeFromTicks(castTimeTicks, 1)), x + margin, descLine, textColor.getColor().getValue(), textScale);
         }
-        descLine += drawStatText(font, guiHelper, x + margin, descLine, "ui.irons_spellbooks.cooldown", textColor, Component.translatable(Utils.timeFromTicks(spellSkill.getCooldownTicks(), 1)), colorCooldown, textScale);
+        descLine += drawStatText(font, guiHelper, x + margin, descLine, "ui.irons_spellbooks.cooldown", textColor, Component.translatable(Utils.timeFromTicks(previewContext.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0), 1)), colorCooldown, textScale);
         for (MutableComponent component : spellSkill.getUniqueInfo(previewContext)) {
             descLine += drawText(font, guiHelper, component, x + margin, descLine, textColor.getColor().getValue(), 1);
         }
-
 
         poseStack.scale(reverseScale, reverseScale, reverseScale);
     }
@@ -381,14 +393,11 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
                 index++;
             }
         }
-        /*
-         Unflag as Dirty
-         */
-        isDirty = false;
+        isSpellLayoutDirty = false;
     }
 
     private void onSpellBookSlotChanged() {
-        isDirty = true;
+        isSpellLayoutDirty = true;
         var spellBookStack = menu.slots.get(SPELLBOOK_SLOT).getItem();
         if (SpellbookContainer.has(spellBookStack)) {
             var spellBookContainer = SpellbookContainer.get(spellBookStack);
@@ -401,12 +410,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     }
 
     private void onInscription() {
-        //
-        //  Called when inscription button clicked
-        //
-
         if (menu.getSpellBookSlot().getItem().getItem() instanceof SpellBook spellBook && menu.getScrollSlot().getItem().getItem() instanceof Scroll scroll) {
-
             //  Is the spell book bricked?
             if (spellSlots.isEmpty())
                 return;
@@ -429,24 +433,16 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
                 return;
             }
 
-            //
             //  Good to inscribe
-            //
-
-            isDirty = true;
-//            Messages.sendToServer(new ServerboundInscribeSpell(menu.blockEntity.getBlockPos(), selectedSpellIndex));
+            isSpellLayoutDirty = true;
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, 1.0F));
             this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, -1);
         }
-
-
     }
 
     private void setSelectedIndex(int index) {
         selectedSpellIndex = index;
         this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, index);
-
-//        Messages.sendToServer(new ServerboundInscriptionTableSelectSpell(this.menu.blockEntity.getBlockPos(), selectedSpellIndex));
     }
 
     private void resetSelectedSpell() {
@@ -475,6 +471,36 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     }
 
     private final int[][] LAYOUT = ClientRenderCache.SPELL_LAYOUT;
+
+    @Override
+    public void slotChanged(@NotNull AbstractContainerMenu containerToSend, int dataSlotIndex, ItemStack stack) {
+        if (dataSlotIndex == menu.spellBookSlot.index) {
+            onSpellBookSlotChanged();
+            if (!menu.scrollContainer.isEmpty()) {
+                evaluateAbleToInscribe(menu.spellbookContainer.getItem(0), menu.scrollContainer.getItem(0));
+            }
+        } else if (dataSlotIndex == menu.scrollSlot.index) {
+            evaluateAbleToInscribe(menu.spellbookContainer.getItem(0), menu.scrollContainer.getItem(0));
+        }
+    }
+
+    private void evaluateAbleToInscribe(ItemStack spellbookStack, ItemStack scrollStack) {
+        SkillData scrollData = ScrollContainer.getScrollData(scrollStack);
+        if (scrollStack.isEmpty() || spellbookStack.isEmpty() || scrollData == null) {
+            this.inscriptionErrorMessage = null;
+            return;
+        } else {
+            var event = NeoForge.EVENT_BUS.post(new InscribeSpellEvent(this.minecraft.player, spellbookStack.copy(), scrollStack.copy(), scrollData));
+            if (event.isCanceled()) {
+                this.inscriptionErrorMessage = Objects.requireNonNull(event.getFailureMessage(), "Must set a failure message in order to cancel InscribeSpellEvent!");
+            }
+        }
+    }
+
+    @Override
+    public void dataChanged(@NotNull AbstractContainerMenu containerMenu, int dataSlotIndex, int value) {
+
+    }
 
     private static class SpellSlotInfo {
         public SkillSlot spellSlot;

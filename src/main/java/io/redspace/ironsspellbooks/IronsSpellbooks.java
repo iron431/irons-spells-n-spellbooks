@@ -49,8 +49,6 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
-import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
@@ -59,7 +57,6 @@ import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(IronsSpellbooks.MODID)
@@ -80,8 +77,6 @@ public class IronsSpellbooks {
         MagicHelper.MAGIC_MANAGER = MAGIC_MANAGER;
 
         modEventBus.addListener(ModSetup::init);
-        modEventBus.addListener(this::enqueueIMC);
-        modEventBus.addListener(this::processIMC);
         modEventBus.addListener(SchoolRegistry::registerRegistry);
         modEventBus.addListener(UpgradeOrbTypeRegistry::registerDatapackRegistries);
         //NeoForge.EVENT_BUS.register(this);
@@ -152,16 +147,6 @@ public class IronsSpellbooks {
                 new PackSelectionConfig(false, Pack.Position.TOP, false)
         );
         event.addRepositorySource((packConsumer) -> packConsumer.accept(pack));
-    }
-
-    private void enqueueIMC(final InterModEnqueueEvent event) {
-
-    }
-
-    private void processIMC(final InterModProcessEvent event) {
-        LOGGER.info("Got IMC {}", event.getIMCStream().
-                map(m -> m.messageSupplier().get()).
-                collect(Collectors.toList()));
     }
 
     public static ResourceLocation id(@NotNull String path) {
