@@ -84,13 +84,13 @@ public class RayOfFrostSpell extends AbstractSpell {
         List<HitResult> hitResults = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
                 .bbInflation(.15f)
-                .performRaycastWithRicochet(ricochetCount);
+                .performRaycastWithPiercingAndRicochet(piercingCount, ricochetCount, true);
         List<Vec3> rayInflectionPoints = new ArrayList<>(List.of(castContext.position(PositionAnchor.BOTTOM_CENTER).lerp(castContext.position(PositionAnchor.CASTING_POSITION), 0.8f)));
         hitResults.stream().map(HitResult::getLocation).forEach(rayInflectionPoints::add);
         for (int i = 0; i < rayInflectionPoints.size() - 1; i++) {
             Vec3 start = rayInflectionPoints.get(i);
             Vec3 end = rayInflectionPoints.get(i + 1);
-            MagicManager.spawnParticles(level, RayOfFrostRayParticleOptions.inner(end), start.x, start.y, start.z, 1, 0, 0, 0, 0, true);
+            MagicManager.spawnParticles(level, RayOfFrostRayParticleOptions.inner(end), start.x, start.y , start.z, 1, 0, 0, 0, 0, true);
             MagicManager.spawnParticles(level, RayOfFrostRayParticleOptions.outer(end), start.x, start.y, start.z, 1, 0, 0, 0, 0, true);
         }
         for (var hit : hitResults) {

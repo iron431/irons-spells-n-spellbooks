@@ -11,7 +11,6 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -134,126 +133,126 @@ public final class RaycastBuilder {
         }
     }
 
+    public List<HitResult> performRaycastWithPiercing(int pierceLevel) {
+        return performRaycastWithPiercingAndRicochet(pierceLevel, 0, false);
+    }
+
     /**
-     * Performs the raycast with the current parameters. Start and end be been set.
-     *
-     * @return raycast HitResults
+     * Performs the raycast with the current parameters, combining piercing and ricochet in a single
+     * optimized solver. Start and end must be set.
+     * <p>
+     * Attempts to consume a ricochet level to redirect. If no charges or no valid direction is found, it will attempt to consume piercing charges until a final entity is hit.
+     * Each entity hit attempts to ricochet again.
+     * @param allowBlockRicochet whether striking a block surface reflects the beam (consuming a ricochet
+     *                           charge) instead of terminating at the wall.
+     * @return raycast HitResults, ordered from origin outward along the beam path
      */
-    public List<HitResult> performRaycastWithRicochet(int ricochetLevel) {
+    public List<HitResult> performRaycastWithPiercingAndRicochet(int pierceLevel, int ricochetLevel, boolean allowBlockRicochet) {
         Objects.requireNonNull(start, "Start must be set to perform raycast");
         Objects.requireNonNull(end, "End must be set to perform raycast");
-        if (ricochetLevel < 0) {
-            // approximate infinite ricochet as 64 passes
-            ricochetLevel = 64;
-        }
-        if (ricochetLevel > 64) {
-            ricochetLevel = 64;
-        }
-        int castCount = 1 + ricochetLevel;
 
-        // tracks the state of the live cast segment
+        // negative levels approximate "infinite"; everything is clamped to a sane upper bound
+        if (pierceLevel < 0 || pierceLevel > 64) {
+            pierceLevel = 64;
+        }
+        if (ricochetLevel < 0 || ricochetLevel > 64) {
+            ricochetLevel = 64;
+        }
+
+        // live cast state and remaining budgets
         float rangeRemaining = Math.max(1.0f, (float) start.distanceTo(end));
         Vec3 castStart = start;
         Vec3 castEnd = end;
+        int pierceRemaining = pierceLevel;
+        int ricochetRemaining = ricochetLevel;
 
         List<HitResult> hitResults = new ArrayList<>();
-        BlockHitResult lastBlockHitMiss = null;
         HashSet<UUID> hitEntities = new HashSet<>();
-        ricochetCast:
-        for (int i = 0; i < castCount && rangeRemaining > 0.5; i++) {
+
+        // each bounce (entity ricochet or block reflection) consumes a ricochet charge and starts a new
+        // segment, so the chain is bounded by the ricochet budget plus the initial segment
+        for (int segment = 0; segment <= ricochetLevel && rangeRemaining > 0.5; segment++) {
+            // clamp the segment to the first block surface, or fabricate a miss at the segment end
+            BlockHitResult blockHit;
             if (checkForBlocks) {
-                lastBlockHitMiss = level.clip(new ClipContext(castStart, castEnd, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, originEntity == null ? CollisionContext.empty() : CollisionContext.of(originEntity)));
-                castEnd = lastBlockHitMiss.getLocation();
+                blockHit = level.clip(new ClipContext(castStart, castEnd, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, originEntity == null ? CollisionContext.empty() : CollisionContext.of(originEntity)));
+                castEnd = blockHit.getLocation();
+            } else {
+                blockHit = BlockHitResult.miss(castEnd, Direction.UP, BlockPos.containing(castEnd));
             }
+            boolean hitWall = checkForBlocks && blockHit.getType() != HitResult.Type.MISS;
+
             AABB collider = new AABB(castStart, castEnd).inflate(2);
             List<? extends Entity> entities = level.getEntities(originEntity, collider, filter);
-            boolean work = false;
-            var distanceAnchor = castStart;
-            entities.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(distanceAnchor)));
+            final Vec3 sortAnchor = castStart;
+            entities.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(sortAnchor)));
+            Vec3 direction = castEnd.subtract(castStart).normalize();
+
+            // walk the entities intersected along this straight segment
+            boolean redirected = false;
             for (Entity target : entities) {
                 if (hitEntities.contains(target.getUUID())) {
                     continue;
                 }
                 HitResult hit = SkillcastingUtils.checkEntityIntersecting(target, castStart, castEnd, bbInflation);
-                if (hit.getType() != HitResult.Type.MISS) {
-                    work = true;
-                    hitResults.add(hit);
-                    if (i == castCount - 1) {
-                        // we are at the final cast, no need to calculate future ricochet
+                if (hit.getType() == HitResult.Type.MISS) {
+                    continue;
+                }
+                hitResults.add(hit);
+                hitEntities.add(target.getUUID());
+
+                // ricochet takes priority: consume a bounce charge if a valid redirect exists
+                if (ricochetRemaining > 0) {
+                    float bounceRange = rangeRemaining - (float) castStart.distanceTo(hit.getLocation());
+                    Optional<Vec3> ricochet = AbstractSkillProjectile.findRicochetDirection(level, hit.getLocation(), direction, bounceRange, filter, target);
+                    if (ricochet.isPresent()) {
+                        ricochetRemaining--;
+                        rangeRemaining = bounceRange;
+                        castStart = hit.getLocation();
+                        castEnd = castStart.add(ricochet.get().scale(rangeRemaining));
+                        redirected = true;
                         break;
                     }
-                    if (hit instanceof EntityHitResult entityHitResult) {
-                        hitEntities.add(entityHitResult.getEntity().getUUID());
-                    }
-                    Vec3 direction = castEnd.subtract(castStart).normalize();
-                    rangeRemaining -= (float) castStart.distanceTo(hit.getLocation());
-                    castStart = hit.getLocation();
-                    Optional<Vec3> ricochet = AbstractSkillProjectile.findRicochetDirection(level, castStart, direction, rangeRemaining, filter, hit instanceof EntityHitResult entityHitResult ? entityHitResult.getEntity() : originEntity);
-                    if (ricochet.isEmpty()) {
-                        break ricochetCast;
-                    }
-                    castEnd = castStart.add(ricochet.get().scale(rangeRemaining));
-                    break;
                 }
+
+                // no valid bounce: pierce through and keep traveling in the active direction
+                if (pierceRemaining > 0) {
+                    pierceRemaining--;
+                    continue;
+                }
+
+                // out of both ricochet and piercing budget: the beam stops at this entity
+                return hitResults;
             }
-            if (!work) {
-                break ricochetCast;
+
+            if (redirected) {
+                continue;
             }
-        }
-        if (hitResults.isEmpty()) {
-            if (checkForBlocks) {
-                assert lastBlockHitMiss != null; // loop is guaranteed to run, and block hit is guaranteed to be cast if checkForBlocks is set
-                return List.of(lastBlockHitMiss);
-            } else {
-                return List.of(BlockHitResult.miss(end, Direction.UP, BlockPos.containing(end)));
+
+            // the segment passed every entity available; resolve how it ends
+            if (hitWall) {
+                hitResults.add(blockHit);
+                if (allowBlockRicochet && ricochetRemaining > 0) {
+                    // reflect off the surface normal and continue into a new segment
+                    ricochetRemaining--;
+                    rangeRemaining -= (float) castStart.distanceTo(blockHit.getLocation());
+                    castStart = blockHit.getLocation();
+                    Vec3 normal = Vec3.atLowerCornerOf(blockHit.getDirection().getNormal());
+                    Vec3 reflected = direction.subtract(normal.scale(2 * normal.dot(direction)));
+                    castEnd = castStart.add(reflected.scale(rangeRemaining));
+                    continue;
+                }
+                return hitResults;
             }
-        } else {
+
+            // reached full range with nothing left to hit; cap the chain with a terminal endpoint
+            hitResults.add(blockHit);
             return hitResults;
         }
-    }
 
-    /**
-     * Performs the raycast with the current parameters. Start and end must be set.
-     *
-     * @return raycast HitResults
-     */
-    public List<HitResult> performRaycastWithPiercing(int pierceLevel) {
-        Objects.requireNonNull(start, "Start must be set to perform raycast");
-        Objects.requireNonNull(end, "End must be set to perform raycast");
-        if (pierceLevel < 0) {
-            // approximate infinite piercing as 64 passes
-            pierceLevel = 64;
-        }
-        if (pierceLevel > 64) {
-            pierceLevel = 64;
-        }
-        Vec3 castStart = start;
-        Vec3 castEnd = end;
-        List<HitResult> hitResults = new ArrayList<>();
-        BlockHitResult endHit;
-        if (checkForBlocks) {
-            endHit = level.clip(new ClipContext(castStart, castEnd, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, originEntity == null ? CollisionContext.empty() : CollisionContext.of(originEntity)));
-            castEnd = endHit.getLocation();
-        } else {
-            endHit = BlockHitResult.miss(end, Direction.UP, BlockPos.containing(end));
-        }
-        AABB collider = new AABB(castStart, castEnd).inflate(2);
-        List<? extends Entity> entities = level.getEntities(originEntity, collider, filter);
-        entities.sort(Comparator.comparingDouble(entity -> entity.distanceToSqr(castStart)));
-        boolean exhaustedPiercing = false;
-        for (Entity target : entities) {
-            HitResult hit = SkillcastingUtils.checkEntityIntersecting(target, castStart, castEnd, bbInflation);
-            if (hit.getType() != HitResult.Type.MISS) {
-                hitResults.add(hit);
-                if (pierceLevel == 0) {
-                    exhaustedPiercing = true;
-                    break;
-                }
-                pierceLevel--;
-            }
-        }
-        if (!exhaustedPiercing) {
-            hitResults.add(endHit);
+        if (hitResults.isEmpty()) {
+            // defensive fallback; the loop normally adds at least one terminal result above
+            return List.of(BlockHitResult.miss(end, Direction.UP, BlockPos.containing(end)));
         }
         return hitResults;
     }
