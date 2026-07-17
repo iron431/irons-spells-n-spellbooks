@@ -77,7 +77,7 @@ public class FlamingBarrageSpell extends AbstractSpell {
         fireball.applyContext(castContext);
         fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));
         Vec3 vec = castContext.direction().add(0, 0.2, 0).normalize();
-        fireball.shoot(vec.x, vec.y, vec.z, castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 0.5f), 20f);
+        fireball.shoot(vec.x, vec.y, vec.z, castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 1f), 20f);
         level.addFreshEntity(fireball);
     }
 }

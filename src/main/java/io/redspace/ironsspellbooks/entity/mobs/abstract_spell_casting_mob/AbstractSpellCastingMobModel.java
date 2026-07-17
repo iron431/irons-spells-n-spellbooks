@@ -33,7 +33,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
 
     @Override
     public ResourceLocation getAnimationResource(AbstractSpellCastingMob animatable) {
-        return AbstractSpellCastingMob.animationInstantCast;
+        return animatable.getCurrentAnimationFile();
     }
 
     @Override

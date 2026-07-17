@@ -260,8 +260,8 @@ public abstract class AbstractSpell extends AbstractSkill {
             return;
         }
         if (castContext.asEntityCaster() instanceof Player player) {
-            if (finishAnimation.getAnimationResource().isPresent() && !cancelled) {
-                AnimationHelper.animatePlayerStart(player, finishAnimation.getAnimationResource().get());
+            if (finishAnimation.getAnimation().isPresent() && !cancelled) {
+                AnimationHelper.animatePlayerStart(player, finishAnimation.getAnimation().get());
             } else/* if (finishAnimation.getType() == AnimationHolder.Type.STOP || cancelled)*/ {
                 AnimationHelper.cancelPlayerAnimation((AbstractClientPlayer) player);
             }
@@ -276,7 +276,7 @@ public abstract class AbstractSpell extends AbstractSkill {
             return;
         }
         if (castContext.asEntityCaster() instanceof Player player) {
-            animation.getAnimationResource().ifPresent(resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation));
+            animation.getAnimation().ifPresent(resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation));
         } else if (castContext.asEntityCaster() instanceof IAnimatedCastingMob animatedCastingMob) {
             animatedCastingMob.playCastingAnimation(animation);
         }

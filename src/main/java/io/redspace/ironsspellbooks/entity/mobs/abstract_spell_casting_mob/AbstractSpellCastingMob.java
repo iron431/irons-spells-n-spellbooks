@@ -54,6 +54,12 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private int drinkTime;
     public long singleAttackCooldownTimestamp;
 
+    public ResourceLocation getCurrentAnimationFile() {
+        return currentAnimationFile;
+    }
+
+    private ResourceLocation currentAnimationFile = animationInstantCast;
+
     protected AbstractSpellCastingMob(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.noCulling = true;
@@ -296,9 +302,10 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private PlayState castingAnimationPredicate(AnimationState<AbstractSpellCastingMob> event) {
         var controller = event.getController();
         if (this.queuedCastingAnimation != null) {
-            if (this.queuedCastingAnimation.getAnimationResource().isPresent()) {
+            if (this.queuedCastingAnimation.getAnimation().isPresent() && this.queuedCastingAnimation.getGeoFileResource().isPresent()) {
                 controller.forceAnimationReset();
-                controller.setAnimation(RawAnimation.begin().thenPlay(queuedCastingAnimation.getAnimationResource().get().getPath()));
+                this.currentAnimationFile = queuedCastingAnimation.getGeoFileResource().get();
+                controller.setAnimation(RawAnimation.begin().thenPlay(queuedCastingAnimation.getAnimation().get().getPath()));
             } else {
                 controller.stop();
             }

@@ -33,7 +33,7 @@ import static io.redspace.ironsspellbooks.config.ClientConfigs.SHOW_FIRST_PERSON
 public class AnimationHelper {
     public static void initializePlayerAnimationFactory() {
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
-                SpellAnimations.ANIMATION_RESOURCE,
+                SpellAnimations.PLAYER_ANIMATION_RESOURCE,
                 42,
                 (player) -> {
                     var animation = new ModifierLayer<>();
@@ -76,7 +76,7 @@ public class AnimationHelper {
     }
 
     public static void cancelPlayerAnimation(AbstractClientPlayer player) {
-        var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData(player).get(SpellAnimations.ANIMATION_RESOURCE);
+        var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData(player).get(SpellAnimations.PLAYER_ANIMATION_RESOURCE);
         if (animation != null) {
             animation.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(4, Ease.INOUTSINE), null, false);
             IronsAdjustmentModifier.INSTANCE.fadeOut(5);
@@ -87,7 +87,7 @@ public class AnimationHelper {
         var rawanimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
         if (rawanimation instanceof KeyframeAnimation keyframeAnimation) {
             //noinspection unchecked
-            var playerAnimationData = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.ANIMATION_RESOURCE);
+            var playerAnimationData = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.PLAYER_ANIMATION_RESOURCE);
             if (playerAnimationData != null) {
                 var animation = new KeyframeAnimationPlayer(keyframeAnimation) {
 //                    @Override

@@ -23,36 +23,39 @@ public class AnimationHolder {
             (buf, holder) -> {
                 TYPE_CODEC.encode(buf, holder.type);
                 if (holder.type == Type.ANIMATION) {
-                    buf.writeResourceLocation(holder.getAnimationResource().orElseThrow());
+                    buf.writeResourceLocation(holder.getGeoFileResource().orElseThrow());
+                    buf.writeResourceLocation(holder.getAnimation().orElseThrow());
                     buf.writeBoolean(holder.animatesLegs);
                 }
             },
             buf -> switch (TYPE_CODEC.decode(buf)) {
                 case PASS -> pass();
                 case STOP -> stop();
-                case ANIMATION -> new AnimationHolder(buf.readResourceLocation(), buf.readBoolean());
+                case ANIMATION ->
+                        new AnimationHolder(buf.readResourceLocation(), buf.readResourceLocation(), buf.readBoolean());
             });
 
     private static final AnimationHolder STOP_INSTANCE = new AnimationHolder(Type.STOP);
     private static final AnimationHolder PASS_INSTANCE = new AnimationHolder(Type.PASS);
 
-    // todo: also include an animation source resource for geckolib? no sure how that works at the moment
     private final @Nullable ResourceLocation animation;
-
+    private final @Nullable ResourceLocation geoResource;
     private final Type type;
     private final boolean animatesLegs;
 
-    public AnimationHolder(@NotNull ResourceLocation animation, boolean animatesLegs) {
+    public AnimationHolder(@NotNull ResourceLocation geoResource, @NotNull ResourceLocation animation, boolean animatesLegs) {
+        this.geoResource = geoResource;
         this.animation = animation;
         this.type = Type.ANIMATION;
         this.animatesLegs = animatesLegs;
     }
 
-    public AnimationHolder(@NotNull ResourceLocation animation) {
-        this(animation, false);
+    public AnimationHolder(@NotNull ResourceLocation geoResource, @NotNull ResourceLocation animation) {
+        this(geoResource, animation, false);
     }
 
     private AnimationHolder(Type type) {
+        this.geoResource = null;
         this.animation = null;
         this.type = type;
         this.animatesLegs = false;
@@ -66,8 +69,12 @@ public class AnimationHolder {
         return animatesLegs;
     }
 
-    public Optional<ResourceLocation> getAnimationResource() {
+    public Optional<ResourceLocation> getAnimation() {
         return Optional.ofNullable(animation);
+    }
+
+    public Optional<ResourceLocation> getGeoFileResource() {
+        return Optional.ofNullable(geoResource);
     }
 
     public static AnimationHolder stop() {
