@@ -27,8 +27,6 @@ public class SpellRenderingHelper {
 
     public static void renderRayOfSiphoning(Level level, PoseStack poseStack, Vec3 offset, Vec3 rayLine, MultiBufferSource bufferSource, float partialTicks) {
         poseStack.pushPose();
-        poseStack.translate(0, -0.125, 0.25);
-
         var pose = poseStack.last();
         Vec3 end;
         float distance = (float) rayLine.length();

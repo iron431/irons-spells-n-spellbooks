@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -11,13 +12,13 @@ import io.redspace.ironsspellbooks.network.particles.BloodSiphonParticlesPacket;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import io.redspace.skillcasting.data.cast.PositionAnchor;
-import io.redspace.skillcasting.data.CastContext;
-import io.redspace.skillcasting.data.resolver.MobAimDirectionResolver;
-import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.client.render.ClientSkillTicker;
 import io.redspace.skillcasting.client.render.SkillcastLevelRenderableManager;
+import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.data.cast.CastType;
+import io.redspace.skillcasting.data.cast.PositionAnchor;
+import io.redspace.skillcasting.data.resolver.MobAimDirectionResolver;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.RaycastBuilder;
 import net.minecraft.network.chat.Component;
@@ -27,11 +28,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,14 +90,6 @@ public class RayOfSiphoningSpell extends AbstractSpell {
 
     }
 
-//    @Override
-//    public boolean checkPreCastConditions(CastContext castContext) {
-//        if(SkillcastingUtils.preCastTargetHelper(castContext, 0.35f, false)){
-//            castContext.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, new MobAimDirectionResolver(castContext));
-//        }
-//        return true;
-//    }
-
     @Override
     public void onClientCastStart(CastContext castContext) {
         super.onClientCastStart(castContext);
@@ -101,17 +97,29 @@ public class RayOfSiphoningSpell extends AbstractSpell {
         SkillcastLevelRenderableManager.track(
                 castContext.caster(),
                 (poseStack, buf, partialTick, caster, data, cast) -> {
-                    var hitResult = RaycastBuilder.fromCast(cast.context(), PositionAnchor.CASTING_POSITION)
+                    // fixme: pretty sure this kills the server
+                    List<HitResult> hitResults = RaycastBuilder.fromCast(cast.context(), PositionAnchor.CASTING_POSITION)
                             .checkForBlocks(true)
                             .bbInflation(0.15f)
-                            .filter(Utils::canHitWithRaycast)
-                            .build();
-                    // fixme: pretty sure this kills the server
-                    SpellRenderingHelper.renderRayOfSiphoning(caster.level(), poseStack, castContext.position(PositionAnchor.CASTING_POSITION).subtract(
-                                    castContext.position(PositionAnchor.ORIGIN)
-                            ).subtract(castContext.direction().scale(0.25)).subtract(0, 0.25, 0),
-                            hitResult.getLocation().subtract(castContext.position(PositionAnchor.CASTING_POSITION)), buf, partialTick);
-                }
+                            .performRaycastWithPiercingAndRicochet(castContext, true);
+                    List<Vec3> rayInflectionPoints = new ArrayList<>(List.of(new Vec3(0,-.2,0)));
+                    hitResults.stream().map(r -> r.getLocation().subtract(castContext.position(PositionAnchor.CASTING_POSITION_CENTER))).forEach(rayInflectionPoints::add);
+                    for (int i = rayInflectionPoints.size() - 2; i >= 0; i--) {
+                        // backwards iteration for alpha clipping
+                        poseStack.pushPose();
+                        Vec3 start = rayInflectionPoints.get(i);
+                        Vec3 end = rayInflectionPoints.get(i + 1);
+                        Vec3 ray = end.subtract(start);
+                        Vec3 direction = ray.normalize();
+                        Vec2 rotation = Utils.rotationFromDirection(direction);
+                        poseStack.translate(start.x, start.y, start.z);
+                        poseStack.mulPose(Axis.YP.rotation(rotation.y));
+                        poseStack.mulPose(Axis.XP.rotation(-rotation.x));
+                        SpellRenderingHelper.renderRayOfSiphoning(caster.level(), poseStack, start, ray, buf, partialTick);
+                        poseStack.popPose();
+                    }
+
+                }, false
         );
     }
 
@@ -129,18 +137,20 @@ public class RayOfSiphoningSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        var hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
+        List<HitResult> hitResults = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
                 .bbInflation(0.15f)
-                .build();
-        if (hitResult.getType() == HitResult.Type.ENTITY) {
-            Entity target = ((EntityHitResult) hitResult).getEntity();
-            if (target.canBeHitByProjectile()) {
-                if (DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f),
-                        getDamageSourceIndirect(castContext))) {
-                    Vec3 targetPos = target.position().add(0, target.getBbHeight() / 2, 0);
-                    Vec3 casterPos = castContext.position(PositionAnchor.CENTER);
-                    castContext.caster().distributeToClients(new BloodSiphonParticlesPacket(targetPos, casterPos));
+                .performRaycastWithPiercingAndRicochet(castContext, true);
+        for (HitResult hitResult : hitResults) {
+            if (hitResult instanceof EntityHitResult entityHitResult) {
+                Entity target = entityHitResult.getEntity();
+                if (target.canBeHitByProjectile()) {
+                    if (DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f),
+                            getDamageSourceIndirect(castContext))) {
+                        Vec3 targetPos = target.position().add(0, target.getBbHeight() / 2, 0);
+                        Vec3 casterPos = castContext.position(PositionAnchor.CENTER);
+                        castContext.caster().distributeToClients(new BloodSiphonParticlesPacket(targetPos, casterPos));
+                    }
                 }
             }
         }
@@ -149,17 +159,23 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     @Override
     public Optional<ClientSkillTicker> createClientTicker() {
         return Optional.of((caster, data, cast) -> {
-                    HitResult hit = RaycastBuilder.fromCast(cast.context(), PositionAnchor.CASTING_POSITION)
+                    var castContext = cast.context();
+                    List<HitResult> hitResults = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                             .checkForBlocks(true)
-                            .build();
-                    Vec3 impact = hit.getLocation().subtract(0, .25, 0);
-                    for (int i = 0; i < 8; i++) {
-                        Vec3 motion = new Vec3(
-                                Utils.getRandomScaled(.2f),
-                                Utils.getRandomScaled(.2f),
-                                Utils.getRandomScaled(.2f)
-                        );
-                        caster.level().addParticle(ParticleHelper.SIPHON, impact.x + motion.x, impact.y + motion.y, impact.z + motion.z, motion.x, motion.y, motion.z);
+                            .bbInflation(0.15f)
+                            .performRaycastWithPiercingAndRicochet(castContext, true);
+                    for (var hit : hitResults) {
+                        if (hit instanceof BlockHitResult blockHitResult) {
+                            Vec3 impact = hit.getLocation().subtract(0, .25, 0);
+                            for (int i = 0; i < 8; i++) {
+                                Vec3 motion = new Vec3(
+                                        Utils.getRandomScaled(.2f),
+                                        Utils.getRandomScaled(.2f),
+                                        Utils.getRandomScaled(.2f)
+                                );
+                                caster.level().addParticle(ParticleHelper.SIPHON, impact.x + motion.x, impact.y + motion.y + .2, impact.z + motion.z, motion.x, motion.y, motion.z);
+                            }
+                        }
                     }
                 }
         );

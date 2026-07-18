@@ -23,7 +23,8 @@ import java.util.List;
 public class SkillcastLevelRenderableManager {
     private static final List<Wrapped> RENDERABLES = new ArrayList<>();
 
-    private record Wrapped(CasterRef casterRef, LevelRenderable renderable, RenderInfoMutable renderInfo) {
+    private record Wrapped(CasterRef casterRef, LevelRenderable renderable, RenderInfoMutable renderInfo,
+                           boolean rotateWithCast) {
     }
 
     private static class RenderInfoMutable {
@@ -83,8 +84,10 @@ public class SkillcastLevelRenderableManager {
             float yaw = (float) Math.atan2(renderDir.x, renderDir.z);
 
             poseStack.translate(renderPos.x, renderPos.y, renderPos.z);
-            poseStack.mulPose(Axis.YP.rotationDegrees(yaw * Mth.RAD_TO_DEG));
-            poseStack.mulPose(Axis.XP.rotationDegrees(-pitch * Mth.RAD_TO_DEG));
+            if(wrapped.rotateWithCast){
+                poseStack.mulPose(Axis.YP.rotationDegrees(yaw * Mth.RAD_TO_DEG));
+                poseStack.mulPose(Axis.XP.rotationDegrees(-pitch * Mth.RAD_TO_DEG));
+            }
             try {
                 renderable.render(poseStack, buf, partialTick, casterRef, data, activeCast);
             } catch (Exception e) {
@@ -95,7 +98,7 @@ public class SkillcastLevelRenderableManager {
         RENDERABLES.removeAll(toRemove);
     }
 
-    public static void track(CasterRef casterRef, LevelRenderable ticker) {
-        RENDERABLES.add(new Wrapped(casterRef, ticker, new RenderInfoMutable()));
+    public static void track(CasterRef casterRef, LevelRenderable ticker, boolean rotateWithCast) {
+        RENDERABLES.add(new Wrapped(casterRef, ticker, new RenderInfoMutable(), rotateWithCast));
     }
 }

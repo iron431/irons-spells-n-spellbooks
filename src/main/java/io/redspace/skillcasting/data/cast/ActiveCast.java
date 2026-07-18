@@ -34,11 +34,15 @@ public class ActiveCast {
     }
 
     public float completionPercent(long gameTime) {
+        return completionPercent(gameTime, 0);
+    }
+
+    public float completionPercent(long gameTime, float partialTick) {
         int duration = durationTicks();
         if (duration <= 0) {
             return 0;
         }
-        return Math.min(1f, elapsedTicks(gameTime) / (float) duration);
+        return Math.min(1f, (elapsedTicks(gameTime) + partialTick) / (float) duration);
     }
 
     public Level level() {

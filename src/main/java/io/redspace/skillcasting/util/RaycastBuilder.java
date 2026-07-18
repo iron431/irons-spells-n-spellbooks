@@ -137,12 +137,21 @@ public final class RaycastBuilder {
         return performRaycastWithPiercingAndRicochet(pierceLevel, 0, false);
     }
 
+    public List<HitResult> performRaycastWithPiercingAndRicochet(CastContext castContext, boolean allowBlockRicochet) {
+        return performRaycastWithPiercingAndRicochet(
+                castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_PIERCE, 0),
+                castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_RICOCHET, 0),
+                allowBlockRicochet
+        );
+    }
+
     /**
      * Performs the raycast with the current parameters, combining piercing and ricochet in a single
      * optimized solver. Start and end must be set.
      * <p>
      * Attempts to consume a ricochet level to redirect. If no charges or no valid direction is found, it will attempt to consume piercing charges until a final entity is hit.
      * Each entity hit attempts to ricochet again.
+     *
      * @param allowBlockRicochet whether striking a block surface reflects the beam (consuming a ricochet
      *                           charge) instead of terminating at the wall.
      * @return raycast HitResults, ordered from origin outward along the beam path

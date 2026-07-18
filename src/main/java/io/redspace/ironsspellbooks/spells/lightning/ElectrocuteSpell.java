@@ -86,7 +86,7 @@ public class ElectrocuteSpell extends AbstractSpell {
                     // fixme: pretty sure this kills the server
                     float rangeMultiplier = cast.context().getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 8f) / 9f;
                     SpellRenderingHelper.renderElectrocute(caster.level(), poseStack, rangeMultiplier, buf, castContext.getOrDefault(SkillcastingComponentTypes.RANDOM_SEED, 0), partialTick);
-                }
+                }, true
         );
     }
 

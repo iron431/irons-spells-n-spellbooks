@@ -1,22 +1,33 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceProjectile;
+import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.skillcasting.data.cast.PositionAnchor;
+import io.redspace.skillcasting.client.render.SkillcastLevelRenderableManager;
 import io.redspace.skillcasting.data.CastContext;
-import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.skillcasting.data.cast.CastType;
+import io.redspace.skillcasting.data.cast.EntityCasterRef;
+import io.redspace.skillcasting.data.cast.PositionAnchor;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -81,6 +92,39 @@ public class LightningLanceSpell extends AbstractSpell {
         lance.setPos(origin.add(0, lance.getBoundingBox().getYsize() * 0.25f, 0).add(castContext.direction()));
         lance.shootFromContext(lance, castContext);
         level.addFreshEntity(lance);
+    }
+
+    @Override
+    public void onClientCastStart(CastContext castContext) {
+        super.onClientCastStart(castContext);
+        SkillcastLevelRenderableManager.track(castContext.caster(),
+                (poseStack, buf, partialTick, casterRef, data, activeCast) -> {
+                    if (casterRef instanceof EntityCasterRef entityCasterRef) {
+                        // tranlsate to hand
+                        var renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityCasterRef.entity());
+                        if (renderer instanceof LivingEntityRenderer livingEntityRenderer && livingEntityRenderer.getModel() instanceof HumanoidModel<?> humanoidModel) {
+                            LivingEntity livingEntity = (LivingEntity) entityCasterRef.entity();
+                            // todo: invert for left handed logic\
+                            poseStack.scale(1.0F, -1.0F, -1.0F);
+                            float yaw = Mth.lerp(partialTick, livingEntity.yBodyRotO, livingEntity.yBodyRot);
+                            poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
+                            humanoidModel.translateToHand(activeCast.context().getCastSource().isFromSlot(EquipmentSlot.OFFHAND) ? HumanoidArm.LEFT : HumanoidArm.RIGHT, poseStack);
+                            poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
+                            // fixme: left hand stuff too
+                            poseStack.translate((double) ((float) (/*offhand ? -1 :*/ 1) / 32.0F) - .125, .5, 0);
+                        }
+                    } else {
+                        Vec3 renderDir = activeCast.context().direction();
+                        float pitch = (float) -Math.asin(renderDir.y);
+                        float yaw = (float) -Math.atan2(renderDir.x, renderDir.z);
+                        poseStack.mulPose(Axis.YP.rotationDegrees(180 - yaw * Mth.RAD_TO_DEG));
+                        poseStack.mulPose(Axis.XP.rotationDegrees(-pitch * Mth.RAD_TO_DEG));
+                    }
+                    float scale = activeCast.completionPercent(casterRef.level().getGameTime(), partialTick);
+                    scale = (float) Mth.smoothstep(Mth.clamp(scale + .3f, 0, 1));
+                    poseStack.scale(scale, scale, scale);
+                    LightningLanceRenderer.renderModel(poseStack, buf, activeCast.elapsedTicks(casterRef.level().getGameTime()));
+                }, false);
     }
 
     @Override
