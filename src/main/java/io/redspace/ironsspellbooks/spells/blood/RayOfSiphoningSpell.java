@@ -102,7 +102,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
                             .checkForBlocks(true)
                             .bbInflation(0.15f)
                             .performRaycastWithPiercingAndRicochet(castContext, true);
-                    List<Vec3> rayInflectionPoints = new ArrayList<>(List.of(new Vec3(0,-.2,0)));
+                    List<Vec3> rayInflectionPoints = new ArrayList<>(List.of(new Vec3(0, -.2, 0)));
                     hitResults.stream().map(r -> r.getLocation().subtract(castContext.position(PositionAnchor.CASTING_POSITION_CENTER))).forEach(rayInflectionPoints::add);
                     for (int i = rayInflectionPoints.size() - 2; i >= 0; i--) {
                         // backwards iteration for alpha clipping
@@ -145,6 +145,9 @@ public class RayOfSiphoningSpell extends AbstractSpell {
             if (hitResult instanceof EntityHitResult entityHitResult) {
                 Entity target = entityHitResult.getEntity();
                 if (target.canBeHitByProjectile()) {
+                    if (target instanceof LivingEntity) {
+                        DamageSources.ignoreNextKnockback((LivingEntity) target);
+                    }
                     if (DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f),
                             getDamageSourceIndirect(castContext))) {
                         Vec3 targetPos = target.position().add(0, target.getBbHeight() / 2, 0);
