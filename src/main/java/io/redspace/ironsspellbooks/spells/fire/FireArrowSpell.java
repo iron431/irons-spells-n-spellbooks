@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.fire;
 
+import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -8,15 +9,27 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowProjectile;
+import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowRenderer;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.skillcasting.data.cast.PositionAnchor;
+import io.redspace.skillcasting.client.render.SkillcastLevelRenderableManager;
 import io.redspace.skillcasting.data.CastContext;
-import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.data.cast.CastType;
+import io.redspace.skillcasting.data.cast.EntityCasterRef;
+import io.redspace.skillcasting.data.cast.PositionAnchor;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Optional;
@@ -78,9 +91,48 @@ public class FireArrowSpell extends AbstractSpell {
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         FireArrowProjectile magicArrow = new FireArrowProjectile(level, castContext.asEntityCaster());
-        magicArrow.setPos(castContext.position(PositionAnchor.CASTING_POSITION).add(castContext.direction()).add(0, magicArrow.getBoundingBox().getYsize() * -.5f, 0));
+        magicArrow.setPos(castContext.position(PositionAnchor.CASTING_POSITION).add(castContext.direction().scale(1.5)).subtract(0, magicArrow.getBbHeight() * 0.25, 0));
         magicArrow.shootFromContext(magicArrow, castContext);
         level.addFreshEntity(magicArrow);
+    }
+
+    @Override
+    public void onClientCastStart(CastContext castContext) {
+        super.onClientCastStart(castContext);
+        SkillcastLevelRenderableManager.track(castContext.caster(),
+                (poseStack, buf, partialTick, casterRef, data, activeCast) -> {
+                    if (casterRef instanceof EntityCasterRef entityCasterRef) {
+                        // tranlsate to hand
+                        var renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityCasterRef.entity());
+                        if (renderer instanceof LivingEntityRenderer livingEntityRenderer && livingEntityRenderer.getModel() instanceof HumanoidModel<?> humanoidModel) {
+                            LivingEntity livingEntity = (LivingEntity) entityCasterRef.entity();
+                            boolean mainhandIsLefthand = livingEntity instanceof Player player && player.getMainArm() == HumanoidArm.LEFT;
+                            boolean leftHand = activeCast.context().getCastSource().isFromSlot(EquipmentSlot.OFFHAND) ^ mainhandIsLefthand;
+                            poseStack.scale(1.0F, -1.0F, -1.0F);
+                            float yaw = Mth.lerp(partialTick, livingEntity.yBodyRotO, livingEntity.yBodyRot);
+                            poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
+                            humanoidModel.translateToHand(leftHand ? HumanoidArm.LEFT : HumanoidArm.RIGHT, poseStack);
+                            poseStack.translate(((leftHand ? -1 : 1) / 32.0F), 1f, 0);
+                            poseStack.mulPose(Axis.XP.rotationDegrees(90));
+//                            Vec3 renderDir = activeCast.context().direction();
+//                            float yawCompensation = Mth.degreesDifference((float) Mth.atan2(renderDir.x, renderDir.z) * -Mth.RAD_TO_DEG, yaw);
+//                            float animationModifierScale = 0.5f;
+//                            float itLooksBadInFirstPersonScale = 0.5f;
+//                            poseStack.mulPose(Axis.YP.rotationDegrees(-yawCompensation * animationModifierScale * itLooksBadInFirstPersonScale));
+                        }
+                    } else {
+                        Vec3 renderDir = activeCast.context().direction();
+                        float pitch = (float) -Math.asin(renderDir.y);
+                        float yaw = (float) -Math.atan2(renderDir.x, renderDir.z);
+                        poseStack.mulPose(Axis.YP.rotationDegrees(180 - yaw * Mth.RAD_TO_DEG));
+                        poseStack.mulPose(Axis.XP.rotationDegrees(-pitch * Mth.RAD_TO_DEG));
+                        poseStack.translate(0, 0, -1);
+                    }
+                    float scale = activeCast.completionPercent(casterRef.level().getGameTime(), partialTick);
+                    scale = (float) Mth.smoothstep(Mth.clamp(scale + .3f, 0, 1));
+                    poseStack.scale(scale, scale, scale);
+                    FireArrowRenderer.renderModel(poseStack, buf);
+                }, false);
     }
 
     @Override

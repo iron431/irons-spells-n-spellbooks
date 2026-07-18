@@ -28,6 +28,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -104,14 +105,14 @@ public class LightningLanceSpell extends AbstractSpell {
                         var renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityCasterRef.entity());
                         if (renderer instanceof LivingEntityRenderer livingEntityRenderer && livingEntityRenderer.getModel() instanceof HumanoidModel<?> humanoidModel) {
                             LivingEntity livingEntity = (LivingEntity) entityCasterRef.entity();
-                            // todo: invert for left handed logic\
+                            boolean mainhandIsLefthand = livingEntity instanceof Player player && player.getMainArm() == HumanoidArm.LEFT;
+                            boolean leftHand = activeCast.context().getCastSource().isFromSlot(EquipmentSlot.OFFHAND) ^ mainhandIsLefthand;
                             poseStack.scale(1.0F, -1.0F, -1.0F);
                             float yaw = Mth.lerp(partialTick, livingEntity.yBodyRotO, livingEntity.yBodyRot);
                             poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
-                            humanoidModel.translateToHand(activeCast.context().getCastSource().isFromSlot(EquipmentSlot.OFFHAND) ? HumanoidArm.LEFT : HumanoidArm.RIGHT, poseStack);
+                            humanoidModel.translateToHand(leftHand ? HumanoidArm.LEFT : HumanoidArm.RIGHT, poseStack);
                             poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
-                            // fixme: left hand stuff too
-                            poseStack.translate((double) ((float) (/*offhand ? -1 :*/ 1) / 32.0F) - .125, .5, 0);
+                            poseStack.translate(((leftHand ? -1 : 1) / 32.0F), 0.5f, 0);
                         }
                     } else {
                         Vec3 renderDir = activeCast.context().direction();
