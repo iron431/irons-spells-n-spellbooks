@@ -4,7 +4,6 @@ package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.HumanoidRenderer;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.render.ChargeSpellLayer;
 import io.redspace.ironsspellbooks.render.EchoingStrikesHologramLayer;
 import io.redspace.ironsspellbooks.render.EnergySwirlLayer;
 import io.redspace.ironsspellbooks.render.GeoSpinAttackLayer;
@@ -30,7 +29,6 @@ public abstract class AbstractSpellCastingMobRenderer extends HumanoidRenderer<A
         //this.addLayer(new GeoEvasionLayer(this));
         addRenderLayer(new EnergySwirlLayer.Geo(this, EVASION_TEXTURE, MobEffectRegistry.EVASION));
         addRenderLayer(new EnergySwirlLayer.Geo(this, CHARGE_TEXTURE, MobEffectRegistry.CHARGED));
-        addRenderLayer(new ChargeSpellLayer.Geo(this));
         addRenderLayer(new GlowingEyesLayer.Geo(this));
         addRenderLayer(new EchoingStrikesHologramLayer.Geo(this));
         addRenderLayer(new GeoSpinAttackLayer(this));

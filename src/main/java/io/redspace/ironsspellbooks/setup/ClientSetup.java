@@ -140,7 +140,6 @@ import io.redspace.ironsspellbooks.render.AffinityRingRenderer;
 import io.redspace.ironsspellbooks.render.AngelWingsLayer;
 import io.redspace.ironsspellbooks.render.AngelWingsModel;
 import io.redspace.ironsspellbooks.render.ArmorCapeLayer;
-import io.redspace.ironsspellbooks.render.ChargeSpellLayer;
 import io.redspace.ironsspellbooks.render.ClientStaffItemExtensions;
 import io.redspace.ironsspellbooks.render.EchoingStrikesHologramLayer;
 import io.redspace.ironsspellbooks.render.EnergySwirlLayer;
@@ -305,18 +304,8 @@ public class ClientSetup {
             livingRenderer.addLayer(new ArmorCapeLayer(livingRenderer));
             livingRenderer.addLayer(new EnergySwirlLayer.Vanilla(livingRenderer, EVASION_TEXTURE, MobEffectRegistry.EVASION));
             livingRenderer.addLayer(new EnergySwirlLayer.Vanilla(livingRenderer, CHARGE_TEXTURE, MobEffectRegistry.CHARGED));
-            livingRenderer.addLayer(new ChargeSpellLayer.Vanilla<>(livingRenderer));
             livingRenderer.addLayer(new GlowingEyesLayer.Vanilla<>(livingRenderer));
         }
-
-
-    /*.valu((entityType)->{
-            if(entityType. instanceof EntityType<LivingEntity> livingType)
-            if(event.getRenderer(entityType) instanceof EntityRenderer<? extends LivingEntity> livingRenderer)
-                livingRenderer.addlayer
-        });*/
-//        EntityRenderer<? extends LivingEntity> genericRender = event.getRenderer()
-        //EntityRenderer<? extends AbstractSpellCastingMob> renderer = event.getRenderer(EntityRegistry.PYROMANCER.get());
     }
 
     @SubscribeEvent
