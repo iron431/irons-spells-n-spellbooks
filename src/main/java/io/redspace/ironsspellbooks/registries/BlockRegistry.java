@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTil
 import io.redspace.ironsspellbooks.block.arcane_anvil.ArcaneAnvilBlock;
 import io.redspace.ironsspellbooks.block.chiseled_bookshelf.WisewoodChiseledBookShelfBlockEntity;
 import io.redspace.ironsspellbooks.block.chiseled_bookshelf.WisewoodChiseledBookshelfBlock;
+import io.redspace.ironsspellbooks.block.cooked_ice_spider_egg.CookedIceSpiderEggBlock;
 import io.redspace.ironsspellbooks.block.ice_spider_egg.IceSpiderEggBlock;
 import io.redspace.ironsspellbooks.block.inscription_table.InscriptionTableBlock;
 import io.redspace.ironsspellbooks.block.pedestal.PedestalBlock;
@@ -69,6 +70,8 @@ public class BlockRegistry {
     public static final DeferredHolder<Block, Block> MITHRIL_ORE = BLOCKS.register("mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
     public static final DeferredHolder<Block, Block> MITHRIL_ORE_DEEPSLATE = BLOCKS.register("deepslate_mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
     public static final DeferredHolder<Block, Block> ICE_SPIDER_EGG = BLOCKS.register("ice_spider_egg", () -> new IceSpiderEggBlock(BlockBehaviour.Properties.of().mapColor(DyeColor.GRAY).strength(3, 1).noOcclusion()));
+    public static final DeferredHolder<Block, Block> COOKED_ICE_SPIDER_EGG = BLOCKS.register("cooked_ice_spider_egg",
+            () -> new CookedIceSpiderEggBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.CAKE).sound(SoundType.HONEY_BLOCK)));
     public static final DeferredHolder<Block, Block> BOOK_STACK = BLOCKS.register("book_stack", BookStackBlock::new);
     public static final DeferredHolder<Block, Block> WISEWOOD_PLANKS = BLOCKS.register("wisewood_planks", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_PLANKS)));
     public static final DeferredHolder<Block, Block> WISEWOOD_BOOKSHELF = BLOCKS.register("wisewood_bookshelf", () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.BOOKSHELF)));

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " H ",
+    "SES",
+    " B "
+  ],
+  "key": {
+    "H": {
+      "item": "minecraft:honey_bottle"
+    },
+    "E": {
+      "item": "irons_spellbooks:ice_spider_egg"
+    },
+    "S": {
+      "item": "minecraft:sweet_berries"
+    },
+    "B": {
+      "item": "minecraft:bowl"
+    }
+  },
+  "result": {
+    "id": "irons_spellbooks:prepared_ice_spider_egg",
+    "count": 1
+  }
+}

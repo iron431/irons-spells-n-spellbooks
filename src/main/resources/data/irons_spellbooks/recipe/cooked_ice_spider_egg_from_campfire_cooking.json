@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 600,
+  "experience": 0.35,
+  "ingredient": {
+    "item": "irons_spellbooks:prepared_ice_spider_egg"
+  },
+  "result": {
+    "id": "irons_spellbooks:cooked_ice_spider_egg"
+  }
+}

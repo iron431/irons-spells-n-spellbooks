@@ -336,6 +336,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> CHAINED_BOOK = registerItem("chained_book", Item::new);
     public static final DeferredHolder<Item, Item> BLOODY_VELLUM = registerItem("bloody_vellum", Item::new);
     public static final DeferredHolder<Item, Item> ICY_FANG = registerItem("icy_fang", Item::new);
+    public static final DeferredHolder<Item, Item> PREPARED_ICE_SPIDER_EGG = registerItem("prepared_ice_spider_egg", Item::new);
     public static final DeferredHolder<Item, Item> UNCHAINED_BOOK = registerItem("unchained_book",
             (properties) -> new UnchainedBookItem(properties.stacksTo(1).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).component(DataComponents.WRITTEN_BOOK_CONTENT, UnchainedBookItem.CONTENTS)));
 
@@ -406,6 +407,8 @@ public class ItemRegistry {
             (properties) -> new BlockItem(BlockRegistry.CINDEROUS_KEYSTONE.get(), new Item.Properties().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));
     public static final DeferredHolder<Item, Item> ICE_SPIDER_EGG_BLOCK_ITEM = registerItem("ice_spider_egg",
             (properties) -> new BlockItem(BlockRegistry.ICE_SPIDER_EGG.get(), new Item.Properties().rarity(Rarity.RARE)));
+    public static final DeferredHolder<Item, Item> COOKED_ICE_SPIDER_EGG_BLOCK_ITEM = registerItem("cooked_ice_spider_egg",
+            (properties) -> new BlockItem(BlockRegistry.COOKED_ICE_SPIDER_EGG.get(), new Item.Properties().stacksTo(1)));
     public static final DeferredHolder<Item, Item> BOOK_STACK_BLOCK_ITEM = registerItem("book_stack",
             (properties) -> new SimpleDescriptiveBlockItem(BlockRegistry.BOOK_STACK.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> WISEWOOD_BOOKSHELF_BLOCK_ITEM = registerItem("wisewood_bookshelf",
