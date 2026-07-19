@@ -43,7 +43,7 @@ import io.redspace.ironsspellbooks.util.UpgradeUtils;
 import io.redspace.ironsspellbooks.worldgen.IceSpiderPatrolSpawner;
 import io.redspace.skillcasting.api.event.BuildCastContextEvent;
 import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
-import io.redspace.skillcasting.api.event.SkillCastCompleteEvent;
+import io.redspace.skillcasting.api.event.SkillEvent;
 import io.redspace.skillcasting.api.event.SkillSelectionPriority;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.SkillcastingData;
@@ -303,10 +303,10 @@ public class ServerPlayerEvents {
     }
 
     @SubscribeEvent
-    public static void onCastComplete(SkillCastCompleteEvent event) {
-        if (event.context().asEntityCaster() instanceof ServerPlayer serverPlayer &&
-                (event.reason() == CastEndReason.COMPLETED || event.context().skill().value().getCastType() == CastType.CONTINUOUS)) {
-            Scroll.attemptRemoveScrollAfterCast(serverPlayer, event.context());
+    public static void onCastComplete(SkillEvent.OnCastComplete event) {
+        if (event.getCastContext().asEntityCaster() instanceof ServerPlayer serverPlayer &&
+                (event.getCastEndReason() == CastEndReason.COMPLETED || event.getCastContext().skill().value().getCastType() == CastType.CONTINUOUS)) {
+            Scroll.attemptRemoveScrollAfterCast(serverPlayer, event.getCastContext());
         }
     }
 

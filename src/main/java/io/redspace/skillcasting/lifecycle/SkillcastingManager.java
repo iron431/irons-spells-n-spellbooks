@@ -1,30 +1,29 @@
 package io.redspace.skillcasting.lifecycle;
 
+import io.redspace.skillcasting.api.event.BuildCastContextEvent;
+import io.redspace.skillcasting.api.event.BuildCooldownEvent;
+import io.redspace.skillcasting.api.event.SkillEvent;
+import io.redspace.skillcasting.cooldown.CooldownInstance;
+import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.data.cast.ActiveCast;
 import io.redspace.skillcasting.data.cast.CastEndReason;
+import io.redspace.skillcasting.data.cast.CastResult;
+import io.redspace.skillcasting.data.cast.CastSource;
+import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.cast.CasterId;
 import io.redspace.skillcasting.data.cast.CasterRef;
-import io.redspace.skillcasting.api.event.BuildCastContextEvent;
-import io.redspace.skillcasting.api.event.BuildCooldownEvent;
-import io.redspace.skillcasting.api.event.SkillCastCompleteEvent;
-import io.redspace.skillcasting.api.event.SkillPreCastEvent;
 import io.redspace.skillcasting.data.recast.RecastConfig;
 import io.redspace.skillcasting.data.recast.RecastInstance;
 import io.redspace.skillcasting.data.recast.RecastManager;
 import io.redspace.skillcasting.data.resolver.CasterDirectionResolver;
 import io.redspace.skillcasting.data.resolver.CasterPositionResolver;
-import io.redspace.skillcasting.data.AbstractSkill;
-import io.redspace.skillcasting.data.cast.CastResult;
-import io.redspace.skillcasting.data.cast.CastType;
-import io.redspace.skillcasting.cooldown.CooldownInstance;
-import io.redspace.skillcasting.data.cast.CastSource;
+import io.redspace.skillcasting.data.selection.SkillSelection;
+import io.redspace.skillcasting.data.selection.SkillSelectionManager;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
-import io.redspace.skillcasting.data.selection.SkillSelection;
-import io.redspace.skillcasting.data.selection.SkillSelectionManager;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -104,9 +103,7 @@ public final class SkillcastingManager {
         if (!skill.checkPreCastConditions(castContext)) {
             return false;
         }
-        SkillPreCastEvent preCast = new SkillPreCastEvent(castContext);
-        NeoForge.EVENT_BUS.post(preCast);
-        if (preCast.isCanceled()) {
+        if (NeoForge.EVENT_BUS.post(new SkillEvent.BeforeCastStart(castContext)).isCanceled()) {
             return false;
         }
 
@@ -223,9 +220,9 @@ public final class SkillcastingManager {
     // ---- execution / completion ----------------------------------------------------------------
 
     private static void onCast(CastContext castContext) {
-        // todo: cast event
         castContext.skill().value().onCast((ServerLevel) castContext.level(), castContext);
         castContext.skill().value().onPostCast(castContext);
+        NeoForge.EVENT_BUS.post(new SkillEvent.OnCast(castContext));
     }
 
     private static void endCast(CasterRef caster, SkillcastingData data, ActiveCast active, CastEndReason reason) {
@@ -237,7 +234,7 @@ public final class SkillcastingManager {
         AbstractSkill skill = castContext.skill().value();
         // on cast complete
         skill.onServerCastComplete(castContext, reason);
-        NeoForge.EVENT_BUS.post(new SkillCastCompleteEvent(castContext, reason));
+        NeoForge.EVENT_BUS.post(new SkillEvent.OnCastComplete(castContext, reason));
         // handle recasting
         boolean isOnRecast = false;
         boolean completedToFruition = reason.isCompletion() || skill.getCastType() == CastType.CONTINUOUS;
@@ -257,9 +254,11 @@ public final class SkillcastingManager {
                 RecastConfig recastConfig = castContext.getOrNull(SkillcastingComponentTypes.RECAST_CONFIG);
                 if (recastConfig != null && recastConfig.totalCasts() > 1) {
                     RecastInstance instance = new RecastInstance(recastConfig, castContext);
-                    data.recasts().addRecast(instance);
-                    isOnRecast = true;
-                    SkillcastingNetwork.syncRecast(caster, instance.skill(), instance);
+                    if (!NeoForge.EVENT_BUS.post(new SkillEvent.OnRecastStart(castContext, instance)).isCanceled()) {
+                        data.recasts().addRecast(instance);
+                        isOnRecast = true;
+                        SkillcastingNetwork.syncRecast(caster, instance.skill(), instance);
+                    }
                 }
             }
         }

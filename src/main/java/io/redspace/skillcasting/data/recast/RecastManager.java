@@ -1,6 +1,7 @@
 package io.redspace.skillcasting.data.recast;
 
 import com.mojang.serialization.Codec;
+import io.redspace.skillcasting.api.event.SkillEvent;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.AbstractSkill;
@@ -9,6 +10,7 @@ import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.core.Holder;
+import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -40,6 +42,7 @@ public final class RecastManager {
         CastContext castContext = new CastContext(skill, caster, caster.level());
         castContext.components().applyFrom(instance.components());
         skill.value().onRecastFinished(castContext, result);
+        NeoForge.EVENT_BUS.post(new SkillEvent.OnRecastComplete(castContext, instance, result));
         SkillcastingManager.triggerCooldown(castContext);
         SkillcastingNetwork.syncRecastRemove(caster, skill);
     }
@@ -120,6 +123,7 @@ public final class RecastManager {
         instance.consumeCast();
         if (instance.usedAllCasts()) {
             skill.value().onRecastFinished(castContext, RecastResult.USED_ALL_RECASTS);
+            NeoForge.EVENT_BUS.post(new SkillEvent.OnRecastComplete(castContext, instance, RecastResult.USED_ALL_RECASTS));
             recasts.remove(skill);
             return false;
         }
@@ -127,7 +131,7 @@ public final class RecastManager {
     }
 
     /**
-     * Ticks recast durations, and handles recast expiry via {@link SkillcastingManager#removeRecast(CasterRef, Holder, RecastInstance)}
+     * Ticks recast durations, and handles recast expiry via {@link RecastManager#removeRecast(CasterRef, Holder, RecastResult)}
      *
      * @return true if any entry was removed
      */
