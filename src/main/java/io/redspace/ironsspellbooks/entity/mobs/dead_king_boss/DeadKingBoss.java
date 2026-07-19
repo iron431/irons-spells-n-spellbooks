@@ -502,6 +502,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
 
     public static AttributeSupplier.Builder prepareAttributes() {
         return LivingEntity.createLivingAttributes()
+                .add(Attributes.SCALE, 1.3)
                 .add(Attributes.ATTACK_DAMAGE, 10.0)
                 .add(AttributeRegistry.SPELL_POWER, 1.15)
                 .add(Attributes.ARMOR, 15)

@@ -116,7 +116,6 @@ public class LightningLanceSpell extends AbstractSpell {
                         boolean mainhandIsLefthand = entityCasterRef.entity() instanceof Player player && player.getMainArm() == HumanoidArm.LEFT;
                         boolean leftHand = activeCast.context().getCastSource().isFromSlot(EquipmentSlot.OFFHAND) ^ mainhandIsLefthand;
                         if (renderer instanceof LivingEntityRenderer livingEntityRenderer && livingEntityRenderer.getModel() instanceof HumanoidModel<?> humanoidModel) {
-                            // fixme: does not work for geo mobs
                             LivingEntity livingEntity = (LivingEntity) entityCasterRef.entity();
                             poseStack.scale(1.0F, -1.0F, -1.0F);
                             float yaw = Mth.lerp(partialTick, livingEntity.yBodyRotO, livingEntity.yBodyRot);
@@ -154,7 +153,7 @@ public class LightningLanceSpell extends AbstractSpell {
                     }
                     float scale = activeCast.completionPercent(casterRef.level().getGameTime(), partialTick);
                     scale = (float) Mth.smoothstep(Mth.clamp(scale + .3f, 0, 1));
-//                    poseStack.scale(scale, scale, scale);
+                    poseStack.scale(scale, scale, scale);
                     LightningLanceRenderer.renderModel(poseStack, buf, activeCast.elapsedTicks(casterRef.level().getGameTime()));
                 }, false);
     }
@@ -165,15 +164,9 @@ public class LightningLanceSpell extends AbstractSpell {
             bones.add(start);
             start = start.getParent();
         }
-//        for (int i = 0; i < bones.size(); i++) {
         for (int i = bones.size() - 1; i >= 0; i--) {
             var bone = bones.get(i);
-//            RenderUtil.prepMatrixForBone(poseStack, bone);
-            RenderUtil.translateMatrixToBone(poseStack, bone);
-            RenderUtil.translateToPivotPoint(poseStack, bone);
-            RenderUtil.rotateMatrixAroundBone(poseStack, bone);
-            RenderUtil.scaleMatrixForBone(poseStack, bone);
-            RenderUtil.translateAwayFromPivotPoint(poseStack, bone);
+            RenderUtil.prepMatrixForBone(poseStack, bone);
         }
     }
 

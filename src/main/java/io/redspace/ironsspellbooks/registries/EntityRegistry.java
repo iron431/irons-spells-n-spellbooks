@@ -291,7 +291,7 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<DeadKingBoss>> DEAD_KING =
             ENTITIES.register("dead_king", () -> EntityType.Builder.<DeadKingBoss>of(DeadKingBoss::new, MobCategory.MONSTER)
-                    .sized(.9f, 3.5f)
+                    .sized(.7f, 2.7f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "dead_king").toString()));
 

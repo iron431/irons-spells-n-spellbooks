@@ -34,6 +34,7 @@ import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.world.entity.SpawnPlacementTypes;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.PolarBear;
 import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.entity.monster.Zombie;
@@ -104,7 +105,7 @@ public class CommonSetup {
         event.put(EntityRegistry.FROZEN_HUMANOID.get(), FrozenHumanoid.prepareAttributes().build());
         event.put(EntityRegistry.SUMMONED_POLAR_BEAR.get(), PolarBear.createAttributes().build());
         event.put(EntityRegistry.DEAD_KING.get(), DeadKingBoss.prepareAttributes().build());
-        event.put(EntityRegistry.DEAD_KING_CORPSE.get(), DeadKingBoss.prepareAttributes().build());
+        event.put(EntityRegistry.DEAD_KING_CORPSE.get(), DeadKingBoss.prepareAttributes().add(Attributes.SCALE, 1).build());
         event.put(EntityRegistry.CATACOMBS_ZOMBIE.get(), Zombie.createAttributes().build());
         event.put(EntityRegistry.MAGEHUNTER_VINDICATOR.get(), Vindicator.createAttributes().build());
         event.put(EntityRegistry.ARCHEVOKER.get(), ArchevokerEntity.prepareAttributes().build());
