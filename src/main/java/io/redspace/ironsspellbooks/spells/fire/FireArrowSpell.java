@@ -30,9 +30,13 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.renderer.GeoRenderer;
 
 import java.util.List;
 import java.util.Optional;
+
+import static io.redspace.ironsspellbooks.spells.lightning.LightningLanceSpell.setupPoseStackForBone;
 
 public class FireArrowSpell extends AbstractSpell {
 
@@ -104,10 +108,11 @@ public class FireArrowSpell extends AbstractSpell {
                     if (casterRef instanceof EntityCasterRef entityCasterRef) {
                         // tranlsate to hand
                         var renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityCasterRef.entity());
+                        boolean mainhandIsLefthand = entityCasterRef.entity() instanceof Player player && player.getMainArm() == HumanoidArm.LEFT;
+                        boolean leftHand = activeCast.context().getCastSource().isFromSlot(EquipmentSlot.OFFHAND) ^ mainhandIsLefthand;
                         if (renderer instanceof LivingEntityRenderer livingEntityRenderer && livingEntityRenderer.getModel() instanceof HumanoidModel<?> humanoidModel) {
                             LivingEntity livingEntity = (LivingEntity) entityCasterRef.entity();
-                            boolean mainhandIsLefthand = livingEntity instanceof Player player && player.getMainArm() == HumanoidArm.LEFT;
-                            boolean leftHand = activeCast.context().getCastSource().isFromSlot(EquipmentSlot.OFFHAND) ^ mainhandIsLefthand;
+
                             poseStack.scale(1.0F, -1.0F, -1.0F);
                             float yaw = Mth.lerp(partialTick, livingEntity.yBodyRotO, livingEntity.yBodyRot);
                             poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
@@ -119,6 +124,24 @@ public class FireArrowSpell extends AbstractSpell {
 //                            float animationModifierScale = 0.5f;
 //                            float itLooksBadInFirstPersonScale = 0.5f;
 //                            poseStack.mulPose(Axis.YP.rotationDegrees(-yawCompensation * animationModifierScale * itLooksBadInFirstPersonScale));
+                        } else if (renderer instanceof GeoRenderer<?> geoRenderer && entityCasterRef.entity() instanceof LivingEntity livingEntity) {
+                            String boneName = leftHand ? "bipedHandLeft" : "right_arm";
+                            poseStack.mulPose(Axis.YP.rotationDegrees(180f - Mth.lerp(partialTick, livingEntity.yBodyRotO, livingEntity.yBodyRot)));
+                            poseStack.translate(0, 0.01f, 0);
+                            Optional<GeoBone> hand = geoRenderer.getGeoModel().getBone(boneName);
+                            if (hand.isPresent()) {
+                                Vec3 offset = activeCast.context().position(PositionAnchor.ORIGIN).subtract(activeCast.context().position(PositionAnchor.CASTING_POSITION_CENTER));
+                                poseStack.translate(offset.x, offset.y, offset.z);
+                                // fixme: hardcoded mob scale factors (like dead king) bypass this. their (my) fault.
+                                float scale = livingEntity.getScale();
+                                poseStack.scale(scale, scale, scale);
+                                setupPoseStackForBone(poseStack, hand.get());
+                                poseStack.mulPose(Axis.XP.rotationDegrees(180));
+                                poseStack.translate(((leftHand ? -1 : 1) / 4F), 1f, 0);
+                                poseStack.scale(1 / scale, 1 / scale, 1 / scale);
+                                poseStack.translate(offset.x, offset.y, offset.z);
+                                poseStack.mulPose(Axis.XP.rotationDegrees(90));
+                            }
                         }
                     } else {
                         Vec3 renderDir = activeCast.context().direction();

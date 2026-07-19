@@ -159,7 +159,7 @@ public class LightningLanceSpell extends AbstractSpell {
                 }, false);
     }
 
-    private static void setupPoseStackForBone(PoseStack poseStack, GeoBone start) {
+    public static void setupPoseStackForBone(PoseStack poseStack, GeoBone start) {
         ArrayList<GeoBone> bones = new ArrayList<>();
         while (start != null) {
             bones.add(start);
