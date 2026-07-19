@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -47,7 +48,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.entity.PartEntity;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import org.joml.Vector3f;
 import software.bernie.geckolib.animation.*;
 import software.bernie.geckolib.animation.AnimationState;
@@ -57,6 +61,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@EventBusSubscriber
 public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, PreventDismount {
 
     @Override
@@ -79,6 +84,9 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     private static final AttributeModifier CROUCH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("crouching"), -0.30, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     public static final Vec3 TORSO_OFFSET = new Vec3(0, 18, 0);
     private static final int EMERGE_TIME = 45;
+    public static final int HUNTING_THRESHOLD = 15;
+    private static final int SATIATION_COMBAT_DELAY = 15 * 20;
+    private static final int SATIATION_HEAL_INTERVAL = 2 * 20;
     public final Vec3[] cornerPins = {Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, Vec3.ZERO};
 
     public Vec3 normal = Vec3.ZERO, lastNormal = Vec3.ZERO;
@@ -92,6 +100,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     int grappleTime;
     @Nullable
     Entity cachedGrappleTarget = null;
+    private int satiation;
 
     public IceSpiderEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -169,8 +178,54 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     protected void customServerAiStep() {
         super.customServerAiStep();
         tickGrapple();
+        tickSatiationRegen();
         handleCrouchStatus();
         handleClimbingStatus();
+    }
+
+    public int getSatiation() {
+        return satiation;
+    }
+
+    public void setSatiation(int satiation) {
+        this.satiation = Math.max(0, satiation);
+    }
+
+    public void addSatiation(int amount) {
+        setSatiation(this.satiation + amount);
+    }
+
+    public boolean canHuntAnimals() {
+        return satiation < HUNTING_THRESHOLD;
+    }
+
+    protected void tickSatiationRegen() {
+        if (satiation <= 0 || getHealth() >= getMaxHealth()) {
+            return;
+        }
+        if (getTarget() != null || getGrappleTargetUUID() != null) {
+            return;
+        }
+        if (tickCount - getLastHurtByMobTimestamp() < SATIATION_COMBAT_DELAY) {
+            return;
+        }
+        if (tickCount % SATIATION_HEAL_INTERVAL != 0) {
+            return;
+        }
+        heal(1f);
+        setSatiation(satiation - 1);
+    }
+
+    @SubscribeEvent
+    public static void onPreyKilled(LivingDropsEvent event) {
+        if (!(event.getEntity() instanceof Animal prey)) {
+            return;
+        }
+        if (!(event.getSource().getEntity() instanceof IceSpiderEntity spider)) {
+            return;
+        }
+        spider.addSatiation(Mth.ceil(prey.getMaxHealth()));
+        event.getDrops().removeIf(itemEntity -> itemEntity.getItem().has(DataComponents.FOOD));
     }
 
     private void handleCrouchStatus() {
@@ -350,10 +405,13 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true, livingEntity ->
                 livingEntity instanceof Player
                         || livingEntity instanceof IronGolem));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true, livingEntity ->
-                livingEntity instanceof Animal
-                        || livingEntity instanceof AbstractVillager
-                        || livingEntity instanceof Raider));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true, livingEntity -> {
+            if (livingEntity instanceof Animal) {
+                return this.canHuntAnimals();
+            }
+            return livingEntity instanceof AbstractVillager
+                    || livingEntity instanceof Raider;
+        }));
     }
 
     @Override
@@ -698,6 +756,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
             pCompound.putUUID("grappleTarget", getGrappleTargetUUID());
         }
         pCompound.putBoolean("crouching", isCrouching());
+        pCompound.putInt("satiation", satiation);
     }
 
     @Override
@@ -710,6 +769,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         if (pCompound.getBoolean("crouching")) {
             startCrouching();
         }
+        satiation = Math.max(0, pCompound.getInt("satiation"));
     }
 
     RawAnimation animationToPlay = null;
