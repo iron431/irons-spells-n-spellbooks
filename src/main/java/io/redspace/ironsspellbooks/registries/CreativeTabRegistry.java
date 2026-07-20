@@ -201,6 +201,7 @@ public class CreativeTabRegistry {
                 entries.accept(ItemRegistry.LOST_KNOWLEDGE_FRAGMENT.get());
                 entries.accept(ItemRegistry.ICY_FANG.get());
                 entries.accept(ItemRegistry.PREPARED_ICE_SPIDER_EGG.get());
+                entries.accept(ItemRegistry.COOKED_ICE_SPIDER_EGG_BLOCK_ITEM.get());
                 entries.accept(ItemRegistry.ICE_CRYSTAL.get());
                 entries.accept(ItemRegistry.FROSTED_HELVE.get());
                 entries.accept(ItemRegistry.ENERGIZED_CORE.get());
