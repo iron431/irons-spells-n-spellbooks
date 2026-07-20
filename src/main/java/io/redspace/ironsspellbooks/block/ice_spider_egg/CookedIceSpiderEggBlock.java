@@ -1,9 +1,11 @@
-package io.redspace.ironsspellbooks.block.cooked_ice_spider_egg;
+package io.redspace.ironsspellbooks.block.ice_spider_egg;
 
 import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -32,8 +34,8 @@ public class CookedIceSpiderEggBlock extends Block {
     public static final MapCodec<CookedIceSpiderEggBlock> CODEC = simpleCodec(CookedIceSpiderEggBlock::new);
     public static final int MAX_BITES = 3;
     public static final IntegerProperty BITES = IntegerProperty.create("bites", 0, MAX_BITES);
-    private static final int FROSTBITE_DURATION = 20 * 30;
-    private static final int FROSTBITE_AMPLIFIER = 0;
+    private static final int FROSTBITE_DURATION = 45 * 20;
+    private static final int FROSTBITE_AMPLIFIER = 9;
 
     private static final VoxelShape PLATE = Block.box(1, 0, 1, 15, 1, 15);
     private static final VoxelShape EGG_0 = Block.box(3, 1, 2, 13, 15, 14);
@@ -73,9 +75,22 @@ public class CookedIceSpiderEggBlock extends Block {
         }
         player.getFoodData().eat(4, 1F);
         if (!level.isClientSide()) {
-            player.addEffect(new MobEffectInstance(MobEffectRegistry.FROSTBITTEN_STRIKES, FROSTBITE_DURATION, FROSTBITE_AMPLIFIER, false, false, true));
+            MobEffectInstance mobEffectInstance = player.getEffect(MobEffectRegistry.FROSTBITTEN_STRIKES);
+            if (mobEffectInstance == null) {
+                mobEffectInstance = new MobEffectInstance(MobEffectRegistry.FROSTBITTEN_STRIKES, FROSTBITE_DURATION, FROSTBITE_AMPLIFIER, false, false, true);
+            }else{
+                mobEffectInstance = new MobEffectInstance(MobEffectRegistry.FROSTBITTEN_STRIKES, mobEffectInstance.getDuration() + FROSTBITE_DURATION, FROSTBITE_AMPLIFIER, false, false, true);
+            }
+            player.addEffect(mobEffectInstance);
             level.playSound(null, pos, SoundEvents.GENERIC_EAT, SoundSource.BLOCKS);
             level.playSound(null, pos, SoundEvents.HONEY_DRINK, SoundSource.BLOCKS);
+        }
+        for (int i = 0; i < 5; i++) {
+            level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0xFFd0f9ff),
+                    pos.getX() + (2 + level.getRandom().nextFloat() * 10) / 16f,
+                    pos.getY() + 15 / 16f,
+                    pos.getZ() + (2 + level.getRandom().nextFloat() * 14) / 16f,
+                    0, 0.1, 0);
         }
         int bites = state.getValue(BITES);
         level.gameEvent(player, GameEvent.EAT, pos);

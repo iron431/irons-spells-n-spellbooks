@@ -17,7 +17,7 @@ import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTil
 import io.redspace.ironsspellbooks.block.arcane_anvil.ArcaneAnvilBlock;
 import io.redspace.ironsspellbooks.block.chiseled_bookshelf.WisewoodChiseledBookShelfBlockEntity;
 import io.redspace.ironsspellbooks.block.chiseled_bookshelf.WisewoodChiseledBookshelfBlock;
-import io.redspace.ironsspellbooks.block.cooked_ice_spider_egg.CookedIceSpiderEggBlock;
+import io.redspace.ironsspellbooks.block.ice_spider_egg.CookedIceSpiderEggBlock;
 import io.redspace.ironsspellbooks.block.ice_spider_egg.IceSpiderEggBlock;
 import io.redspace.ironsspellbooks.block.inscription_table.InscriptionTableBlock;
 import io.redspace.ironsspellbooks.block.pedestal.PedestalBlock;
