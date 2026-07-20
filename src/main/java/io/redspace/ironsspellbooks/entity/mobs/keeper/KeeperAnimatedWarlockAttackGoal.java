@@ -9,7 +9,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
+public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal<KeeperEntity> {
     final KeeperEntity keeper;
 
     public KeeperAnimatedWarlockAttackGoal(KeeperEntity abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {

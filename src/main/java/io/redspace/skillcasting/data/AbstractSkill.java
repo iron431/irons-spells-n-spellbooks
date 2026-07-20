@@ -267,11 +267,11 @@ public abstract class AbstractSkill {
     }
 
     /**
-     * Provides hook before a mob initiates a cast in order to tailor its behavior
+     * Provides a simple hook before a mob initiates a cast in order to tailor its behavior.
      */
-    public void setupAIContext(CastContext castContext, Mob mob, LivingEntity target) {
-        if (!castContext.has(SkillcastingComponentTypes.TARGETED_ENTITIES)) {
-            castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES, new TargetedEntitiesData(target));
+    public void setupAIContext(CastContext castContext, Mob mob) {
+        if (mob.getTarget() != null && !castContext.has(SkillcastingComponentTypes.TARGETED_ENTITIES)) {
+            castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES, new TargetedEntitiesData(mob.getTarget()));
         }
     }
 }

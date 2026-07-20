@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 public class MagicData implements IHolderSensitiveData {
 
     public static final Codec<MagicData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            LearnedSpellData.CODEC.fieldOf("learned_spells").forGetter(MagicData::getLearnedSpellData),
+            LearnedSpellData.CODEC.fieldOf("learnedSpells").forGetter(MagicData::getLearnedSpellData),
             Codec.FLOAT.fieldOf("mana").forGetter(MagicData::getMana),
             Codec.FLOAT.optionalFieldOf("heartstop_damage", 0f).forGetter(MagicData::getHeartStopAccumulatedDamage)
     ).apply(builder, MagicData::new));

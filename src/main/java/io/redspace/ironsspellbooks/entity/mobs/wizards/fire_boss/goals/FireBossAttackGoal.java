@@ -109,7 +109,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
                 if (!isActing()) {
                     // insta-cast that fireball
                     mob.getAttribute(SkillcastingAttributes.CAST_TIME_REDUCTION).addOrUpdateTransientModifier(MODIFIER_FIRE_BALLER);
-                    // todo: can do customization with components now
+                    // todo: can do customization (cast time, damage, radius) with components now
                     CastComponentMap components = new CastComponentMap();
                     mob.attemptInitiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), mob.isSoulMode() ? 6 : 5, components);
                     fireballcooldown = 20 * 10;
@@ -128,7 +128,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
             }
         }
         // delay attacking while the dagger is active (primarily to let parries play out)
-        // or sometimes if we are midair (reduce, but not remove, ariel attacks)
+        // or 50% of the time if we are midair (reduce, but not remove, ariel attacks)
         boolean delayNextAttack = mob.spectralDaggerActive() || (!mob.onGround() && mob.getRandom().nextBoolean());
         if (delayNextAttack) {
             meleeAttackDelay++;

@@ -2,16 +2,20 @@ package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import io.redspace.skillcasting.data.cast.ActiveCast;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.IDrinkPotions;
 import io.redspace.skillcasting.data.SkillcastingData;
+import io.redspace.skillcasting.data.cast.ActiveCast;
+import io.redspace.skillcasting.data.cast.CastEndReason;
+import io.redspace.skillcasting.data.cast.CastType;
+import io.redspace.skillcasting.data.cast.CasterRef;
+import io.redspace.skillcasting.lifecycle.SkillcastingManager;
+import io.redspace.skillcasting.registry.SkillRegistry;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.util.DefaultRandomPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,7 +29,7 @@ import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-public class WizardAttackGoal extends Goal {
+public class WizardAttackGoal<T extends PathfinderMob & IDrinkPotions> extends Goal {
 
     protected LivingEntity target;
     protected final double speedModifier;
@@ -33,22 +37,18 @@ public class WizardAttackGoal extends Goal {
     protected final int spellAttackIntervalMax;
     protected float spellcastingRange;
     protected float spellcastingRangeSqr;
-    protected boolean shortCircuitTemp = false;
 
     protected boolean hasLineOfSight;
     protected int seeTime = 0;
     protected int strafeTime;
     protected boolean strafingClockwise;
     protected int spellAttackDelay = -1;
-    protected int projectileCount;
-
-    protected @Nullable AbstractSpell singleUseSpell = null;
-    protected int singleUseDelay;
-    protected int singleUseLevel;
 
     protected boolean isFlying;
     protected boolean allowFleeing;
     protected int fleeCooldown;
+
+    @Nullable SingleUseSpellHandler singleSpellHandler = null;
 
     protected final ArrayList<AbstractSpell> attackSpells = new ArrayList<>();
     protected final ArrayList<AbstractSpell> defenseSpells = new ArrayList<>();
@@ -60,18 +60,11 @@ public class WizardAttackGoal extends Goal {
     protected float maxSpellQuality = .4f;
 
     protected boolean drinksPotions;
-    protected final PathfinderMob mob;
-    protected final AbstractSpellCastingMob spellCastingMob;
+    protected final T mob;
 
-    public WizardAttackGoal(Mob abstractSpellCastingMob, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
+    public WizardAttackGoal(T mob, double pSpeedModifier, int pAttackIntervalMin, int pAttackIntervalMax) {
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Flag.TARGET));
-        if (abstractSpellCastingMob instanceof PathfinderMob pathfinderMob && abstractSpellCastingMob instanceof AbstractSpellCastingMob castingMob) {
-            this.mob = pathfinderMob;
-            this.spellCastingMob = castingMob;
-        } else {
-            throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
-        }
-
+        this.mob = mob;
         this.speedModifier = pSpeedModifier;
         this.spellAttackIntervalMin = pAttackIntervalMin;
         this.spellAttackIntervalMax = pAttackIntervalMax;
@@ -80,7 +73,7 @@ public class WizardAttackGoal extends Goal {
         allowFleeing = true;
     }
 
-    public WizardAttackGoal setSpells(List<AbstractSpell> attackSpells, List<AbstractSpell> defenseSpells, List<AbstractSpell> movementSpells, List<AbstractSpell> supportSpells) {
+    public <G extends WizardAttackGoal<T>> G setSpells(List<AbstractSpell> attackSpells, List<AbstractSpell> defenseSpells, List<AbstractSpell> movementSpells, List<AbstractSpell> supportSpells) {
         this.attackSpells.clear();
         this.defenseSpells.clear();
         this.movementSpells.clear();
@@ -91,35 +84,35 @@ public class WizardAttackGoal extends Goal {
         this.movementSpells.addAll(movementSpells);
         this.supportSpells.addAll(supportSpells);
 
-        return this;
+        return (G) this;
     }
 
-    public WizardAttackGoal setSpellQuality(float minSpellQuality, float maxSpellQuality) {
+    public <G extends WizardAttackGoal<T>> G setSpellQuality(float minSpellQuality, float maxSpellQuality) {
         this.minSpellQuality = minSpellQuality;
         this.maxSpellQuality = maxSpellQuality;
-        return this;
+        return (G) this;
     }
 
-    public WizardAttackGoal setSingleUseSpell(AbstractSpell abstractSpell, int minDelay, int maxDelay, int minLevel, int maxLevel) {
-        this.singleUseSpell = abstractSpell;
-        this.singleUseDelay = Utils.random.nextIntBetweenInclusive(minDelay, maxDelay);
-        this.singleUseLevel = Utils.random.nextIntBetweenInclusive(minLevel, maxLevel);
-        return this;
+    public <G extends WizardAttackGoal<T>> G setSingleUseSpell(AbstractSpell abstractSpell, int minDelay, int maxDelay, int minLevel, int maxLevel) {
+        this.singleSpellHandler = new SingleUseSpellHandler(abstractSpell,
+                Utils.random.nextIntBetweenInclusive(minDelay, maxDelay),
+                Utils.random.nextIntBetweenInclusive(minLevel, maxLevel));
+        return (G) this;
     }
 
-    public WizardAttackGoal setIsFlying() {
+    public <G extends WizardAttackGoal<T>> G setIsFlying() {
         isFlying = true;
-        return this;
+        return (G) this;
     }
 
-    public WizardAttackGoal setDrinksPotions() {
+    public <G extends WizardAttackGoal<T>> G setDrinksPotions() {
         drinksPotions = true;
-        return this;
+        return (G) this;
     }
 
-    public WizardAttackGoal setAllowFleeing(boolean allowFleeing) {
+    public <G extends WizardAttackGoal<T>> G setAllowFleeing(boolean allowFleeing) {
         this.allowFleeing = allowFleeing;
-        return this;
+        return (G) this;
     }
 
     @Override
@@ -162,12 +155,6 @@ public class WizardAttackGoal extends Goal {
         } else {
             this.seeTime--;
         }
-
-//        //search for projectiles around the mob
-//        if (mob.tickCount % 3 == 0) {
-//            projectileCount = mob.level.getEntitiesOfClass(Projectile.class, mob.getBoundingBox().inflate(24), (projectile) -> projectile.getOwner() != mob && !projectile.isOnGround()).size();
-//        }
-
         //default mage movement
         doMovement(distanceSquared);
 
@@ -179,54 +166,75 @@ public class WizardAttackGoal extends Goal {
         //default attack timer
         handleAttackLogic(distanceSquared);
 
-        singleUseDelay--;
+        if (singleSpellHandler != null) {
+            singleSpellHandler.tick();
+        }
     }
 
     protected void handleAttackLogic(double distanceSquared) {
         if (seeTime < -50) {
             return;
         }
-        if (--this.spellAttackDelay == 0) {
-            resetSpellAttackTimer(distanceSquared);
-            if (!spellCastingMob.isCasting() && !spellCastingMob.isDrinkingPotion()) {
-                doSpellAction();
+        if (isCasting()) {
+            ActiveCast activeCast = SkillcastingData.get(mob).getActiveCast();
+            if (activeCast != null && activeCast.context().skill().value().shouldAIStopCasting(activeCast.context(), mob, target)) {
+                interruptCast();
+                return;
             }
-
+            maybeCancelContinuousCastOnDamage();
+        } else if (!isActing() && --this.spellAttackDelay == 0) {
+            resetSpellAttackTimer(distanceSquared);
+            doSpellAction();
         } else if (this.spellAttackDelay < 0) {
             resetSpellAttackTimer(distanceSquared);
         }
-        if (spellCastingMob.isCasting() && target != null) {
-            ActiveCast activeCast = SkillcastingData.get(mob).getActiveCast();
-            if (target.isDeadOrDying() || (activeCast != null && activeCast.context().skill().value().shouldAIStopCasting(activeCast.context(), mob, target))) {
-                spellCastingMob.cancelCast();
-            }
+    }
+
+    private void maybeCancelContinuousCastOnDamage() {
+        if (isCasting() && mob.getLastHurtByMobTimestamp() == mob.tickCount - 1 &&
+                SkillcastingData.get(mob).getActiveCastType() == CastType.CONTINUOUS &&
+                mob.getRandom().nextFloat() > mob.getHealth() / mob.getMaxHealth()) {
+            interruptCast();
         }
     }
 
     public boolean isActing() {
-        return spellCastingMob.isCasting() || spellCastingMob.isDrinkingPotion();
+        return isCasting() || mob.isDrinkingPotion();
+    }
+
+    public boolean isCasting() {
+        return SkillcastingData.get(mob).isCasting();
+    }
+
+    public void interruptCast() {
+        SkillcastingManager.cancelCast(CasterRef.entity(mob), CastEndReason.INTERRUPTED);
     }
 
     protected void resetSpellAttackTimer(double distanceSquared) {
         float f = (float) Math.sqrt(distanceSquared) / this.spellcastingRange;
-        this.spellAttackDelay = Math.max(1, Mth.floor(f * (float) (this.spellAttackIntervalMax - this.spellAttackIntervalMin) + (float) this.spellAttackIntervalMin));
+        float r = mob.getRandom().nextFloat();
+        this.spellAttackDelay = (int) Math.max(1, Mth.lerp((f + r) / 2f, this.spellAttackIntervalMin, spellAttackIntervalMax));
     }
 
     protected void doMovement(double distanceSquared) {
-        double speed = 1f;//(spellCastingMob.isCasting() ? .75f : 1f) * movementSpeed();
+        double speed = (isCasting() ? .5f : 1f) * movementSpeed();
         mob.lookAt(target, 30, 30);
         //make distance (flee), move into range, or strafe around
         float fleeDist = .275f;
         float ss = getStrafeMultiplier();
-        if (allowFleeing && /*(!spellCastingMob.isCasting() && spellAttackDelay > 10) &&*/ --fleeCooldown <= 0 && distanceSquared < spellcastingRangeSqr * (fleeDist * fleeDist)) {
-            Vec3 flee = DefaultRandomPos.getPosAway(this.mob, 16, 7, target.position());
-            if (flee != null) {
-                this.mob.getNavigation().moveTo(flee.x, flee.y, flee.z, speed * 1.5);
-            } else {
-                mob.getMoveControl().strafe(-(float) speed * ss, (float) speed * ss);
+        if (allowFleeing && distanceSquared < spellcastingRangeSqr * (fleeDist * fleeDist)) {
+            // fixme: fleeing is scuffed
+            if (!isActing() && --fleeCooldown <= 0) {
+                Vec3 flee = DefaultRandomPos.getPosAway(this.mob, 16, 7, target.position());
+                if (flee != null) {
+                    this.mob.getNavigation().moveTo(flee.x, flee.y, flee.z, speed * 1.5);
+                } else {
+                    mob.getMoveControl().strafe(-(float) speed * ss, (float) speed * ss);
+                }
+                fleeCooldown = 20;
             }
-        } else if (distanceSquared < spellcastingRangeSqr && seeTime >= 5) {
-            //irons_spellbooks.LOGGER.debug("WizardAttackGoal.tick.1: distanceSquared: {},attackRadiusSqr: {}, seeTime: {}, attackTime: {}", distanceSquared, attackRadiusSqr, seeTime, attackTime);
+            seeTime = 0;
+        } else if (distanceSquared < spellcastingRangeSqr && seeTime >= 20) {
             this.mob.getNavigation().stop();
             if (++strafeTime > 25) {
                 if (mob.getRandom().nextDouble() < .1) {
@@ -243,7 +251,6 @@ public class WizardAttackGoal extends Goal {
         } else {
             // no los or we are completely out of range, path towards target
             if (mob.tickCount % 5 == 0) {
-                //TODO: better pathing optimization
                 if (isFlying) {
                     this.mob.getMoveControl().setWantedPosition(target.getX(), target.getY() + 2, target.getZ(), speedModifier);
                 } else {
@@ -255,7 +262,7 @@ public class WizardAttackGoal extends Goal {
 
     protected double movementSpeed() {
         //fixme: move control already reads speed attribute, we should not be basing speed modifier based on it as well
-        return speedModifier * mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2;
+        return speedModifier/* * mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 2*/;
     }
 
     protected void tryJump() {
@@ -279,20 +286,17 @@ public class WizardAttackGoal extends Goal {
     }
 
     protected void doSpellAction() {
-        if (spellCastingMob.canUseSingleAttack() && singleUseSpell != null && singleUseDelay <= 0) {
-            spellCastingMob.setSingleAttackCooldown();
-            spellCastingMob.attemptInitiateCastSpell(singleUseSpell, singleUseLevel, null);
-            fleeCooldown = 7 + singleUseSpell.getCastTimeTicks();
-        } else {
-            var spell = getNextSpellType();
-            if (spell == null) {
-                return;
-            }
-            int spellLevel = (int) (spell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
-            spellLevel = Math.max(spellLevel, 1);
-            spellCastingMob.attemptInitiateCastSpell(spell, spellLevel, null);
-            fleeCooldown = 7 + spell.getCastTimeTicks();
+        if (singleSpellHandler != null && singleSpellHandler.attemptCastSpell(mob)) {
+            return;
         }
+        var spell = getNextSpellType();
+        if (spell == null) {
+            return;
+        }
+        int spellLevel = (int) (spell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
+        spellLevel = Math.max(spellLevel, 1);
+        SkillcastingUtils.attemptInitiateMobCast(mob, SkillRegistry.holder(spell), spellLevel, null);
+        fleeCooldown = 7;
     }
 
     protected @Nullable AbstractSpell getNextSpellType() {
@@ -324,16 +328,14 @@ public class WizardAttackGoal extends Goal {
             int seed = mob.getRandom().nextInt(total);
             var spellList = weightedSpells.higherEntry(seed).getValue();
             lastSpellCategory = spellList;
-            //IronsSpellbooks.LOGGER.debug("WizardAttackGoal.getNextSpell weights: A:{} D:{} M:{} S:{} ({}/{})", attackWeight, defenseWeight, movementWeight, supportWeight, seed, total);
             if (drinksPotions && spellList == supportSpells) {
                 if (supportSpells.isEmpty() || mob.getRandom().nextFloat() < .5f) {
-                    spellCastingMob.startDrinkingPotion();
+                    mob.startDrinkingPotion();
                     return null;
                 }
             }
             return spellList.get(mob.getRandom().nextInt(spellList.size()));
         } else {
-            //IronsSpellbooks.LOGGER.debug("WizardAttackGoal.getNextSpell weights: A:{} D:{} M:{} S:{} (no spell)", attackWeight, defenseWeight, movementWeight, supportWeight);
             return null;
         }
     }
@@ -378,10 +380,7 @@ public class WizardAttackGoal extends Goal {
         float targetHealth = target.getHealth() / target.getMaxHealth();
         int targetHealthWeight = (int) (1 - targetHealth) * -35;
 
-        //this count be finicky due to the fact that projectiles don't stick around for long, so it might be easy to miss them
-        int threatWeight = projectileCount * 95;
-
-        return baseWeight + healthWeight + targetHealthWeight + threatWeight;
+        return baseWeight + healthWeight + targetHealthWeight;
     }
 
     protected int getMovementWeight() {
@@ -389,7 +388,6 @@ public class WizardAttackGoal extends Goal {
             return 0;
         }
         //We want to move if we're in a disadvantageous spot, or we need a better angle on our target
-
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
         double distancePercent = Mth.clamp(distanceSquared / spellcastingRangeSqr, 0, 1);
 

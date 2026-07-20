@@ -22,6 +22,7 @@ import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.data.cast.CastResult;
 import io.redspace.skillcasting.data.cast.CastType;
+import io.redspace.skillcasting.data.component.TargetedEntitiesData;
 import io.redspace.skillcasting.data.skill.SkillWheelInfo;
 import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.PlayableSound;
@@ -40,6 +41,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
@@ -449,5 +451,15 @@ public abstract class AbstractSpell extends AbstractSkill {
         }
 
         return (int) (rarityWeights.get(rarity.getValue() - (1 + minRarity)) * maxLevel) + 1;
+    }
+
+    @Override
+    public void setupAIContext(CastContext castContext, Mob mob) {
+        super.setupAIContext(castContext, mob);
+        castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
+        castContext.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
+        if (mob.getTarget() != null && !castContext.has(SkillcastingComponentTypes.TARGETED_ENTITIES)) {
+            castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES, new TargetedEntitiesData(mob.getTarget()));
+        }
     }
 }

@@ -44,7 +44,7 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
 
     @Override
     protected void registerGoals() {
-        this.goalSelector.addGoal(4, new WizardAttackGoal(this, 1.25f, 35, 80)
+        this.goalSelector.addGoal(4, new WizardAttackGoal<>(this, 1.25f, 35, 80)
                 .setSpells(
                         List.of(SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.ICICLE_SPELL.get(), SpellRegistry.MAGIC_MISSILE_SPELL.get()),
                         List.of(SpellRegistry.FANG_WARD_SPELL.get()),

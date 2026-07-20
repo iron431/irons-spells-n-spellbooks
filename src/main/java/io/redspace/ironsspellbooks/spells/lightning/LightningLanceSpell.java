@@ -127,14 +127,13 @@ public class LightningLanceSpell extends AbstractSpell {
                             poseStack.translate(((leftHand ? -1 : 1) / 32.0F), 0.5f, 0);
                             poseStack.scale(1 / scale, 1 / scale, 1 / scale);
                         } else if (renderer instanceof GeoRenderer<?> geoRenderer && entityCasterRef.entity() instanceof LivingEntity livingEntity) {
-                            String boneName = leftHand ? "bipedHandLeft" : "right_arm";
+                            String boneName = leftHand ? "bipedHandLeft" : "bipedHandRight";
                             poseStack.mulPose(Axis.YP.rotationDegrees(180f - Mth.lerp(partialTick, livingEntity.yBodyRotO, livingEntity.yBodyRot)));
                             poseStack.translate(0, 0.01f, 0);
                             Optional<GeoBone> hand = geoRenderer.getGeoModel().getBone(boneName);
                             if (hand.isPresent()) {
                                 Vec3 offset = activeCast.context().position(PositionAnchor.ORIGIN).subtract(activeCast.context().position(PositionAnchor.CASTING_POSITION_CENTER));
                                 poseStack.translate(offset.x, offset.y, offset.z);
-                                // fixme: hardcoded mob scale factors (like dead king) bypass this. their (my) fault.
                                 float scale = livingEntity.getScale();
                                 poseStack.scale(scale, scale, scale);
                                 setupPoseStackForBone(poseStack, hand.get());

@@ -16,7 +16,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
+public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal<DeadKingBoss> {
     final DeadKingBoss deadKing;
 
     public DeadKingAnimatedWarlockAttackGoal(DeadKingBoss abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {

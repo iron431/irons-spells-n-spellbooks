@@ -26,6 +26,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -149,5 +150,11 @@ public class BloodStepSpell extends AbstractSpell {
                 false,
                 false,
                 true));
+    }
+
+    @Override
+    public void setupAIContext(CastContext castContext, Mob mob) {
+        super.setupAIContext(castContext, mob);
+        TeleportSpell.findMobTeleportDestination(castContext, mob).ifPresent(vec3 -> castContext.set(SkillcastingComponentTypes.TARGET_POSITION, vec3));
     }
 }

@@ -213,20 +213,25 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     private DeadKingAnimatedWarlockAttackGoal getCombatGoal() {
-        return (DeadKingAnimatedWarlockAttackGoal) new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85).setMeleeAttackInverval(0, 20).setSpellQuality(.3f, .5f).setSpells(
-                List.of(
-                        SpellRegistry.RAY_OF_SIPHONING_SPELL.get(),
-                        SpellRegistry.BLOOD_SLASH_SPELL.get(), SpellRegistry.BLOOD_SLASH_SPELL.get(),
-                        SpellRegistry.WITHER_SKULL_SPELL.get(), SpellRegistry.WITHER_SKULL_SPELL.get(), SpellRegistry.WITHER_SKULL_SPELL.get(),
-                        SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FANG_STRIKE_SPELL.get(),
-                        SpellRegistry.POISON_ARROW_SPELL.get(), SpellRegistry.POISON_ARROW_SPELL.get(),
-                        SpellRegistry.BLIGHT_SPELL.get(),
-                        SpellRegistry.ACID_ORB_SPELL.get()
-                ),
-                List.of(SpellRegistry.FANG_WARD_SPELL.get(), SpellRegistry.BLOOD_STEP_SPELL.get()),
-                List.of(/*SpellType.BLOOD_STEP_SPELL*/),
-                List.of()
-        ).setMeleeBias(0.8f, 0.8f).setAllowFleeing(false);
+        return new DeadKingAnimatedWarlockAttackGoal(this, 1f, 55, 85)
+                .<DeadKingAnimatedWarlockAttackGoal>setMeleeAttackInverval(0, 20)
+                .<DeadKingAnimatedWarlockAttackGoal>setSpellQuality(.3f, .5f)
+                .<DeadKingAnimatedWarlockAttackGoal>setSpells(
+                        List.of(
+                                SpellRegistry.RAY_OF_SIPHONING_SPELL.get(),
+                                SpellRegistry.BLOOD_SLASH_SPELL.get(), SpellRegistry.BLOOD_SLASH_SPELL.get(),
+                                SpellRegistry.WITHER_SKULL_SPELL.get(), SpellRegistry.WITHER_SKULL_SPELL.get(), SpellRegistry.WITHER_SKULL_SPELL.get(),
+                                SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FANG_STRIKE_SPELL.get(),
+                                SpellRegistry.POISON_ARROW_SPELL.get(), SpellRegistry.POISON_ARROW_SPELL.get(),
+                                SpellRegistry.BLIGHT_SPELL.get(),
+                                SpellRegistry.ACID_ORB_SPELL.get()
+                        ),
+                        List.of(SpellRegistry.FANG_WARD_SPELL.get(), SpellRegistry.BLOOD_STEP_SPELL.get()),
+                        List.of(),
+                        List.of()
+                )
+                .setMeleeBias(0.8f, 0.8f)
+                .setAllowFleeing(false);
     }
 
     @Override

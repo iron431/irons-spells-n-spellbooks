@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.wizards;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.IDrinkPotions;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
@@ -19,15 +20,13 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimatedAttacker> extends WarlockAttackGoal {
+public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimatedAttacker & IDrinkPotions> extends WarlockAttackGoal<T> {
     public GenericAnimatedWarlockAttackGoal(T abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         this.wantsToMelee = true;
-        this.mob = abstractSpellCastingMob; //shadows super.mob
     }
 
     protected List<AttackAnimationData> moveList = new ArrayList<>();
-    protected final T mob;
     protected int meleeAnimTimer = -1;
     public @Nullable AttackAnimationData currentAttack;
     public @Nullable AttackAnimationData nextAttack;

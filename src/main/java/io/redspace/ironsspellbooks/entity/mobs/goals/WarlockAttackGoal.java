@@ -1,15 +1,13 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.IDrinkPotions;
 import io.redspace.skillcasting.data.SkillcastingData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-import java.util.List;
-
-public class WarlockAttackGoal extends WizardAttackGoal {
+public class WarlockAttackGoal<T extends PathfinderMob & IDrinkPotions> extends WizardAttackGoal<T> {
 
     protected boolean wantsToMelee;
     protected int meleeTime;
@@ -21,7 +19,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
     protected int meleeAttackIntervalMax;
     protected int meleeAttackDelay = -1;
 
-    public WarlockAttackGoal(Mob abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
+    public WarlockAttackGoal(T abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         this.meleeDecisionTime = mob.getRandom().nextIntBetweenInclusive(80, 200);
         this.meleeBiasMin = .25f;
@@ -50,11 +48,6 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         return Mth.clampedLerp(meleeBiasMin, meleeBiasMax, mob.getHealth() / mob.getMaxHealth());
     }
 
-//    private boolean isCurrentPathValid() {
-//        var path = this.mob.getNavigation().getPath();
-//        return path != null && path.getEndNode() != null && path.getEndNode().asVec3().distanceToSqr(target.position()) < 20;
-//    }
-
     @Override
     protected void doMovement(double distanceSquared) {
         if (!wantsToMelee) {
@@ -70,7 +63,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
             float speed = (float) movementSpeed();
             if (distanceSquared > meleeRange * meleeRange) {
                 mob.setXxa(0); // manually override strafe control before we set navigation
-                if (/*!isCurrentPathValid() && */mob.tickCount % 5 == 0) {
+                if (mob.tickCount % 5 == 0) {
                     this.mob.getNavigation().moveTo(this.target, meleeMoveSpeedModifier);
                 }
             } else {
@@ -113,41 +106,22 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         resetMeleeAttackInterval(distanceSquared);
     }
 
-    public WarlockAttackGoal setMeleeBias(float meleeBiasMin, float meleeBiasMax) {
+    public <G extends WarlockAttackGoal<T>> G setMeleeBias(float meleeBiasMin, float meleeBiasMax) {
         this.meleeBiasMin = meleeBiasMin;
         this.meleeBiasMax = meleeBiasMax;
-        return this;
+        return (G) this;
     }
 
-    @Override
-    public WarlockAttackGoal setSpells(List<AbstractSpell> attackSpells, List<AbstractSpell> defenseSpells, List<AbstractSpell> movementSpells, List<AbstractSpell> supportSpells) {
-        return (WarlockAttackGoal) super.setSpells(attackSpells, defenseSpells, movementSpells, supportSpells);
-    }
 
-    @Override
-    public WarlockAttackGoal setSpellQuality(float minSpellQuality, float maxSpellQuality) {
-        return (WarlockAttackGoal) super.setSpellQuality(minSpellQuality, maxSpellQuality);
-    }
-
-    @Override
-    public WarlockAttackGoal setSingleUseSpell(AbstractSpell spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
-        return (WarlockAttackGoal) super.setSingleUseSpell(spellType, minDelay, maxDelay, minLevel, maxLevel);
-    }
-
-    @Override
-    public WarlockAttackGoal setIsFlying() {
-        return (WarlockAttackGoal) super.setIsFlying();
-    }
-
-    public WarlockAttackGoal setMeleeMovespeedModifier(float meleeMovespeedModifier) {
+    public <G extends WarlockAttackGoal<T>> G setMeleeMovespeedModifier(float meleeMovespeedModifier) {
         this.meleeMoveSpeedModifier = meleeMovespeedModifier;
-        return this;
+        return (G) this;
     }
 
-    public WarlockAttackGoal setMeleeAttackInverval(int min, int max) {
+    public <G extends WarlockAttackGoal<T>> G setMeleeAttackInverval(int min, int max) {
         this.meleeAttackIntervalMax = max;
         this.meleeAttackIntervalMin = min;
-        return this;
+        return (G) this;
     }
 
     @Override

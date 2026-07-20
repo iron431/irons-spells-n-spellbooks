@@ -1,16 +1,20 @@
 package io.redspace.skillcasting.util;
 
-import io.redspace.skillcasting.data.cast.PositionAnchor;
-import io.redspace.skillcasting.data.CastContext;
-import io.redspace.skillcasting.data.component.TargetedEntitiesData;
 import io.redspace.skillcasting.data.AbstractSkill;
-import io.redspace.skillcasting.data.cast.CastSource;
-import io.redspace.skillcasting.data.skill.ISkillContainer;
+import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.ActiveCast;
+import io.redspace.skillcasting.data.cast.CastSource;
+import io.redspace.skillcasting.data.cast.CasterRef;
+import io.redspace.skillcasting.data.cast.PositionAnchor;
+import io.redspace.skillcasting.data.component.CastComponentMap;
+import io.redspace.skillcasting.data.component.TargetedEntitiesData;
+import io.redspace.skillcasting.data.skill.ISkillContainer;
+import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -21,6 +25,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -335,7 +340,7 @@ public final class SkillcastingUtils {
 
     public static boolean hasLineOfSight(Level level, Vec3 start, Vec3 end, boolean checkForCollidableEntities) {
         if (checkForCollidableEntities) {
-            List<Entity> collisions = level.getEntities((Entity) null, new AABB(start, end), Entity::canBeCollidedWith);
+            List<Entity> collisions = level.getEntities((Entity) null, new AABB(start, end), e -> e.canBeCollidedWith() && e.canBeHitByProjectile());
             for (var e : collisions) {
                 var impact = checkEntityIntersecting(e, start, end, 0);
                 if (impact.getType() != HitResult.Type.MISS) {
@@ -356,5 +361,23 @@ public final class SkillcastingUtils {
 
     public static boolean hasAnySkillContainers(ItemStack stack) {
         return stack.getComponents().stream().anyMatch(component -> component.value() instanceof ISkillContainer);
+    }
+
+    /**
+     * Helper dedicated for setting up a mob's skillcast by weaving in {@link AbstractSkill#setupAIContext(CastContext, Mob)} and {@link AbstractSkill#shouldAIStopCasting(CastContext, Mob, LivingEntity)}
+     *
+     * @return Whether cast is initiated
+     */
+    public static boolean attemptInitiateMobCast(Mob mob, Holder<AbstractSkill> skill, int spellLevel, @Nullable CastComponentMap componentPatch) {
+        CasterRef casterRef = CasterRef.entity(mob);
+        var castContext = SkillcastingManager.buildCastContext(casterRef, skill, spellLevel, CastSource.EMPTY);
+        if (mob.getTarget() != null && skill.value().shouldAIStopCasting(castContext, mob, mob.getTarget())) {
+            return false;
+        }
+        skill.value().setupAIContext(castContext, mob);
+        if (componentPatch != null) {
+            castContext.components().applyFrom(componentPatch);
+        }
+        return SkillcastingManager.initiateCast(casterRef, castContext);
     }
 }

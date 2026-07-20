@@ -23,6 +23,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -138,5 +139,11 @@ public class FrostStepSpell extends AbstractSpell {
     @Override
     public AnimationHolder getCastFinishAnimation() {
         return AnimationHolder.stop();
+    }
+
+    @Override
+    public void setupAIContext(CastContext castContext, Mob mob) {
+        super.setupAIContext(castContext, mob);
+        TeleportSpell.findMobTeleportDestination(castContext, mob).ifPresent(vec3 -> castContext.set(SkillcastingComponentTypes.TARGET_POSITION, vec3));
     }
 }

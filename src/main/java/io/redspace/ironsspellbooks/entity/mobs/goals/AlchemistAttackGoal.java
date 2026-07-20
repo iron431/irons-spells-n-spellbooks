@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.IDrinkPotions;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
@@ -10,7 +10,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -20,39 +20,19 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class AlchemistAttackGoal extends WizardAttackGoal {
+public class AlchemistAttackGoal<T extends PathfinderMob & IDrinkPotions> extends WizardAttackGoal<T> {
 
     protected float throwRangeSqr;
     protected float throwRange;
     protected float potionBias;
 
-    public AlchemistAttackGoal(Mob abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float throwRange, float potionBias) {
+    public AlchemistAttackGoal(T abstractSpellCastingMob, double pSpeedModifier, int minAttackInterval, int maxAttackInterval, float throwRange, float potionBias) {
         super(abstractSpellCastingMob, pSpeedModifier, minAttackInterval, maxAttackInterval);
         this.throwRange = throwRange;
         this.throwRangeSqr = throwRange * throwRange;
         this.spellcastingRange = throwRange - 2;
         this.spellcastingRangeSqr = spellcastingRange * spellcastingRange;
         this.potionBias = potionBias;
-    }
-
-    @Override
-    public AlchemistAttackGoal setSpells(List<AbstractSpell> attackSpells, List<AbstractSpell> defenseSpells, List<AbstractSpell> movementSpells, List<AbstractSpell> supportSpells) {
-        return (AlchemistAttackGoal) super.setSpells(attackSpells, defenseSpells, movementSpells, supportSpells);
-    }
-
-    @Override
-    public AlchemistAttackGoal setSpellQuality(float minSpellQuality, float maxSpellQuality) {
-        return (AlchemistAttackGoal) super.setSpellQuality(minSpellQuality, maxSpellQuality);
-    }
-
-    @Override
-    public AlchemistAttackGoal setSingleUseSpell(AbstractSpell spellType, int minDelay, int maxDelay, int minLevel, int maxLevel) {
-        return (AlchemistAttackGoal) super.setSingleUseSpell(spellType, minDelay, maxDelay, minLevel, maxLevel);
-    }
-
-    @Override
-    public AlchemistAttackGoal setIsFlying() {
-        return (AlchemistAttackGoal) super.setIsFlying();
     }
 
     public static final List<Holder<MobEffect>> ATTACK_POTIONS = List.of(MobEffects.WEAKNESS, MobEffects.BLINDNESS, MobEffects.LEVITATION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SLOWDOWN);

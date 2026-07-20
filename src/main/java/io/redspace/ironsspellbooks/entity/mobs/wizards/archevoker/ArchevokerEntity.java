@@ -47,7 +47,7 @@ public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new SpellBarrageGoal(this, SpellRegistry.SUMMON_VEX_SPELL.get(), 1, 3, 100, 260, 1));
         this.goalSelector.addGoal(1, new GustDefenseGoal(this));
-        this.goalSelector.addGoal(2, new WizardAttackGoal(this, 1.5f, 30, 80)
+        this.goalSelector.addGoal(2, new WizardAttackGoal<>(this, 1.5f, 30, 80)
                 .setSpells(
                         List.of(SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FIRECRACKER_SPELL.get()),
                         List.of(SpellRegistry.FANG_WARD_SPELL.get(), SpellRegistry.SHIELD_SPELL.get()),

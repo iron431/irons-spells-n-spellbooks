@@ -71,7 +71,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new FocusOnTradingPlayerGoal<>(this));
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new AlchemistAttackGoal(this, 1.25f, 30, 70, 12, 0.5f)
+        this.goalSelector.addGoal(2, new AlchemistAttackGoal<>(this, 1.25f, 30, 70, 12, 0.5f)
                 .setSpells(
                         List.of(SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.FANG_STRIKE_SPELL.get(), SpellRegistry.ACID_ORB_SPELL.get(), SpellRegistry.POISON_BREATH_SPELL.get(), SpellRegistry.STOMP_SPELL.get(), SpellRegistry.POISON_ARROW_SPELL.get()),
                         List.of(SpellRegistry.ROOT_SPELL.get()),

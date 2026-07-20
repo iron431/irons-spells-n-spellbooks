@@ -11,6 +11,7 @@ import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
@@ -19,7 +20,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
@@ -103,7 +106,7 @@ public class TeleportSpell extends AbstractSpell {
 
     public static Vec3 solveTeleportDestination(Level level, LivingEntity entity, BlockPos blockPos, Vec3 vec3) {
         BlockPos pos = blockPos;
-        Vec3 bbOffset = entity.getForward().normalize().multiply(entity.getBbWidth() / 3, 0, entity.getBbHeight() / 3);
+        Vec3 bbOffset = entity.getForward().normalize().multiply(entity.getBbWidth() * 0.75f, 0, entity.getBbWidth() * 0.75f);
         Vec3 bbImpact = vec3.subtract(bbOffset);
 
         double ledgeY = level.clip(new ClipContext(Vec3.atBottomCenterOf(pos).add(0, 3, 0), Vec3.atBottomCenterOf(pos),
@@ -142,5 +145,49 @@ public class TeleportSpell extends AbstractSpell {
     @Override
     public AnimationHolder getCastFinishAnimation() {
         return AnimationHolder.stop();
+    }
+
+    @Override
+    public void setupAIContext(CastContext castContext, Mob mob) {
+        super.setupAIContext(castContext, mob);
+        findMobTeleportDestination(castContext, mob).ifPresent(vec3 -> castContext.set(SkillcastingComponentTypes.TARGET_POSITION, vec3));
+    }
+
+    public static Optional<Vec3> findMobTeleportDestination(CastContext castContext, Mob mob) {
+        if (mob.getTarget() != null && !castContext.has(SkillcastingComponentTypes.TARGET_POSITION)) {
+            var target = mob.getTarget();
+            var level = castContext.level();
+            float range = castContext.getOrDefault(SkillcastingComponentTypes.TELEPORT_RANGE, 8f);
+            Vec3 mobCenter = mob.getBoundingBox().getCenter();
+            Vec3 targetCenter = target.getBoundingBox().getCenter();
+            Vec3 wantedDirection;
+            if (!SkillcastingUtils.hasLineOfSight(castContext.level(), mobCenter, targetCenter, true)) {
+                // teleport to regain line of sight
+                wantedDirection = targetCenter.subtract(mobCenter).normalize();
+            } else {
+                // teleport behind target
+                wantedDirection = target.getForward().scale(-1);
+            }
+            int attempts = 24;
+            for (int i = 0; i < attempts; i++) {
+                float f = (i + 1f) / attempts;
+                float randomness = Mth.lerp(f, 0.25f, 2f);
+                Vec3 randomDirection = wantedDirection.add(Utils.getRandomVec3(randomness)).normalize();
+                HitResult hitResult = Utils.raycastForBlock(level, targetCenter, targetCenter.add(randomDirection.scale(range * (1 + f))), ClipContext.Fluid.ANY);
+                Vec3 destination = hitResult.getLocation();
+                if (hitResult.getType() != HitResult.Type.MISS) {
+                    destination = destination.subtract(randomDirection.scale(mob.getBbWidth() * .6f));
+                }
+                destination = Utils.moveToRelativeGroundLevel(level, destination, 6);
+                if (!level.getBlockState(BlockPos.containing(destination).below()).isAir() &&
+                        Utils.hasLineOfSight(level, mobCenter, destination.add(0, 1, 0), false) &&
+                        destination.distanceToSqr(mobCenter) <= (range + i) * (range + i) &&
+                        !level.collidesWithSuffocatingBlock(null, mob.getBoundingBox().move(destination.subtract(mob.position())))
+                ) {
+                    return Optional.of(destination);
+                }
+            }
+        }
+        return Optional.empty();
     }
 }

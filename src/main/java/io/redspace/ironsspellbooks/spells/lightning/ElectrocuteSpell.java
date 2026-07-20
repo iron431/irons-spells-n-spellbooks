@@ -73,12 +73,12 @@ public class ElectrocuteSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, 1 + getSpellPower(castContext) * 0.75f);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 10f);
-        castContext.set(SkillcastingComponentTypes.RANDOM_SEED, castContext.level().random.nextInt(Integer.MAX_VALUE));
     }
 
     @Override
     public void onClientCastStart(CastContext castContext) {
         super.onClientCastStart(castContext);
+        castContext.set(SkillcastingComponentTypes.RANDOM_SEED, castContext.level().random.nextInt(Integer.MAX_VALUE));
         // todo: tick manager has an opt-in helper. should this follow the same pattern?
         SkillcastLevelRenderableManager.track(
                 castContext.caster(),

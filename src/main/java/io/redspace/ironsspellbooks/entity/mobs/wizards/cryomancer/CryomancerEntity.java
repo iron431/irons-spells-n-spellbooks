@@ -66,7 +66,7 @@ public class CryomancerEntity extends NeutralWizard implements IMerchantWizard {
         this.goalSelector.addGoal(0, new FocusOnTradingPlayerGoal<>(this));
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(2, new SpellBarrageGoal(this, SpellRegistry.ICE_BLOCK_SPELL.get(), 3, 6, 100, 250, 1));
-        this.goalSelector.addGoal(3, new WizardAttackGoal(this, 1.25f, 50, 75)
+        this.goalSelector.addGoal(3, new WizardAttackGoal<>(this, 1.25f, 50, 75)
                 .setSpells(
                         List.of(SpellRegistry.ICICLE_SPELL.get(), SpellRegistry.ICICLE_SPELL.get(), SpellRegistry.ICICLE_SPELL.get(), SpellRegistry.CONE_OF_COLD_SPELL.get()),
                         List.of(SpellRegistry.COUNTERSPELL_SPELL.get()),

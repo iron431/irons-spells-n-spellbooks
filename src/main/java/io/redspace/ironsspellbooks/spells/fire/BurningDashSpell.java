@@ -10,10 +10,12 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.spells.ender.TeleportSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastEndReason;
 import io.redspace.skillcasting.data.cast.CastType;
+import io.redspace.skillcasting.data.resolver.DirectionResolver;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -23,6 +25,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -115,6 +118,17 @@ public class BurningDashSpell extends AbstractSpell {
         for (int i = 0; i < 6; i++) {
             Vec3 random = Utils.getRandomVec3(.2);
             level.addParticle(ParticleHelper.EMBERS, entity.getRandomX(0.75), entity.getY() + Utils.getRandomScaled(0.75), entity.getRandomZ(0.75), random.x, random.y, random.z);
+        }
+    }
+
+    @Override
+    public void setupAIContext(CastContext castContext, Mob mob) {
+        super.setupAIContext(castContext, mob);
+        if (mob.getTarget() != null && mob.distanceToSqr(mob.getTarget()) < 4 * 4) {
+            castContext.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, DirectionResolver.fixed(mob.getTarget().getBoundingBox().getCenter().subtract(mob.getBoundingBox().getCenter()).normalize()));
+        } else {
+            TeleportSpell.findMobTeleportDestination(castContext, mob).ifPresent(vec3 ->
+                    castContext.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, DirectionResolver.fixed(vec3.subtract(mob.position()).normalize())));
         }
     }
 }

@@ -40,9 +40,6 @@ import static io.redspace.ironsspellbooks.spells.lightning.LightningLanceSpell.s
 
 public class MagicArrowSpell extends AbstractSpell {
 
-    /** Matches {@link MagicArrowProjectile#getBaseSpeed()}. */
-    private static final float PROJECTILE_BASE_SPEED = 2.7f;
-
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.RARE)
             .setSchoolResource(SchoolRegistry.ENDER_RESOURCE)
@@ -88,7 +85,7 @@ public class MagicArrowSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, PROJECTILE_BASE_SPEED);
+        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 2.7f);
     }
 
     @Override
@@ -97,7 +94,7 @@ public class MagicArrowSpell extends AbstractSpell {
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         magicArrow.setPos(origin.subtract(0, magicArrow.getBoundingBox().getYsize() * 0.5f, 0).add(castContext.direction()));
         magicArrow.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
-        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, PROJECTILE_BASE_SPEED);
+        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1f);
         magicArrow.shootFromContext(magicArrow, castContext);
         level.addFreshEntity(magicArrow);
     }
@@ -120,15 +117,14 @@ public class MagicArrowSpell extends AbstractSpell {
                             humanoidModel.translateToHand(leftHand ? HumanoidArm.LEFT : HumanoidArm.RIGHT, poseStack);
                             poseStack.translate(((leftHand ? -1 : 1) / 32.0F), 1f, 0);
                             poseStack.mulPose(Axis.XP.rotationDegrees(90));
-                        }else if (renderer instanceof GeoRenderer<?> geoRenderer && entityCasterRef.entity() instanceof LivingEntity livingEntity) {
-                            String boneName = leftHand ? "bipedHandLeft" : "right_arm";
+                        } else if (renderer instanceof GeoRenderer<?> geoRenderer && entityCasterRef.entity() instanceof LivingEntity livingEntity) {
+                            String boneName = leftHand ? "bipedHandLeft" : "bipedHandRight";
                             poseStack.mulPose(Axis.YP.rotationDegrees(180f - Mth.lerp(partialTick, livingEntity.yBodyRotO, livingEntity.yBodyRot)));
                             poseStack.translate(0, 0.01f, 0);
                             Optional<GeoBone> hand = geoRenderer.getGeoModel().getBone(boneName);
                             if (hand.isPresent()) {
                                 Vec3 offset = activeCast.context().position(PositionAnchor.ORIGIN).subtract(activeCast.context().position(PositionAnchor.CASTING_POSITION_CENTER));
                                 poseStack.translate(offset.x, offset.y, offset.z);
-                                // fixme: hardcoded mob scale factors (like dead king) bypass this. their (my) fault.
                                 float scale = livingEntity.getScale();
                                 poseStack.scale(scale, scale, scale);
                                 setupPoseStackForBone(poseStack, hand.get());

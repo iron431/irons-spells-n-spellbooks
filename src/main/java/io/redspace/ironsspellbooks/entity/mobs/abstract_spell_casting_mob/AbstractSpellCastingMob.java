@@ -3,17 +3,14 @@ package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IAnimatedCastingMob;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
-import io.redspace.ironsspellbooks.api.util.Utils;
+import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.data.cast.CastEndReason;
 import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.component.CastComponentMap;
-import io.redspace.skillcasting.data.cast.CastSource;
-import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillRegistry;
-import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -22,7 +19,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Unit;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -30,7 +26,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.LookControl;
-import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import software.bernie.geckolib.animatable.GeoEntity;
@@ -44,7 +39,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 
-public abstract class AbstractSpellCastingMob extends PathfinderMob implements GeoEntity, IAnimatedCastingMob {
+public abstract class AbstractSpellCastingMob extends PathfinderMob implements GeoEntity, IAnimatedCastingMob, IDrinkPotions {
     public static final ResourceLocation modelResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/abstract_casting_mob.geo.json");
     public static final ResourceLocation textureResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
     public static final ResourceLocation animationInstantCast = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/casting_animations.json");
@@ -98,23 +93,30 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
-        //pBuilder.define(DATA_SPELL, new SyncedSpellData(-1));
         pBuilder.define(DATA_DRINKING_POTION, false);
     }
 
+    @Override
     public boolean isDrinkingPotion() {
         return entityData.get(DATA_DRINKING_POTION);
     }
 
-    protected void setDrinkingPotion(boolean drinkingPotion) {
+    @Override
+    public void setDrinkingPotion(boolean drinkingPotion) {
         this.entityData.set(DATA_DRINKING_POTION, drinkingPotion);
     }
 
     @Override
-    public boolean canBeLeashed() {
-        return false;
+    public int getDrinkingTime() {
+        return drinkTime;
     }
 
+    @Override
+    public void setDrinkingTime(int drinkingTime) {
+        this.drinkTime = drinkingTime;
+    }
+
+    @Override
     public void startDrinkingPotion() {
         if (!level.isClientSide) {
             setDrinkingPotion(true);
@@ -125,13 +127,24 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         }
     }
 
-    private void finishDrinkingPotion() {
+    @Override
+    public void finishDrinkingPotion() {
         setDrinkingPotion(false);
         this.heal(Math.min(Math.max(10, getMaxHealth() / 10), getMaxHealth() / 4));
         this.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SPEED_MODIFIER_DRINKING);
         if (!this.isSilent()) {
             this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.WITCH_DRINK, this.getSoundSource(), 1.0F, 0.8F + this.random.nextFloat() * 0.4F);
         }
+    }
+
+    @Override
+    public @NotNull SoundEvent getPotionDrinkingSound() {
+        return SoundEvents.GENERIC_DRINK;
+    }
+
+    @Override
+    public boolean canBeLeashed() {
+        return false;
     }
 
     @Override
@@ -158,15 +171,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     protected void customServerAiStep() {
         super.customServerAiStep();
 
-        if (isDrinkingPotion()) {
-            if (drinkTime-- <= 0) {
-                finishDrinkingPotion();
-            } else if (drinkTime % 4 == 0) {
-                if (!this.isSilent()) {
-                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(), getPotionDrinkingSound(), this.getSoundSource(), 1.0F, Utils.random.nextFloat() * 0.1F + 0.9F);
-                }
-            }
-        }
+        handlePotionTick(this);
 
 
 // fixme: full delete? do goals handle this sufficiently?
@@ -174,82 +179,13 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     }
 
-    public @NotNull SoundEvent getPotionDrinkingSound() {
-        return SoundEvents.GENERIC_DRINK;
-    }
-
+    @Deprecated
     public boolean attemptInitiateCastSpell(AbstractSpell spell, int spellLevel, @Nullable CastComponentMap componentPatch) {
-        if (spell == null || getTarget() == null) {
-            return false;
-        }
-
-        if (getTarget() != null) {
-            forceLookAtTarget(getTarget());
-        }
-
-        CasterRef casterRef = CasterRef.entity(this);
-        var castContext = SkillcastingManager.buildCastContext(casterRef, SkillRegistry.holder(spell), spellLevel, CastSource.EMPTY);
-        castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
-        castContext.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
-        if (componentPatch != null) {
-            castContext.components().applyFrom(componentPatch);
-        }
-        if (spell.shouldAIStopCasting(castContext, this, this.getTarget())) {
-            return false;
-        }
-        spell.setupAIContext(castContext, this, this.getTarget());
-        return SkillcastingManager.initiateCast(casterRef, castContext);
+        return SkillcastingUtils.attemptInitiateMobCast(this, SkillRegistry.holder(spell), spellLevel, componentPatch);
     }
 
     public void cancelCast() {
         SkillcastingManager.cancelCast(CasterRef.entity(this), CastEndReason.INTERRUPTED);
-    }
-
-    public void notifyDangerousProjectile(Projectile projectile) {
-    }
-
-    //fixme custom teleport solver
-    public boolean setTeleportLocationBehindTarget(int distance) {
-        var target = getTarget();
-        boolean valid = false;
-//        if (target != null) {
-//            var rotation = target.getLookAngle().normalize().scale(-distance);
-//            var pos = target.position();
-//            var teleportPos = rotation.add(pos);
-//
-//            for (int i = 0; i < 24; i++) {
-//                Vec3 randomness = Utils.getRandomVec3(.15f * i).multiply(1, 0, 1);
-//                teleportPos = Utils.moveToRelativeGroundLevel(level, target.position().subtract(new Vec3(0, 0, distance / (float) (i / 7 + 1)).yRot(-(target.getYRot() + i * 45) * Mth.DEG_TO_RAD)).add(randomness), 5);
-//                teleportPos = new Vec3(teleportPos.x, teleportPos.y + .1f, teleportPos.z);
-//                var reposBB = this.getBoundingBox().move(teleportPos.subtract(this.position()));
-//                //IronsSpellbooks.LOGGER.debug("setTeleportLocationBehindTarget attempt to teleport to {}:", reposBB.getCenter());
-//                if (!level.collidesWithSuffocatingBlock(this, reposBB.inflate(-.05f))) {
-//                    //IronsSpellbooks.LOGGER.debug("\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\nsetTeleportLocationBehindTarget: {} {} {} empty. teleporting\n\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n\n", reposBB.minX, reposBB.minY, reposBB.minZ);
-//                    valid = true;
-//                    break;
-//                }
-//                //IronsSpellbooks.LOGGER.debug("fail");
-//
-//            }
-//            if (valid) {
-//                if (Log.SPELL_DEBUG) {
-//                    //IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: valid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
-//                }
-//                playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(teleportPos));
-//            } else {
-//                if (Log.SPELL_DEBUG) {
-//                    //IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: invalid, pos:{}, isClient:{}", teleportPos, level.isClientSide());
-//                }
-//                playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(this.position()));
-//
-//            }
-//        } else {
-//            if (Log.SPELL_DEBUG) {
-//                //IronsSpellbooks.LOGGER.debug("ASCM.setTeleportLocationBehindTarget: no target, isClient:{}", level.isClientSide());
-//            }
-//            playerMagicData.setAdditionalCastData(new TeleportSpell.TeleportData(this.position()));
-//        }
-        return valid;
     }
 
     private void forceLookAtTarget(LivingEntity target) {
