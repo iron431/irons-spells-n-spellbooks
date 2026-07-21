@@ -487,11 +487,6 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
         }
     }
 
-    @Deprecated
-    protected float getBaseSpeed() {
-        return 1f;
-    }
-
     /**
      * Useful for {@link Projectile#onHit(HitResult)}, will discard if block impact, or {@link AbstractSkillProjectile#consumeEntityImpact(EntityHitResult hit, boolean discardWhenExhausted)} on entity impact
      */

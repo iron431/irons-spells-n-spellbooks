@@ -60,11 +60,6 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 2.7f;
-    }
-
-    @Override
     public Optional<PlayableSound> getImpactSound() {
         return impactSound(SoundRegistry.FORCE_IMPACT);
     }

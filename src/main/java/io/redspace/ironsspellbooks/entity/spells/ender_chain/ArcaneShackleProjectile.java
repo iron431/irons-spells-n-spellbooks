@@ -60,11 +60,6 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    public float getBaseSpeed() {
-        return 1.2f;
-    }
-
-    @Override
     protected double getDefaultGravity() {
         return 0.06;
     }

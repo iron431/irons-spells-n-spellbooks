@@ -72,11 +72,6 @@ public class ThunderstepProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 1;
-    }
-
-    @Override
     public Optional<PlayableSound> getImpactSound() {
         return Optional.empty();
     }

@@ -22,8 +22,6 @@ public class WitherSkullProjectile extends AbstractMagicProjectile {
         this.setRadius(2);
     }
 
-    public float speed = 1f;
-
     public WitherSkullProjectile(Level level, Entity shooter) {
         this(EntityRegistry.WITHER_SKULL_PROJECTILE.get(), level);
         setOwner(shooter);
@@ -38,11 +36,6 @@ public class WitherSkullProjectile extends AbstractMagicProjectile {
     @Override
     public void impactParticles(double x, double y, double z) {
 
-    }
-
-    @Override
-    protected float getBaseSpeed() {
-        return speed;
     }
 
     @Override

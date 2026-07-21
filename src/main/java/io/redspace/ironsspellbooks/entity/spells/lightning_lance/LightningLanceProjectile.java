@@ -34,11 +34,6 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 3f;
-    }
-
-    @Override
     public Optional<PlayableSound> getImpactSound() {
         return Optional.empty();
     }

@@ -51,11 +51,6 @@ public class Comet extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 1.85f;
-    }
-
-    @Override
     public Optional<PlayableSound> getImpactSound() {
         return impactSound(SoundEvents.GENERIC_EXPLODE);
     }

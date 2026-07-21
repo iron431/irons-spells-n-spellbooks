@@ -49,11 +49,6 @@ public class FireBomb extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return .65f;
-    }
-
-    @Override
     protected void onHit(@NotNull HitResult hitresult) {
         super.onHit(hitresult);
         createFireField(Utils.moveToRelativeGroundLevel(level, hitresult.getLocation(), 2, 6));

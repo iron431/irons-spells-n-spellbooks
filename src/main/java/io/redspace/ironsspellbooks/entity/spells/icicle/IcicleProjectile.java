@@ -63,11 +63,6 @@ public class IcicleProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 1.4f;
-    }
-
-    @Override
     public Optional<PlayableSound> getImpactSound() {
         return impactSound(SoundRegistry.ICE_IMPACT);
     }

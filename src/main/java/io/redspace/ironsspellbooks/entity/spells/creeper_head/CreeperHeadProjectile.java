@@ -28,7 +28,6 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
     protected @Nullable CastContext contextSnapshot;
 
     protected int chainCount;
-    protected float speed;
 
     public CreeperHeadProjectile(EntityType<? extends CreeperHeadProjectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -63,11 +62,6 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
     @Override
     public void impactParticles(double x, double y, double z) {
 
-    }
-
-    @Override
-    protected float getBaseSpeed() {
-        return speed;
     }
 
     @Override

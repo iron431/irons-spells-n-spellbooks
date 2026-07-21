@@ -243,12 +243,6 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
     }
 
     @Override
-    protected float getBaseSpeed() {
-        //unused
-        return 0;
-    }
-
-    @Override
     public Optional<PlayableSound> getImpactSound() {
         return Optional.empty();
     }

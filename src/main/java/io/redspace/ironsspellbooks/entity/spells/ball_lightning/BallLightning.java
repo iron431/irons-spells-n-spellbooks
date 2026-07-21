@@ -56,11 +56,6 @@ public class BallLightning extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 0.6f;
-    }
-
-    @Override
     protected boolean canHitEntity(@NotNull Entity pTarget) {
         return super.canHitEntity(pTarget) && canHitVictim(pTarget);
     }

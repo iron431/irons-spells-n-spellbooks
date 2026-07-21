@@ -33,11 +33,6 @@ public class FireboltProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 1.75f;
-    }
-
-    @Override
     public Optional<PlayableSound> getImpactSound() {
         return impactSound(SoundEvents.FIREWORK_ROCKET_BLAST);
     }

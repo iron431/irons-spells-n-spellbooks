@@ -32,11 +32,6 @@ public class StompAoe extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 0;
-    }
-
-    @Override
     public Optional<PlayableSound> getImpactSound() {
         return Optional.empty();
     }

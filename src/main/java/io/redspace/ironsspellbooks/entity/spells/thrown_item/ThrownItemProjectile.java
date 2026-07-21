@@ -114,11 +114,6 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 1.5f;
-    }
-
-    @Override
     public Optional<PlayableSound> getImpactSound() {
         return impactSound(SoundEvents.TRIDENT_HIT_GROUND);
     }

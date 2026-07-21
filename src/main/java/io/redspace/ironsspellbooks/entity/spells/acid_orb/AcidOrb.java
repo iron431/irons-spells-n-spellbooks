@@ -42,11 +42,6 @@ public class AcidOrb extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 1;
-    }
-
-    @Override
     protected void onHit(@NotNull HitResult hitresult) {
         super.onHit(hitresult);
         if (!this.level.isClientSide) {

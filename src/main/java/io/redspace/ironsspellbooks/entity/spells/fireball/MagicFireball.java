@@ -62,11 +62,6 @@ public class MagicFireball extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 1.15f;
-    }
-
-    @Override
     public Optional<PlayableSound> getImpactSound() {
         return impactSound(SoundEvents.GENERIC_EXPLODE);
     }

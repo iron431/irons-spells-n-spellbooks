@@ -115,11 +115,6 @@ public class SmallMagicArrow extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 2f;
-    }
-
-    @Override
     public Optional<PlayableSound> getImpactSound() {
         return Optional.empty();
     }

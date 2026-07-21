@@ -217,11 +217,6 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 1.25f;
-    }
-
-    @Override
     public Optional<PlayableSound> getImpactSound() {
         return isGrounded ? Optional.empty() : impactSound(SoundRegistry.FIRE_IMPACT);
     }

@@ -41,11 +41,6 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 1.3f;
-    }
-
-    @Override
     public Optional<PlayableSound> getImpactSound() {
         return impactSound(SoundRegistry.GUIDING_BOLT_IMPACT);
     }

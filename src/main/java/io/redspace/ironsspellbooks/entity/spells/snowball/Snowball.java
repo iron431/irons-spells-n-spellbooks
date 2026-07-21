@@ -52,11 +52,6 @@ public class Snowball extends AbstractMagicProjectile {
     }
 
     @Override
-    protected float getBaseSpeed() {
-        return 1;
-    }
-
-    @Override
     protected void onHit(@NotNull HitResult hitresult) {
         super.onHit(hitresult);
         createFrostField(Utils.moveToRelativeGroundLevel(level, hitresult.getLocation(), 2));

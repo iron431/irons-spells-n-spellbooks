@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 
 public class BloodSlashProjectile extends AbstractMagicProjectile {
     private static final EntityDataAccessor<Float> DATA_RADIUS = SynchedEntityData.defineId(BloodSlashProjectile.class, EntityDataSerializers.FLOAT);
-    private static final float SPEED = 1f;
     public final int animationSeed;
     private final float maxRadius;
     public AABB oldBB;
@@ -83,11 +82,6 @@ public class BloodSlashProjectile extends AbstractMagicProjectile {
     @Override
     public void impactParticles(double x, double y, double z) {
 
-    }
-
-    @Override
-    protected float getBaseSpeed() {
-        return SPEED;
     }
 
     @Override
