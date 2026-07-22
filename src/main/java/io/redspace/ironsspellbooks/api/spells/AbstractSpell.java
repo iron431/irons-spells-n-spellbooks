@@ -162,6 +162,7 @@ public abstract class AbstractSpell extends AbstractSkill {
                 castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
             }
         }
+        castContext.set(SpellcastingComponentTypes.ANIMATION_SPEED, SkillcastingUtils.getCastRateSpeed(castContext));
     }
 
     /**
@@ -264,12 +265,13 @@ public abstract class AbstractSpell extends AbstractSkill {
         }
         if (castContext.asEntityCaster() instanceof Player player) {
             if (finishAnimation.getAnimation().isPresent() && !cancelled) {
-                AnimationHelper.animatePlayerStart(player, finishAnimation.getAnimation().get());
+                float speedModifier = castContext.getOrDefault(SpellcastingComponentTypes.ANIMATION_SPEED, 1f);
+                AnimationHelper.animatePlayerStart(player, finishAnimation.getAnimation().get(), speedModifier);
             } else {
                 AnimationHelper.cancelPlayerAnimation((AbstractClientPlayer) player);
             }
         } else if (castContext.asEntityCaster() instanceof IAnimatedCastingMob animatedCastingMob) {
-            animatedCastingMob.playCastingAnimation(cancelled ? AnimationHolder.stop() : finishAnimation);
+            animatedCastingMob.playCastingAnimation(cancelled ? AnimationHolder.stop() : finishAnimation, castContext.getOrDefault(SpellcastingComponentTypes.ANIMATION_SPEED, 1f));
         }
     }
 
@@ -279,10 +281,10 @@ public abstract class AbstractSpell extends AbstractSkill {
             return;
         }
         if (castContext.asEntityCaster() instanceof Player player) {
-            float speedModifier = SkillcastingUtils.getCastRateSpeed(castContext);
+            float speedModifier = castContext.getOrDefault(SpellcastingComponentTypes.ANIMATION_SPEED, 1f);
             animation.getAnimation().ifPresent(resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation, speedModifier));
         } else if (castContext.asEntityCaster() instanceof IAnimatedCastingMob animatedCastingMob) {
-            animatedCastingMob.playCastingAnimation(animation);
+            animatedCastingMob.playCastingAnimation(animation, castContext.getOrDefault(SpellcastingComponentTypes.ANIMATION_SPEED, 1f));
         }
     }
 

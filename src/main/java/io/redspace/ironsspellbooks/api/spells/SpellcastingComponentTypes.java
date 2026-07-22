@@ -181,4 +181,10 @@ public class SpellcastingComponentTypes {
                     .persisted(Codec.INT)
                     .synced(StreamCodecUtils.INT)
                     .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> ANIMATION_SPEED =
+            COMPONENT_TYPES.register("animation_speed", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(StreamCodecUtils.FLOAT)
+                    .build());
 }

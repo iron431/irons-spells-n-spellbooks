@@ -220,9 +220,10 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     @Override
-    public void playCastingAnimation(AnimationHolder animation) {
+    public void playCastingAnimation(AnimationHolder animation, float speed) {
         if (animation.getType() != AnimationHolder.Type.PASS) {
             this.queuedCastingAnimation = animation;
+            this.queuedAnimationSpeed = speed;
             this.animatingLegs = animation.isAnimatesLegs();
         }
     }
@@ -232,7 +233,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         controllerRegistrar.add(castingController);
     }
 
-    AnimationHolder queuedCastingAnimation = null;
+    protected AnimationHolder queuedCastingAnimation = null;
+    protected float queuedAnimationSpeed = 1f;
     private final AnimationController<AbstractSpellCastingMob> castingController = new AnimationController<>(this, "casting_controller", 0, this::castingAnimationPredicate);
 
     private PlayState castingAnimationPredicate(AnimationState<AbstractSpellCastingMob> event) {
@@ -242,6 +244,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
                 controller.forceAnimationReset();
                 this.currentAnimationFile = queuedCastingAnimation.getGeoFileResource().get();
                 controller.setAnimation(RawAnimation.begin().thenPlay(queuedCastingAnimation.getAnimation().get().getPath()));
+                controller.setAnimationSpeed(queuedAnimationSpeed);
             } else {
                 controller.stop();
             }

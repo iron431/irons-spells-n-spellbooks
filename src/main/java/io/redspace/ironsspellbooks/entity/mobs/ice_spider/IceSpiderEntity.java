@@ -293,7 +293,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     @Override
-    public void playCastingAnimation(AnimationHolder animation) {
+    public void playCastingAnimation(AnimationHolder animation, float speed) {
         // disable humanoid casting animations
         return;
     }
