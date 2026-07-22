@@ -161,32 +161,6 @@
 				}
 			}
 		},
-		"charged_throw_original": {
-			"animation_length": 1.2083,
-			"bones": {
-				"torso": {
-					"rotation": {
-						"vector": [0, 10, 0]
-					}
-				},
-				"right_arm": {
-					"rotation": {
-						"vector": [-210.90686, -10.58927, -17.06488]
-					},
-					"position": {
-						"vector": [1, 0, 1]
-					}
-				},
-				"left_arm": {
-					"rotation": {
-						"vector": [-102.5, 0, 0]
-					},
-					"position": {
-						"vector": [0, 0, -1]
-					}
-				}
-			}
-		},
 		"continuous_thrust": {
 			"loop": true,
 			"animation_length": 0.44,
@@ -2643,119 +2617,6 @@
 						},
 						"1.48": {
 							"vector": [0, 0, 0]
-						}
-					}
-				}
-			}
-		},
-		"charged_throw_backup": {
-			"loop": "hold_on_last_frame",
-			"animation_length": 5.5,
-			"bones": {
-				"torso": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.25": {
-							"vector": [0, 30, 0]
-						},
-						"5.5": {
-							"vector": [0, 30, 0]
-						}
-					}
-				},
-				"right_arm": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.5": {
-							"vector": [-210.90686, -10.58927, -17.06488]
-						},
-						"0.875": {
-							"vector": [-163.41, -10.59, -17.06]
-						},
-						"1.625": {
-							"vector": [-210.90686, -10.58927, -17.06488]
-						},
-						"5.5": {
-							"vector": [-210.91, -10.59, -17.06]
-						}
-					},
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.5": {
-							"vector": [1, 0, 1]
-						},
-						"0.875": {
-							"vector": [1, 0, 1]
-						},
-						"1.625": {
-							"vector": [1, 0, 1]
-						},
-						"5.5": {
-							"vector": [1, 0, 1]
-						}
-					}
-				},
-				"left_arm": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.125": {
-							"vector": [-102.5, 0, 0]
-						},
-						"5.5": {
-							"vector": [-102.5, 0, 0]
-						}
-					},
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.125": {
-							"vector": [0, 0, -1]
-						},
-						"5.5": {
-							"vector": [0, 0, -1]
-						}
-					}
-				},
-				"rightItem": {
-					"rotation": {
-						"0.0": {
-							"vector": [-90, 0, 0]
-						},
-						"5.4375": {
-							"vector": [-90, 0, 0]
-						}
-					}
-				},
-				"bipedHandRight": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"5.5": {
-							"vector": [0, 0, 0]
-						}
-					},
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.875": {
-							"vector": [0, -20, 0]
-						},
-						"1.625": {
-							"vector": [0, -20, 9]
-						},
-						"5.5": {
-							"vector": [0, -20, 9]
 						}
 					}
 				}
@@ -8071,47 +7932,6 @@
 							"vector": [54.58682, 8.17773, -5.77509]
 						},
 						"1.08": {
-							"vector": [0, 0, 0]
-						}
-					}
-				}
-			}
-		},
-		"sword_deflect_1": {
-			"animation_length": 0.52,
-			"bones": {
-				"right_arm": {
-					"rotation": {
-						"0.0": {
-							"vector": [-104.44271, -55.8904, -19.38652]
-						},
-						"0.52": {
-							"vector": [0, 0, 0]
-						}
-					},
-					"position": {
-						"0.0": {
-							"vector": [2, 0, 0]
-						},
-						"0.52": {
-							"vector": [0, 0, 0]
-						}
-					}
-				},
-				"bipedHandRight": {
-					"rotation": {
-						"0.0": {
-							"vector": [112.58, 0, 0]
-						},
-						"0.52": {
-							"vector": [0, 0, 0]
-						}
-					},
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.52": {
 							"vector": [0, 0, 0]
 						}
 					}

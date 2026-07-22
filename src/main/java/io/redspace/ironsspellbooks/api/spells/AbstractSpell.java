@@ -29,6 +29,7 @@ import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.data.selection.SkillSelectionManager;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -264,7 +265,7 @@ public abstract class AbstractSpell extends AbstractSkill {
         if (castContext.asEntityCaster() instanceof Player player) {
             if (finishAnimation.getAnimation().isPresent() && !cancelled) {
                 AnimationHelper.animatePlayerStart(player, finishAnimation.getAnimation().get());
-            } else/* if (finishAnimation.getType() == AnimationHolder.Type.STOP || cancelled)*/ {
+            } else {
                 AnimationHelper.cancelPlayerAnimation((AbstractClientPlayer) player);
             }
         } else if (castContext.asEntityCaster() instanceof IAnimatedCastingMob animatedCastingMob) {
@@ -278,7 +279,8 @@ public abstract class AbstractSpell extends AbstractSkill {
             return;
         }
         if (castContext.asEntityCaster() instanceof Player player) {
-            animation.getAnimation().ifPresent(resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation));
+            float speedModifier = SkillcastingUtils.getCastRateSpeed(castContext);
+            animation.getAnimation().ifPresent(resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation, speedModifier));
         } else if (castContext.asEntityCaster() instanceof IAnimatedCastingMob animatedCastingMob) {
             animatedCastingMob.playCastingAnimation(animation);
         }

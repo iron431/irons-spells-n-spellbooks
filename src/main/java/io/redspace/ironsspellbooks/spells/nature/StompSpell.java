@@ -82,7 +82,6 @@ public class StompSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         float powerMultiplier = castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, 1f);
-        castContext.set(SkillcastingComponentTypes.CAST_TIME, castTime);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
         // todo: range and radius okay for this context? i think so
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 4 + castContext.getSkillLevel() * powerMultiplier);

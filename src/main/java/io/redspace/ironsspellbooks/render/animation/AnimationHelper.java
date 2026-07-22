@@ -29,10 +29,15 @@ public class AnimationHelper {
         if (playerAnimationData != null) {
             playerAnimationData.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(4, Ease.INOUTSINE), null, false);
             playerAnimationData.adjustmentModifier.setupFade(3, 3);
+            playerAnimationData.setSpeed(1f);
         }
     }
 
     public static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
+        animatePlayerStart(player, resourceLocation, 1f);
+    }
+
+    public static void animatePlayerStart(Player player, ResourceLocation resourceLocation, float speed) {
         try {
             var rawanimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
             if (rawanimation instanceof KeyframeAnimation keyframeAnimation) {
@@ -42,6 +47,7 @@ public class AnimationHelper {
                 var animation = new KeyframeAnimationPlayer(copy.build());
                 var playerAnimationData = (IronPlayerAnimationData<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(PLAYER_ANIMATION_RESOURCE);
                 playerAnimationData.adjustmentModifier.setupFade(animation.getData().endTick, 3);
+                playerAnimationData.setSpeed(speed);
                 var armsFlag = ClientConfigs.SHOW_FIRST_PERSON_ARMS.get();
                 var itemsFlag = ClientConfigs.SHOW_FIRST_PERSON_ITEMS.get();
                 if (armsFlag || itemsFlag) {

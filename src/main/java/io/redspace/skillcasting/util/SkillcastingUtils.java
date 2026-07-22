@@ -380,4 +380,9 @@ public final class SkillcastingUtils {
         }
         return SkillcastingManager.initiateCast(casterRef, castContext);
     }
+
+    public static float getCastRateSpeed(CastContext castContext) {
+        float effectiveCastTime = castContext.getOrDefault(SkillcastingComponentTypes.CAST_TIME, 0);
+        return effectiveCastTime == 0 ? 1f : castContext.skill().value().getCastTimeTicks() / effectiveCastTime;
+    }
 }

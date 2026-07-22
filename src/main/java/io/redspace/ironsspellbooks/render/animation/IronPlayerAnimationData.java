@@ -60,4 +60,8 @@ public class IronPlayerAnimationData<T extends IAnimation> extends ModifierLayer
         this.addModifier(speedModifier, 0);
         this.addModifier(adjustmentModifier, 0);
     }
+
+    public void setSpeed(float speed) {
+        this.speedModifier.speed = speed;
+    }
 }
