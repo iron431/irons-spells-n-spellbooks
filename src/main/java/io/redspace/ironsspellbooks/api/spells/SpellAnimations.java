@@ -5,7 +5,6 @@ import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import net.minecraft.resources.ResourceLocation;
 
 public class SpellAnimations {
-    public static ResourceLocation PLAYER_ANIMATION_RESOURCE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animation");
     public static ResourceLocation MOB_ANIMATION_RESOURCE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/casting_animations.json");
 
     private static AnimationHolder defaultFile(ResourceLocation resourceLocation) {

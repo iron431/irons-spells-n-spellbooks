@@ -51,7 +51,7 @@ public class MagicData implements IHolderSensitiveData {
     private final LearnedSpellData learnedSpellData;
     private float heartStopAccumulatedDamage;
     private float mana;
-    private String cachedCastingEquipmentSlot;
+    private String cachedCastingEquipmentSlot = "";
 
     public String getCachedCastingEquipmentSlot() {
         return cachedCastingEquipmentSlot;

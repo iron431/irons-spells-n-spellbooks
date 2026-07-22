@@ -236,15 +236,6 @@ tasks.withType(JavaCompile).configureEach {
     options.incremental = false
 }
 
-tasks.register('copyAnimations', Copy) {
-    from layout.projectDirectory.file("src/main/resources/assets/${mod_id}/player_animations/casting_animations.json")
-    into layout.projectDirectory.dir("src/main/resources/assets/${mod_id}/animations")
-}
-
-tasks.classes.dependsOn(tasks.copyAnimations)
-tasks.processResources.dependsOn(tasks.copyAnimations)
-tasks.sourcesJar.dependsOn(tasks.copyAnimations)
-
 idea {
     module {
         downloadSources = true

@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractArrowAccessor",
+    "playeranimator.AnimationBuilderMixin",
     "BeardifierMixin",
     "CreeperMixin",
     "CurioHooksMixin",
@@ -33,6 +34,7 @@
     "MinecraftMixin",
     "ParticleAccessor",
     "ParticleMixin",
+    "playeranimator.PlayerAnimationRegistryMixin",
     "SimpleTextureMixin",
     "SpellParticleProviderMixin",
     "SpinAttackEffectLayerMixin",

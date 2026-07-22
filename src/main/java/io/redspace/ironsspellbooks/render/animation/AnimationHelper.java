@@ -15,8 +15,8 @@ import dev.kosmx.playerAnim.core.util.Vec3f;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
-import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -31,9 +31,10 @@ import static io.redspace.ironsspellbooks.config.ClientConfigs.SHOW_FIRST_PERSON
 import static io.redspace.ironsspellbooks.config.ClientConfigs.SHOW_FIRST_PERSON_ITEMS;
 
 public class AnimationHelper {
+    public static ResourceLocation PLAYER_ANIMATION_RESOURCE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animation");
+
     public static void initializePlayerAnimationFactory() {
-        PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(
-                SpellAnimations.PLAYER_ANIMATION_RESOURCE,
+        PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(PLAYER_ANIMATION_RESOURCE,
                 42,
                 (player) -> {
                     var animation = new ModifierLayer<>();
@@ -76,7 +77,7 @@ public class AnimationHelper {
     }
 
     public static void cancelPlayerAnimation(AbstractClientPlayer player) {
-        var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData(player).get(SpellAnimations.PLAYER_ANIMATION_RESOURCE);
+        var animation = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData(player).get(PLAYER_ANIMATION_RESOURCE);
         if (animation != null) {
             animation.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(4, Ease.INOUTSINE), null, false);
             IronsAdjustmentModifier.INSTANCE.fadeOut(5);
@@ -87,15 +88,9 @@ public class AnimationHelper {
         var rawanimation = PlayerAnimationRegistry.getAnimation(resourceLocation);
         if (rawanimation instanceof KeyframeAnimation keyframeAnimation) {
             //noinspection unchecked
-            var playerAnimationData = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(SpellAnimations.PLAYER_ANIMATION_RESOURCE);
+            var playerAnimationData = (ModifierLayer<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(PLAYER_ANIMATION_RESOURCE);
             if (playerAnimationData != null) {
                 var animation = new KeyframeAnimationPlayer(keyframeAnimation) {
-//                    @Override
-//                    public void stop() {
-//                        playerAnimationData.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(2, Ease.INOUTSINE), null, false);
-//                        IronsAdjustmentModifier.INSTANCE.fadeOut(3);
-//                    }
-
                     @Override
                     public void tick() {
                         if (getCurrentTick() == getStopTick() - 2) {
