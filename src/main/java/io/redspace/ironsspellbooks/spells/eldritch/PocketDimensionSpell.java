@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -61,7 +62,7 @@ public class PocketDimensionSpell extends AbstractSpell {
         if (!(entity instanceof ServerPlayer serverPlayer)) {
             return false;
         }
-        if (level.dimension().equals(PocketDimensionManager.POCKET_DIMENSION)) {
+        if (level.dimension().equals(PocketDimensionManager.POCKET_DIMENSION) || ServerConfigs.POCKET_INACCESSIBLE_DIMENSIONS.contains(level.dimension())) {
             serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_dimension").withStyle(ChatFormatting.RED)));
             return false;
         }

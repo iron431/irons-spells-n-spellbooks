@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.capabilities.magic;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
+import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.worldgen.ClearPortalFrameDataProcessor;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -31,7 +32,6 @@ import java.util.UUID;
 public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
     public static final ResourceKey<Level> POCKET_DIMENSION = ResourceKey.create(Registries.DIMENSION, IronsSpellbooks.id("pocket_dimension"));
     public static final ResourceLocation POCKET_ROOM_STRUCTURE = IronsSpellbooks.id("pocket_room");
-    public static final int POCKET_SPACING = 256;
 
     private static final String UUID_KEY = "uuid";
     private static final String INT_ID_KEY = "pocket_id";
@@ -96,7 +96,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
     }
 
     public BlockPos structurePosForId(int pocketDimensionId) {
-        return BlockPos.containing(0, 0, POCKET_SPACING * pocketDimensionId);
+        return BlockPos.containing(0, 0, ServerConfigs.POCKET_SPACING.get() * pocketDimensionId);
     }
 
     public BlockPos structurePosForPlayer(Player player) {
@@ -147,8 +147,8 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         if (serverLevel.getGameTime() % 100 == 0) {
             serverLevel.players().forEach(player -> {
                 if (!player.isCreative() && !player.isSpectator()) {
-                    int pocketX = (int) (player.getX() / PocketDimensionManager.POCKET_SPACING) * PocketDimensionManager.POCKET_SPACING;
-                    int pocketZ = (int) (player.getZ() / PocketDimensionManager.POCKET_SPACING) * PocketDimensionManager.POCKET_SPACING;
+                    int pocketX = (int) (player.getX() / ServerConfigs.POCKET_SPACING.get()) * ServerConfigs.POCKET_SPACING.get();
+                    int pocketZ = (int) (player.getZ() / ServerConfigs.POCKET_SPACING.get()) * ServerConfigs.POCKET_SPACING.get();
                     if (player.getX() < pocketX || player.getX() > pocketX + 16
                             || player.getZ() < pocketZ || player.getZ() > pocketZ + 16) {
                         // snap player back into bounds

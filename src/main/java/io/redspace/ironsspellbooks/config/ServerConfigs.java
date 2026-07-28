@@ -8,9 +8,11 @@ import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.*;
@@ -51,6 +53,10 @@ public class ServerConfigs {
 
     public static final ModConfigSpec.ConfigValue<Boolean> PORTAL_FRAME_RESTRICT_DYE;
     public static final ModConfigSpec.ConfigValue<Boolean> PORTAL_FRAME_RESTRICT_BREAKING;
+    
+    public static final ModConfigSpec.ConfigValue<Boolean> SNAP_TO_POCKET_BOUNDS;
+    public static final ModConfigSpec.ConfigValue<Integer> POCKET_SPACING;
+    private static final ModConfigSpec.ConfigValue<List<? extends String>> POCKET_INACCESSIBLE;
 
 
     public static final ModConfigSpec.ConfigValue<Double> TYROS_ADDITIONAL_HEALTH;
@@ -67,6 +73,7 @@ public class ServerConfigs {
     public static final Set<Item> UPGRADE_BLACKLIST_ITEMS = new HashSet<>();
     public static final Set<Item> IMBUE_WHITELIST_ITEMS = new HashSet<>();
     public static final Set<Item> IMBUE_BLACKLIST_ITEMS = new HashSet<>();
+    public static final Set<ResourceKey<Level>> POCKET_INACCESSIBLE_DIMENSIONS = new HashSet<>();
 
     //https://forge.gemwire.uk/wiki/Configs
 
@@ -169,6 +176,17 @@ public class ServerConfigs {
         }
 
         {
+            BUILDER.push("Pocket Dimensions");
+            BUILDER.comment("Whether players who leave the confines of their Pocket Dimension are teleported back. Default: true");
+            SNAP_TO_POCKET_BOUNDS = BUILDER.define("snapToPocketBounds", true);
+            BUILDER.comment("How many blocks apart each player's Pocket Dimensions will be from eachother. Default: 256");
+            POCKET_SPACING = BUILDER.define("pocketSpacing", 256);
+            BUILDER.comment("Dimensions where the Pocket Dimension cannot be accessed. Add a dimension's id to prevent the spell from being cast there, ex: \"minecraft:the_end\"");
+            POCKET_INACCESSIBLE = BUILDER.defineListAllowEmpty("pocketInaccessibleDimensions", ArrayList::new, (string) -> true);
+            BUILDER.pop();
+        }
+
+        {
             BUILDER.push("Boss Config");
             BUILDER.comment("Configure Boss Stats");
             {
@@ -215,6 +233,7 @@ public class ServerConfigs {
         cacheItemList(UPGRADE_BLACKLIST.get(), UPGRADE_BLACKLIST_ITEMS);
         cacheItemList(IMBUE_WHITELIST.get(), IMBUE_WHITELIST_ITEMS);
         cacheItemList(IMBUE_BLACKLIST.get(), IMBUE_BLACKLIST_ITEMS);
+        cacheDimensionList(POCKET_INACCESSIBLE.get(), POCKET_INACCESSIBLE_DIMENSIONS);
     }
 
     private static void cacheItemList(List<? extends String> ids, Set<Item> output) {
@@ -234,6 +253,17 @@ public class ServerConfigs {
                 }
             } catch (Exception e) {
                 IronsSpellbooks.LOGGER.warn("Unable to validate item config: {}", e.getMessage());
+            }
+        }
+    }
+
+    private static void cacheDimensionList(List<? extends String> ids, Set<ResourceKey<Level>> output) {
+        output.clear();
+        for (String name : ids) {
+            try {
+                output.add(ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(name)));
+            } catch (Exception e) {
+                IronsSpellbooks.LOGGER.warn("Unable to validate dimension config: {}", e.getMessage());
             }
         }
     }

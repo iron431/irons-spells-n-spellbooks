@@ -10,6 +10,7 @@
 
 ### Changes
 - Updated Magic Arrow, Arcane Shackle, and Portal spell icons
+- Pocket Dimensions are now more Configurable
 - Spell Balance
   - Root Entity now has health, and can be damaged and killed
   - Oakskin Rebalance
