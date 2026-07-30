@@ -14,6 +14,7 @@
   - New configs available
   - Portals now regenerate when broken
   - You can re-cast the spell to leave your pocket dimension
+  - Voidstone now has an item form
 - Spell Balance
   - Root Entity now has health, and can be damaged and killed
   - Oakskin Rebalance
