@@ -5,6 +5,8 @@ import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.worldgen.ClearPortalFrameDataProcessor;
+import io.redspace.ironsspellbooks.entity.spells.portal.PortalPos;
+import io.redspace.ironsspellbooks.util.NBT;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
@@ -28,6 +30,7 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.UUID;
+import java.util.ArrayList;
 
 public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
     public static final ResourceKey<Level> POCKET_DIMENSION = ResourceKey.create(Registries.DIMENSION, IronsSpellbooks.id("pocket_dimension"));
@@ -36,7 +39,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
     private static final String UUID_KEY = "uuid";
     private static final String INT_ID_KEY = "pocket_id";
     private static final String ID_MAP_KEY = "ids";
-    private static final String NEXT_ID_KEY = "next_id";
+    private static final String RETURN_POS_KEY = "returns";
 
     public static final PocketDimensionManager INSTANCE = new PocketDimensionManager();
 
@@ -45,62 +48,88 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         IronsDataStorage.INSTANCE.setDirty();
     }
 
-    private int nextId;
-    //todo: should we store block position as well? would give freedom to change id hasher in the future
     private final Object2IntMap<UUID> ids = new Object2IntOpenHashMap<>();
+    private final ArrayList<PortalPos> returnPositions = new ArrayList<PortalPos>();
 
     @Override
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag compoundTag = new CompoundTag();
-        ListTag entries = new ListTag();
+        ListTag idEntries = new ListTag();
         for (var entry : ids.object2IntEntrySet()) {
             CompoundTag tagEntry = new CompoundTag();
             tagEntry.putUUID(UUID_KEY, entry.getKey());
             tagEntry.putInt(INT_ID_KEY, entry.getIntValue());
-            entries.add(tagEntry);
+            idEntries.add(tagEntry);
         }
-        compoundTag.put(ID_MAP_KEY, entries);
-        compoundTag.putInt(NEXT_ID_KEY, nextId);
+        compoundTag.put(ID_MAP_KEY, idEntries);
+        ListTag returnEntries = new ListTag();
+        for (var returnPos : returnPositions) {
+            returnEntries.add(NBT.writePortalPos(returnPos));
+        }
+        compoundTag.put(RETURN_POS_KEY, returnEntries);
         return compoundTag;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        ListTag entries = nbt.getList(ID_MAP_KEY, 10);
-        int nextId = nbt.getInt(NEXT_ID_KEY);
-        for (Tag tag : entries) {
+        int highestId = 0;
+        ListTag idEntries = nbt.getList(ID_MAP_KEY, 10);
+        for (Tag tag : idEntries) {
             try {
                 CompoundTag compoundTag = (CompoundTag) tag;
                 UUID uuid = compoundTag.getUUID(UUID_KEY);
                 int pocketId = compoundTag.getInt(INT_ID_KEY);
+                if (highestId < pocketId) { highestId = pocketId; }
                 ids.put(uuid, pocketId);
             } catch (Exception e) {
                 IronsSpellbooks.LOGGER.error("Failed to parse PocketDimensionManager id entry: {}: {}", tag, e.getMessage());
             }
         }
-        this.nextId = nextId;
+        returnPositions.ensureCapacity(highestId+1);
+        ListTag returnEntries = nbt.getList(RETURN_POS_KEY, 10);
+        for (Tag tag : returnEntries) {
+            try {
+                CompoundTag compoundTag = (CompoundTag) tag;
+                returnPositions.add(NBT.readPortalPos(compoundTag));
+            } catch (Exception e) {
+                IronsSpellbooks.LOGGER.error("Failed to parse PocketDimensionManager position: {}: {}", tag, e.getMessage());
+            }
+        }
+        // Place extra null values to make sure there are return slots for each id
+        for (int i = returnPositions.size(); i <= highestId; i++) {
+            returnPositions.add(null);
+        }
     }
 
-    //todo: should this be the trigger for generating a new platform? getOrCreateRoomId? i think so
-    public int idFor(UUID uuid) {
-        if (!ids.containsKey(uuid)) {
-            ids.put(uuid, nextId);
-            nextId++;
-            IronsDataStorage.INSTANCE.setDirty();
+    public boolean hasId(UUID uuid) {
+        return ids.containsKey(uuid);
+    }
+
+    public boolean hasId(Player player) {
+        return hasId(player.getUUID());
+    }
+
+    private int idFor(UUID uuid) {
+        if (!hasId(uuid)) {
+            return -1;
         }
         return ids.getInt(uuid);
     }
 
-    public int idFor(Player player) {
+    private int idFor(Player player) {
         return idFor(player.getUUID());
     }
 
-    public BlockPos structurePosForId(int pocketDimensionId) {
+    private BlockPos structurePosForId(int pocketDimensionId) {
         return BlockPos.containing(0, 0, ServerConfigs.POCKET_SPACING.get() * pocketDimensionId);
     }
 
     public BlockPos structurePosForPlayer(Player player) {
         return structurePosForId(idFor(player));
+    }
+
+    public PortalPos returnPosForPlayer(Player player) {
+        return returnPositions.get(idFor(player));
     }
 
     public BlockPos findPortalForStructure(ServerLevel pocketDimension, BlockPos blockPos) {
@@ -122,12 +151,18 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         return defaultPos;
     }
 
-    public boolean maybeGeneratePocketRoom(ServerPlayer player) {
-        var serverLevel = player.serverLevel();
-        var structurePos = structurePosForPlayer(player);
-        var pocketLevel = serverLevel.getServer().getLevel(POCKET_DIMENSION);
-        BlockState blockState = pocketLevel.getBlockState(structurePos);
-        if (blockState.isAir() && !blockState.is(Blocks.BARRIER)) {
+    public boolean generatePocketIfUnassigned(ServerPlayer player) {
+        UUID playerUUId = player.getUUID();
+        if (!hasId(playerUUId))
+        {
+            // Assign new ID
+            ids.put(playerUUId, returnPositions.size());
+            returnPositions.add(PortalPos.of(player.level.dimension(), player.position(), player.getYRot()));
+            var structurePos = structurePosForId(returnPositions.size());
+            IronsDataStorage.INSTANCE.setDirty();
+            // Create new pocket dimension
+            var pocketLevel = player.serverLevel().getServer().getLevel(POCKET_DIMENSION);
+            BlockState blockState = pocketLevel.getBlockState(structurePos);
             var structureTemplateManager = pocketLevel.getStructureManager();
             var structureTemplate = structureTemplateManager.getOrCreate(POCKET_ROOM_STRUCTURE);
             var placementSettings = (new StructurePlaceSettings()).setMirror(Mirror.NONE).setRotation(Rotation.NONE).setIgnoreEntities(true).addProcessor(new ClearPortalFrameDataProcessor());
@@ -135,6 +170,10 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
             return true;
         }
         return false;
+    }
+
+    public void updateReturn(ServerPlayer player) {
+        returnPositions.set(idFor(player), PortalPos.of(player.level.dimension(), player.position(), player.getYRot()));
     }
 
     public void tick(Level level) {
