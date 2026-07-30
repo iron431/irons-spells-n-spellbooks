@@ -179,7 +179,7 @@ public class ServerConfigs {
             BUILDER.push("Pocket Dimensions");
             BUILDER.comment("Whether players who leave the confines of their Pocket Dimension are teleported back. Default: true");
             SNAP_TO_POCKET_BOUNDS = BUILDER.define("snapToPocketBounds", true);
-            BUILDER.comment("How many blocks apart each player's Pocket Dimensions will be from eachother. Default: 256");
+            BUILDER.comment("How many blocks apart each player's Pocket Dimensions will be from eachother. Doesn't update existing worlds. Default: 256");
             POCKET_SPACING = BUILDER.define("pocketSpacing", 256);
             BUILDER.comment("Dimensions where the Pocket Dimension cannot be accessed. Add a dimension's id to prevent the spell from being cast there, ex: \"minecraft:the_end\"");
             POCKET_INACCESSIBLE = BUILDER.defineListAllowEmpty("pocketInaccessibleDimensions", ArrayList::new, (string) -> true);

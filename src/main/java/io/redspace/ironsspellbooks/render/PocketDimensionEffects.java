@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -113,7 +112,7 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
         Vec3 cameraPos = camera.getPosition();
         Matrix4f matrix4f1 = new Matrix4f().rotation(quaternionf).translate((float) -cameraPos.x, (float) -cameraPos.y, (float) -cameraPos.z);
         poseStack.mulPose(matrix4f1);
-        int traversal = (int) (cameraPos.z / ServerConfigs.POCKET_SPACING.get()) * ServerConfigs.POCKET_SPACING.get();
+        int traversal = (int) (cameraPos.z / PocketDimensionManager.INSTANCE.getPocketSpacing()) * PocketDimensionManager.INSTANCE.getPocketSpacing();
         float HARDCODE_WIDTH = 7.0f;
         float halfWidth = HARDCODE_WIDTH / 2.0f;
         float HARDCODE_X = 4 + halfWidth;

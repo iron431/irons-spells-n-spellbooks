@@ -40,6 +40,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
     private static final String INT_ID_KEY = "pocket_id";
     private static final String ID_MAP_KEY = "ids";
     private static final String RETURN_POS_KEY = "returns";
+    private static final String SAVED_SPACING_KEY = "spacing";
 
     public static final PocketDimensionManager INSTANCE = new PocketDimensionManager();
 
@@ -50,6 +51,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
 
     private final Object2IntMap<UUID> ids = new Object2IntOpenHashMap<>();
     private final ArrayList<PortalPos> returnPositions = new ArrayList<PortalPos>();
+    private int pocketSpacing = 256;
 
     @Override
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
@@ -67,12 +69,14 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
             returnEntries.add(NBT.writePortalPos(returnPos));
         }
         compoundTag.put(RETURN_POS_KEY, returnEntries);
+        compoundTag.putInt(SAVED_SPACING_KEY, pocketSpacing);
         return compoundTag;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        int highestId = 0;
+        pocketSpacing = nbt.getInt(SAVED_SPACING_KEY);
+        int highestId = -1;
         ListTag idEntries = nbt.getList(ID_MAP_KEY, 10);
         for (Tag tag : idEntries) {
             try {
@@ -99,6 +103,14 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         for (int i = returnPositions.size(); i <= highestId; i++) {
             returnPositions.add(null);
         }
+        if (pocketSpacing == 0) {
+            if (highestId > -1) { pocketSpacing = 256; } // Worlds with preexisting pockets should go to previous versions' 256
+            else { pocketSpacing = ServerConfigs.POCKET_SPACING.get(); } // New worlds or ones without pockets should use config value
+        }
+    }
+
+    public int getPocketSpacing() {
+        return pocketSpacing;
     }
 
     public boolean hasId(UUID uuid) {
@@ -121,7 +133,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
     }
 
     private BlockPos structurePosForId(int pocketDimensionId) {
-        return BlockPos.containing(0, 0, ServerConfigs.POCKET_SPACING.get() * pocketDimensionId);
+        return BlockPos.containing(0, 0, getPocketSpacing() * pocketDimensionId);
     }
 
     public BlockPos structurePosForPlayer(Player player) {
@@ -186,8 +198,8 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         if (serverLevel.getGameTime() % 100 == 0) {
             serverLevel.players().forEach(player -> {
                 if (!player.isCreative() && !player.isSpectator()) {
-                    int pocketX = (int) (player.getX() / ServerConfigs.POCKET_SPACING.get()) * ServerConfigs.POCKET_SPACING.get();
-                    int pocketZ = (int) (player.getZ() / ServerConfigs.POCKET_SPACING.get()) * ServerConfigs.POCKET_SPACING.get();
+                    int pocketX = (int) (player.getX() / getPocketSpacing()) * getPocketSpacing();
+                    int pocketZ = (int) (player.getZ() / getPocketSpacing()) * getPocketSpacing();
                     if (player.getX() < pocketX || player.getX() > pocketX + 16
                             || player.getZ() < pocketZ || player.getZ() > pocketZ + 16) {
                         // snap player back into bounds
