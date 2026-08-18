@@ -9,7 +9,8 @@
 - Fixed Chain Creeper Damage
 - Fixed Mobs breaking suffocating blocks able to break unbreakable blocks
 - Fixed Arcane Shackle raycasting into lava
-- Fixed Cauldron missing server check for particles in edge case damage
+- Fixed Alchemist Cauldron missing server check for particles in edge case damage
+- Fixed Alchemist Cauldron holding on to level state for dispenser interactions
 
 ### API
 - 
