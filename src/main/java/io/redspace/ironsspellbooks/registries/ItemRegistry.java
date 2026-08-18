@@ -319,6 +319,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> CHAINED_BOOK = registerItem("chained_book", Item::new);
     public static final RegistryObject<Item> BLOODY_VELLUM = registerItem("bloody_vellum", Item::new);
     public static final RegistryObject<Item> ICY_FANG = registerItem("icy_fang", Item::new);
+    public static final RegistryObject<Item> PREPARED_ICE_SPIDER_EGG = registerItem("prepared_ice_spider_egg", Item::new);
     public static final RegistryObject<Item> UNCHAINED_BOOK = registerItem("unchained_book", (properties) -> new UnchainedBookItem(properties.stacksTo(1).rarity(CinderousRarity.CINDEROUS_RARITY)));
 
     public static final RegistryObject<Item> TIMELESS_SLURRY = registerItem("timeless_slurry", (properties) -> new Item(properties.rarity(Rarity.UNCOMMON)));
@@ -359,6 +360,7 @@ public class ItemRegistry {
     public static final RegistryObject<Item> SOUL_BRAZIER_ITEM = registerItem("brazier_soul", (properties) -> new BlockItem(BlockRegistry.BRAZIER_SOUL.get(), properties));
     public static final RegistryObject<Item> CINDEROUS_KEYSTONE_BLOCK_ITEM = registerItem("cinderous_soul_rune", (properties) -> new BlockItem(BlockRegistry.CINDEROUS_KEYSTONE.get(), properties.rarity(CinderousRarity.CINDEROUS_RARITY)));
     public static final RegistryObject<Item> ICE_SPIDER_EGG_BLOCK_ITEM = registerItem("ice_spider_egg", (properties) -> new BlockItem(BlockRegistry.ICE_SPIDER_EGG.get(), properties.rarity(Rarity.RARE)));
+    public static final RegistryObject<Item> COOKED_ICE_SPIDER_EGG_BLOCK_ITEM = registerItem("cooked_ice_spider_egg", (properties) -> new BlockItem(BlockRegistry.COOKED_ICE_SPIDER_EGG.get(), properties.stacksTo(1)));
 
     public static final RegistryObject<Item> ARCANE_SALVAGE = registerItem("arcane_salvage", (properties) -> new ArcaneSalvageItem());
     public static final RegistryObject<Item> ARCANE_DEBRIS_BLOCK_ITEM = registerItem("arcane_debris", (properties) -> new BlockItem(BlockRegistry.ARCANE_DEBRIS.get(), properties));

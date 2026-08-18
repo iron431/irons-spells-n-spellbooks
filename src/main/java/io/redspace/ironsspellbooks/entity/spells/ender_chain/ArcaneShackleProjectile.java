@@ -154,7 +154,7 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
     }
 
     private void spawnChain(LivingEntity victim, Vec3 anchor) {
-        anchor = Utils.raycastForBlock(victim.level, this.position(), anchor, ClipContext.Fluid.NONE).getLocation();
+        anchor = Utils.raycastForBlock(victim.level, this.position(), anchor, ClipContext.Fluid.ANY).getLocation();
         EnderChain chain = new EnderChain(level, getOwner(), victim, anchor);
         chain.setHealth(chainHealth);
         chain.setLifetime(chainLifetime);

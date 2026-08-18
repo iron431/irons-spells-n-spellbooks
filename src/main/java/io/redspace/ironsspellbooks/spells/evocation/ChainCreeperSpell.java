@@ -120,6 +120,7 @@ public class ChainCreeperSpell extends AbstractSpell {
             head.setDeltaMovement(motion);
             head.setChainOnKill(true);
             head.setChainCount(count - 2);
+            head.setDamage(damage);
             Vec3 spawn = origin.add(motion.multiply(1, 0, 1).normalize().scale(.6f));
             var angle = Utils.rotationFromDirection(motion);
 

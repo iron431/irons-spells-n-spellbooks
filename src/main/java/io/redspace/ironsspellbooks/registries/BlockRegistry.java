@@ -19,6 +19,7 @@ import io.redspace.ironsspellbooks.block.VoidstoneBlock;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronBlock;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.block.arcane_anvil.ArcaneAnvilBlock;
+import io.redspace.ironsspellbooks.block.ice_spider_egg.CookedIceSpiderEggBlock;
 import io.redspace.ironsspellbooks.block.ice_spider_egg.IceSpiderEggBlock;
 import io.redspace.ironsspellbooks.block.inscription_table.InscriptionTableBlock;
 import io.redspace.ironsspellbooks.block.pedestal.PedestalBlock;
@@ -72,8 +73,9 @@ public class BlockRegistry {
     public static final RegistryObject<Block> CINDEROUS_KEYSTONE = BLOCKS.register("cinderous_soul_rune", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 15).pushReaction(PushReaction.BLOCK).sound(SoundType.DEEPSLATE).noLootTable().strength(40, 1200.0F)));
     public static final RegistryObject<Block> MITHRIL_ORE = BLOCKS.register("mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
     public static final RegistryObject<Block> MITHRIL_ORE_DEEPSLATE = BLOCKS.register("deepslate_mithril_ore", () -> new Block(BlockBehaviour.Properties.of().lightLevel(state -> 9).mapColor(DyeColor.GRAY).requiresCorrectToolForDrops().strength(20.0F, 1200.0F).sound(SoundType.ANCIENT_DEBRIS)));
-
     public static final RegistryObject<Block> ICE_SPIDER_EGG = BLOCKS.register("ice_spider_egg", () -> new IceSpiderEggBlock(BlockBehaviour.Properties.of().mapColor(DyeColor.GRAY).strength(3, 1).noOcclusion()));
+    public static final RegistryObject<Block> COOKED_ICE_SPIDER_EGG = BLOCKS.register("cooked_ice_spider_egg",
+            () -> new CookedIceSpiderEggBlock(BlockBehaviour.Properties.copy(Blocks.CAKE).sound(SoundType.HONEY_BLOCK)));
     public static final RegistryObject<Block> BONE_VAULT_BLOCK = BLOCKS.register("bone_vault", () -> new BoneVaultBlock());
 
     public static final RegistryObject<Block> CINDEROUS_VAULT_BLOCK = BLOCKS.register("cinderous_vault", () -> new CinderousVaultBlock());

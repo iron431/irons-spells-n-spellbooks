@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "food",
+  "cookingtime": 200,
+  "experience": 0.35,
+  "ingredient": {
+    "item": "irons_spellbooks:prepared_ice_spider_egg"
+  },
+  "result": "irons_spellbooks:cooked_ice_spider_egg"
+}
