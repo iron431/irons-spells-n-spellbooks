@@ -1,0 +1,95 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"parent": "minecraft:block/cube",
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"all": "irons_spellbooks:block/voidstone",
+		"0": "irons_spellbooks:block/voidstone_trim",
+		"1": "irons_spellbooks:block/voidstone_trim_corner",
+		"particle": "irons_spellbooks:block/voidstone"
+	},
+	"elements": [
+		{
+			"name": "block",
+			"from": [0, 0, 0],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#all"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#all"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#all"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#all"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#all"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#all"}
+			}
+		},
+		{
+			"name": "sides",
+			"from": [-0.001, 0.001, -0.001],
+			"to": [16.001, 16.001, 16.001],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#0"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#0"}
+			}
+		},
+		{
+			"name": "trim2",
+			"from": [0, 16.0015, 0],
+			"to": [16, 16.0015, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "rotation": 90, "texture": "#0"}
+			}
+		},
+		{
+			"name": "trim3",
+			"from": [0, 16.001, 0],
+			"to": [16, 16.001, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "rotation": 180, "texture": "#0"}
+			}
+		},
+		{
+			"name": "trim4",
+			"from": [0, 16.0015, 0],
+			"to": [16, 16.0015, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "rotation": 270, "texture": "#0"}
+			}
+		},
+		{
+			"name": "corner1",
+			"from": [0, 16.002, 0],
+			"to": [16, 16.002, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "texture": "#1"}
+			}
+		},
+		{
+			"name": "corner2",
+			"from": [0, 16.002, 0],
+			"to": [16, 16.002, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "rotation": 90, "texture": "#1"}
+			}
+		},
+		{
+			"name": "corner3",
+			"from": [0, 16.002, 0],
+			"to": [16, 16.002, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "rotation": 180, "texture": "#1"}
+			}
+		},
+		{
+			"name": "corner4",
+			"from": [0, 16.002, 0],
+			"to": [16, 16.002, 16],
+			"faces": {
+				"up": {"uv": [0, 0, 16, 16], "rotation": 270, "texture": "#1"}
+			}
+		}
+	]
+}
