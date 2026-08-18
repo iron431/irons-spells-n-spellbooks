@@ -75,32 +75,35 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         this.yHeadRotO = y;
     }
 
-    private static final EntityDataAccessor<Boolean> DATA_IS_CLIMBING = SynchedEntityData.defineId(IceSpiderEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> DATA_IS_CROUCHING = SynchedEntityData.defineId(IceSpiderEntity.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> DATA_IS_CLIMBING = SynchedEntityData.defineId(IceSpiderEntity.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> DATA_IS_CROUCHING = SynchedEntityData.defineId(IceSpiderEntity.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Optional<UUID>> DATA_GRAPPLE_UUID = SynchedEntityData.defineId(
             IceSpiderEntity.class, EntityDataSerializers.OPTIONAL_UUID
     );
 
-    private static final AttributeModifier CROUCH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("crouching"), -0.30, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    protected static final AttributeModifier CROUCH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("crouching"), -0.30, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     public static final Vec3 TORSO_OFFSET = new Vec3(0, 18, 0);
-    private static final int EMERGE_TIME = 45;
-    public static final int HUNTING_THRESHOLD = 15;
-    private static final int SATIATION_COMBAT_DELAY = 15 * 20;
-    private static final int SATIATION_HEAL_INTERVAL = 2 * 20;
+    protected static final int EMERGE_TIME = 45;
+    public static final int STOP_HUNTING_THRESHOLD = 18;
+    public static final int START_HUNGRY_THRESHOLD = 10;
+    protected static final int SATIATION_COMBAT_DELAY = 15 * 20;
+    protected static final int SATIATION_HEAL_INTERVAL = 2 * 20;
+    protected static final int SATIATION_DECAY_INTERVAL = 45 * 20;
     public final Vec3[] cornerPins = {Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, Vec3.ZERO};
 
     public Vec3 normal = Vec3.ZERO, lastNormal = Vec3.ZERO;
-    private int emergeTick;
-    int crouchTick;
+    protected int emergeTick;
+    protected int crouchTick;
     public boolean wantsToLeapBack;
     public boolean wantsToCastSpells;
-    IceSpiderPartEntity[] subEntities;
-    IceSpiderAttackGoal attackGoal;
+    protected IceSpiderPartEntity[] subEntities;
+    protected IceSpiderAttackGoal attackGoal;
     @Nullable
-    int grappleTime;
+    protected int grappleTime;
     @Nullable
-    Entity cachedGrappleTarget = null;
-    private int satiation;
+    protected Entity cachedGrappleTarget = null;
+    protected int satiation;
+    protected boolean isHungry;
 
     public IceSpiderEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -115,6 +118,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         };
         this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Copy of forge fix to sub entity id's
         this.moveControl = createMoveControl();
+        setSatiation(0);
     }
 
     public IceSpiderEntity(Level level) {
@@ -179,6 +183,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         super.customServerAiStep();
         tickGrapple();
         tickSatiationRegen();
+        tickSatiationDecay();
         handleCrouchStatus();
         handleClimbingStatus();
     }
@@ -189,6 +194,15 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
 
     public void setSatiation(int satiation) {
         this.satiation = Math.max(0, satiation);
+        updateHungerState();
+    }
+
+    protected void updateHungerState() {
+        if (this.satiation < START_HUNGRY_THRESHOLD) {
+            isHungry = true;
+        } else if (this.satiation >= STOP_HUNTING_THRESHOLD) {
+            isHungry = false;
+        }
     }
 
     public void addSatiation(int amount) {
@@ -196,7 +210,17 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     public boolean canHuntAnimals() {
-        return satiation < HUNTING_THRESHOLD;
+        if (isHungry) {
+            return satiation < STOP_HUNTING_THRESHOLD;
+        } else {
+            return satiation < START_HUNGRY_THRESHOLD;
+        }
+    }
+
+    protected void tickSatiationDecay() {
+        if (satiation > 0 && tickCount % SATIATION_DECAY_INTERVAL == 0) {
+            setSatiation(satiation - 1);
+        }
     }
 
     protected void tickSatiationRegen() {
@@ -757,6 +781,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         }
         pCompound.putBoolean("crouching", isCrouching());
         pCompound.putInt("satiation", satiation);
+        pCompound.putBoolean("is_hungry", isHungry);
     }
 
     @Override
@@ -769,7 +794,8 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         if (pCompound.getBoolean("crouching")) {
             startCrouching();
         }
-        satiation = Math.max(0, pCompound.getInt("satiation"));
+        isHungry = pCompound.getBoolean("is_hungry");
+        setSatiation(pCompound.getInt("satiation"));
     }
 
     RawAnimation animationToPlay = null;
