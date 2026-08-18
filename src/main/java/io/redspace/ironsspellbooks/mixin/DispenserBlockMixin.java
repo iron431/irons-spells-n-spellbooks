@@ -41,6 +41,13 @@ public class DispenserBlockMixin {
         irons_spellbooks$levelCapture = pLevel;
     }
 
+    @Inject(method = "dispenseFrom", at = @At(value = "TAIL"))
+    private void irons_spellbooks$forgetParameters(ServerLevel pLevel, BlockPos pPos, CallbackInfo ci) {
+        irons_spellbooks$blockStateCapture = null;
+        irons_spellbooks$blockPosCapture = null;
+        irons_spellbooks$levelCapture = null;
+    }
+
     @Inject(method = "getDispenseMethod", at = @At(value = "HEAD"), cancellable = true)
     private void irons_spellbooks$injectCauldronInteractions(ItemStack pStack, CallbackInfoReturnable<DispenseItemBehavior> cir) {
         if (irons_spellbooks$blockStateCapture != null && irons_spellbooks$blockPosCapture != null && irons_spellbooks$levelCapture != null &&
