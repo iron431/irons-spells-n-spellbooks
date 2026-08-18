@@ -46,7 +46,7 @@ public abstract class AbstractSkill {
      */
     public final ResourceLocation getSkillId() {
         if (cachedId == null) {
-            cachedId = Objects.requireNonNull(SkillcastingRegistries.SKILL_REGISTRY.getKey(this));
+            cachedId = Objects.requireNonNull(SkillcastingRegistries.SKILL_REGISTRY.getKey(this), "Cannot get the id of a non-registered Skill " +this.getClass().getName());
         }
         return cachedId;
     }

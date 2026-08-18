@@ -45,7 +45,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     private List<SpellCardInfo> availableSpells;
     private ItemStack[] oldMenuSlots = {ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY};
 
-    private @Nullable AbstractSpell selectedSpell =null;
+    private @Nullable AbstractSpell selectedSpell = null;
     private int scrollOffset;
     private boolean isScrollbarHeld;
 
@@ -70,12 +70,10 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     }
 
     private void resetList() {
-        if (!(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(SpellRarity.values()[selectedSpell.getMinRarity()]) >= 0)))
+        if (selectedSpell != null && !(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(SpellRarity.values()[selectedSpell.getMinRarity()]) >= 0))) {
             setSelectedSpell(null);
-        //TODO: reorder setting old focus to test if we actually need to reset the spell... or just give ink its own path since we dont even need to regenerate the list anyways
-        //TODO: update: what the fuck does that mean
+        }
         scrollOffset = 0;
-
         for (SpellCardInfo s : availableSpells) {
             removeWidget(s.button);
         }
@@ -187,9 +185,9 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         }
     }
 
-    private void setSelectedSpell(AbstractSpell spell) {
+    private void setSelectedSpell(@Nullable AbstractSpell spell) {
         selectedSpell = spell;
-        PacketDistributor.sendToServer(new ScrollForgeSelectSpellPacket(this.menu.blockEntity.getBlockPos(), spell.getSkillId().toString()));
+        PacketDistributor.sendToServer(new ScrollForgeSelectSpellPacket(this.menu.blockEntity.getBlockPos(), selectedSpell == null ? "" : selectedSpell.getSkillId().toString()));
     }
 
     private SpellRarity getRarityFromInk(Item ink) {
@@ -200,7 +198,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         }
     }
 
-    public AbstractSpell getSelectedSpell() {
+    public @Nullable AbstractSpell getSelectedSpell() {
         return selectedSpell;
     }
 
@@ -261,10 +259,11 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         void draw(ScrollForgeScreen screen, GuiGraphics guiHelper, int x, int y, int mouseX, int mouseY) {
             if (this.activityState == ActivityState.ENABLED || this.activityState == ActivityState.UNLEARNED_ERROR) {
                 //Draw with highlighted or regular color
-                if (spell == screen.getSelectedSpell())
+                if (spell == screen.getSelectedSpell()) {
                     guiHelper.blit(TEXTURE, x, y, 0, 204, 108, 19);
-                else
+                } else {
                     guiHelper.blit(TEXTURE, x, y, 0, 166, 108, 19);
+                }
             } else {
                 //"hidden" color
                 guiHelper.blit(TEXTURE, x, y, 0, 185, 108, 19);

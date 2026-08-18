@@ -39,8 +39,12 @@ public final class CooldownInstance {
 
     public void tick() {
         if (remainingTicks > 0) {
-            remainingTicks--;
+            decrement(1);
         }
+    }
+
+    public void decrement(int amount) {
+        remainingTicks -= amount;
     }
 
     public boolean isFinished() {
