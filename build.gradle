@@ -3,6 +3,7 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.neoforged.gradle.userdev' version '7.0.182'
+    id 'me.modmuss50.mod-publish-plugin' version '2.1.1'
 }
 
 version = mod_version
@@ -242,6 +243,39 @@ tasks.register('copyAnimations', Copy) {
 tasks.classes.dependsOn(tasks.copyAnimations)
 tasks.processResources.dependsOn(tasks.copyAnimations)
 tasks.sourcesJar.dependsOn(tasks.copyAnimations)
+
+publishMods {
+    def loader = "neoforge"
+    def projectCurseforge = "855414"
+    def projectModrinth = "s4OWxYQQ"
+    def slug = "irons-spells-n-spellbooks"
+    def latestChangesContent = project.file("LATEST_CHANGES.MD").text
+
+    displayName = "v${mod_id}-${mod_version}"
+    changelog = """
+https://iron.wiki/changelog
+""".stripMargin().trim()
+    // STABLE | BETA | ALPHA
+    type = STABLE
+    modLoaders.add(loader)
+    file = tasks.jar.archiveFile
+
+    curseforge {
+        accessToken = System.getenv("CURSEFORGE_PUBLISH")
+        projectId = projectCurseforge
+        projectSlug = slug
+        minecraftVersions.add(minecraft_version)
+        client = true
+        server = true
+    }
+    modrinth {
+        accessToken = System.getenv("MODRINTH_PUBLISH")
+        projectId = projectModrinth
+        minecraftVersions.add(minecraft_version)
+        environment = CLIENT_AND_SERVER
+    }
+
+}
 
 idea {
     module {
