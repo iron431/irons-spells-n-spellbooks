@@ -468,6 +468,7 @@
   "ui.irons_spellbooks.empty": "空",
   "ui.irons_spellbooks.portal_dye_failure": "此传送门只能由施法者本人染色！",
   "ui.irons_spellbooks.portal_break_failure": "此传送门只能由施法者本人破坏！",
+  "ui.irons_spellbooks.portal_target_failure": "请对准另一个空的传送门框架并施放传送门法术以完成连接。",
   "school.irons_spellbooks.fire": "炽焰",
   "school.irons_spellbooks.ice": "冰霜",
   "school.irons_spellbooks.lightning": "雷霆",

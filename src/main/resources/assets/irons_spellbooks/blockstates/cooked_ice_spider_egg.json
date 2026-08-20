@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "bites=0": {
+      "model": "irons_spellbooks:block/cooked_ice_spider_egg"
+    },
+    "bites=1": {
+      "model": "irons_spellbooks:block/cooked_ice_spider_egg_bite1"
+    },
+    "bites=2": {
+      "model": "irons_spellbooks:block/cooked_ice_spider_egg_bite2"
+    },
+    "bites=3": {
+      "model": "irons_spellbooks:block/cooked_ice_spider_egg_bite3"
+    }
+  }
+}
