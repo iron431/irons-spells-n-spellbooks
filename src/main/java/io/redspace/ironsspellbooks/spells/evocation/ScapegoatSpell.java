@@ -11,6 +11,7 @@ import io.redspace.skillcasting.data.cast.PositionAnchor;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -79,6 +80,7 @@ public class ScapegoatSpell extends AbstractSpell {
                 4, 24);
 
         ScapegoatEntity goat = new ScapegoatEntity(level);
+        SkillcastingUtils.attachToContext(goat, castContext);
         goat.setOwner(castContext.asEntityCaster());
         goat.setTargetPos(BlockPos.containing(targetPos));
         float yRot = -castContext.getYRot() * Mth.RAD_TO_DEG;

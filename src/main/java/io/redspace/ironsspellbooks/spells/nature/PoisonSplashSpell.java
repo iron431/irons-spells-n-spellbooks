@@ -97,6 +97,7 @@ public class PoisonSplashSpell extends AbstractSpell {
         spawn = Utils.moveToRelativeGroundLevel(level, spawn, 6);
 
         PoisonSplash poisonSplash = new PoisonSplash(level);
+        SkillcastingUtils.attachToContext(poisonSplash, castContext);
         poisonSplash.setOwner(castContext.asEntityCaster());
         poisonSplash.moveTo(spawn);
         poisonSplash.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));

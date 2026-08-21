@@ -109,6 +109,7 @@ public class ChainCreeperSpell extends AbstractSpell {
 
             CreeperHeadProjectile head = new CreeperHeadProjectile(level, castContext.asEntityCaster());
             head.applyContext(castContext);
+            SkillcastingUtils.attachToContext(head, castContext);
             head.setChainOnKill(true);
             head.setContextSnapshot(castContext);
             head.setChainCount(count - 2);

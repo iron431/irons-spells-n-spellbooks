@@ -123,6 +123,7 @@ public class ArrowVolleySpell extends AbstractSpell {
         float arrowAngleY = casterX == targetLocation.x && casterZ == targetLocation.z ? (casterYRot - 90) * Mth.DEG_TO_RAD : Utils.getAngle(casterX, casterZ, targetLocation.x, targetLocation.z);
 
         ArrowVolleyEntity arrowVolleyEntity = new ArrowVolleyEntity(EntityRegistry.ARROW_VOLLEY_ENTITY.get(), level);
+        SkillcastingUtils.attachToContext(arrowVolleyEntity, castContext);
         arrowVolleyEntity.moveTo(spawnLocation);
         arrowVolleyEntity.setYRot(arrowAngleY * Mth.RAD_TO_DEG + 90);
         arrowVolleyEntity.setXRot(arrowAngleX + 25);

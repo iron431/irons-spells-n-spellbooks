@@ -19,6 +19,7 @@ import io.redspace.skillcasting.data.recast.RecastConfig;
 import io.redspace.skillcasting.data.recast.RecastResult;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -230,6 +231,7 @@ public class PortalSpell extends AbstractSpell {
         portalEntity.moveTo(spawnPos);
         portalEntity.setYRot(rotation);
         castContext.level().addFreshEntity(portalEntity);
+        SkillcastingUtils.attachToContext(portalEntity, castContext);
         return portalEntity;
     }
 }

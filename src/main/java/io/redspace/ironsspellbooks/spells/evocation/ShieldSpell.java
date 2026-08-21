@@ -12,6 +12,7 @@ import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.util.RaycastBuilder;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -73,6 +74,7 @@ public class ShieldSpell extends AbstractSpell {
                 .checkForBlocks(true)
                 .build()
                 .getLocation();
+        SkillcastingUtils.attachToContext(shield, castContext);
         shield.setPos(spawn);
         Entity caster = castContext.asEntityCaster();
         float xRot = caster != null ? caster.getXRot() : castContext.getXRot() * Mth.RAD_TO_DEG;

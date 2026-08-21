@@ -103,6 +103,7 @@ public class EarthquakeSpell extends AbstractSpell {
         spawn = Utils.moveToRelativeGroundLevel(level, spawn, 6);
 
         EarthquakeAoe aoeEntity = new EarthquakeAoe(level);
+        SkillcastingUtils.attachToContext(aoeEntity, castContext);
         aoeEntity.moveTo(spawn);
         aoeEntity.setOwner(castContext.asEntityCaster());
         aoeEntity.setCircular();

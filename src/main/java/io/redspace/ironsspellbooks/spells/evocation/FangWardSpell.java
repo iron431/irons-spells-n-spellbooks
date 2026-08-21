@@ -11,6 +11,7 @@ import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -87,6 +88,7 @@ public class FangWardSpell extends AbstractSpell {
                 spawn = Utils.moveToRelativeGroundLevel(world, spawn, 5);
                 if (!world.getBlockState(BlockPos.containing(spawn).below()).isAir()) {
                     ExtendedEvokerFang fang = new ExtendedEvokerFang(world, spawn.x, spawn.y, spawn.z, get2DAngle(center, spawn), r, castContext.asEntityCaster(), damage);
+                    SkillcastingUtils.attachToContext(fang, castContext);
                     world.addFreshEntity(fang);
                 }
             }

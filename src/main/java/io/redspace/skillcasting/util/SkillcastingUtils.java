@@ -37,6 +37,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.neoforge.entity.PartEntity;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -384,5 +385,12 @@ public final class SkillcastingUtils {
     public static float getCastRateSpeed(CastContext castContext) {
         float effectiveCastTime = castContext.getOrDefault(SkillcastingComponentTypes.CAST_TIME, 0);
         return effectiveCastTime == 0 ? 1f : castContext.skill().value().getCastTimeTicks() / effectiveCastTime;
+    }
+
+    /**
+     * Adds the entity to {@link SkillcastingComponentTypes#ATTACHED_ENTITIES}, creating the component if it did not exist. It is expected that skillcasts which create entities, such as projectiles, attach it to the context
+     */
+    public static void attachToContext(@NotNull Entity entity, CastContext castContext) {
+        castContext.getOrCreate(SkillcastingComponentTypes.ATTACHED_ENTITIES, TargetedEntitiesData::new).addUnique(entity.getUUID());
     }
 }

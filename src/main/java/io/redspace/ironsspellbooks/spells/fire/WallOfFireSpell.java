@@ -17,6 +17,7 @@ import io.redspace.skillcasting.data.recast.RecastResult;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.RaycastBuilder;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -123,6 +124,7 @@ public class WallOfFireSpell extends AbstractSpell {
             origin = origin.add(anchor);
         }
         fireWall.setPos(origin.scale(1f / data.anchorPoints.size()));
+        SkillcastingUtils.attachToContext(fireWall, castContext);
         level.addFreshEntity(fireWall);
     }
 

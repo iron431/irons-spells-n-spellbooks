@@ -14,6 +14,7 @@ import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -82,6 +83,7 @@ public class MagmaBombSpell extends AbstractSpell {
     public void onCast(ServerLevel level, CastContext castContext) {
         FireBomb orb = new FireBomb(level, castContext.asEntityCaster());
         orb.applyContext(castContext);
+        SkillcastingUtils.attachToContext(orb, castContext);
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         orb.setPos(origin.add(castContext.direction()).subtract(0, orb.getBbHeight() / 2, 0));
         orb.shootFromContext(orb, castContext);

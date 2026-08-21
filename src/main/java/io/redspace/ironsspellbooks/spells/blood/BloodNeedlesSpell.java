@@ -12,6 +12,7 @@ import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.RaycastBuilder;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -84,6 +85,7 @@ public class BloodNeedlesSpell extends AbstractSpell {
             Vec3 spawn = castContext.position().add(0,0.25,0).add(new Vec3(0, 1.5, 0).zRot(rotation * Mth.DEG_TO_RAD).xRot(direction.x).yRot(direction.y));
             needle.moveTo(spawn);
             needle.applyContext(castContext);
+            SkillcastingUtils.attachToContext(needle, castContext);
             // fixme: speed handling
             needle.setDeltaMovement(raycast.getLocation().subtract(spawn).normalize().scale(castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 2.5f)));
             level.addFreshEntity(needle);

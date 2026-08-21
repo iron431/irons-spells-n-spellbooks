@@ -72,6 +72,7 @@ public class ChainLightningSpell extends AbstractSpell {
             return;
         }
         ChainLightning chainLightning = new ChainLightning(level, castContext.asEntityCaster(), targetEntity);
+        SkillcastingUtils.attachToContext(chainLightning, castContext);
         chainLightning.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         chainLightning.range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f);
         chainLightning.maxConnections = castContext.getOrDefault(SkillcastingComponentTypes.MAX_TARGETS, 0);

@@ -100,6 +100,7 @@ public class HealingCircleSpell extends AbstractSpell {
         float healing = castContext.getOrDefault(SkillcastingComponentTypes.HEALING, 0f);
 
         HealingAoe aoeEntity = new HealingAoe(level);
+        SkillcastingUtils.attachToContext(aoeEntity, castContext);
         aoeEntity.setOwner(castContext.asEntityCaster());
         aoeEntity.setCircular();
         aoeEntity.setRadius(radius);

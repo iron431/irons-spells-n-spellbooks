@@ -10,6 +10,7 @@ import io.redspace.skillcasting.data.cast.PositionAnchor;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -116,6 +117,7 @@ public class SpectralHammerSpell extends AbstractSpell {
         int depth = (int) (castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 1f) * 2);
 
         SpectralHammer spectralHammer = new SpectralHammer(level, caster, blockHitResult, depth, radius, yRot, yHeadRot);
+        SkillcastingUtils.attachToContext(spectralHammer, castContext);
         Vec3 position = Vec3.atCenterOf(blockHitResult.getBlockPos());
 
         if (!face.getAxis().isVertical()) {

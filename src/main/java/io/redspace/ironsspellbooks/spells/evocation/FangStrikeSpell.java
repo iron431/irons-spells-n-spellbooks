@@ -10,6 +10,7 @@ import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -88,6 +89,7 @@ public class FangStrikeSpell extends AbstractSpell {
             if (!world.getBlockState(BlockPos.containing(spawn).below()).isAir()) {
                 int delay = i / 3;
                 ExtendedEvokerFang fang = new ExtendedEvokerFang(world, spawn.x, spawn.y, spawn.z, fangYaw, delay, castContext.asEntityCaster(), damage);
+                SkillcastingUtils.attachToContext(fang, castContext);
                 world.addFreshEntity(fang);
             }
         }

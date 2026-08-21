@@ -19,6 +19,7 @@ import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.client.render.ClientSkillTicker;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -116,6 +117,7 @@ public class RaiseHellSpell extends AbstractSpell {
         Vec3 hitLocation = Utils.moveToRelativeGroundLevel(level,
                 Utils.raycastForBlock(level, eyePos, eyePos.add(forward.multiply(range, 0, range)), ClipContext.Fluid.NONE).getLocation(), 4);
         FireEruptionAoe aoe = new FireEruptionAoe(level, radius);
+        SkillcastingUtils.attachToContext(aoe, castContext);
         aoe.setOwner(castContext.asEntityCaster());
         aoe.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f) + castContext.getOrDefault(SkillcastingComponentTypes.WEAPON_DAMAGE, 0f));
         aoe.setDamageSource(getDamageSource(level, aoe, castContext.asEntityCaster()).get());

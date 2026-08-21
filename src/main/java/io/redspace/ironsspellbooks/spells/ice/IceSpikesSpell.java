@@ -110,6 +110,7 @@ public class IceSpikesSpell extends AbstractSpell {
                 if (i % 2 == count % 2) {
                     spike.setSilent(true);
                 }
+                SkillcastingUtils.attachToContext(spike, castContext);
                 spike.setSpikeSize(scale);
                 spike.moveTo(spawn.add(0, 0, 0));
                 spike.setWaitTime(delay);

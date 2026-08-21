@@ -2,6 +2,7 @@ package io.redspace.skillcasting.data.skill;
 
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.Projectile;
 import org.jetbrains.annotations.NotNull;
@@ -63,6 +64,7 @@ public interface ISkillProjectile {
 
     default void shootFromContext(Projectile self, CastContext castContext, float inaccuracy) {
         applyContext(castContext);
+        SkillcastingUtils.attachToContext(self, castContext);
         var trajectory = castContext.direction();
         self.shoot(trajectory.x, trajectory.y, trajectory.z, castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.0f), inaccuracy);
     }

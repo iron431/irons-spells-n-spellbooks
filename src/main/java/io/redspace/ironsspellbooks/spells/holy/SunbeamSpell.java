@@ -79,6 +79,7 @@ public class SunbeamSpell extends AbstractSpell {
         spawn = Utils.moveToRelativeGroundLevel(level, spawn, 18);
 
         SunbeamEntity sunbeam = new SunbeamEntity(level);
+        SkillcastingUtils.attachToContext(sunbeam, castContext);
         LivingEntity target = SkillcastingUtils.getTargetedLivingEntity(level, castContext);
         if (target != null) {
             sunbeam.setTarget(target);

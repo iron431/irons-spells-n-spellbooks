@@ -90,6 +90,7 @@ public class FireflySwarmSpell extends AbstractSpell {
         FireflySwarmProjectile fireflies = new FireflySwarmProjectile(
                 level, castContext.asEntityCaster(), SkillcastingUtils.getTargetedEntity(level, castContext),
                 castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));
+        SkillcastingUtils.attachToContext(fireflies, castContext);
         fireflies.setRadius(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, FireflySwarmProjectile.DEFAULT_RADIUS));
         fireflies.moveTo(spawn.add(0, 0.5, 0));
         level.addFreshEntity(fireflies);

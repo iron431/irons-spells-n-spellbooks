@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -69,6 +70,7 @@ public class IceTombSpell extends AbstractSpell {
             return;
         }
         IceTombEntity iceTombEntity = new IceTombEntity(level, entity);
+        SkillcastingUtils.attachToContext(iceTombEntity, castContext);
         iceTombEntity.moveTo(entity.position());
         iceTombEntity.setDeltaMovement(entity.getDeltaMovement());
         iceTombEntity.setHealing(castContext.getOrDefault(SkillcastingComponentTypes.HEALING, 0f));

@@ -123,6 +123,13 @@ public final class CastContext {
         return find(type).orElse(defaultValue);
     }
 
+    public <T> T getOrCreate(Supplier<ComponentType<T>> type, Supplier<T> defaultValue) {
+        if (!components.has(type.get())) {
+            components.set(type.get(), defaultValue.get());
+        }
+        return components.getOrNull(type.get());
+    }
+
     public <T> Optional<T> find(Supplier<ComponentType<T>> type) {
         return components.find(type.get());
     }

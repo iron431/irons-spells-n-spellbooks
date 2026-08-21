@@ -78,6 +78,7 @@ public class DevourSpell extends AbstractSpell {
             return;
         }
         DevourJaw devour = new DevourJaw(level, castContext.asEntityCaster(), targetEntity);
+        SkillcastingUtils.attachToContext(devour, castContext);
         devour.setPos(targetEntity.position());
         devour.setYRot(-castContext.getYRot() * Mth.RAD_TO_DEG);
         devour.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));

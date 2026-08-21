@@ -62,6 +62,12 @@ public final class TargetedEntitiesData {
         this.targetUUIDs.add(uuid);
     }
 
+    public void addUnique(UUID uuid) {
+        if (!targetUUIDs.contains(uuid)) {
+            targetUUIDs.add(uuid);
+        }
+    }
+
     public boolean isTargeted(Entity entity) {
         return targetUUIDs.contains(entity.getUUID());
     }

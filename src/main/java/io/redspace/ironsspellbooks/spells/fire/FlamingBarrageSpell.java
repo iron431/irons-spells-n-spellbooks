@@ -11,6 +11,7 @@ import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.recast.RecastConfig;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -75,6 +76,7 @@ public class FlamingBarrageSpell extends AbstractSpell {
                 .subtract(0, 0.15, 0);
         SmallMagicFireball fireball = new SmallMagicFireball(level, castContext.asEntityCaster());
         fireball.applyContext(castContext);
+        SkillcastingUtils.attachToContext(fireball, castContext);
         fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));
         Vec3 vec = castContext.direction().add(0, 0.2, 0).normalize();
         fireball.shoot(vec.x, vec.y, vec.z, castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 1f), 20f);

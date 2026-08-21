@@ -100,6 +100,7 @@ public class IceBlockSpell extends AbstractSpell {
         }
 
         IceBlockProjectile iceBlock = new IceBlockProjectile(level, castContext.asEntityCaster(), target);
+        SkillcastingUtils.attachToContext(iceBlock, castContext);
         iceBlock.moveTo(raiseWithCollision(spawn, spawnheight, level));
         if (!level.noBlockCollision(iceBlock, iceBlock.getBoundingBox())) {
             iceBlock.noPhysics = true;

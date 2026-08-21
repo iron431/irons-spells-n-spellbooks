@@ -94,6 +94,7 @@ public class BlizzardSpell extends AbstractSpell {
         int duration = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0);
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f);
         BlizzardAoe aoe = new BlizzardAoe(EntityRegistry.BLIZZARD_AOE.get(), level);
+        SkillcastingUtils.attachToContext(aoe, castContext);
         aoe.moveTo(spawn);
         aoe.setOwner(castContext.asEntityCaster());
         aoe.setRadius(radius);

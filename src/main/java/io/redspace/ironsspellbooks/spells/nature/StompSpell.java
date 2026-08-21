@@ -15,6 +15,7 @@ import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -100,6 +101,7 @@ public class StompSpell extends AbstractSpell {
         float yRot = castContext.getYRot() * -Mth.RAD_TO_DEG;
         int range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f).intValue();
         StompAoe stomp = new StompAoe(level, range, yRot);
+        SkillcastingUtils.attachToContext(stomp, castContext);
         stomp.moveTo(spawn);
         stomp.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         stomp.setRadius(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 1f));

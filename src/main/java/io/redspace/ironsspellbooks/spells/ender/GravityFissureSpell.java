@@ -13,6 +13,7 @@ import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -78,6 +79,7 @@ public class GravityFissureSpell extends AbstractSpell {
         Vec3 spawn = castContext.position().add(castContext.direction().scale(2)).subtract(0, radius, 0);
 
         BlackHole blackHole = new BlackHole(level, castContext.asEntityCaster());
+        SkillcastingUtils.attachToContext(blackHole, castContext);
         blackHole.setRadius(radius);
         blackHole.setDamage(0);
         blackHole.moveTo(spawn);

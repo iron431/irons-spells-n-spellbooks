@@ -15,6 +15,7 @@ import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.RaycastBuilder;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -104,6 +105,7 @@ public class BlackHoleSpell extends AbstractSpell {
         level.playSound(null, center.x, center.y, center.z, SoundRegistry.BLACK_HOLE_CAST.get(), SoundSource.AMBIENT, 4, 1);
 
         BlackHole blackHole = new BlackHole(level, castContext.asEntityCaster());
+        SkillcastingUtils.attachToContext(blackHole, castContext);
         blackHole.setRadius(radius);
         blackHole.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));
         blackHole.moveTo(center);
