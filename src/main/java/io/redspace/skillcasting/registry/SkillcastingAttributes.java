@@ -26,9 +26,9 @@ public final class SkillcastingAttributes {
     }
 
     public static final DeferredHolder<Attribute, Attribute> CAST_TIME_REDUCTION = ATTRIBUTES.register("cast_time_reduction",
-            () -> (new PercentageAttribute("attribute.irons_spellbooks.cast_time_reduction", 1.0D, -100, 100.0D).setSyncable(true)));
+            () -> (new PercentageAttribute("attribute.skillcasting.cast_time_reduction", 1.0D, -100, 100.0D).setSyncable(true)));
     public static final DeferredHolder<Attribute, Attribute> COOLDOWN_REDUCTION = ATTRIBUTES.register("cooldown_reduction",
-            () -> (new PercentageAttribute("attribute.irons_spellbooks.cooldown_reduction", 1.0D, -100.0D, 100.0D).setSyncable(true)));
+            () -> (new PercentageAttribute("attribute.skillcasting.cooldown_reduction", 1.0D, -100.0D, 100.0D).setSyncable(true)));
     public static final DeferredHolder<Attribute, Attribute> CASTING_MOVESPEED = ATTRIBUTES.register("casting_movespeed",
             () -> (new PercentageAttribute("attribute.skillcasting.casting_movespeed", 1, 0, 100.0D).setSyncable(true)));
 }
