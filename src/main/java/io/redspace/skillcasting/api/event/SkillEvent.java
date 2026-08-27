@@ -52,7 +52,6 @@ public abstract class SkillEvent extends Event {
     }
 
     public static class OnRecastStart extends SkillEvent implements ICancellableEvent {
-        // todo: setters for more recast parameters would be nice
         protected final RecastInstance recastInstance;
 
         public OnRecastStart(CastContext castContext, RecastInstance recastInstance) {
@@ -62,6 +61,14 @@ public abstract class SkillEvent extends Event {
 
         public RecastInstance getRecastInstance() {
             return recastInstance;
+        }
+
+        public void setRemainingCasts(int remainingCasts) {
+            recastInstance.setRemainingCasts(remainingCasts);
+        }
+
+        public void setWindowDuration(int durationTicks) {
+            recastInstance.setWindowDuration(durationTicks);
         }
     }
 

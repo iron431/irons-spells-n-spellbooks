@@ -124,17 +124,17 @@ public class BloodStepSpell extends AbstractSpell {
                         break;
                     }
                 }
-                Utils.handleSpellTeleport(null, entity, dest.add(0, 1, 0));
+                Utils.handleSpellTeleport(this, entity, dest.add(0, 1, 0));
                 entity.lookAt(EntityAnchorArgument.Anchor.EYES, target.getEyePosition().subtract(0, 0.15, 0));
             } else {
                 dest = TeleportSpell.findTeleportLocation(level, entity, range);
-                Utils.handleSpellTeleport(null, entity, dest);
+                Utils.handleSpellTeleport(this, entity, dest);
             }
         } else {
             if (entity.isPassenger()) {
                 entity.stopRiding();
             }
-            Utils.handleSpellTeleport(null, entity, dest);
+            Utils.handleSpellTeleport(this, entity, dest);
         }
 
         entity.resetFallDistance();

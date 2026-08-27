@@ -72,7 +72,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
         NavigableMap<Integer, AbstractSpell> weightedSpells = new TreeMap<>();
 
         for (AbstractSpell entry : entries) {
-            total += getWeightFromRarity(SpellRarity.values()[entry.getMinRarity()]);
+            total += getWeightFromRarity(entry.getMinRarity());
             weightedSpells.put(total, entry);
 
         }

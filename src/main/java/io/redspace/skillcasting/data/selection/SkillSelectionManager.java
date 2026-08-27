@@ -1,7 +1,6 @@
 package io.redspace.skillcasting.data.selection;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
 import io.redspace.skillcasting.api.event.SkillSelectionPriority;
 import io.redspace.skillcasting.data.AbstractSkill;
@@ -30,18 +29,8 @@ public final class SkillSelectionManager {
     public static final String MAINHAND = EquipmentSlot.MAINHAND.getName();
     public static final String OFFHAND = EquipmentSlot.OFFHAND.getName();
 
-    private static final Codec<SelectionOption> SELECTION_OPTION_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            SkillData.CODEC.fieldOf("skill").forGetter(o -> o.skillData),
-            Codec.STRING.fieldOf("equipmentSlot").forGetter(o -> o.equipmentSlot),
-            Codec.INT.fieldOf("localIndex").forGetter(o -> o.localIndex),
-            Codec.INT.fieldOf("globalIndex").forGetter(o -> o.globalIndex),
-            Codec.STRING.fieldOf("priority").forGetter(o -> o.priority.name())
-    ).apply(builder, (skill, equipmentSlot, local, global, priority) ->
-            new SelectionOption(skill, equipmentSlot, local, global, SkillSelectionPriority.valueOf(priority))));
-
     public static final StreamCodec<RegistryFriendlyByteBuf, SkillSelectionManager> STREAM_CODEC = StreamCodec.composite(
-            // todo: dedicated stream codec would be more efficient
-            ByteBufCodecs.fromCodec(Codec.list(SELECTION_OPTION_CODEC)),
+            SelectionOption.STREAM_CODEC.apply(ByteBufCodecs.list()),
             SkillSelectionManager::getAllOptions,
             SkillSelection.STREAM_CODEC,
             SkillSelectionManager::getSkillSelection,
@@ -326,6 +315,18 @@ public final class SkillSelectionManager {
     }
 
     public static final class SelectionOption {
+        public static final StreamCodec<ByteBuf, SkillSelectionPriority> PRIORITY_STREAM_CODEC =
+                ByteBufCodecs.idMapper(i -> SkillSelectionPriority.values()[i], SkillSelectionPriority::ordinal);
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, SelectionOption> STREAM_CODEC = StreamCodec.composite(
+                SkillData.STREAM_CODEC, o -> o.skillData,
+                ByteBufCodecs.STRING_UTF8, o -> o.equipmentSlot,
+                ByteBufCodecs.VAR_INT, o -> o.localIndex,
+                ByteBufCodecs.VAR_INT, o -> o.globalIndex,
+                PRIORITY_STREAM_CODEC, o -> o.priority,
+                SelectionOption::new
+        );
+
         public SkillData skillData;
         public String equipmentSlot;
         public int localIndex;

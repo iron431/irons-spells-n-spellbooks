@@ -11,9 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.UUID;
 
-//todo: may reintroduce a type field to expand into a "Custom" type, which is manually sync or something, with a UUID payload the end user can figure out how to match on their own.
-// maybe even java's object-to-json shenanigans?
 public interface CasterId {
 
     @Nullable
@@ -37,15 +36,6 @@ public interface CasterId {
     }
 
     record Block(ResourceKey<Level> dimension, BlockPos pos) implements CasterId {
-//        public static final StreamCodec<RegistryFriendlyByteBuf, ResourceKey<Level>> DIMENSION_KEY_CODEC =
-//                StreamCodec.of(FriendlyByteBuf::writeResourceKey, buf -> buf.readResourceKey(Registries.DIMENSION));
-//
-//        public static final StreamCodec<RegistryFriendlyByteBuf, Block> STREAM_CODEC =
-//                StreamCodec.composite(
-//                        DIMENSION_KEY_CODEC, Block::dimension,
-//                        BlockPos.STREAM_CODEC, Block::pos,
-//                        Block::new);
-
         @Override
         public @Nullable CasterRef resolve(Level level) {
             if (!level.dimension().equals(this.dimension)) {
@@ -56,16 +46,33 @@ public interface CasterId {
         }
     }
 
+    /**
+     * Stub for a future non-entity, non-block caster identified by a UUID the consumer defines resolution for.
+     * Not yet resolvable and not wired into {@link #STREAM_CODEC} — both are TODO for whenever a concrete
+     * non-entity/non-block caster shows up.
+     */
+    record Custom(UUID id) implements CasterId {
+        @Override
+        public @Nullable CasterRef resolve(Level level) {
+            return null;
+        }
+    }
+
+    static Custom custom(UUID id) {
+        return new Custom(id);
+    }
+
     StreamCodec<RegistryFriendlyByteBuf, CasterId> STREAM_CODEC = StreamCodec.of(
             (buf, id) -> {
                 if (id instanceof Entity e) {
                     buf.writeBoolean(true);
                     buf.writeInt(e.entityId);
-                } else {
-                    var b = (Block) id;
+                } else if (id instanceof Block b) {
                     buf.writeBoolean(false);
                     buf.writeResourceKey(b.dimension);
                     buf.writeBlockPos(b.pos);
+                } else {
+                    throw new UnsupportedOperationException("CasterId.Custom has no wire format yet");
                 }
             },
             buf -> {

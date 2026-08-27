@@ -25,7 +25,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
@@ -82,7 +81,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean canBeInterrupted(@Nullable Player player) {
+    public boolean canBeInterrupted(@Nullable LivingEntity livingEntity) {
         return false;
     }
 

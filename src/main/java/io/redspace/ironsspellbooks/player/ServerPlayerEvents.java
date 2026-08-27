@@ -31,7 +31,7 @@ import io.redspace.ironsspellbooks.effect.ImmolateEffect;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.ice_spider.ICritablePartEntity;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
-import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
+import io.redspace.skillcasting.data.cast.PreventDismount;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.spell_containers.ImbuedContainer;
 import io.redspace.ironsspellbooks.item.spell_containers.SpellbookContainer;

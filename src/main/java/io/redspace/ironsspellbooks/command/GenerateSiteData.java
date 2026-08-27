@@ -132,10 +132,6 @@ public class GenerateSiteData {
     static ServerLevel level;
 
     private static void generateRecipeData(CommandSourceStack source) {
-        if (false) {
-            var temp = new SpellBalanceDebugger();
-            temp.run();
-        }
         boolean showAdvancedTooltip = Minecraft.getInstance().options.advancedItemTooltips;
         try {
             var itemBuilder = new StringBuilder();

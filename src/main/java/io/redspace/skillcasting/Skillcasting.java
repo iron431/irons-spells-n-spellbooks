@@ -20,6 +20,12 @@ import org.slf4j.Logger;
 
 public final class Skillcasting {
     public static final String NAMESPACE = "skillcasting";
+    /**
+     * Reserved for when skillcasting ships as its own loadable mod (its own {@code [[mods]]} entry in
+     * {@code neoforge.mods.toml}). Not yet usable as an {@code @EventBusSubscriber(modid = ...)} target —
+     * see {@link io.redspace.skillcasting.registry.SkillcastingAttributes}.
+     */
+    public static final String MODID = NAMESPACE;
     public static final Logger LOGGER = LogUtils.getLogger();
 
     private Skillcasting() {

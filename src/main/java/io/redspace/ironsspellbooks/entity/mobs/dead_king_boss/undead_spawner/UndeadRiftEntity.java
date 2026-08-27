@@ -195,6 +195,9 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
 
     @Override
     public void onUnSummon() {
-        //todo: implement
+        Vec3 pos = this.position();
+        MagicManager.spawnParticles(level, ParticleTypes.LARGE_SMOKE, pos.x, pos.y + 1, pos.z, 25, 0.1, 0.3, 0.1, 0.1, false);
+        level.playSound(null, pos.x, pos.y, pos.z, SoundEvents.TRIAL_SPAWNER_SPAWN_MOB, SoundSource.HOSTILE, 2f, 0.5f);
+        discard();
     }
 }

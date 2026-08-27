@@ -33,8 +33,8 @@ public class ExtendedKeyMapping extends KeyMapping {
         return false;
     }
 
+    // internal use only; consume() is the intended public entry point
     @Override
-    @Deprecated
     public boolean consumeClick() {
         return super.consumeClick();
     }

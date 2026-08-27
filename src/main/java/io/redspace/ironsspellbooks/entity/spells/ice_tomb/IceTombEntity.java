@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.mobs.ice_spider.ICritablePartEntity;
-import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
+import io.redspace.skillcasting.data.cast.PreventDismount;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.nbt.CompoundTag;

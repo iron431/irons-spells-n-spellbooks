@@ -70,7 +70,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     }
 
     private void resetList() {
-        if (selectedSpell != null && !(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(SpellRarity.values()[selectedSpell.getMinRarity()]) >= 0))) {
+        if (selectedSpell != null && !(!menu.getInkSlot().getItem().isEmpty() && (menu.getInkSlot().getItem().getItem() instanceof InkItem inkItem && inkItem.getRarity().compareRarity(selectedSpell.getMinRarity()) >= 0))) {
             setSelectedSpell(null);
         }
         scrollOffset = 0;
@@ -128,7 +128,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             SpellCardInfo spellCard = availableSpells.get(i);
 
             if (i - scrollOffset >= 0 && i - scrollOffset < 3) {
-                if (inkRarity == null || spellCard.spell.getMinRarity() > inkRarity.getValue()) {
+                if (inkRarity == null || spellCard.spell.getMinRarity().getValue() > inkRarity.getValue()) {
                     spellCard.activityState = SpellCardInfo.ActivityState.INK_ERROR;
                 } else if (minecraft != null && !spellCard.spell.canBeCraftedBy(minecraft.player)) {
                     spellCard.activityState = SpellCardInfo.ActivityState.UNLEARNED_ERROR;

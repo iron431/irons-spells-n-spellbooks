@@ -23,6 +23,7 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.data.skill.SkillSlot;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -158,10 +159,10 @@ public class Utils {
     }
 
     /**
-     * adds a horizontal asymptote of y = 2 to soft-cap reductive attribute calculations
+     * @see SkillcastingUtils#softCapFormula(double)
      */
     public static double softCapFormula(double x) {
-        return x <= 1.5 ? x : -.25 * (1 / (x - 1)) + 2;
+        return SkillcastingUtils.softCapFormula(x);
     }
 
     @Nullable

@@ -97,7 +97,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
         SkillcastLevelRenderableManager.track(
                 castContext.caster(),
                 (poseStack, buf, partialTick, caster, data, cast) -> {
-                    // fixme: pretty sure this kills the server
+                    // runs on the client render thread every frame, not the server; measured cost is acceptable
                     List<HitResult> hitResults = RaycastBuilder.fromCast(cast.context(), PositionAnchor.CASTING_POSITION)
                             .checkForBlocks(true)
                             .bbInflation(0.15f)

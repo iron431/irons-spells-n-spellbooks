@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.spells.root;
+package io.redspace.skillcasting.data.cast;
 
 import net.minecraft.world.entity.Entity;
 

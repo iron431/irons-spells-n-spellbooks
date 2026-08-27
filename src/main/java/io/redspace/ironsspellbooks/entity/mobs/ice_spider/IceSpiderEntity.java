@@ -11,7 +11,7 @@ import io.redspace.ironsspellbooks.entity.mobs.goals.MomentHurtByTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
-import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
+import io.redspace.skillcasting.data.cast.PreventDismount;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.skillcasting.data.component.CastComponentMap;

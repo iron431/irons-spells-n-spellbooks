@@ -25,7 +25,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -75,7 +74,7 @@ public class RaiseHellSpell extends AbstractSpell {
     }
 
     @Override
-    public boolean canBeInterrupted(@Nullable Player player) {
+    public boolean canBeInterrupted(@Nullable LivingEntity livingEntity) {
         return false;
     }
 

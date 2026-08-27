@@ -175,9 +175,8 @@ public abstract class AbstractSkill {
      */
     public void onPostCast(CastContext castContext) {
         Vec3 origin = castContext.position(PositionAnchor.ORIGIN);
-        // fixme: what to use for sound source? expose on caster reference?
         castContext.find(SkillcastingComponentTypes.ON_CAST_SOUND)
-                .ifPresent(sound -> castContext.level().playSound(null, origin.x, origin.y, origin.z, sound.soundEventHolder(), SoundSource.PLAYERS, sound.volume(), sound.samplePitch(castContext.level().getRandom())));
+                .ifPresent(sound -> castContext.level().playSound(null, origin.x, origin.y, origin.z, sound.soundEventHolder(), SoundSource.NEUTRAL, sound.volume(), sound.samplePitch(castContext.level().getRandom())));
     }
 
     public void onServerCastComplete(CastContext castContext, CastEndReason reason) {

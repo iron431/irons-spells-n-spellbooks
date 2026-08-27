@@ -81,8 +81,6 @@ public class FrostStepSpell extends AbstractSpell {
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         if (!(castContext.asEntityCaster() instanceof LivingEntity entity)) {
-            // todo: maybe support other caster types, but certainly not blocks
-            //  spells doing this frequently is the sign of a deeper issue. sun tzu said that.
             return;
         }
         FrozenHumanoid shadow = new FrozenHumanoid(level, entity);
@@ -104,8 +102,7 @@ public class FrostStepSpell extends AbstractSpell {
         if (entity.isPassenger()) {
             entity.stopRiding();
         }
-        //fixme: full skill takeover
-        Utils.handleSpellTeleport(null/*this*/, entity, targetPos);
+        Utils.handleSpellTeleport(this, entity, targetPos);
         entity.resetFallDistance();
         Vec3 soundPos = targetPos;
         getOnCastSound(castContext).ifPresent(playableSound -> level.playSound(null, soundPos.x, soundPos.y, soundPos.z, playableSound.soundEventHolder().value(), SoundSource.NEUTRAL, 1f, 1f));

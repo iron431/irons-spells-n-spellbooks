@@ -90,6 +90,14 @@ public final class RecastInstance {
         }
     }
 
+    /**
+     * Sets the recast window duration, keeping {@link #ticksRemaining} in sync with the new duration.
+     */
+    public void setWindowDuration(int durationTicks) {
+        this.config = new RecastConfig(this.config.totalCasts(), durationTicks);
+        this.ticksRemaining = durationTicks;
+    }
+
     public void consumeCast() {
         if (remainingCasts > 0) {
             remainingCasts--;

@@ -6,6 +6,7 @@ import io.redspace.skillcasting.data.cast.ActiveCast;
 import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.cast.PositionAnchor;
+import io.redspace.skillcasting.data.cast.PreventDismount;
 import io.redspace.skillcasting.data.component.CastComponentMap;
 import io.redspace.skillcasting.data.component.TargetedEntitiesData;
 import io.redspace.skillcasting.data.skill.ISkillContainer;
@@ -268,10 +269,14 @@ public final class SkillcastingUtils {
     }
 
     @Nullable
-    // todo: should this be living entities only? its looking like probably
     private static LivingEntity resolveLivingTarget(HitResult target, Predicate<LivingEntity> filter) {
         if (!(target instanceof EntityHitResult entityHit)) {
             return null;
+        }
+        if (entityHit.getEntity() instanceof PreventDismount
+                && entityHit.getEntity().getFirstPassenger() instanceof LivingEntity livingRooted
+                && filter.test(livingRooted)) {
+            return livingRooted;
         }
         if (entityHit.getEntity() instanceof LivingEntity livingEntity && filter.test(livingEntity)) {
             return livingEntity;
@@ -281,12 +286,6 @@ public final class SkillcastingUtils {
                 && filter.test(livingParent)) {
             return livingParent;
         }
-        // fixme: does prevent dismount need to become a skillcasting feature? or do we just need to ignore roots in raycasts?
-        //  this creates its own edge cases for things like ice tomb vs ice spider
-//        if (entityHit.getEntity() instanceof PreventDismount
-//                && entityHit.getEntity().getFirstPassenger() instanceof LivingEntity livingRooted) {
-//            return livingRooted;
-//        }
         return null;
     }
 
@@ -356,7 +355,6 @@ public final class SkillcastingUtils {
      * adds a horizontal asymptote of y = 2 to soft-cap reductive attribute calculations
      */
     public static double softCapFormula(double x) {
-        // fixme: duplicated code with iss
         return x <= 1.5 ? x : -.25 * (1 / (x - 1)) + 2;
     }
 

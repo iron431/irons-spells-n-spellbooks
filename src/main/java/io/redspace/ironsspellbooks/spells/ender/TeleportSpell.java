@@ -92,7 +92,7 @@ public class TeleportSpell extends AbstractSpell {
         if (entity.isPassenger()) {
             entity.stopRiding();
         }
-        Utils.handleSpellTeleport(null, entity, teleportDest);
+        Utils.handleSpellTeleport(this, entity, teleportDest);
         entity.resetFallDistance();
 
         getOnCastSound(castContext).ifPresent(sound -> level.playSound(null, teleportDest.x, teleportDest.y, teleportDest.z,

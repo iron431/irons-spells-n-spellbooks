@@ -1,6 +1,5 @@
 package io.redspace.skillcasting.registry;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.skillcasting.Skillcasting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -12,7 +11,8 @@ import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-@EventBusSubscriber(modid = IronsSpellbooks.MODID)
+// fixme: replace id on package extract
+@EventBusSubscriber(modid = "irons_spellbooks")
 public final class SkillcastingAttributes {
     private static final DeferredRegister<Attribute> ATTRIBUTES =
             DeferredRegister.create(BuiltInRegistries.ATTRIBUTE, Skillcasting.NAMESPACE);

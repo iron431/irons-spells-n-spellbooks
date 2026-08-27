@@ -55,7 +55,7 @@ public class IcicleSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
-        castContext.set(SkillcastingComponentTypes.PROJECTILE_PIERCE, -1); //fixme: i don't like -1 terminators as "infinity"
+        castContext.set(SkillcastingComponentTypes.PROJECTILE_PIERCE, -1); // -1 = infinite pierce
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.4f);
     }
 
@@ -64,7 +64,6 @@ public class IcicleSpell extends AbstractSpell {
         IcicleProjectile icicle = new IcicleProjectile(level, castContext.asEntityCaster());
         icicle.setPos(castContext.position());
         icicle.shootFromContext(icicle, castContext);
-        // todo: gravity components?
         icicle.setNoGravity(true);
         level.addFreshEntity(icicle);
     }

@@ -1,8 +1,4 @@
 {
-  "skill.skillcasting.demo_projectile": "Demo Projectile",
-  "skill.skillcasting.demo_continuous_arrows": "Demo Arrow Volley",
-  "skill.skillcasting.demo_blessing_of_life": "Demo Blessing of Life",
-  "skill.skillcasting.portal": "Portal",
   "attribute.skillcasting.cast_time_reduction": "Cast Time Reduction",
   "attribute.skillcasting.cooldown_reduction": "Cooldown Reduction",
   "attribute.skillcasting.casting_movespeed": "Casting Movement Speed",

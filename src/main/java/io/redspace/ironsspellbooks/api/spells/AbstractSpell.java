@@ -327,9 +327,8 @@ public abstract class AbstractSpell extends AbstractSkill {
         };
     }
 
-    public boolean canBeInterrupted(@Nullable Player player) {
-        // fixme: is player acceptable here? is long cast interruption a player only mechanic?
-        return this.getCastType() == CastType.LONG && !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(player);
+    public boolean canBeInterrupted(@Nullable LivingEntity livingEntity) {
+        return this.getCastType() == CastType.LONG && !ItemRegistry.CONCENTRATION_AMULET.get().isEquippedBy(livingEntity);
     }
 
     /**
@@ -359,7 +358,7 @@ public abstract class AbstractSpell extends AbstractSkill {
     private void initializeRarityWeights() {
         synchronized (this) {
             if (rarityWeights == null) {
-                int minRarity = getMinRarity();
+                int minRarity = getMinRarity().getValue();
                 int maxRarity = getMaxRarity();
                 List<Double> rarityRawConfig = SpellRarity.getRawRarityConfig();
                 List<Double> rarityConfig = SpellRarity.getRarityConfig();
@@ -389,16 +388,16 @@ public abstract class AbstractSpell extends AbstractSkill {
         if (rarityWeights == null) {
             initializeRarityWeights();
         }
-        // fixme: doesn't respect minlevel.
         int maxLevel = getMaxLevel();
+        int minLevel = getMinLevel();
         int maxRarity = getMaxRarity();
-        if (maxLevel == 1) {
-            return SpellRarity.values()[getMinRarity()];
+        if (maxLevel <= minLevel) {
+            return getMinRarity();
         }
         if (level >= maxLevel) {
             return SpellRarity.LEGENDARY;
         }
-        double percentOfMaxLevel = (double) level / (double) maxLevel;
+        double percentOfMaxLevel = Math.max(0d, (double) (level - minLevel) / (double) (maxLevel - minLevel));
 
         int lookupOffset = maxRarity + 1 - rarityWeights.size();
 
@@ -429,10 +428,8 @@ public abstract class AbstractSpell extends AbstractSkill {
     }
 
 
-    @Deprecated
-    ///change return type
-    public int getMinRarity() {
-        return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.MIN_RARITY).getValue();
+    public SpellRarity getMinRarity() {
+        return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.MIN_RARITY);
     }
 
     public boolean allowCrafting() {
@@ -444,7 +441,7 @@ public abstract class AbstractSpell extends AbstractSkill {
             initializeRarityWeights();
         }
 
-        int minRarity = getMinRarity();
+        int minRarity = getMinRarity().getValue();
         int maxLevel = getMaxLevel();
         if (rarity.getValue() < minRarity) {
             return 0;
