@@ -11,7 +11,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowRenderer;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.skillcasting.client.render.SkillcastLevelRenderableManager;
+import io.redspace.skillcasting.client.render.LevelRenderable;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.data.cast.CastType;
@@ -101,9 +101,8 @@ public class FireArrowSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientCastStart(CastContext castContext) {
-        super.onClientCastStart(castContext);
-        SkillcastLevelRenderableManager.track(castContext.caster(),
+    public Optional<LevelRenderable> createLevelRenderable(CastContext castContext) {
+        return Optional.of(
                 (poseStack, buf, partialTick, casterRef, data, activeCast) -> {
                     if (casterRef instanceof EntityCasterRef entityCasterRef) {
                         // tranlsate to hand
@@ -154,7 +153,7 @@ public class FireArrowSpell extends AbstractSpell {
                     scale = (float) Mth.smoothstep(Mth.clamp(scale + .3f, 0, 1));
                     poseStack.scale(scale, scale, scale);
                     FireArrowRenderer.renderModel(poseStack, buf);
-                }, false);
+                });
     }
 
     @Override

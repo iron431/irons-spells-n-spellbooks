@@ -13,7 +13,7 @@ import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceP
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
-import io.redspace.skillcasting.client.render.SkillcastLevelRenderableManager;
+import io.redspace.skillcasting.client.render.LevelRenderable;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.data.cast.CastType;
@@ -103,9 +103,8 @@ public class LightningLanceSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientCastStart(CastContext castContext) {
-        super.onClientCastStart(castContext);
-        SkillcastLevelRenderableManager.track(castContext.caster(),
+    public Optional<LevelRenderable> createLevelRenderable(CastContext castContext) {
+        return Optional.of(
                 (poseStack, buf, partialTick, casterRef, data, activeCast) -> {
                     if (casterRef instanceof EntityCasterRef entityCasterRef) {
                         if (Objects.equals(casterRef.get(), MinecraftInstanceHelper.getPlayer()) && Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
@@ -154,7 +153,7 @@ public class LightningLanceSpell extends AbstractSpell {
                     scale = (float) Mth.smoothstep(Mth.clamp(scale + .3f, 0, 1));
                     poseStack.scale(scale, scale, scale);
                     LightningLanceRenderer.renderModel(poseStack, buf, activeCast.elapsedTicks(casterRef.level().getGameTime()));
-                }, false);
+                });
     }
 
     public static void setupPoseStackForBone(PoseStack poseStack, GeoBone start) {

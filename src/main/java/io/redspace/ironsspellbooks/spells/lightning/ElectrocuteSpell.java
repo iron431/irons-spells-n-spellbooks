@@ -12,7 +12,7 @@ import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
-import io.redspace.skillcasting.client.render.SkillcastLevelRenderableManager;
+import io.redspace.skillcasting.client.render.LevelRenderable;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.SkillcastingUtils;
@@ -77,17 +77,21 @@ public class ElectrocuteSpell extends AbstractSpell {
 
     @Override
     public void onClientCastStart(CastContext castContext) {
-        super.onClientCastStart(castContext);
         castContext.set(SkillcastingComponentTypes.RANDOM_SEED, castContext.level().random.nextInt(Integer.MAX_VALUE));
-        // todo: tick manager has an opt-in helper. should this follow the same pattern?
-        SkillcastLevelRenderableManager.track(
-                castContext.caster(),
-                (poseStack, buf, partialTick, caster, data, cast) -> {
-                    // fixme: pretty sure this kills the server
-                    float rangeMultiplier = cast.context().getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 8f) / 9f;
-                    SpellRenderingHelper.renderElectrocute(caster.level(), poseStack, rangeMultiplier, buf, castContext.getOrDefault(SkillcastingComponentTypes.RANDOM_SEED, 0), partialTick);
-                }, true
-        );
+        super.onClientCastStart(castContext);
+    }
+
+    @Override
+    public Optional<LevelRenderable> createLevelRenderable(CastContext castContext) {
+        return Optional.of((poseStack, buf, partialTick, caster, data, cast) -> {
+            float rangeMultiplier = cast.context().getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 8f) / 9f;
+            SpellRenderingHelper.renderElectrocute(caster.level(), poseStack, rangeMultiplier, buf, castContext.getOrDefault(SkillcastingComponentTypes.RANDOM_SEED, 0), partialTick);
+        });
+    }
+
+    @Override
+    public boolean levelRenderableRotatesWithCast() {
+        return true;
     }
 
     @Override

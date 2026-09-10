@@ -10,7 +10,9 @@ import io.redspace.skillcasting.data.recast.RecastConfig;
 import io.redspace.skillcasting.data.recast.RecastResult;
 import io.redspace.skillcasting.client.ClientSkillCastHelper;
 import io.redspace.skillcasting.client.render.ClientSkillTicker;
+import io.redspace.skillcasting.client.render.LevelRenderable;
 import io.redspace.skillcasting.client.render.SkillcastClientTickManager;
+import io.redspace.skillcasting.client.render.SkillcastLevelRenderableManager;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingAttributes;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -182,8 +184,16 @@ public abstract class AbstractSkill {
     public void onServerCastComplete(CastContext castContext, CastEndReason reason) {
     }
 
-    public Optional<ClientSkillTicker> createClientTicker() {
+    public Optional<ClientSkillTicker> createClientTicker(CastContext castContext) {
         return Optional.empty();
+    }
+
+    public Optional<LevelRenderable> createLevelRenderable(CastContext castContext) {
+        return Optional.empty();
+    }
+
+    public boolean levelRenderableRotatesWithCast() {
+        return false;
     }
 
     /**
@@ -199,7 +209,9 @@ public abstract class AbstractSkill {
      * Called on the client when a channeled cast ({@link CastType#LONG}, {@link CastType#CONTINUOUS}) begins. CastContext only has synced parameters.
      */
     public void onClientCastStart(CastContext castContext) {
-        createClientTicker().ifPresent(ticker -> SkillcastClientTickManager.track(castContext.caster(), ticker));
+        createClientTicker(castContext).ifPresent(ticker -> SkillcastClientTickManager.track(castContext.caster(), ticker));
+        createLevelRenderable(castContext).ifPresent(renderable ->
+                SkillcastLevelRenderableManager.track(castContext.caster(), renderable, levelRenderableRotatesWithCast()));
     }
 
     public Optional<RecastConfig> provideRecastConfig(CastContext castContext) {

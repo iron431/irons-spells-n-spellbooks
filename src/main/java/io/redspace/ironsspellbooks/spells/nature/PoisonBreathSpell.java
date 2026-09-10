@@ -98,7 +98,7 @@ public class PoisonBreathSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<ClientSkillTicker> createClientTicker() {
+    public Optional<ClientSkillTicker> createClientTicker(CastContext castContext) {
         return Optional.of(this::spawnParticles);
     }
 

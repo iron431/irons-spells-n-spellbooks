@@ -13,7 +13,7 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.client.render.ClientSkillTicker;
-import io.redspace.skillcasting.client.render.SkillcastLevelRenderableManager;
+import io.redspace.skillcasting.client.render.LevelRenderable;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.data.cast.CastType;
@@ -91,36 +91,29 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientCastStart(CastContext castContext) {
-        super.onClientCastStart(castContext);
-        // todo: tick manager has an opt-in helper. should this follow the same pattern?
-        SkillcastLevelRenderableManager.track(
-                castContext.caster(),
-                (poseStack, buf, partialTick, caster, data, cast) -> {
-                    // runs on the client render thread every frame, not the server; measured cost is acceptable
-                    List<HitResult> hitResults = RaycastBuilder.fromCast(cast.context(), PositionAnchor.CASTING_POSITION)
-                            .checkForBlocks(true)
-                            .bbInflation(0.15f)
-                            .performRaycastWithPiercingAndRicochet(castContext, true);
-                    List<Vec3> rayInflectionPoints = new ArrayList<>(List.of(new Vec3(0, -.2, 0)));
-                    hitResults.stream().map(r -> r.getLocation().subtract(castContext.position(PositionAnchor.CASTING_POSITION_CENTER))).forEach(rayInflectionPoints::add);
-                    for (int i = rayInflectionPoints.size() - 2; i >= 0; i--) {
-                        // backwards iteration for alpha clipping
-                        poseStack.pushPose();
-                        Vec3 start = rayInflectionPoints.get(i);
-                        Vec3 end = rayInflectionPoints.get(i + 1);
-                        Vec3 ray = end.subtract(start);
-                        Vec3 direction = ray.normalize();
-                        Vec2 rotation = Utils.rotationFromDirection(direction);
-                        poseStack.translate(start.x, start.y, start.z);
-                        poseStack.mulPose(Axis.YP.rotation(rotation.y));
-                        poseStack.mulPose(Axis.XP.rotation(-rotation.x));
-                        SpellRenderingHelper.renderRayOfSiphoning(caster.level(), poseStack, start, ray, buf, partialTick);
-                        poseStack.popPose();
-                    }
-
-                }, false
-        );
+    public Optional<LevelRenderable> createLevelRenderable(CastContext castContext) {
+        return Optional.of((poseStack, buf, partialTick, caster, data, cast) -> {
+            List<HitResult> hitResults = RaycastBuilder.fromCast(cast.context(), PositionAnchor.CASTING_POSITION)
+                    .checkForBlocks(true)
+                    .bbInflation(0.15f)
+                    .performRaycastWithPiercingAndRicochet(castContext, true);
+            List<Vec3> rayInflectionPoints = new ArrayList<>(List.of(new Vec3(0, -.2, 0)));
+            hitResults.stream().map(r -> r.getLocation().subtract(castContext.position(PositionAnchor.CASTING_POSITION_CENTER))).forEach(rayInflectionPoints::add);
+            for (int i = rayInflectionPoints.size() - 2; i >= 0; i--) {
+                // backwards iteration for alpha clipping
+                poseStack.pushPose();
+                Vec3 start = rayInflectionPoints.get(i);
+                Vec3 end = rayInflectionPoints.get(i + 1);
+                Vec3 ray = end.subtract(start);
+                Vec3 direction = ray.normalize();
+                Vec2 rotation = Utils.rotationFromDirection(direction);
+                poseStack.translate(start.x, start.y, start.z);
+                poseStack.mulPose(Axis.YP.rotation(rotation.y));
+                poseStack.mulPose(Axis.XP.rotation(-rotation.x));
+                SpellRenderingHelper.renderRayOfSiphoning(caster.level(), poseStack, start, ray, buf, partialTick);
+                poseStack.popPose();
+            }
+        });
     }
 
     @Override
@@ -160,7 +153,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<ClientSkillTicker> createClientTicker() {
+    public Optional<ClientSkillTicker> createClientTicker(CastContext startContext) {
         return Optional.of((caster, data, cast) -> {
                     var castContext = cast.context();
                     List<HitResult> hitResults = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)

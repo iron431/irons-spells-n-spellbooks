@@ -133,7 +133,7 @@ public class FireBreathSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<ClientSkillTicker> createClientTicker() {
+    public Optional<ClientSkillTicker> createClientTicker(CastContext castContext) {
         return Optional.of(this::spawnParticles);
     }
 

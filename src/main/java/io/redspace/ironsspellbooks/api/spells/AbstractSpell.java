@@ -416,7 +416,6 @@ public abstract class AbstractSpell extends AbstractSkill {
     }
 
     public Component getLockedMessage() {
-        // fixme: expose parameters?
         return Component.translatable("ui.irons_spellbooks.unlearned_error");
     }
 

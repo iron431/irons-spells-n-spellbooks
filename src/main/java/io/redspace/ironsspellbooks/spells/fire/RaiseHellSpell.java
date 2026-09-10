@@ -136,7 +136,7 @@ public class RaiseHellSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<ClientSkillTicker> createClientTicker() {
+    public Optional<ClientSkillTicker> createClientTicker(CastContext castContext) {
         return Optional.of((casterRef, data, activeCast) -> {
             if (casterRef.get() instanceof LivingEntity living) {
                 // fixme: ungate from entity

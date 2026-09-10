@@ -64,9 +64,6 @@ public class IceTombSpell extends AbstractSpell {
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         if (!(castContext.asEntityCaster() instanceof Entity entity)) {
-            // todo: just spit out a tomb anyways?
-            // fixme: with upcoming buff application vfx, we should probably be more selective in the logic we skip rather than nuke the entire spellcast
-            //  will cause confusion when theres no feedback of a spellcast acting even with sound/redstone cues
             return;
         }
         IceTombEntity iceTombEntity = new IceTombEntity(level, entity);

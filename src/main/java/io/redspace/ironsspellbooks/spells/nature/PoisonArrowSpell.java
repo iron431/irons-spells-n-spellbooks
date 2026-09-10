@@ -11,7 +11,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrow;
 import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrowRenderer;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.skillcasting.client.render.SkillcastLevelRenderableManager;
+import io.redspace.skillcasting.client.render.LevelRenderable;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.data.cast.CastType;
@@ -110,9 +110,8 @@ public class PoisonArrowSpell extends AbstractSpell {
     }
 
     @Override
-    public void onClientCastStart(CastContext castContext) {
-        super.onClientCastStart(castContext);
-        SkillcastLevelRenderableManager.track(castContext.caster(),
+    public Optional<LevelRenderable> createLevelRenderable(CastContext castContext) {
+        return Optional.of(
                 (poseStack, buf, partialTick, casterRef, data, activeCast) -> {
                     if (casterRef instanceof EntityCasterRef entityCasterRef) {
                         // tranlsate to hand
@@ -160,7 +159,7 @@ public class PoisonArrowSpell extends AbstractSpell {
                     BlockPos pos = BlockPos.containing(context.position().add(context.direction().scale(0.5f)));
                     int light = LightTexture.pack(context.level().getBrightness(LightLayer.BLOCK, pos), context.level().getBrightness(LightLayer.SKY, pos));
                     PoisonArrowRenderer.renderModel(poseStack, buf, light);
-                }, false);
+                });
     }
 
     @Override
