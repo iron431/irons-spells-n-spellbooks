@@ -80,14 +80,14 @@ public class WallOfFireSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, getSpellPower(castContext));
         // fixme: being repurposed as wall length. no. also, dont hardcode raycast range
-        castContext.set(SkillcastingComponentTypes.CAST_RANGE, getWallLength(castContext));
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, provideWallLength(castContext));
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         FireWallCastComponent data = castContext.getOrNull(SpellcastingComponentTypes.FIRE_WALL_DATA);
         if (data == null) {
-            data = new FireWallCastComponent(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, getWallLength(castContext)));
+            data = new FireWallCastComponent(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, provideWallLength(castContext)));
             castContext.set(SpellcastingComponentTypes.FIRE_WALL_DATA, data);
         }
         boolean finishEarly = addAnchor(data, level, castContext);
@@ -128,7 +128,7 @@ public class WallOfFireSpell extends AbstractSpell {
         level.addFreshEntity(fireWall);
     }
 
-    private float getWallLength(CastContext castContext) {
+    private float provideWallLength(CastContext castContext) {
         return 10 + castContext.getSkillLevel() * 3 * getSpellPowerMultiplier(castContext);
     }
 

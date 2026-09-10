@@ -73,7 +73,7 @@ public class TeleportSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SkillcastingComponentTypes.TELEPORT_RANGE, getDistance(castContext));
+        castContext.set(SkillcastingComponentTypes.TELEPORT_RANGE, provideDistance(castContext));
     }
 
     @Override
@@ -138,7 +138,7 @@ public class TeleportSpell extends AbstractSpell {
         }
     }
 
-    private float getDistance(CastContext castContext) {
+    private float provideDistance(CastContext castContext) {
         return (float) (Utils.softCapFormula(getSpellPowerMultiplier(castContext)) * getSpellPower(castContext));
     }
 

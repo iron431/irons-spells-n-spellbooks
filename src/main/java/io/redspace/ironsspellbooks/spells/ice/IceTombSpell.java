@@ -57,8 +57,8 @@ public class IceTombSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SkillcastingComponentTypes.HEALING, 1 * Mth.sqrt(getSpellPowerMultiplier(castContext)));
-        castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, (int) (80 + castContext.getSkillLevel() * 20 * Mth.sqrt(getSpellPowerMultiplier(castContext))));
+        castContext.set(SkillcastingComponentTypes.HEALING, provideHealing(castContext));
+        castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, provideDuration(castContext));
     }
 
     @Override
@@ -76,18 +76,13 @@ public class IceTombSpell extends AbstractSpell {
         entity.startRiding(iceTombEntity, true);
     }
 
-    // fixme:
-    //  note: the issue with getters like these is the nomenclature. these provide values *using* the cast context, not *from* the cast context
-    //  runtime effects should only ever use values *from* the cast context
-    //  a better name would be "provideHealing" or "baseHealing" or something better in order to indicate the distinction.
-//
-//    public float getDuration(CastContext castContext) {
-//        return 80 + castContext.getSkillLevel() * 20 * Mth.sqrt(getSpellPowerMultiplier(castContext));
-//    }
-//
-//    public float getHealing(CastContext castContext) {
-//        return 1 * Mth.sqrt(getSpellPowerMultiplier(castContext));
-//    }
+    public int provideDuration(CastContext castContext) {
+        return (int) (80 + castContext.getSkillLevel() * 20 * Mth.sqrt(getSpellPowerMultiplier(castContext)));
+    }
+
+    public float provideHealing(CastContext castContext) {
+        return 1 * Mth.sqrt(getSpellPowerMultiplier(castContext));
+    }
 
     @Override
     public AnimationHolder getCastStartAnimation() {

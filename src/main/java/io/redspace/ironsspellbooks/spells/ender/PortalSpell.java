@@ -73,8 +73,14 @@ public class PortalSpell extends AbstractSpell {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.cast_range", Utils.stringTruncation(CAST_DISTANCE, 1)),
                 Component.translatable("ui.irons_spellbooks.portal_duration",
-                        Utils.timeFromTicks((int) (getSpellPower(castContext) * 20), 2))
+                        Utils.timeFromTicks(getPortalDuration(castContext), 2))
         );
+    }
+
+    @Override
+    public void buildContextComponents(CastContext castContext) {
+        super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, (int) (getSpellPower(castContext) * 20));
     }
 
     @Override
@@ -220,7 +226,7 @@ public class PortalSpell extends AbstractSpell {
     }
 
     private int getPortalDuration(CastContext castContext) {
-        return (int) (getSpellPower(castContext) * 20);
+        return castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0);
     }
 
     private PortalEntity setupPortalEntity(CastContext castContext, PortalData portalData, Vec3 spawnPos, float rotation) {

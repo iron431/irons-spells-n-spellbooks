@@ -41,7 +41,7 @@ public class RayOfFrostSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)),
-                Component.translatable("ui.irons_spellbooks.freeze_time", Utils.timeFromTicks(getFreezeTime(castContext), 2)),
+                Component.translatable("ui.irons_spellbooks.freeze_time", Utils.timeFromTicks(provideFreezeTime(castContext), 2)),
                 Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f), 1))
         );
     }
@@ -98,9 +98,9 @@ public class RayOfFrostSpell extends AbstractSpell {
                 continue;
             }
             Entity target = entityhit.getEntity();
-            //Set freeze time right here because it scales off of level and power
+            // Set freeze time right here (instead of statically in damage source) because it scales off of level and power
             DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f),
-                    getDamageSourceIndirect(castContext).setFreezeTicks(target.getTicksRequiredToFreeze() + getFreezeTime(castContext)));
+                    getDamageSourceIndirect(castContext).setFreezeTicks(target.getTicksRequiredToFreeze() + provideFreezeTime(castContext)));
             MagicManager.spawnParticles(level, ParticleHelper.SNOW_DUST, entityhit.getLocation().x, entityhit.getLocation().y, entityhit.getLocation().z, 10, 0, .1, 0, .06, false);
         }
         if (!hitResults.isEmpty()) {
@@ -109,7 +109,7 @@ public class RayOfFrostSpell extends AbstractSpell {
         }
     }
 
-    private int getFreezeTime(CastContext castContext) {
+    private int provideFreezeTime(CastContext castContext) {
         return (int) (getSpellPower(castContext) * 15);
     }
 }
