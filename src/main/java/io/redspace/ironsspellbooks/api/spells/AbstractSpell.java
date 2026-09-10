@@ -135,7 +135,7 @@ public abstract class AbstractSpell extends AbstractSkill {
         if (castContext.getRecastsRemaining() > 0) {
             castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
         }
-        if (castContext.getCastSource().name().equals(SpellCastSources.SCROLL)) {
+        if (castContext.getCastSource().isType(SpellCastSources.SCROLL)) {
             castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
             // todo: likely remove anti-cooldown in future balance patch.
             castContext.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
@@ -145,6 +145,8 @@ public abstract class AbstractSpell extends AbstractSkill {
                     castContext.set(SpellcastingComponentTypes.SCROLL_STACK, serverPlayer.getItemBySlot(slot));
                 }
             }
+        } else if (castContext.getCastSource().isType(SpellCastSources.IMBUE)) {
+            castContext.mutate(SkillcastingComponentTypes.COOLDOWN_TICKS, cooldown -> (int) (cooldown * ServerConfigs.SWORDS_CD_MULTIPLIER.get()));
         }
         castContext.set(SpellcastingComponentTypes.CAST_START_ANIMATION, getCastStartAnimation());
         castContext.set(SpellcastingComponentTypes.CAST_FINISH_ANIMATION, getCastFinishAnimation());
@@ -186,7 +188,7 @@ public abstract class AbstractSpell extends AbstractSkill {
         if (this.requiresLearning() && !isLearned(castContext.caster().get())) {
             return CastResult.failure(Component.translatable("ui.irons_spellbooks.cast_error_unlearned", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED));
         }
-        if (castContext.has(SkillcastingComponentTypes.RECAST_CONFIG) && castContext.getCastSource().name().equals(SpellCastSources.SCROLL) && !((castContext.asEntityCaster() instanceof Player player && player.isCreative()))) {
+        if (castContext.has(SkillcastingComponentTypes.RECAST_CONFIG) && castContext.getCastSource().isType(SpellCastSources.SCROLL) && !((castContext.asEntityCaster() instanceof Player player && player.isCreative()))) {
             return CastResult.failure(Component.translatable("ui.irons_spellbooks.cast_error_scroll", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED));
         }
         int manaCost = getManaCost(castContext);

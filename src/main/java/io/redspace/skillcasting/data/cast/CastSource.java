@@ -8,12 +8,17 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 
-public record CastSource(String name, String equipmentSlot) {
+public record CastSource(String type, String equipmentSlot) {
     public static final CastSource EMPTY = new CastSource("", "");
     public static final Codec<CastSource> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.STRING.fieldOf("name").forGetter(CastSource::name),
+            Codec.STRING.fieldOf("type").forGetter(CastSource::type),
             Codec.STRING.fieldOf("equipment_slot").forGetter(CastSource::equipmentSlot)
     ).apply(builder, CastSource::new));
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, CastSource> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.STRING_UTF8, CastSource::type,
+            ByteBufCodecs.STRING_UTF8, CastSource::equipmentSlot,
+            CastSource::new);
 
     public boolean isFromSlot(EquipmentSlot slot) {
         return slot.getName().equals(this.equipmentSlot);
@@ -23,10 +28,9 @@ public record CastSource(String name, String equipmentSlot) {
         return isFromSlot(hand == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
     }
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, CastSource> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8, CastSource::name,
-            ByteBufCodecs.STRING_UTF8, CastSource::equipmentSlot,
-            CastSource::new);
+    public boolean isType(String type) {
+        return this.type.equalsIgnoreCase(type);
+    }
 
     public static CastSource of(String name, String equipmentSlot) {
         return new CastSource(name, equipmentSlot);

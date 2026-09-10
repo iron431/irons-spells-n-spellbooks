@@ -49,7 +49,7 @@ public final class SkillcastingManager {
         if (selected == null) {
             return false;
         }
-        return attemptInitiateCast(caster, SkillRegistry.holder(selected.getSkill()), selected.getLevel(), CastSource.of(selected.equipmentSlot));
+        return attemptInitiateCast(caster, SkillRegistry.holder(selected.getSkill()), selected.getLevel(), selected.castSource);
     }
 
     public static boolean attemptInitiateFromQuickCastSlot(CasterRef caster, int globalIndex) {
@@ -58,7 +58,7 @@ public final class SkillcastingManager {
         if (option == null) {
             return false;
         }
-        return attemptInitiateCast(caster, SkillRegistry.holder(option.skillData.getSkill()), option.skillData.getLevel(), CastSource.of(option.equipmentSlot));
+        return attemptInitiateCast(caster, SkillRegistry.holder(option.skillData.getSkill()), option.skillData.getLevel(), option.castSource);
     }
 
     public static CastContext buildCastContext(CasterRef caster, Holder<AbstractSkill> skillHolder, int baseLevel, CastSource castSource) {

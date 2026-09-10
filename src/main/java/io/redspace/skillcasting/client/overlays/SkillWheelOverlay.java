@@ -4,16 +4,15 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.data.CastContext;
-import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.AbstractSkill;
-import io.redspace.skillcasting.data.skill.SkillWheelInfo;
-import io.redspace.skillcasting.data.cast.CastSource;
-import io.redspace.skillcasting.data.skill.SkillData;
+import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.SkillcastingData;
+import io.redspace.skillcasting.data.cast.CasterRef;
+import io.redspace.skillcasting.data.selection.SkillSelectionManager;
+import io.redspace.skillcasting.data.skill.SkillData;
+import io.redspace.skillcasting.data.skill.SkillWheelInfo;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillRegistry;
-import io.redspace.skillcasting.data.selection.SkillSelectionManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -122,7 +121,7 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
             CastContext castContext = SkillcastingManager.buildCastContext(CasterRef.entity(player),
                     SkillRegistry.holder(selectedSkill),
                     selectionOption.getLevel(),
-                    CastSource.of(selectionOption.equipmentSlot));
+                    selectionOption.castSource);
             Font font = Minecraft.getInstance().font;
             SkillWheelInfo info = selectedSkill.buildSpellWheelInfo(castContext, selectionOption);
             int textHeight = Math.max(2, Math.max(info.leftText().size(), info.rightText().size())) * font.lineHeight + 5;

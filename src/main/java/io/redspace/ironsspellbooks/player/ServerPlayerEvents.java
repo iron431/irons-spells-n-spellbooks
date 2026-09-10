@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellCastSources;
 import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -31,6 +32,7 @@ import io.redspace.ironsspellbooks.effect.ImmolateEffect;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.ice_spider.ICritablePartEntity;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
+import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.cast.PreventDismount;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.spell_containers.ImbuedContainer;
@@ -284,10 +286,13 @@ public class ServerPlayerEvents {
         CuriosApi.getCuriosInventory(player).ifPresent(inv -> {
             ItemStack spellbook = Utils.getPlayerSpellbookStack(player);
             if (spellbook != null && SpellbookContainer.has(spellbook)) {
-                event.addSource(SpellbookContainer.get(spellbook), Curios.SPELLBOOK_SLOT, SkillSelectionPriority.PRIMARY_SKILL_SOURCE);
+                event.addSource(SpellbookContainer.get(spellbook), CastSource.of(Curios.SPELLBOOK_SLOT), SkillSelectionPriority.PRIMARY_SKILL_SOURCE);
             }
             inv.findCurios(ImbuedContainer::has).stream().filter(slot -> !slot.slotContext().identifier().equals(Curios.SPELLBOOK_SLOT)).forEach(
-                    slotResult -> event.addSource(ImbuedContainer.get(slotResult.stack()), String.format("%s_%s", slotResult.slotContext().identifier(), slotResult.slotContext().index()), SkillSelectionPriority.CURIO));
+                    slotResult -> event.addSource(
+                            ImbuedContainer.get(slotResult.stack()),
+                            CastSource.of(SpellCastSources.IMBUE, String.format("%s_%s", slotResult.slotContext().identifier(), slotResult.slotContext().index())),
+                            SkillSelectionPriority.CURIO));
         });
     }
 

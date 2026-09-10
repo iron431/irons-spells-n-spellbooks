@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.player;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
+import io.redspace.ironsspellbooks.api.spells.SpellCastSources;
 import io.redspace.ironsspellbooks.api.util.FogManager;
 import io.redspace.ironsspellbooks.api.util.MusicManager;
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
@@ -101,13 +102,13 @@ public class ClientPlayerEvents {
 
     private static void handleImbuedSpellTooltip(ItemStack stack, LocalPlayer player, ISkillContainer spellContainer, List<Component> lines, boolean advanced) {
         int tooltipInjectIndex = advanced ? TooltipsUtils.indexOfAdvancedText(lines, stack) : lines.size();
-        // fixme: not respecting "imbued" source and therefore buffs
-        CastSource castSource = CastSource.EMPTY;
+        String equipmentSlot = "";
         if (stack == player.getMainHandItem()) {
-            castSource = CastSource.of(EquipmentSlot.MAINHAND);
+            equipmentSlot = EquipmentSlot.MAINHAND.getName();
         } else if (stack == player.getOffhandItem()) {
-            castSource = CastSource.of(EquipmentSlot.OFFHAND);
+            equipmentSlot = EquipmentSlot.OFFHAND.getName();
         }
+        CastSource castSource = CastSource.of(SpellCastSources.IMBUE, equipmentSlot);
         if (!spellContainer.isEmpty()) {
             var additionalLines = new ArrayList<Component>();
             List<SkillSlot> spellSlots = spellContainer.getActiveSkills().stream().filter(slot -> slot.skillData().getSkill() instanceof AbstractSpell).toList();

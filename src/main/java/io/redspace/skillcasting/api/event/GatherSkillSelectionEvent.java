@@ -1,5 +1,6 @@
 package io.redspace.skillcasting.api.event;
 
+import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.skill.ISkillContainer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -11,7 +12,8 @@ import java.util.List;
 
 public final class GatherSkillSelectionEvent extends PlayerEvent {
 
-    public record Source(@NotNull ISkillContainer container, @NotNull String equipmentSlot, @NotNull SkillSelectionPriority priority) {
+    public record Source(@NotNull ISkillContainer container, @NotNull CastSource castSource,
+                         @NotNull SkillSelectionPriority priority) {
     }
 
     private final List<Source> sources = new ArrayList<>();
@@ -20,7 +22,7 @@ public final class GatherSkillSelectionEvent extends PlayerEvent {
         super(player);
     }
 
-    public void addSource(ISkillContainer container, String equipmentSlot, SkillSelectionPriority priority) {
+    public void addSource(ISkillContainer container, CastSource equipmentSlot, SkillSelectionPriority priority) {
         if (container == null || equipmentSlot == null || priority == null) {
             return;
         }
@@ -28,7 +30,11 @@ public final class GatherSkillSelectionEvent extends PlayerEvent {
     }
 
     public void addSource(ISkillContainer container, EquipmentSlot slot, SkillSelectionPriority priority) {
-        addSource(container, slot.getName(), priority);
+        addSource(container, CastSource.of(slot), priority);
+    }
+
+    public void clearSourcesBySlot(String equipmentSlot) {
+        sources.removeIf(source -> source.castSource.equipmentSlot().equals(equipmentSlot));
     }
 
     public List<Source> getSources() {
