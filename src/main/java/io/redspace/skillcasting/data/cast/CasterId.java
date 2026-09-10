@@ -48,8 +48,7 @@ public interface CasterId {
 
     /**
      * Stub for a future non-entity, non-block caster identified by a UUID the consumer defines resolution for.
-     * Not yet resolvable and not wired into {@link #STREAM_CODEC} — both are TODO for whenever a concrete
-     * non-entity/non-block caster shows up.
+     * Not implemented nor resolvable, do not use
      */
     record Custom(UUID id) implements CasterId {
         @Override
