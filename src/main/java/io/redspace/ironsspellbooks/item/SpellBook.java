@@ -11,6 +11,7 @@ import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
+import io.redspace.skillcasting.client.keybinds.KeyMappings;
 import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.skill.ISkillContainer;
 import net.minecraft.ChatFormatting;
@@ -67,7 +68,7 @@ public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,
             var activeSpellSlots = spellList.getActiveSkills();
             if (!activeSpellSlots.isEmpty()) {
                 lines.add(Component.empty());
-                lines.add(Component.translatable("tooltip.irons_spellbooks.press_to_cast", Component.keybind("key.irons_spellbooks.spellbook_cast")).withStyle(ChatFormatting.GOLD));
+                lines.add(Component.translatable("tooltip.irons_spellbooks.press_to_cast", Component.keybind(KeyMappings.CAST_SELECTED_SKILL_KEYMAP.getName())).withStyle(ChatFormatting.GOLD));
                 lines.add(Component.empty());
                 lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_tooltip").withStyle(ChatFormatting.GRAY));
                 var source = CastSource.of(SpellCastSources.SPELLBOOK);

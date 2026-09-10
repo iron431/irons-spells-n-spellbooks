@@ -96,7 +96,6 @@ public class ClientPlayerEvents {
                 // "Can be Imbued" tooltip
                 lines.add(1, Component.translatable("tooltip.irons_spellbooks.can_be_imbued_frame", Component.translatable("tooltip.irons_spellbooks.can_be_imbued_number", spellContainer.getActiveSkillCount(), spellContainer.getMaxSkillCount()).withStyle(ChatFormatting.YELLOW)).withStyle(ChatFormatting.GOLD));
             }
-            // Scroll Tooltip
         });
     }
 
