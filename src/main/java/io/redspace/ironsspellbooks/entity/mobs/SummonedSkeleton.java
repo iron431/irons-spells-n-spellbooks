@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.entity.mobs;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericCopyOwnerTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericHurtByTargetGoal;
@@ -58,15 +57,6 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
 
     }
 
-    /**
-     * @param owner THIS PARAMETER SHOULD BE DELETED, and fullfilled via {@link SummonManager#setOwner(Entity, Entity)}
-     */
-    @Deprecated(forRemoval = true)
-    public SummonedSkeleton(Level level, LivingEntity owner, boolean playRiseAnimation) {
-        this(level, playRiseAnimation);
-        setSummoner(owner);
-    }
-
     public SummonedSkeleton(Level level, boolean playRiseAnimation) {
         this(EntityRegistry.SUMMONED_SKELETON.get(), level);
         if (playRiseAnimation) {
@@ -96,16 +86,6 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
     @Override
     public boolean isPreventingPlayerRest(Player pPlayer) {
         return !this.isAlliedTo(pPlayer);
-    }
-
-    /**
-     * Setting owner should now be directly done via {@link io.redspace.ironsspellbooks.capabilities.magic.SummonManager#setOwner(Entity, Entity)}
-     * <br>This methods simply forwards the call there
-     */
-    @Deprecated(forRemoval = true)
-    public void setSummoner(@Nullable LivingEntity owner) {
-        if (owner == null) return;
-        SummonManager.setOwner(this, owner);
     }
 
     @Override

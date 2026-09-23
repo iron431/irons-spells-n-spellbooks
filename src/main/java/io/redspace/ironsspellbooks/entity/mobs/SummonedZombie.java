@@ -1,10 +1,8 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
-
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericCopyOwnerTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericHurtByTargetGoal;
@@ -57,15 +55,6 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
     public SummonedZombie(EntityType<? extends Zombie> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         xpReward = 0;
-    }
-
-    /**
-     * @param owner THIS PARAMETER SHOULD BE DELETED, and fullfilled via {@link SummonManager#setOwner(Entity, Entity)}
-     */
-    @Deprecated(forRemoval = true)
-    public SummonedZombie(Level level, LivingEntity owner, boolean playRiseAnimation) {
-        this(level, playRiseAnimation);
-        setSummoner(owner);
     }
 
     public SummonedZombie(Level level, boolean playRiseAnimation) {
@@ -125,16 +114,6 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
         return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
     }
 
-    /**
-     * Setting owner should now be directly done via {@link io.redspace.ironsspellbooks.capabilities.magic.SummonManager#setOwner(Entity, Entity)}
-     * <br>This methods simply forwards the call there
-     */
-    @Deprecated(forRemoval = true)
-    public void setSummoner(@Nullable LivingEntity owner) {
-        if (owner == null) return;
-        SummonManager.setOwner(this, owner);
-    }
-
     @Override
     public void die(DamageSource pDamageSource) {
         this.onDeathHelper();
@@ -146,7 +125,6 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
         this.onRemovedHelper(this);
         super.onRemovedFromLevel();
     }
-
 
     @Override
     public void remove(RemovalReason pReason) {
@@ -197,7 +175,6 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
         }
     }
 
-
     protected void clientDiggingParticles(LivingEntity livingEntity) {
         RandomSource randomsource = livingEntity.getRandom();
         BlockState blockstate = livingEntity.getBlockStateOn();
@@ -228,7 +205,6 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
     protected boolean isImmobile() {
         return super.isImmobile() || isAnimatingRise();
     }
-
 
     /*
     Geckolib

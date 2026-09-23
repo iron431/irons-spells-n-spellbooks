@@ -19,7 +19,7 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 import java.util.List;
 
-public class InfernalSorcererArmorItem extends ImbuableChestplateArmorItem {
+public class InfernalSorcererArmorItem extends ExtendedArmorItem {
     public static final int COOLDOWN_TICKS = 1 * 20;
 
     public InfernalSorcererArmorItem(Type type, Properties settings) {

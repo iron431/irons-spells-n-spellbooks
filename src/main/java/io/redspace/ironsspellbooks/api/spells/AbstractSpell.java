@@ -15,20 +15,20 @@ import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.render.animation.AnimationHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import io.redspace.skillcasting.data.cast.PositionAnchor;
-import io.redspace.skillcasting.data.CastContext;
-import io.redspace.skillcasting.data.cast.CastEndReason;
-import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.AbstractSkill;
-import io.redspace.skillcasting.data.cast.CastResult;
-import io.redspace.skillcasting.data.cast.CastType;
-import io.redspace.skillcasting.data.component.TargetedEntitiesData;
-import io.redspace.skillcasting.data.skill.SkillWheelInfo;
-import io.redspace.skillcasting.data.cast.CastSource;
+import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.data.cast.CastEndReason;
+import io.redspace.skillcasting.data.cast.CastResult;
+import io.redspace.skillcasting.data.cast.CastSource;
+import io.redspace.skillcasting.data.cast.CastType;
+import io.redspace.skillcasting.data.cast.CasterRef;
+import io.redspace.skillcasting.data.cast.PositionAnchor;
+import io.redspace.skillcasting.data.component.TargetedEntitiesData;
+import io.redspace.skillcasting.data.selection.SkillSelectionManager;
+import io.redspace.skillcasting.data.skill.SkillWheelInfo;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
-import io.redspace.skillcasting.data.selection.SkillSelectionManager;
 import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -180,6 +180,13 @@ public abstract class AbstractSpell extends AbstractSkill {
     public float getSpellPowerMultiplier(CastContext castContext) {
         return castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, 1f)
                 * castContext.getOrDefault(getSchoolType().getPowerComponent(), 1f);
+    }
+
+    /**
+     * Builds a {@link CastContext} and passes to {@link AbstractSpell#getSpellPower(CastContext)}
+     */
+    public float getSpellPowerMultiplier(CasterRef caster) {
+        return getSpellPowerMultiplier(SkillcastingManager.buildCastContext(caster, holder(), 0, CastSource.EMPTY));
     }
 
     @Override
@@ -343,14 +350,6 @@ public abstract class AbstractSpell extends AbstractSkill {
     @Override
     public Vector3f getAccentColor() {
         return this.getSchoolType().getTargetingColor();
-    }
-
-    @Deprecated(forRemoval = true)
-    public float getEntityPowerMultiplier(@Nullable LivingEntity livingEntity) {
-        if (livingEntity == null) {
-            return 1f;
-        }
-        return getSpellPowerMultiplier(SkillcastingManager.buildCastContext(CasterRef.entity(livingEntity), holder(), 0, CastSource.EMPTY));
     }
 
     public void resetRarityWeights() {

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -49,7 +50,7 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
     }
 
     public static float getReductionAmount(int amplifier, @Nullable LivingEntity livingEntity) {
-        float multiplier = SpellRegistry.OAKSKIN_SPELL.get().getEntityPowerMultiplier(livingEntity);
+        float multiplier = SpellRegistry.OAKSKIN_SPELL.get().getSpellPowerMultiplier(CasterRef.entity(livingEntity));
         if (livingEntity != null && OakskinData.hasFromElixir(livingEntity)) {
             // prevent elixir from scaling with spell power
             multiplier = 1;

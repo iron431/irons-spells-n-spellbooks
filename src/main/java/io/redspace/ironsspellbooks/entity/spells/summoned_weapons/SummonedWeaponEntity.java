@@ -47,12 +47,6 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import javax.annotation.Nullable;
 
 public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob implements IMagicSummon, IAnimatedAttacker {
-    @Override
-    public boolean attemptInitiateCastSpell(AbstractSpell spell, int spellLevel, @Nullable CastComponentMap castComponentMap) {
-        // no spellcasting
-        return false;
-    }
-
     GenericAnimatedWarlockAttackGoal<? extends SummonedWeaponEntity> attackGoal;
 
     public abstract GenericAnimatedWarlockAttackGoal<? extends SummonedWeaponEntity> makeAttackGoal();

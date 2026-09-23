@@ -10,7 +10,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class PyromancerArmorItem extends ImbuableChestplateArmorItem implements IArmorCapeProvider {
+public class PyromancerArmorItem extends ExtendedArmorItem implements IArmorCapeProvider {
     public PyromancerArmorItem(Type slot, Properties settings) {
         super(ArmorMaterialRegistry.SCHOOL, slot, settings, schoolAttributes(AttributeRegistry.FIRE_SPELL_POWER));
     }

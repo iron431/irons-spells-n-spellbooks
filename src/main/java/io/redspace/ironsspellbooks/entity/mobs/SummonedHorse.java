@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.entity.mobs;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.util.OwnerHelper;
@@ -135,16 +134,6 @@ public class SummonedHorse extends AbstractHorse implements IMagicSummon {
         return InteractionResult.sidedSuccess(this.level.isClientSide);
     }
 
-    /**
-     * Setting owner should now be directly done via {@link io.redspace.ironsspellbooks.capabilities.magic.SummonManager#setOwner(Entity, Entity)}
-     * <br>This methods simply forwards the call there
-     */
-    @Deprecated(forRemoval = true)
-    public void setSummoner(@Nullable LivingEntity owner) {
-        if (owner == null) return;
-        SummonManager.setOwner(this, owner);
-    }
-
     @Override
     public void die(DamageSource pDamageSource) {
         this.onDeathHelper();
@@ -188,6 +177,5 @@ public class SummonedHorse extends AbstractHorse implements IMagicSummon {
     public boolean isTamed() {
         return true;
     }
-
 
 }

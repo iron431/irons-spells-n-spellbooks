@@ -10,7 +10,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class PaladinArmorItem extends ImbuableChestplateArmorItem {
+public class PaladinArmorItem extends ExtendedArmorItem {
     public PaladinArmorItem(Type type, Properties settings) {
         super(ArmorMaterialRegistry.PALADIN, type, settings,
                 new AttributeContainer(AttributeRegistry.MAX_MANA, 150, AttributeModifier.Operation.ADD_VALUE),

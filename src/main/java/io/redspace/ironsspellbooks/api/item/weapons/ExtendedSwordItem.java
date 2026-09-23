@@ -1,5 +1,8 @@
 package io.redspace.ironsspellbooks.api.item.weapons;
 
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
+import io.redspace.skillcasting.data.skill.ISkillContainer;
+import io.redspace.skillcasting.data.skill.SkillData;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.item.weapons.IronsWeaponTier;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -13,6 +16,13 @@ import net.minecraft.world.item.component.ItemAttributeModifiers;
 public class ExtendedSwordItem extends SwordItem {
     public ExtendedSwordItem(Tier pTier, Properties pProperties) {
         super(pTier, pProperties);
+    }
+
+    /**
+     * Bakes a fixed, non-equip imbued container holding the given skills into the item default components.
+     */
+    public static Properties imbued(Properties properties, SkillData... skills) {
+        return properties.component(ComponentRegistry.IMBUED_SPELL_CONTAINER, ISkillContainer.create(false, skills));
     }
 
     public static ItemAttributeModifiers createAttributes(IronsWeaponTier pTier) {

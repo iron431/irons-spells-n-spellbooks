@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.frozen_humanoid.FrozenHumanoid;
@@ -28,7 +29,7 @@ public class FrostbiteEffect extends MagicMobEffect {
             var effect = attacker.getEffect(MobEffectRegistry.FROSTBITTEN_STRIKES);
             if (effect != null && entity.isFullyFrozen()) {
                 FrozenHumanoid iceClone = new FrozenHumanoid(entity.level, entity);
-                iceClone.setSummoner(attacker);
+                iceClone.setOwner(attacker);
                 iceClone.setShatterDamage(getDamageForAmplifier(effect.getAmplifier(), attacker));
                 iceClone.setDeathTimer(20 * 5);
                 entity.level.addFreshEntity(iceClone);
@@ -39,7 +40,7 @@ public class FrostbiteEffect extends MagicMobEffect {
     }
 
     public static float getDamageForAmplifier(int effectAmplifier, @Nullable LivingEntity caster) {
-        var power = caster == null ? 1 : SpellRegistry.FROSTBITE_SPELL.get().getEntityPowerMultiplier(caster);
+        var power = caster == null ? 1 : SpellRegistry.FROSTBITE_SPELL.get().getSpellPowerMultiplier(CasterRef.entity(caster));
         return (1 + effectAmplifier) * power;
     }
 }

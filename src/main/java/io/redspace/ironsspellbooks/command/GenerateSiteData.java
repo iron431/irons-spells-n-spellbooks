@@ -488,7 +488,7 @@ public class GenerateSiteData {
                                 String.format("/img/spells/%s.png", spellType.getSkillId().getPath()),
                                 spellType.getMinLevel(),
                                 spellType.getMaxLevel(),
-                                // fixme skillcasting: mana cost now requires a CastContext; needs a caster-free context builder
+                                // fixme(skillcasting): mana cost now requires a CastContext; needs a caster-free context builder
                                 0,
                                 0,
                                 spellType.getCooldownTicks(),
@@ -513,7 +513,7 @@ public class GenerateSiteData {
 
     private static List<String> processUniqueInfo(AbstractSpell spell) {
         List<String> text = new ArrayList<>();
-        // fixme skillcasting: unique info now requires a CastContext; needs a caster-free context builder to restore level-scaled ranges
+        // fixme(skillcasting): unique info now requires a CastContext; needs a caster-free context builder to restore level-scaled ranges
         List<MutableComponent> uniqueInfoMin = List.of();
         List<MutableComponent> uniqueInfoMax = List.of();
         for (int i = 0; i < uniqueInfoMax.size(); i++) {

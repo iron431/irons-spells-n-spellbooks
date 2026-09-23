@@ -79,7 +79,7 @@ public class WallOfFireSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, getSpellPower(castContext));
-        // fixme: being repurposed as wall length. no. also, dont hardcode raycast range
+        // fixme(skillcasting): CAST_RANGE repurposed as wall length; raycast range hardcoded
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, provideWallLength(castContext));
     }
 

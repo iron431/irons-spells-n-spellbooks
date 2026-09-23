@@ -7,7 +7,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class NetheriteMageArmorItem extends ImbuableChestplateArmorItem {
+public class NetheriteMageArmorItem extends ExtendedArmorItem {
     public NetheriteMageArmorItem(Type type, Properties settings) {
         super(ArmorMaterialRegistry.NETHERITE_BATTLEMAGE, type, settings, withManaAndSpellPowerAttribute(125, 0.05));
     }

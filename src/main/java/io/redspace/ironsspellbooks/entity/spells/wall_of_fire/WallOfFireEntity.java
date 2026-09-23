@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+// todo(skillcasting): wall anchors are entity-local (NBT + spawn data) instead of being read from a cast component
 public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWithComplexSpawn {
     protected ShieldPart[] subEntities;
     protected List<Vec3> partPositions = new ArrayList<>();
@@ -161,7 +162,6 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
         }
         compoundTag.putInt("lifetime", lifetime);
 
-        //TODO: use castData
         ListTag anchors = new ListTag();
         for (Vec3 vec : anchorPoints) {
             CompoundTag anchor = new CompoundTag();
@@ -183,7 +183,6 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
             this.lifetime = compoundTag.getInt("lifetime");
 
         //9 is list tag id
-        //TODO: use castData
         anchorPoints = new ArrayList<>();
         if (compoundTag.contains("Anchors", 9)) {
             ListTag anchors = (ListTag) compoundTag.get("Anchors");
@@ -200,7 +199,6 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
         //Ironsspellbooks.logger.debug("WallOfFire.writeSpawnData");
-        //TODO: use castData
         buffer.writeInt(anchorPoints.size());
         for (Vec3 vec : anchorPoints) {
             buffer.writeFloat((float) vec.x);
@@ -212,7 +210,6 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
         //Ironsspellbooks.logger.debug("WallOfFire.readSpawnData");
-        //TODO: use castData
         anchorPoints = new ArrayList<>();
         int length = additionalData.readInt();
         for (int i = 0; i < length; i++) {

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals;
 
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -98,7 +99,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
                     // insta-cast that fireball: override cast time via component instead of a mob attribute modifier
                     CastComponentMap components = new CastComponentMap();
                     components.set(SkillcastingComponentTypes.CAST_TIME.get(), FIREBALLER);
-                    mob.attemptInitiateCastSpell(SpellRegistry.FIREBALL_SPELL.get(), mob.isSoulMode() ? 6 : 5, components);
+                    SkillcastingUtils.attemptInitiateMobCast(mob, SpellRegistry.FIREBALL_SPELL, mob.isSoulMode() ? 6 : 5, components);
                     fireballcooldown = 20 * 10;
                     return;
                 }

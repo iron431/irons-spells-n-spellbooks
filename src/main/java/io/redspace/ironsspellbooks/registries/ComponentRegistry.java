@@ -44,7 +44,8 @@ public class ComponentRegistry {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> IMBUED_SPELL_CONTAINER = register("imbued_container", (builder) -> builder.persistent(SkillContainer.CODEC).networkSynchronized(SkillContainer.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> SPELLBOOK_CONTAINER = register("spellbook_container", (builder) -> builder.persistent(SkillContainer.CODEC).networkSynchronized(SkillContainer.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> SCROLL_CONTAINER = register("scroll_container", (builder) -> builder.persistent(SkillContainer.CODEC).networkSynchronized(SkillContainer.STREAM_CODEC).cacheEncoding());
+    // todo(legacy-data): between MC versions; legacy 1.21.1 container, resolved lazily by Utils#resolveLegacySpellContainer. Remove at the 26.x port
     @Deprecated(forRemoval = true)
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> SPELL_CONTAINER = register("spell_container", (builder) -> builder.persistent(SCMigrator.CODEC)/*.networkSynchronized(SCMigrator.STREAM_CODEC)*/.cacheEncoding());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> SPELL_CONTAINER = register("spell_container", (builder) -> builder.persistent(SCMigrator.CODEC).cacheEncoding());
 
 }

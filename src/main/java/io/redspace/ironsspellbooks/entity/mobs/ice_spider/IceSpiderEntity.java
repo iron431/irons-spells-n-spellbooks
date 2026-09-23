@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
@@ -14,8 +13,6 @@ import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
 import io.redspace.skillcasting.data.cast.PreventDismount;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.skillcasting.data.component.CastComponentMap;
-import io.redspace.skillcasting.data.cast.CastType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -276,20 +273,6 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
 
     public float getCrouchHeightMultiplier() {
         return isCrouching() ? 0.5f : 1f;
-    }
-
-    @Override
-    public boolean attemptInitiateCastSpell(AbstractSpell spell, int spellLevel, @Nullable CastComponentMap componentMap) {
-        if (!wantsToCastSpells) {
-            return false;
-        }
-        if (spell.getCastType() == CastType.INSTANT) {
-            serverTriggerAnimation("attack_fang_basic");
-        } else {
-            serverTriggerAnimation("long_cast");
-        }
-        wantsToCastSpells = false;
-        return super.attemptInitiateCastSpell(spell, spellLevel, componentMap);
     }
 
     @Override

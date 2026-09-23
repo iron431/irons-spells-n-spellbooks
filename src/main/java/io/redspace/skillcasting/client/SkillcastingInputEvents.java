@@ -69,7 +69,7 @@ public final class SkillcastingInputEvents {
     private static boolean wasSkillWheelDown;
 
     private static boolean isAllowedToCast() {
-        //todo: implement better combat compat
+        // todo(skillcasting): BetterCombat compat (swing-progress gate) deferred until after the package extraction
         //return ((MinecraftClient_BetterCombat) Minecraft.getInstance()).getSwingProgress() == 1.0f;
         return true;
     }

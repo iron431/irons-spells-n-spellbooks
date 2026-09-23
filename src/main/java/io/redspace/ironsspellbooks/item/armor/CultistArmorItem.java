@@ -9,7 +9,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class CultistArmorItem extends ImbuableChestplateArmorItem {
+public class CultistArmorItem extends ExtendedArmorItem {
     public CultistArmorItem(ArmorItem.Type slot, Properties settings) {
         super(ArmorMaterialRegistry.SCHOOL, slot, settings, schoolAttributes(AttributeRegistry.BLOOD_SPELL_POWER));
     }

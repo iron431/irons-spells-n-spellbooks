@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.skillcasting.data.SkillcastingData;
+import io.redspace.skillcasting.data.cast.CastType;
 import net.minecraft.world.entity.LivingEntity;
 
 public class IceSpiderAttackGoal extends GenericAnimatedWarlockAttackGoal<IceSpiderEntity> {
@@ -15,6 +16,19 @@ public class IceSpiderAttackGoal extends GenericAnimatedWarlockAttackGoal<IceSpi
     public void tick() {
         wantsToMelee = !(mob.wantsToCastSpells || SkillcastingData.get(mob).isCasting());
         super.tick();
+    }
+
+    @Override
+    protected void doSpellAction() {
+        if (!mob.wantsToCastSpells) {
+            return;
+        }
+        super.doSpellAction();
+        var data = SkillcastingData.get(mob);
+        if (data.isCasting()) {
+            mob.serverTriggerAnimation(data.getActiveCastType() == CastType.INSTANT ? "attack_fang_basic" : "long_cast");
+        }
+        mob.wantsToCastSpells = false;
     }
 
     @Override

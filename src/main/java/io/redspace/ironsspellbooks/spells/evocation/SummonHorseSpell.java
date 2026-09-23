@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.spells.evocation;
 
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.events.SpellSummonEvent;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
@@ -18,12 +17,9 @@ import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.Optional;
 
@@ -85,8 +81,7 @@ public class SummonHorseSpell extends AbstractSpell {
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         if (!castContext.getSkillcastingData().recasts().hasRecast(this)) {
-            Entity caster = castContext.asEntityCaster();
-            SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
+                SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
 
             Vec3 forward = castContext.direction().multiply(1, 0, 1);
             if (forward.lengthSqr() > 0) {
@@ -97,12 +92,7 @@ public class SummonHorseSpell extends AbstractSpell {
             SummonedHorse horse = new SummonedHorse(EntityRegistry.SPECTRAL_STEED.get(), level);
             horse.setPos(spawn);
             setAttributes(horse, castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_HEALTH, 15f), getSpellPower(castContext) / 100f);
-            Entity creature = horse;
-            if (caster instanceof LivingEntity living) {
-                creature = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(living, horse, getSkillId(), castContext.getSkillLevel())).getCreature();
-            }
-            level.addFreshEntity(creature);
-            SummonManager.initSummon(caster, creature, SUMMON_DURATION_TICKS, summonedEntitiesCastData);
+            SummonManager.summon(castContext, horse, SUMMON_DURATION_TICKS, summonedEntitiesCastData);
             castContext.set(SpellcastingComponentTypes.SUMMONED_ENTITY_DATA, summonedEntitiesCastData);
         }
     }

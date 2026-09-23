@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.spells.evocation;
 
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.events.SpellSummonEvent;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
@@ -21,12 +20,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.List;
 import java.util.Optional;
@@ -101,7 +97,6 @@ public class SummonVexSpell extends AbstractSpell {
             return;
         }
 
-        Entity caster = castContext.asEntityCaster();
         SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
         int count = castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_COUNT, 0);
         Vec3 spawnBase = castContext.position(PositionAnchor.CASTING_POSITION);
@@ -113,12 +108,7 @@ public class SummonVexSpell extends AbstractSpell {
             vex.getAttribute(Attributes.ATTACK_DAMAGE).setBaseValue(castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_ATTACK_DAMAGE, 15f));
             vex.getAttribute(Attributes.MAX_HEALTH).setBaseValue(castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_HEALTH, 15f));
             vex.setHealth(vex.getMaxHealth());
-            Entity creature = vex;
-            if (caster instanceof LivingEntity living) {
-                creature = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(living, vex, getSkillId(), castContext.getSkillLevel())).getCreature();
-            }
-            level.addFreshEntity(creature);
-            SummonManager.initSummon(caster, creature, SUMMON_DURATION_TICKS, summonedEntitiesCastData);
+            SummonManager.summon(castContext, vex, SUMMON_DURATION_TICKS, summonedEntitiesCastData);
         }
         castContext.set(SpellcastingComponentTypes.SUMMONED_ENTITY_DATA, summonedEntitiesCastData);
     }

@@ -9,6 +9,7 @@ import io.redspace.skillcasting.data.skill.SkillData;
 import io.redspace.skillcasting.data.skill.SkillSlot;
 import net.minecraft.resources.ResourceLocation;
 
+// todo(legacy-data): between MC versions; codecs for the legacy ISB_Spells NBT layout. Remove with SPELL_CONTAINER at the 26.x port
 public class SCMigrator {
     //Container Root
     public static final String SPELL_SLOT_CONTAINER = "ISB_Spells";

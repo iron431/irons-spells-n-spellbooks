@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.skillcasting.data.SkillcastingData;
@@ -65,7 +66,6 @@ public class GustDefenseGoal extends Goal {
         //fixme: 2.5 second cooldown??
         this.attackCooldown = 40 + mob.getRandom().nextInt(30);
         int spellLevel = (int) (SpellRegistry.GUST_SPELL.get().getMaxLevel() * .5f);
-        var spellType = SpellRegistry.GUST_SPELL.get();
-        spellCastingMob.attemptInitiateCastSpell(spellType, spellLevel, null);
+        SkillcastingUtils.attemptInitiateMobCast(mob, SpellRegistry.GUST_SPELL, spellLevel, null);
     }
 }

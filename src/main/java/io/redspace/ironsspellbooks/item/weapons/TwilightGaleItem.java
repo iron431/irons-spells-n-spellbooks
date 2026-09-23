@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.item.weapons;
 
-import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
+import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.entity.spells.thrown_spear.ThrownSpear;
 import io.redspace.skillcasting.data.skill.SkillData;
 import net.minecraft.core.Holder;
@@ -23,9 +23,9 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 
-public class TwilightGaleItem extends MagicSwordItem {
-    public TwilightGaleItem(Tier pTier, Properties pProperties, SkillData... spellDataRegistryHolders) {
-        super(pTier, pProperties, spellDataRegistryHolders);
+public class TwilightGaleItem extends ExtendedSwordItem {
+    public TwilightGaleItem(Tier pTier, Properties pProperties) {
+        super(pTier, pProperties);
     }
 
     @Override

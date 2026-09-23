@@ -9,7 +9,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class CryomancerArmorItem extends ImbuableChestplateArmorItem {
+public class CryomancerArmorItem extends ExtendedArmorItem {
     public CryomancerArmorItem(ArmorItem.Type slot, Properties settings) {
         super(ArmorMaterialRegistry.SCHOOL, slot, settings, schoolAttributes(AttributeRegistry.ICE_SPELL_POWER));
     }

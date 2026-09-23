@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
-import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
+import io.redspace.ironsspellbooks.item.armor.ExtendedArmorItem;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
@@ -169,8 +169,8 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> MAGEHUNTER = registerItem("magehunter",
             (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.METAL_MAGEHUNTER, properties.fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.METAL_MAGEHUNTER))));
     public static final DeferredHolder<Item, Item> SPELLBREAKER = registerItem("spellbreaker",
-            (properties) -> new MagicSwordItem(ExtendedWeaponTier.SPELLBREAKER, properties.rarity(Rarity.EPIC).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.SPELLBREAKER)),
-                    new SkillData(SpellRegistry.COUNTERSPELL_SPELL, 1)));
+            (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.SPELLBREAKER, ExtendedSwordItem.imbued(properties.rarity(Rarity.EPIC).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.SPELLBREAKER)),
+                    new SkillData(SpellRegistry.COUNTERSPELL_SPELL, 1))));
     public static final DeferredHolder<Item, Item> TEST_CLAYMORE = registerItem("claymore",
             (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.CLAYMORE, properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.CLAYMORE))));
     public static final DeferredHolder<Item, Item> KEEPER_FLAMBERGE = registerItem("keeper_flamberge",
@@ -178,11 +178,11 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> LEGIONNAIRE_FLAMBERGE = registerItem("legionnaire_flamberge",
             (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.LEGIONNAIRE_FLAMBERGE, properties.rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.LEGIONNAIRE_FLAMBERGE))));
     public static final DeferredHolder<Item, Item> AMETHYST_RAPIER = registerItem("amethyst_rapier",
-            (properties) -> new MagicSwordItem(ExtendedWeaponTier.AMETHYST_RAPIER, properties.rarity(Rarity.EPIC).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.AMETHYST_RAPIER)),
-                    new SkillData(SpellRegistry.ECHOING_STRIKES_SPELL, 6)));
+            (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.AMETHYST_RAPIER, ExtendedSwordItem.imbued(properties.rarity(Rarity.EPIC).fireResistant().attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.AMETHYST_RAPIER)),
+                    new SkillData(SpellRegistry.ECHOING_STRIKES_SPELL, 6))));
     public static final DeferredHolder<Item, Item> MISERY = registerItem("misery",
-            (properties) -> new MagicSwordItem(ExtendedWeaponTier.MISERY, properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.MISERY)),
-                    new SkillData(SpellRegistry.WITHER_SKULL_SPELL, 8)));
+            (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.MISERY, ExtendedSwordItem.imbued(properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.MISERY)),
+                    new SkillData(SpellRegistry.WITHER_SKULL_SPELL, 8))));
     public static final DeferredHolder<Item, Item> SCROLL = registerItem("scroll",
             (properties) -> new Scroll(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredHolder<Item, Item> AUTOLOADER_CROSSBOW = registerItem("autoloader_crossbow",
@@ -192,18 +192,16 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> STAFF_OF_THE_NINES = registerItem("staff_of_the_nines",
             (properties) -> new StaffOfTheNines(properties.stacksTo(1).rarity(Rarity.EPIC)));
     public static final DeferredHolder<Item, Item> HELLRAZOR = registerItem("hellrazor",
-            (properties) -> new MagicSwordItem(ExtendedWeaponTier.HELLRAZOR, properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.HELLRAZOR)).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant(),
-                    new SkillData(SpellRegistry.RAISE_HELL_SPELL, 3)));
+            (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.HELLRAZOR, ExtendedSwordItem.imbued(properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.HELLRAZOR)).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant(),
+                    new SkillData(SpellRegistry.RAISE_HELL_SPELL, 3))));
     public static final DeferredHolder<Item, Item> DECREPIT_SCYTHE = registerItem("decrepit_scythe",
             (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.DECREPIT_SCYTHE, properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.DECREPIT_SCYTHE)).rarity(Rarity.UNCOMMON).fireResistant()));
     public static final DeferredHolder<Item, Item> ICE_GREATSWORD = registerItem("boreal_blade",
-            (properties) -> new MagicSwordItem(ExtendedWeaponTier.ICE_GREATSWORD,
-                    properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.ICE_GREATSWORD)).rarity(Rarity.RARE).fireResistant(),
-                    new SkillData(SpellRegistry.FROSTBITE_SPELL, 3)));
+            (properties) -> new ExtendedSwordItem(ExtendedWeaponTier.ICE_GREATSWORD, ExtendedSwordItem.imbued(properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.ICE_GREATSWORD)).rarity(Rarity.RARE).fireResistant(),
+                    new SkillData(SpellRegistry.FROSTBITE_SPELL, 3))));
     public static final DeferredHolder<Item, Item> TWILIGHT_GALE = registerItem("twilight_gale",
-            (properties) -> new TwilightGaleItem(ExtendedWeaponTier.TWILIGHT_GALE,
-                    properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.TWILIGHT_GALE)).rarity(Rarity.RARE).fireResistant(),
-                    new SkillData(SpellRegistry.VOLT_STRIKE_SPELL, 5)));
+            (properties) -> new TwilightGaleItem(ExtendedWeaponTier.TWILIGHT_GALE, ExtendedSwordItem.imbued(properties.attributes(ExtendedSwordItem.createAttributes(ExtendedWeaponTier.TWILIGHT_GALE)).rarity(Rarity.RARE).fireResistant(),
+                    new SkillData(SpellRegistry.VOLT_STRIKE_SPELL, 5))));
 
     /**
      * Ink
@@ -442,7 +440,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> PYROMANCER_HELMET = registerItem("pyromancer_helmet",
             (properties) -> new PyromancerArmorItem(ArmorItem.Type.HELMET, properties.stacksTo(1).durability(ArmorItem.Type.HELMET.getDurability(37))));
     public static final DeferredHolder<Item, Item> PYROMANCER_CHESTPLATE = registerItem("pyromancer_chestplate",
-            (properties) -> new PyromancerArmorItem(ArmorItem.Type.CHESTPLATE, properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37))));
+            (properties) -> new PyromancerArmorItem(ArmorItem.Type.CHESTPLATE, ExtendedArmorItem.imbuable(properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37)))));
     public static final DeferredHolder<Item, Item> PYROMANCER_LEGGINGS = registerItem("pyromancer_leggings",
             (properties) -> new PyromancerArmorItem(ArmorItem.Type.LEGGINGS, properties.stacksTo(1).durability(ArmorItem.Type.LEGGINGS.getDurability(37))));
     public static final DeferredHolder<Item, Item> PYROMANCER_BOOTS = registerItem("pyromancer_boots",
@@ -451,7 +449,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> ELECTROMANCER_HELMET = registerItem("electromancer_helmet",
             (properties) -> new ElectromancerArmorItem(ArmorItem.Type.HELMET, properties.stacksTo(1).durability(ArmorItem.Type.HELMET.getDurability(37))));
     public static final DeferredHolder<Item, Item> ELECTROMANCER_CHESTPLATE = registerItem("electromancer_chestplate",
-            (properties) -> new ElectromancerArmorItem(ArmorItem.Type.CHESTPLATE, properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37))));
+            (properties) -> new ElectromancerArmorItem(ArmorItem.Type.CHESTPLATE, ExtendedArmorItem.imbuable(properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37)))));
     public static final DeferredHolder<Item, Item> ELECTROMANCER_LEGGINGS = registerItem("electromancer_leggings",
             (properties) -> new ElectromancerArmorItem(ArmorItem.Type.LEGGINGS, properties.stacksTo(1).durability(ArmorItem.Type.LEGGINGS.getDurability(37))));
     public static final DeferredHolder<Item, Item> ELECTROMANCER_BOOTS = registerItem("electromancer_boots",
@@ -460,7 +458,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> ARCHEVOKER_HELMET = registerItem("archevoker_helmet",
             (properties) -> new ArchevokerArmorItem(ArmorItem.Type.HELMET, properties.stacksTo(1).durability(ArmorItem.Type.HELMET.getDurability(37))));
     public static final DeferredHolder<Item, Item> ARCHEVOKER_CHESTPLATE = registerItem("archevoker_chestplate",
-            (properties) -> new ArchevokerArmorItem(ArmorItem.Type.CHESTPLATE, properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37))));
+            (properties) -> new ArchevokerArmorItem(ArmorItem.Type.CHESTPLATE, ExtendedArmorItem.imbuable(properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37)))));
     public static final DeferredHolder<Item, Item> ARCHEVOKER_LEGGINGS = registerItem("archevoker_leggings",
             (properties) -> new ArchevokerArmorItem(ArmorItem.Type.LEGGINGS, properties.stacksTo(1).durability(ArmorItem.Type.LEGGINGS.getDurability(37))));
     public static final DeferredHolder<Item, Item> ARCHEVOKER_BOOTS = registerItem("archevoker_boots",
@@ -469,7 +467,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> CULTIST_HELMET = registerItem("cultist_helmet",
             (properties) -> new CultistArmorItem(ArmorItem.Type.HELMET, properties.stacksTo(1).durability(ArmorItem.Type.HELMET.getDurability(37))));
     public static final DeferredHolder<Item, Item> CULTIST_CHESTPLATE = registerItem("cultist_chestplate",
-            (properties) -> new CultistArmorItem(ArmorItem.Type.CHESTPLATE, properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37))));
+            (properties) -> new CultistArmorItem(ArmorItem.Type.CHESTPLATE, ExtendedArmorItem.imbuable(properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37)))));
     public static final DeferredHolder<Item, Item> CULTIST_LEGGINGS = registerItem("cultist_leggings",
             (properties) -> new CultistArmorItem(ArmorItem.Type.LEGGINGS, properties.stacksTo(1).durability(ArmorItem.Type.LEGGINGS.getDurability(37))));
     public static final DeferredHolder<Item, Item> CULTIST_BOOTS = registerItem("cultist_boots",
@@ -478,7 +476,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> CRYOMANCER_HELMET = registerItem("cryomancer_helmet",
             (properties) -> new CryomancerArmorItem(ArmorItem.Type.HELMET, properties.stacksTo(1).durability(ArmorItem.Type.HELMET.getDurability(37))));
     public static final DeferredHolder<Item, Item> CRYOMANCER_CHESTPLATE = registerItem("cryomancer_chestplate",
-            (properties) -> new CryomancerArmorItem(ArmorItem.Type.CHESTPLATE, properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37))));
+            (properties) -> new CryomancerArmorItem(ArmorItem.Type.CHESTPLATE, ExtendedArmorItem.imbuable(properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37)))));
     public static final DeferredHolder<Item, Item> CRYOMANCER_LEGGINGS = registerItem("cryomancer_leggings",
             (properties) -> new CryomancerArmorItem(ArmorItem.Type.LEGGINGS, properties.stacksTo(1).durability(ArmorItem.Type.LEGGINGS.getDurability(37))));
     public static final DeferredHolder<Item, Item> CRYOMANCER_BOOTS = registerItem("cryomancer_boots",
@@ -487,7 +485,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> SHADOWWALKER_HELMET = registerItem("shadowwalker_helmet",
             (properties) -> new ShadowwalkerArmorItem(ArmorItem.Type.HELMET, properties.stacksTo(1).durability(ArmorItem.Type.HELMET.getDurability(37))));
     public static final DeferredHolder<Item, Item> SHADOWWALKER_CHESTPLATE = registerItem("shadowwalker_chestplate",
-            (properties) -> new ShadowwalkerArmorItem(ArmorItem.Type.CHESTPLATE, properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37))));
+            (properties) -> new ShadowwalkerArmorItem(ArmorItem.Type.CHESTPLATE, ExtendedArmorItem.imbuable(properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37)))));
     public static final DeferredHolder<Item, Item> SHADOWWALKER_LEGGINGS = registerItem("shadowwalker_leggings",
             (properties) -> new ShadowwalkerArmorItem(ArmorItem.Type.LEGGINGS, properties.stacksTo(1).durability(ArmorItem.Type.LEGGINGS.getDurability(37))));
     public static final DeferredHolder<Item, Item> SHADOWWALKER_BOOTS = registerItem("shadowwalker_boots",
@@ -496,7 +494,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> PRIEST_HELMET = registerItem("priest_helmet",
             (properties) -> new PriestArmorItem(ArmorItem.Type.HELMET, properties.stacksTo(1).durability(ArmorItem.Type.HELMET.getDurability(37))));
     public static final DeferredHolder<Item, Item> PRIEST_CHESTPLATE = registerItem("priest_chestplate",
-            (properties) -> new PriestArmorItem(ArmorItem.Type.CHESTPLATE, properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37))));
+            (properties) -> new PriestArmorItem(ArmorItem.Type.CHESTPLATE, ExtendedArmorItem.imbuable(properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37)))));
     public static final DeferredHolder<Item, Item> PRIEST_LEGGINGS = registerItem("priest_leggings",
             (properties) -> new PriestArmorItem(ArmorItem.Type.LEGGINGS, properties.stacksTo(1).durability(ArmorItem.Type.LEGGINGS.getDurability(37))));
     public static final DeferredHolder<Item, Item> PRIEST_BOOTS = registerItem("priest_boots",
@@ -505,7 +503,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> PLAGUED_HELMET = registerItem("plagued_helmet",
             (properties) -> new PlaguedArmorItem(ArmorItem.Type.HELMET, properties.stacksTo(1).durability(ArmorItem.Type.HELMET.getDurability(37))));
     public static final DeferredHolder<Item, Item> PLAGUED_CHESTPLATE = registerItem("plagued_chestplate",
-            (properties) -> new PlaguedArmorItem(ArmorItem.Type.CHESTPLATE, properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37))));
+            (properties) -> new PlaguedArmorItem(ArmorItem.Type.CHESTPLATE, ExtendedArmorItem.imbuable(properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37)))));
     public static final DeferredHolder<Item, Item> PLAGUED_LEGGINGS = registerItem("plagued_leggings",
             (properties) -> new PlaguedArmorItem(ArmorItem.Type.LEGGINGS, properties.stacksTo(1).durability(ArmorItem.Type.LEGGINGS.getDurability(37))));
     public static final DeferredHolder<Item, Item> PLAGUED_BOOTS = registerItem("plagued_boots",
@@ -514,7 +512,7 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> NETHERITE_MAGE_HELMET = registerItem("netherite_mage_helmet",
             (properties) -> new NetheriteMageArmorItem(ArmorItem.Type.HELMET, properties.stacksTo(1).fireResistant().durability(ArmorItem.Type.HELMET.getDurability(37))));
     public static final DeferredHolder<Item, Item> NETHERITE_MAGE_CHESTPLATE = registerItem("netherite_mage_chestplate",
-            (properties) -> new NetheriteMageArmorItem(ArmorItem.Type.CHESTPLATE, properties.stacksTo(1).fireResistant().durability(ArmorItem.Type.CHESTPLATE.getDurability(37))));
+            (properties) -> new NetheriteMageArmorItem(ArmorItem.Type.CHESTPLATE, ExtendedArmorItem.imbuable(properties.stacksTo(1).fireResistant().durability(ArmorItem.Type.CHESTPLATE.getDurability(37)))));
     public static final DeferredHolder<Item, Item> NETHERITE_MAGE_LEGGINGS = registerItem("netherite_mage_leggings",
             (properties) -> new NetheriteMageArmorItem(ArmorItem.Type.LEGGINGS, properties.stacksTo(1).fireResistant().durability(ArmorItem.Type.LEGGINGS.getDurability(37))));
     public static final DeferredHolder<Item, Item> NETHERITE_MAGE_BOOTS = registerItem("netherite_mage_boots",
@@ -525,18 +523,18 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> WIZARD_HAT = registerItem("wizard_hat",
             (properties) -> new WizardArmorItem(ArmorItem.Type.HELMET, properties.stacksTo(1).durability(ArmorItem.Type.HELMET.getDurability(37)).component(ComponentRegistry.CLOTHING_VARIANT, "hat")));
     public static final DeferredHolder<Item, Item> WIZARD_CHESTPLATE = registerItem("wizard_chestplate",
-            (properties) -> new WizardArmorItem(ArmorItem.Type.CHESTPLATE, properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37))));
+            (properties) -> new WizardArmorItem(ArmorItem.Type.CHESTPLATE, ExtendedArmorItem.imbuable(properties.stacksTo(1).durability(ArmorItem.Type.CHESTPLATE.getDurability(37)))));
     public static final DeferredHolder<Item, Item> WIZARD_LEGGINGS = registerItem("wizard_leggings",
             (properties) -> new WizardArmorItem(ArmorItem.Type.LEGGINGS, properties.stacksTo(1).durability(ArmorItem.Type.LEGGINGS.getDurability(37))));
     public static final DeferredHolder<Item, Item> WIZARD_BOOTS = registerItem("wizard_boots",
             (properties) -> new WizardArmorItem(ArmorItem.Type.BOOTS, properties.stacksTo(1).durability(ArmorItem.Type.BOOTS.getDurability(37))));
 
     public static final DeferredHolder<Item, Item> PALADIN_CHESTPLATE = registerItem("paladin_chestplate",
-            (properties) -> new PaladinArmorItem(ArmorItem.Type.CHESTPLATE, properties.stacksTo(1).rarity(Rarity.EPIC).fireResistant().durability(ArmorItem.Type.CHESTPLATE.getDurability(37))));
+            (properties) -> new PaladinArmorItem(ArmorItem.Type.CHESTPLATE, ExtendedArmorItem.imbuable(properties.stacksTo(1).rarity(Rarity.EPIC).fireResistant().durability(ArmorItem.Type.CHESTPLATE.getDurability(37)))));
     public static final DeferredHolder<Item, Item> BOOTS_OF_SPEED = registerItem("speed_boots",
             (properties) -> new BootsOfSpeedArmorItem(ArmorItem.Type.BOOTS, properties.stacksTo(1).rarity(Rarity.EPIC).fireResistant().durability(ArmorItem.Type.BOOTS.getDurability(37))));
     public static final DeferredHolder<Item, Item> INFERNAL_SORCERER_CHESTPLATE = registerItem("infernal_sorcerer_chestplate",
-            (properties) -> new InfernalSorcererArmorItem(ArmorItem.Type.CHESTPLATE, properties.stacksTo(1).rarity(Rarity.EPIC).fireResistant().durability(ArmorItem.Type.CHESTPLATE.getDurability(37))));
+            (properties) -> new InfernalSorcererArmorItem(ArmorItem.Type.CHESTPLATE, ExtendedArmorItem.imbuable(properties.stacksTo(1).rarity(Rarity.EPIC).fireResistant().durability(ArmorItem.Type.CHESTPLATE.getDurability(37)))));
 
     public static final DeferredHolder<Item, Item> TARNISHED_CROWN = registerItem("tarnished_helmet",
             (properties) -> new TarnishedCrownArmorItem(ArmorItem.Type.HELMET, properties.stacksTo(1).rarity(Rarity.UNCOMMON).durability(ArmorItem.Type.HELMET.getDurability(26))));

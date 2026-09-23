@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.entity.mobs;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericCopyOwnerTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericHurtByTargetGoal;
@@ -36,15 +35,6 @@ public class SummonedPolarBear extends PolarBear implements IMagicSummon {
     public SummonedPolarBear(EntityType<? extends PolarBear> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         xpReward = 0;
-    }
-
-    /**
-     * @param owner THIS PARAMETER SHOULD BE DELETED, and fullfilled via {@link SummonManager#setOwner(Entity, Entity)}
-     */
-    @Deprecated(forRemoval = true)
-    public SummonedPolarBear(Level pLevel, LivingEntity owner) {
-        this(EntityRegistry.SUMMONED_POLAR_BEAR.get(), pLevel);
-        setSummoner(owner);
     }
 
     @Override
@@ -97,16 +87,6 @@ public class SummonedPolarBear extends PolarBear implements IMagicSummon {
         if (this.tickCount % 80 == 0) {
             heal(1);
         }
-    }
-
-    /**
-     * Setting owner should now be directly done via {@link io.redspace.ironsspellbooks.capabilities.magic.SummonManager#setOwner(Entity, Entity)}
-     * <br>This methods simply forwards the call there
-     */
-    @Deprecated(forRemoval = true)
-    public void setSummoner(@Nullable LivingEntity owner) {
-        if (owner == null) return;
-        SummonManager.setOwner(this, owner);
     }
 
     @Override

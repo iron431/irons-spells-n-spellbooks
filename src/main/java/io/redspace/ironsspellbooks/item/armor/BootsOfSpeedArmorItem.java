@@ -12,7 +12,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class BootsOfSpeedArmorItem extends ImbuableChestplateArmorItem {
+public class BootsOfSpeedArmorItem extends ExtendedArmorItem {
     public BootsOfSpeedArmorItem(Type type, Properties settings) {
         super(ArmorMaterialRegistry.BOOTS_OF_SPEED, type, settings,
                 new AttributeContainer(AttributeRegistry.MAX_MANA, 150, AttributeModifier.Operation.ADD_VALUE),

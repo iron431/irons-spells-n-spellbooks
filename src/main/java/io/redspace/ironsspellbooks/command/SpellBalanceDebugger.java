@@ -36,7 +36,7 @@ public class SpellBalanceDebugger {
     }
 
     private Map<String, String> getValuesFromSpell(AbstractSpell spell) {
-        // fixme skillcasting: unique info and mana cost now require a CastContext; needs a caster-free context builder to restore these columns
+        // fixme(skillcasting): unique info and mana cost now require a CastContext; needs a caster-free context builder to restore these columns
         List<Component> info = List.of();
         var map = new HashMap<String, String>();
         map.put("Name", Component.translatable(spell.getDescriptionId()).getString());

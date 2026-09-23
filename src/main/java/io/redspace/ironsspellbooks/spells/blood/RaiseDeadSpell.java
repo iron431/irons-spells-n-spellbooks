@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.spells.blood;
 
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
-import io.redspace.ironsspellbooks.api.events.SpellSummonEvent;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
@@ -24,9 +23,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.monster.Monster;
@@ -36,7 +33,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.neoforged.neoforge.common.NeoForge;
 
 import java.util.List;
 import java.util.Optional;
@@ -107,7 +103,6 @@ public class RaiseDeadSpell extends AbstractSpell {
         if (castContext.getSkillcastingData().recasts().hasRecast(this)) {
             return;
         }
-        Entity caster = castContext.asEntityCaster();
         SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
         int count = castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_COUNT, 0);
         float radius = 1.5f + 0.185f * count;
@@ -137,12 +132,7 @@ public class RaiseDeadSpell extends AbstractSpell {
             undead.setYRot(casterYawDeg);
             undead.setOldPosAndRot();
 
-            Entity creature = undead;
-            if (caster instanceof LivingEntity living) {
-                creature = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(living, undead, getSkillId(), castContext.getSkillLevel())).getCreature();
-            }
-            world.addFreshEntity(creature);
-            SummonManager.initSummon(caster, creature, SUMMON_DURATION_TICKS, summonedEntitiesCastData);
+            SummonManager.summon(castContext, undead, SUMMON_DURATION_TICKS, summonedEntitiesCastData);
         }
 
         castContext.set(SpellcastingComponentTypes.SUMMONED_ENTITY_DATA, summonedEntitiesCastData);

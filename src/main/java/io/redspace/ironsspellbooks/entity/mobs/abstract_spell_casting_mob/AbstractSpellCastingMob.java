@@ -179,11 +179,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     }
 
-    @Deprecated
-    public boolean attemptInitiateCastSpell(AbstractSpell spell, int spellLevel, @Nullable CastComponentMap componentPatch) {
-        return SkillcastingUtils.attemptInitiateMobCast(this, SkillRegistry.holder(spell), spellLevel, componentPatch);
-    }
-
     public void cancelCast() {
         SkillcastingManager.cancelCast(CasterRef.entity(this), CastEndReason.INTERRUPTED);
     }

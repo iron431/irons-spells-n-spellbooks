@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
-import io.redspace.ironsspellbooks.api.events.SetSummonOwnerEvent;
+import io.redspace.ironsspellbooks.api.events.summon.SummonEvent;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -109,8 +109,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     public static final byte CLIENT_START_TRACKING = 1;
 
     @SubscribeEvent
-    public static void sacrificialMarkHandler(SetSummonOwnerEvent event) {
-        if (event.getOwner() instanceof DeadKingBoss boss && event.getSummon() instanceof LivingEntity living) {
+    public static void sacrificialMarkHandler(SummonEvent.OwnerSet event) {
+        if (event.getOwnerEntity() instanceof DeadKingBoss boss && event.getSummon() instanceof LivingEntity living) {
             if (!boss.isOminous()) {
                 return;
             }

@@ -83,26 +83,6 @@ public class SummonPolarBearSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel world, CastContext castContext) {
-//        PlayerRecasts recasts = playerMagicData.getPlayerRecasts();
-//        if (!recasts.hasRecastForSpell(this)) {
-//            SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
-//            int summonTime = 20 * 60 * 10;
-//
-//            SummonedPolarBear polarBear = new SummonedPolarBear(world, entity);
-//            polarBear.setPos(entity.position());
-//
-//            polarBear.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(getBearDamage(spellLevel, entity));
-//            polarBear.getAttributes().getInstance(Attributes.MAX_HEALTH).setBaseValue(getBearHealth(spellLevel, entity));
-//            polarBear.setHealth(polarBear.getMaxHealth());
-//            var creature = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, polarBear, this.spellId, spellLevel)).getCreature();
-//            world.addFreshEntity(creature);
-//            SummonManager.initSummon(entity, creature, summonTime, summonedEntitiesCastData);
-//
-//            RecastInstance recastInstance = new RecastInstance(this.getSpellId(), spellLevel, getRecastCount(spellLevel, entity), summonTime, castSource, summonedEntitiesCastData);
-//            recasts.addRecast(recastInstance, playerMagicData);
-//        }
-//
-//        super.onCast(world, spellLevel, entity, castSource, playerMagicData);
         if (!castContext.getSkillcastingData().recasts().hasRecast(this)) {
             SummonedPolarBear polarBear = new SummonedPolarBear(EntityRegistry.SUMMONED_POLAR_BEAR.get(), world);
             polarBear.setPos(castContext.position(PositionAnchor.ORIGIN));
@@ -110,9 +90,7 @@ public class SummonPolarBearSpell extends AbstractSpell {
             polarBear.getAttributes().getInstance(Attributes.MAX_HEALTH).setBaseValue(castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_HEALTH, 10f));
             polarBear.setHealth(polarBear.getMaxHealth());
             SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
-            // todo: summon event
-            world.addFreshEntity(polarBear);
-            SummonManager.initSummon(castContext.asEntityCaster(), polarBear, castContext.find(SkillcastingComponentTypes.RECAST_CONFIG).map(RecastConfig::durationTicks).orElse(20 * 60 * 10), summonedEntitiesCastData);
+            SummonManager.summon(castContext, polarBear, castContext.find(SkillcastingComponentTypes.RECAST_CONFIG).map(RecastConfig::durationTicks).orElse(20 * 60 * 10), summonedEntitiesCastData);
             castContext.set(SpellcastingComponentTypes.SUMMONED_ENTITY_DATA, summonedEntitiesCastData);
         }
     }

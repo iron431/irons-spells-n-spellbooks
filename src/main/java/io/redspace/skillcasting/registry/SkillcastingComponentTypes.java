@@ -217,7 +217,7 @@ public final class SkillcastingComponentTypes {
                     .synced(StreamCodecUtils.INT)
                     .build());
 
-    // fixme: this component is used very scarcely, and does not indicate multishot capability. rename?
+    // fixme(skillcasting): overloaded 'how many things' integer (arrow rows, recast count, needle count); split per purpose rather than rename
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> PROJECTILE_COUNT =
             COMPONENT_TYPES.register("projectile_count", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)

@@ -11,7 +11,7 @@ import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-// fixme: replace id on package extract
+// fixme(skillcasting): host mod id literal until skillcasting is its own mod (use Skillcasting.MODID then)
 @EventBusSubscriber(modid = "irons_spellbooks")
 public final class SkillcastingAttributes {
     private static final DeferredRegister<Attribute> ATTRIBUTES =
@@ -21,8 +21,12 @@ public final class SkillcastingAttributes {
     }
 
     @SubscribeEvent
-    public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
-        e.getTypes().forEach(entity -> ATTRIBUTES.getEntries().forEach(attribute -> e.add(entity, attribute)));
+    public static void modifyEntityAttributes(EntityAttributeModificationEvent event) {
+        event.getTypes().forEach(entity -> ATTRIBUTES.getEntries().forEach(attribute -> {
+            if (!event.has(entity, attribute)) {
+                event.add(entity, attribute);
+            }
+        }));
     }
 
     public static final DeferredHolder<Attribute, Attribute> CAST_TIME_REDUCTION = ATTRIBUTES.register("cast_time_reduction",

@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.entity.mobs;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericCopyOwnerTargetGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericFollowOwnerGoal;
 import io.redspace.ironsspellbooks.entity.mobs.goals.GenericHurtByTargetGoal;
@@ -27,7 +26,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.util.EnumSet;
 
 public class SummonedVex extends Vex implements IMagicSummon {
@@ -71,16 +69,6 @@ public class SummonedVex extends Vex implements IMagicSummon {
         if (shouldIgnoreDamage(pSource))
             return false;
         return super.hurt(pSource, pAmount);
-    }
-
-    /**
-     * Setting owner should now be directly done via {@link io.redspace.ironsspellbooks.capabilities.magic.SummonManager#setOwner(Entity, Entity)}
-     * <br>This methods simply forwards the call there
-     */
-    @Deprecated(forRemoval = true)
-    public void setSummoner(@Nullable LivingEntity owner) {
-        if (owner == null) return;
-        SummonManager.setOwner(this, owner);
     }
 
     @Override

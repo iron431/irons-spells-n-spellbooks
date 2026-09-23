@@ -9,7 +9,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-public class ArchevokerArmorItem extends ImbuableChestplateArmorItem {
+public class ArchevokerArmorItem extends ExtendedArmorItem {
     public ArchevokerArmorItem(Type type, Properties settings) {
         super(ArmorMaterialRegistry.SCHOOL, type, settings, schoolAttributes(AttributeRegistry.EVOCATION_SPELL_POWER));
     }

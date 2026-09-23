@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class CompatHandler {
     private static final Map<String, Runnable> MOD_MAP = Map.of(
-            //TODO: 1.21: redo compat when mods port
+            // todo(compat): Apotheosis handler not ported to 1.21
 //            "apotheosis", ApotheosisHandler::init
     );
 

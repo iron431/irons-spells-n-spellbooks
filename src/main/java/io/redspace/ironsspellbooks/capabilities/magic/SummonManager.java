@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.events.SetSummonOwnerEvent;
+import io.redspace.ironsspellbooks.api.events.summon.SummonEvent;
 import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
@@ -13,6 +13,7 @@ import io.redspace.skillcasting.data.recast.RecastInstance;
 import io.redspace.skillcasting.data.recast.RecastResult;
 import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -91,24 +92,58 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
      * Assigns summon to given owner. Removes any previously present associations
      */
     public static void setOwner(@NotNull Entity summon, @NotNull Entity owner) {
+        // fixme: this is not compatible on the client
         removeSummon(summon);
         INSTANCE.summonToOwner.put(summon.getUUID(), owner.getUUID());
         startTrackingSummon(owner, summon);
         IronsDataStorage.INSTANCE.setDirty();
         if (owner.level() instanceof ServerLevel) {
-            NeoForge.EVENT_BUS.post(new SetSummonOwnerEvent(owner, summon));
+            NeoForge.EVENT_BUS.post(new SummonEvent.OwnerSet(summon, CasterRef.entity(owner)));
         }
     }
 
     /**
-     * Helper to handle all summon initialization logic
+     * Helper to handle all summon initialization logic for summons not produced by a cast (see {@link #summon} for casts)
      */
     public static void initSummon(@Nullable Entity owner, Entity summon, int duration, SummonedEntitiesCastData summonedEntitiesCastData) {
+        // fixme: this is not compatible on the client
         if (owner != null) {
             setOwner(summon, owner);
         }
         setDuration(summon, duration);
         summonedEntitiesCastData.add(summon);
+    }
+
+    /**
+     * Spawns a cast-produced summon: posts {@link SummonEvent.Pre} (cancellable, may substitute the entity), adds the resulting entity to the level,
+     * assigns ownership and duration, records it in the given cast data, attaches it to the cast context and posts {@link SummonEvent.Post}.
+     *
+     * @return the spawned entity (possibly substituted by an event listener), or null if the spawn was cancelled
+     */
+    public static @Nullable Entity summon(CastContext castContext, Entity summon, int duration, SummonedEntitiesCastData summonedEntitiesCastData) {
+        var pre = new SummonEvent.Pre(summon, castContext.caster(), castContext);
+        if (NeoForge.EVENT_BUS.post(pre).isCanceled()) {
+            return null;
+        }
+        Entity creature = pre.getSummon();
+        castContext.level().addFreshEntity(creature);
+        initSummon(castContext.asEntityCaster(), creature, duration, summonedEntitiesCastData);
+        SkillcastingUtils.attachToContext(creature, castContext);
+        NeoForge.EVENT_BUS.post(new SummonEvent.Post(creature, castContext.caster(), castContext));
+        return creature;
+    }
+
+    /**
+     * Dismisses a summon: posts {@link SummonEvent.Unsummon}, then calls {@link IMagicSummon#onUnSummon()} or {@link Entity#discard()}
+     */
+    public static void unsummon(Entity summon, SummonEvent.Unsummon.Reason reason) {
+        var owner = getOwner(summon);
+        NeoForge.EVENT_BUS.post(new SummonEvent.Unsummon(summon, owner == null ? null : CasterRef.entity(owner), reason));
+        if (summon instanceof IMagicSummon magicSummon) {
+            magicSummon.onUnSummon();
+        } else {
+            summon.discard();
+        }
     }
 
     /**
@@ -161,10 +196,8 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
                 Set<UUID> uuids = Set.copyOf(summonedEntitiesCastData.getSummons());
                 uuids.forEach(uuid -> {
                     var toRemove = serverLevel.getEntity(uuid);
-                    if (toRemove instanceof IMagicSummon summon) {
-                        summon.onUnSummon();
-                    } else if (toRemove != null) {
-                        toRemove.discard();
+                    if (toRemove != null) {
+                        unsummon(toRemove, SummonEvent.Unsummon.Reason.DISMISSED);
                     }
                 });
             }
@@ -310,10 +343,8 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
                         .filter(Objects::nonNull)
                         .findFirst()
                         .orElse(null);
-                if (toRemove instanceof IMagicSummon summon) {
-                    summon.onUnSummon();
-                } else if (toRemove != null) {
-                    toRemove.discard();
+                if (toRemove != null) {
+                    unsummon(toRemove, SummonEvent.Unsummon.Reason.EXPIRED);
                 }
 
                 if (INSTANCE.summonExpirations.isEmpty()) {

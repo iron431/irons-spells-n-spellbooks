@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
+import io.redspace.ironsspellbooks.api.events.summon.SummonEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -24,7 +25,7 @@ public interface IMagicSummon extends AntiMagicSusceptible {
 
     @Override
     default void onAntiMagic(MagicData playerMagicData) {
-        onUnSummon();
+        SummonManager.unsummon((Entity) this, SummonEvent.Unsummon.Reason.ANTI_MAGIC);
     }
 
     default boolean shouldIgnoreDamage(DamageSource damageSource) {

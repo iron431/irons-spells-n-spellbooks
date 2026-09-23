@@ -44,7 +44,7 @@ import java.util.UUID;
 public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSpawn {
     @Override
     public void writeSpawnData(RegistryFriendlyByteBuf buffer) {
-        var owner = getSummoner();
+        var owner = getOwner();
         buffer.writeInt(owner == null ? -1 : owner.getId());
         if (entityToCopy == null) {
             buffer.writeBoolean(false);
@@ -58,7 +58,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
         Entity owner = this.level.getEntity(additionalData.readInt());
         if (owner instanceof LivingEntity livingEntity) {
-            this.setSummoner(livingEntity);
+            this.setOwner(livingEntity);
         }
         if (additionalData.readBoolean()) {
             setEntityTypeToCopy(BuiltInRegistries.ENTITY_TYPE.get(additionalData.readResourceLocation()));
@@ -100,8 +100,8 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     float walkAnimPos;
     private float shatterProjectileDamage;
     private int deathTimer = -1;
-    private UUID summonerUUID;
-    private LivingEntity cachedSummoner;
+    private UUID ownerUUID;
+    private LivingEntity cachedOwner;
     @Nullable EntityType<?> entityToCopy;
 
     public FrozenHumanoid(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
@@ -176,7 +176,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
             setEntityTypeToCopy(entityToCopy.getType());
         }
         this.invulnerableTime = 1;
-        setSummoner(entityToCopy);
+        setOwner(entityToCopy);
     }
 
     @Override
@@ -189,20 +189,20 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         return;
     }
 
-    public void setSummoner(@javax.annotation.Nullable LivingEntity owner) {
+    public void setOwner(@javax.annotation.Nullable LivingEntity owner) {
         if (owner != null) {
-            this.summonerUUID = owner.getUUID();
-            this.cachedSummoner = owner;
+            this.ownerUUID = owner.getUUID();
+            this.cachedOwner = owner;
         }
     }
 
-    public LivingEntity getSummoner() {
-        if (this.cachedSummoner != null && this.cachedSummoner.isAlive()) {
-            return this.cachedSummoner;
-        } else if (this.summonerUUID != null && this.level() instanceof ServerLevel) {
-            if (((ServerLevel) this.level()).getEntity(this.summonerUUID) instanceof LivingEntity livingEntity)
-                this.cachedSummoner = livingEntity;
-            return this.cachedSummoner;
+    public LivingEntity getOwner() {
+        if (this.cachedOwner != null && this.cachedOwner.isAlive()) {
+            return this.cachedOwner;
+        } else if (this.ownerUUID != null && this.level() instanceof ServerLevel) {
+            if (((ServerLevel) this.level()).getEntity(this.ownerUUID) instanceof LivingEntity livingEntity)
+                this.cachedOwner = livingEntity;
+            return this.cachedOwner;
         } else {
             return null;
         }
@@ -220,9 +220,9 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     public void tick() {
         if (firstTick) {
             if (level.isClientSide) {
-                if (cachedSummoner != null) {
-                    this.walkAnimSpeed = cachedSummoner.walkAnimation.speed();
-                    this.walkAnimPos = cachedSummoner.walkAnimation.position();
+                if (cachedOwner != null) {
+                    this.walkAnimSpeed = cachedOwner.walkAnimation.speed();
+                    this.walkAnimPos = cachedOwner.walkAnimation.position();
                 }
             }
         }
@@ -290,8 +290,8 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         var entities = level.getEntities(this, collider);
         for (Entity entity : entities) {
             double distanceSqr = entity.distanceToSqr(center);
-            if (distanceSqr < radius * radius && entity.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(entity, getSummoner()) && Utils.hasLineOfSight(level, center, entity.getBoundingBox().getCenter(), true)) {
-                DamageSources.applyDamage(entity, damage, SpellRegistry.ICICLE_SPELL.get().getDamageSource(this.level(), this, getSummoner()));
+            if (distanceSqr < radius * radius && entity.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(entity, getOwner()) && Utils.hasLineOfSight(level, center, entity.getBoundingBox().getCenter(), true)) {
+                DamageSources.applyDamage(entity, damage, SpellRegistry.ICICLE_SPELL.get().getDamageSource(this.level(), this, getOwner()));
             }
         }
         MagicManager.spawnParticles(level, ParticleHelper.SNOW_DUST, getX(), getY() + 1, getZ(), 50, 0.2, 0.2, 0.2, 0.2, false);
@@ -308,7 +308,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
             motion = motion.yRot(offset * i * Mth.DEG_TO_RAD);
 
 
-            IcicleProjectile shard = new IcicleProjectile(level(), getSummoner());
+            IcicleProjectile shard = new IcicleProjectile(level(), getOwner());
             shard.setDamage(damage);
             shard.setDeltaMovement(motion);
             shard.setNoGravity(false);
@@ -344,7 +344,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         if (compoundTag.hasUUID("Summoner")) {
-            this.summonerUUID = compoundTag.getUUID("Summoner");
+            this.ownerUUID = compoundTag.getUUID("Summoner");
         }
         if (compoundTag.contains("entityToCopy")) {
             try {
@@ -358,8 +358,8 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        if (this.summonerUUID != null) {
-            compoundTag.putUUID("Summoner", this.summonerUUID);
+        if (this.ownerUUID != null) {
+            compoundTag.putUUID("Summoner", this.ownerUUID);
         }
         if (this.entityToCopy != null) {
             compoundTag.putString("entityToCopy", BuiltInRegistries.ENTITY_TYPE.getKey(entityToCopy).toString());

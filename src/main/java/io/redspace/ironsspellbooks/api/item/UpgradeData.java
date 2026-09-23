@@ -52,6 +52,8 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
                             (data) -> data.upgrades().entrySet().stream().map(entry -> new ObjectObjectImmutablePair<>(entry.getKey().getKey().location().toString(), entry.getValue())).toList())
     ).apply(builder, (slot, list) -> new UpgradeData(parseCodec(list), slot)));
 
+    // todo(legacy-data): between MC versions; pre-map upgrade list format (2025-03). At the 26.x port delete ELEMENT_CODEC, DEPRECATED_CODEC,
+    //  ops, parseCodec and the deprecated*Wrapper methods and set CODEC = REAL_CODEC. The forRemoval markers on those private members carry no addon meaning.
     public static final Codec<UpgradeData> CODEC = Codec.withAlternative(REAL_CODEC, Codec.of(
             UpgradeData::deprecatedEncodeWrapper,
             UpgradeData::deprecatedDecodeWrapper

@@ -14,7 +14,7 @@ import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
 import java.util.Map;
 
-public class WizardArmorItem extends ImbuableChestplateArmorItem implements IDisableJacket {
+public class WizardArmorItem extends ExtendedArmorItem implements IDisableJacket {
     private static final String descIdHat = "item.irons_spellbooks.wizard_helmet.hat";
     private static final String descIdHood = "item.irons_spellbooks.wizard_helmet.hood";
 

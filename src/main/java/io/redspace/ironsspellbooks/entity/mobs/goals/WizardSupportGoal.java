@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import io.redspace.skillcasting.registry.SkillRegistry;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
@@ -178,14 +180,12 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob> extends Goa
 
     protected void doSpellAction() {
         var abstractSpell = getNextSpellType();
-        if (abstractSpell == null || !(mob instanceof AbstractSpellCastingMob castingMob)) {
+        if (abstractSpell == null) {
             return;
         }
         int spellLevel = (int) (abstractSpell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
         spellLevel = Math.max(spellLevel, 1);
-        if (abstractSpell instanceof AbstractSpell spellSkill) {
-            castingMob.attemptInitiateCastSpell(spellSkill, spellLevel, null);
-        }
+        SkillcastingUtils.attemptInitiateMobCast(mob, SkillRegistry.holder(abstractSpell), spellLevel, null);
         mob.setSupportTarget(null);
     }
 

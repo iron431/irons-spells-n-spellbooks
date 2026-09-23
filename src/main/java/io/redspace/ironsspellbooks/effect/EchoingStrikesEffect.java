@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -51,7 +52,7 @@ public class EchoingStrikesEffect extends MagicMobEffect {
             }
             var level = attacker.level();
             var percent = getDamageModifier(effect.getAmplifier(),
-                    SpellRegistry.ECHOING_STRIKES_SPELL.get().getEntityPowerMultiplier(attacker));
+                    SpellRegistry.ECHOING_STRIKES_SPELL.get().getSpellPowerMultiplier(CasterRef.entity(attacker)));
             var target = event.getEntity();
             if (damageSource.isDirect()) {
                 createEchoingSword(attacker, level, target, event.getNewDamage() * percent);

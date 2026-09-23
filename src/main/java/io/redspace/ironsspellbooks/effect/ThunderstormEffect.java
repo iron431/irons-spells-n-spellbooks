@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.effect;
 
+import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.LightningStrike;
@@ -46,7 +47,7 @@ public class ThunderstormEffect extends MagicMobEffect {
     }
 
     public static float getDamageFromAmplifier(int effectAmplifier, @Nullable LivingEntity caster) {
-        var power = caster == null ? 1 : SpellRegistry.THUNDERSTORM_SPELL.get().getEntityPowerMultiplier(caster);
+        var power = caster == null ? 1 : SpellRegistry.THUNDERSTORM_SPELL.get().getSpellPowerMultiplier(CasterRef.entity(caster));
         return (((effectAmplifier - 7) * power) + 7);
     }
 }

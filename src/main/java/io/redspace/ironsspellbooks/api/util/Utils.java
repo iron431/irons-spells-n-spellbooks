@@ -297,56 +297,12 @@ public class Utils {
         return originEntity.getLookAngle().normalize().scale(distance).add(start);
     }
 
-//    public static boolean serverSideInitiateCast(ServerPlayer serverPlayer) {
-//        var ssm = new SpellSelectionManager(serverPlayer);
-//        var spellItem = ssm.getSelection();
-//        if (spellItem != null) {
-//            var spellData = ssm.getSelectedSpellData();
-//            if (spellData != SpellData.EMPTY) {
-//                var playerMagicData = MagicData.get(serverPlayer);
-//                if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
-//                    CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
-//                }
-//
-//                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, spellItem.getCastSource(), true, spellItem.slot);
-//            }
-//        } else if (Utils.getPlayerSpellbookStack(serverPlayer) == null) {
-//            //Helper for beginners (they tried casting with the spellbook in their hand, not their spell book slot
-//            ItemStack heldSpellbookStack = serverPlayer.getMainHandItem();
-//            if (!(heldSpellbookStack.getItem() instanceof SpellBook)) {
-//                heldSpellbookStack = serverPlayer.getOffhandItem();
-//            }
-//            if (heldSpellbookStack.getItem() instanceof SpellBook spellBook) {
-//                spellBook.onEquipFromUse(new SlotContext(Curios.SPELLBOOK_SLOT, serverPlayer, 0, false, true), heldSpellbookStack);
-//                Utils.setPlayerSpellbookStack(serverPlayer, heldSpellbookStack.split(1));
-//                //serverPlayer.level.playSound(null, serverPlayer.blockPosition(), SoundRegistry.EQUIP_SPELL_BOOK.get(), SoundSource.PLAYERS, 1, 1);
-//            }
-//        }
-//        return false;
-//    }
-
     /**
      * @return min(| A |, | B |) with sign of a
      */
     public static double signedMin(double a, double b) {
         return (a < 0 ? -1 : 1) * Math.min(Math.abs(a), Math.abs(b));
     }
-
-//    public static boolean serverSideInitiateQuickCast(ServerPlayer serverPlayer, int slot) {
-//        var spellSelection = new SpellSelectionManager(serverPlayer).getSpellSlot(slot);
-//        if (spellSelection != null) {
-//            var spellData = spellSelection.spellData;
-//            if (spellData != SpellData.EMPTY) {
-//                var playerMagicData = MagicData.get(serverPlayer);
-//                if (playerMagicData.isCasting() && !playerMagicData.getCastingSpellId().equals(spellData.getSpell().getSpellId())) {
-//                    CancelCastPacket.cancelCast(serverPlayer, playerMagicData.getCastType() != CastType.LONG);
-//                }
-//
-//                return spellData.getSpell().attemptInitiateCast(ItemStack.EMPTY, spellData.getSpell().getLevelFor(spellData.getLevel(), serverPlayer), serverPlayer.level, serverPlayer, spellSelection.getCastSource(), true, spellSelection.slot);
-//            }
-//        }
-//        return false;
-//    }
 
 //    public static void serverSideCancelCast(ServerPlayer serverPlayer) {
 //        CancelCastPacket.cancelCast(serverPlayer, MagicData.get(serverPlayer).getCastingSpell().getSpell().getCastType() == CastType.CONTINUOUS);
@@ -919,7 +875,9 @@ public class Utils {
 
 
     /**
-     * 1.21.1 legacy component translation layer. to be removed 26.1.2+ */
+     * 1.21.1 legacy component translation layer. to be removed 26.1.2+
+     */
+    // todo(legacy-data): between MC versions; remove with SPELL_CONTAINER and SCMigrator at the 26.x port
     @Deprecated(forRemoval = true)
     public static void resolveLegacySpellContainer(ItemStack stack) {
         if (!stack.has(ComponentRegistry.SPELL_CONTAINER)) {
