@@ -60,6 +60,7 @@ public class BlizzardAoe extends AoeEntity {
                 Vec3 tangent = new Vec3(-radial.z, 0, radial.x);
                 Vec3 push = tangent.scale(strength * Mth.PI).add(radial.scale(-strength));
                 entity.setDeltaMovement(entity.getDeltaMovement().add(push.scale(Utils.clampedKnockbackResistanceFactor(entity, .4f, 1f))));
+                entity.hurtMarked = true;
             }
         }
         this.move(MoverType.SELF, getDeltaMovement());
