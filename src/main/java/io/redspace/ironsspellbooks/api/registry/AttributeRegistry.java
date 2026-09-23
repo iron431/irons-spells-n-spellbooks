@@ -83,8 +83,12 @@ public class AttributeRegistry {
     public static final DeferredHolder<Attribute, Attribute> ELDRITCH_SPELL_POWER = newPowerAttribute("eldritch");
 
     @SubscribeEvent
-    public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
-        e.getTypes().forEach(entity -> ATTRIBUTES.getEntries().forEach(attribute -> e.add(entity, attribute)));
+    public static void modifyEntityAttributes(EntityAttributeModificationEvent event) {
+        event.getTypes().forEach(entity -> ATTRIBUTES.getEntries().forEach(attribute -> {
+            if (!event.has(entity, attribute)) {
+                event.add(entity, attribute);
+            }
+        }));
     }
 
     private static DeferredHolder<Attribute, Attribute> newResistanceAttribute(String id) {
