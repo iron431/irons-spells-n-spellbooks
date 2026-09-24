@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.player;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
 import io.redspace.ironsspellbooks.api.events.SpellTeleportEvent;
+import io.redspace.ironsspellbooks.api.events.summon.SummonEvent;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -32,8 +33,6 @@ import io.redspace.ironsspellbooks.effect.ImmolateEffect;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.entity.mobs.ice_spider.ICritablePartEntity;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
-import io.redspace.skillcasting.data.cast.CastSource;
-import io.redspace.skillcasting.data.cast.PreventDismount;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.spell_containers.ImbuedContainer;
 import io.redspace.ironsspellbooks.item.spell_containers.SpellbookContainer;
@@ -50,8 +49,10 @@ import io.redspace.skillcasting.api.event.SkillSelectionPriority;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.data.cast.CastEndReason;
+import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.cast.CasterRef;
+import io.redspace.skillcasting.data.cast.PreventDismount;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
 import net.minecraft.ChatFormatting;
@@ -120,7 +121,6 @@ import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
-import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.level.ModifyCustomSpawnersEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -136,12 +136,11 @@ import java.util.UUID;
 @EventBusSubscriber
 public class ServerPlayerEvents {
 
-    @SubscribeEvent
-    public static void onLevelLoaded(LevelEvent.Load event) {
-        if (event.getLevel() instanceof ServerLevel serverLevel && serverLevel.dimension() == Level.OVERWORLD) {
-            IronsDataStorage.init(serverLevel.getDataStorage());
-        }
-    }
+//    @SubscribeEvent
+//    public static void onLevelLoaded(LevelEvent.Load event) {
+//        if (event.getLevel() instanceof ServerLevel serverLevel && serverLevel.dimension() == Level.OVERWORLD) {
+//        }
+//    }
 
     @SubscribeEvent
     public static void onServerStoppedEvent(ServerStoppedEvent event) {
@@ -153,6 +152,8 @@ public class ServerPlayerEvents {
     public static void onServerStarted(ServerStartedEvent event) {
         IronsSpellbooks.MCS = event.getServer();
         IronsSpellbooks.OVERWORLD = IronsSpellbooks.MCS.overworld();
+        // fixme: test whether this fixes nether issue
+        IronsDataStorage.init(IronsSpellbooks.OVERWORLD.getDataStorage());
     }
 
     @SubscribeEvent
@@ -650,8 +651,8 @@ public class ServerPlayerEvents {
         if (!summons.isEmpty()) {
             for (UUID uuid : summons) {
                 var summon = serverLevel.getEntity(uuid);
-                if (summon instanceof IMagicSummon magicSummon) {
-                    magicSummon.onUnSummon();
+                if (summon instanceof IMagicSummon) {
+                    SummonManager.unsummon(summon, SummonEvent.Unsummon.Reason.OWNER_CHANGED_DIMENSION);
                 } else if (summon != null) {
                     SummonManager.removeSummon(summon);
                 }
