@@ -131,7 +131,8 @@ public abstract class AbstractSpell extends AbstractSkill {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         int scaledLevel = castContext.getSkillLevel() - 1;
-        castContext.set(SpellcastingComponentTypes.MANA_COST, baseManaCost + manaCostPerLevel * scaledLevel);
+        double manaMultiplier = SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.MANA_MULTIPLIER);
+        castContext.set(SpellcastingComponentTypes.MANA_COST, (int) ((baseManaCost + manaCostPerLevel * scaledLevel) * manaMultiplier));
         if (castContext.getRecastsRemaining() > 0) {
             castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
         }
@@ -146,15 +147,21 @@ public abstract class AbstractSpell extends AbstractSkill {
                 }
             }
         } else if (castContext.getCastSource().isType(SpellCastSources.IMBUE)) {
-            castContext.mutate(SkillcastingComponentTypes.COOLDOWN_TICKS, cooldown -> (int) (cooldown * ServerConfigs.SWORDS_CD_MULTIPLIER.get()));
+            castContext.mutate(SkillcastingComponentTypes.COOLDOWN_TICKS, cooldown -> (int) (cooldown * ServerConfigs.IMBUED_CD_MULTIPLIER.get()));
+            if (!ServerConfigs.IMBUES_CONSUME_MANA.get()) {
+                castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
+            }
         }
         castContext.set(SpellcastingComponentTypes.CAST_START_ANIMATION, getCastStartAnimation());
         castContext.set(SpellcastingComponentTypes.CAST_FINISH_ANIMATION, getCastFinishAnimation());
+        float configPowerMultiplier = getConfigPowerMultiplier();
         if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
-            castContext.set(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER));
+            castContext.set(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER) * configPowerMultiplier);
             for (SchoolType type : SchoolRegistry.REGISTRY) {
                 castContext.set(type.getPowerComponent(), (float) type.getPowerFor(livingEntity));
             }
+        } else {
+            castContext.set(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, configPowerMultiplier);
         }
         if (castContext.asEntityCaster() instanceof Player player && player.getAbilities().instabuild) {
             if (!ServerConfigs.CREATIVE_COOLDOWN.get()) {
@@ -180,6 +187,10 @@ public abstract class AbstractSpell extends AbstractSkill {
     public float getSpellPowerMultiplier(CastContext castContext) {
         return castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, 1f)
                 * castContext.getOrDefault(getSchoolType().getPowerComponent(), 1f);
+    }
+
+    public float getConfigPowerMultiplier() {
+        return SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.POWER_MULTIPLIER).floatValue();
     }
 
     /**

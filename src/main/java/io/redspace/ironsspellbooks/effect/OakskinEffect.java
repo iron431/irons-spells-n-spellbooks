@@ -50,10 +50,10 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
     }
 
     public static float getReductionAmount(int amplifier, @Nullable LivingEntity livingEntity) {
-        float multiplier = SpellRegistry.OAKSKIN_SPELL.get().getSpellPowerMultiplier(CasterRef.entity(livingEntity));
-        if (livingEntity != null && OakskinData.hasFromElixir(livingEntity)) {
-            // prevent elixir from scaling with spell power
-            multiplier = 1;
+        float multiplier = 1;
+        if (livingEntity != null && !OakskinData.hasFromElixir(livingEntity)) {
+            // if we did not get from elixir, factor in spell power multiplier
+            multiplier = SpellRegistry.OAKSKIN_SPELL.get().getSpellPowerMultiplier(CasterRef.entity(livingEntity));
         }
         return Math.min(0.75f, (BASE_REDUCTION + REDUCTION_PER_LEVEL * amplifier) * multiplier);
     }

@@ -70,7 +70,7 @@ public class RootSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        float powerMultiplier = castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, 1f);
+        float powerMultiplier = getSpellPowerMultiplier(castContext);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
         castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, (int) (getSpellPower(castContext) * 20));
         castContext.set(SpellcastingComponentTypes.CONSTRUCT_HEALTH, 40 * powerMultiplier);

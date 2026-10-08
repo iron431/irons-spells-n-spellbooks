@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.particle.ZapParticleOption;
@@ -49,7 +48,7 @@ public class ThunderstormSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         int amplifier = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
-        float power = castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, 1f);
+        float power = getSpellPowerMultiplier(castContext);
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage",
                         Utils.stringTruncation(((amplifier - 7) * power) + 7, 2)),
@@ -77,7 +76,7 @@ public class ThunderstormSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        float powerMultiplier = castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, 1f);
+        float powerMultiplier = getSpellPowerMultiplier(castContext);
         int scaledLevel = castContext.getSkillLevel();
         castContext.set(SkillcastingComponentTypes.EFFECT_AMPLIFIER,
                 8 + (int) ((scaledLevel - 1) * powerMultiplier));

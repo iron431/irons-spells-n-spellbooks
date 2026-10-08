@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.EarthquakeAoe;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -77,7 +76,7 @@ public class EarthquakeSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        float powerMultiplier = castContext.getOrDefault(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, 1f);
+        float powerMultiplier = getSpellPowerMultiplier(castContext);
         float damage = getSpellPower(castContext);
         castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, damage);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 4 + 4 * powerMultiplier);
