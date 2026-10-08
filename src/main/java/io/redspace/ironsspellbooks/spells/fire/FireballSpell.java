@@ -56,7 +56,7 @@ public class FireballSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
+    public Optional<PlayableSound> provideCastStartSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.FIREBALL_START).toOpt();
     }
 

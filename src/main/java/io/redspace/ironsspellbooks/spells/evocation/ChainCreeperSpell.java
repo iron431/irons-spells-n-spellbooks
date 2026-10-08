@@ -60,12 +60,12 @@ public class ChainCreeperSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
+    public Optional<PlayableSound> provideCastStartSound(CastContext castContext) {
         return PlayableSound.standard(SoundEvents.CREEPER_PRIMED).toOpt();
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return PlayableSound.standard(SoundEvents.EVOKER_CAST_SPELL).toOpt();
     }
 

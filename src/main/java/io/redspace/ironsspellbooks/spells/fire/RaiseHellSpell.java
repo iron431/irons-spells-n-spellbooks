@@ -79,12 +79,12 @@ public class RaiseHellSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
+    public Optional<PlayableSound> provideCastStartSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.RAISE_HELL_PREPARE).toOpt();
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.FIRE_ERUPTION_SLAM).toOpt();
     }
 

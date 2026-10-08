@@ -65,7 +65,7 @@ public class RayOfFrostSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.RAY_OF_FROST).toOpt();
     }
 

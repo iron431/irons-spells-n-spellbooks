@@ -101,14 +101,14 @@ public abstract class AbstractSkill {
     /**
      * Sound played when a channeled cast ({@link CastType#LONG} or {@link CastType#CONTINUOUS}) begins.
      */
-    public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
+    public Optional<PlayableSound> provideCastStartSound(CastContext castContext) {
         return Optional.empty();
     }
 
     /**
      * Sound played when {@link #onCast(ServerLevel, CastContext)} executes.
      */
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return Optional.empty();
     }
 
@@ -116,8 +116,8 @@ public abstract class AbstractSkill {
      * Contribute or override components during cast context building, after the required skeleton is in place.
      */
     public void buildContextComponents(CastContext castContext) {
-        getCastStartSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.CAST_START_SOUND, sound));
-        getOnCastSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.ON_CAST_SOUND, sound));
+        provideCastStartSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.CAST_START_SOUND, sound));
+        provideOnCastSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.ON_CAST_SOUND, sound));
         castContext.set(SkillcastingComponentTypes.CASTING_MOVESPEED_MULTIPLIER, getBaseCastingMovespeedMultiplier());
         if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
             castContext.mutate(SkillcastingComponentTypes.COOLDOWN_TICKS, ticks -> (int) (ticks * (2 - SkillcastingUtils.softCapFormula(livingEntity.getAttributeValue(SkillcastingAttributes.COOLDOWN_REDUCTION)))));
@@ -314,7 +314,7 @@ public abstract class AbstractSkill {
     }
 
     /**
-     * @return Whether to force-stop {@link AbstractSkill#getCastStartSound(CastContext)} if the cast is interrupted. Useful to prevent spam for long or all-encompassing sounds
+     * @return Whether to force-stop {@link AbstractSkill#provideCastStartSound(CastContext)} if the cast is interrupted. Useful to prevent spam for long or all-encompassing sounds
      */
     public boolean stopSoundOnCancel() {
         return false;

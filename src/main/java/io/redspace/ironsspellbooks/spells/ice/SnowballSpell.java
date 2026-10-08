@@ -64,7 +64,7 @@ public class SnowballSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
+    public Optional<PlayableSound> provideCastStartSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.FROSTWAVE_PREPARE).toOpt();
     }
 

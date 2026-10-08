@@ -59,12 +59,12 @@ public class PocketDimensionSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
+    public Optional<PlayableSound> provideCastStartSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.ELDRITCH_PREPARE).toOpt();
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.POCKET_DIMENSION_TRAVEL).toOpt();
     }
 

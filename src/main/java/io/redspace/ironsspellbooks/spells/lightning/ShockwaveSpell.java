@@ -73,12 +73,12 @@ public class ShockwaveSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
+    public Optional<PlayableSound> provideCastStartSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.SHOCKWAVE_PREPARE).toOpt();
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return PlayableSound.of(SoundRegistry.SHOCKWAVE_CAST, 3f, 0.9f, 1.1f).toOpt();
     }
 

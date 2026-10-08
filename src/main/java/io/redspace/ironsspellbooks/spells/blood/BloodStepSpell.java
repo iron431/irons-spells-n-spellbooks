@@ -68,7 +68,7 @@ public class BloodStepSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.BLOOD_STEP).toOpt();
     }
 
@@ -139,7 +139,7 @@ public class BloodStepSpell extends AbstractSpell {
 
         entity.resetFallDistance();
         Vec3 soundPos = dest;
-        getOnCastSound(castContext).ifPresent(sound -> level.playSound(null, soundPos.x, soundPos.y, soundPos.z,
+        this.provideOnCastSound(castContext).ifPresent(sound -> level.playSound(null, soundPos.x, soundPos.y, soundPos.z,
                 sound.soundEventHolder().value(), SoundSource.NEUTRAL, 1f, 1f));
 
         entity.setInvisible(true);

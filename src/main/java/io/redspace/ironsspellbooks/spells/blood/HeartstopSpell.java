@@ -58,7 +58,7 @@ public class HeartstopSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.HEARTSTOP_CAST).toOpt();
     }
 

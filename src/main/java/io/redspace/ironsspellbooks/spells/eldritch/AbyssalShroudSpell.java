@@ -56,7 +56,7 @@ public class AbyssalShroudSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.ABYSSAL_SHROUD).toOpt();
     }
 

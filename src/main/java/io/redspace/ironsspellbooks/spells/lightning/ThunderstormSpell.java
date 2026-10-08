@@ -69,7 +69,7 @@ public class ThunderstormSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
+    public Optional<PlayableSound> provideCastStartSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.THUNDERSTORM_PREPARE).toOpt();
     }
 

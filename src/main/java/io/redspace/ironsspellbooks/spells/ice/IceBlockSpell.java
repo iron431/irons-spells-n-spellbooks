@@ -61,7 +61,7 @@ public class IceBlockSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
+    public Optional<PlayableSound> provideCastStartSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.ICE_BLOCK_CAST).toOpt();
     }
 

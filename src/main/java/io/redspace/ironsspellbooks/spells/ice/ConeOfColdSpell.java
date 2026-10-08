@@ -70,7 +70,7 @@ public class ConeOfColdSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return Optional.of(PlayableSound.of(SoundRegistry.CONE_OF_COLD_LOOP, 2f, 0.9f, 1.1f));
     }
 

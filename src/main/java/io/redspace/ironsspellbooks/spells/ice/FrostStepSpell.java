@@ -67,7 +67,7 @@ public class FrostStepSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.FROST_STEP).toOpt();
     }
 
@@ -105,7 +105,7 @@ public class FrostStepSpell extends AbstractSpell {
         Utils.handleSpellTeleport(this, entity, targetPos);
         entity.resetFallDistance();
         Vec3 soundPos = targetPos;
-        getOnCastSound(castContext).ifPresent(playableSound -> level.playSound(null, soundPos.x, soundPos.y, soundPos.z, playableSound.soundEventHolder().value(), SoundSource.NEUTRAL, 1f, 1f));
+        provideOnCastSound(castContext).ifPresent(playableSound -> level.playSound(null, soundPos.x, soundPos.y, soundPos.z, playableSound.soundEventHolder().value(), SoundSource.NEUTRAL, 1f, 1f));
     }
 
     private Vec3 findTeleportLocation(Level level, LivingEntity entity, float distance) {

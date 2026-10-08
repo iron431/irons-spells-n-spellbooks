@@ -66,12 +66,12 @@ public class SonicBoomSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
+    public Optional<PlayableSound> provideCastStartSound(CastContext castContext) {
         return PlayableSound.standard(SoundEvents.WARDEN_SONIC_CHARGE).toOpt();
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return PlayableSound.of(SoundRegistry.SONIC_BOOM, 3.5f, 0.9f, 1.1f).toOpt();
     }
 

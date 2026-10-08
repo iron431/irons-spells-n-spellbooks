@@ -74,7 +74,7 @@ public class EchoingStrikesSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.ECHOING_STRIKES_CAST).toOpt();
     }
 

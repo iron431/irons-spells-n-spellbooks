@@ -67,7 +67,7 @@ public class FortifySpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
+    public Optional<PlayableSound> provideCastStartSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.CLOUD_OF_REGEN_LOOP).toOpt();
     }
 

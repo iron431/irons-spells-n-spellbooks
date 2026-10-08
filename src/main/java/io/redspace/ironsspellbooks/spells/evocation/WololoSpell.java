@@ -48,7 +48,7 @@ public class WololoSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getCastStartSound(CastContext castContext) {
+    public Optional<PlayableSound> provideCastStartSound(CastContext castContext) {
         return PlayableSound.standard(SoundEvents.EVOKER_PREPARE_WOLOLO).toOpt();
     }
 

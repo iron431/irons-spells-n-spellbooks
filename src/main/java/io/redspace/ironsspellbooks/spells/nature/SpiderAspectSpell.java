@@ -61,7 +61,7 @@ public class SpiderAspectSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return PlayableSound.standard(SoundRegistry.SPIDER_ASPECT_CAST).toOpt();
     }
 

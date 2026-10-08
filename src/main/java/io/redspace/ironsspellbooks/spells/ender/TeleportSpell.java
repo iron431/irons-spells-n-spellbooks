@@ -66,7 +66,7 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return PlayableSound.of(SoundEvents.ENDERMAN_TELEPORT, 2f, 1f, 1f).toOpt();
     }
 
@@ -95,7 +95,7 @@ public class TeleportSpell extends AbstractSpell {
         Utils.handleSpellTeleport(this, entity, teleportDest);
         entity.resetFallDistance();
 
-        getOnCastSound(castContext).ifPresent(sound -> level.playSound(null, teleportDest.x, teleportDest.y, teleportDest.z,
+        this.provideOnCastSound(castContext).ifPresent(sound -> level.playSound(null, teleportDest.x, teleportDest.y, teleportDest.z,
                 sound.soundEventHolder().value(), SoundSource.NEUTRAL, sound.volume(), sound.samplePitch(level.getRandom())));
     }
 

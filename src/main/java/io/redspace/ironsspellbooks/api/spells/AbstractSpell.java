@@ -225,7 +225,7 @@ public abstract class AbstractSpell extends AbstractSkill {
     }
 
     @Override
-    public Optional<PlayableSound> getOnCastSound(CastContext castContext) {
+    public Optional<PlayableSound> provideOnCastSound(CastContext castContext) {
         return PlayableSound.standard(getSchoolType().getCastSound()).toOpt();
     }
 
