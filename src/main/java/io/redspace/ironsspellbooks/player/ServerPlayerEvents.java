@@ -287,7 +287,7 @@ public class ServerPlayerEvents {
         CuriosApi.getCuriosInventory(player).ifPresent(inv -> {
             ItemStack spellbook = Utils.getPlayerSpellbookStack(player);
             if (spellbook != null && SpellbookContainer.has(spellbook)) {
-                event.addSource(SpellbookContainer.get(spellbook), CastSource.of(Curios.SPELLBOOK_SLOT), SkillSelectionPriority.PRIMARY_SKILL_SOURCE);
+                event.addSource(SpellbookContainer.get(spellbook), CastSource.of(SpellCastSources.SPELLBOOK, Curios.SPELLBOOK_SLOT), SkillSelectionPriority.PRIMARY_SKILL_SOURCE);
             }
             inv.findCurios(ImbuedContainer::has).stream().filter(slot -> !slot.slotContext().identifier().equals(Curios.SPELLBOOK_SLOT)).forEach(
                     slotResult -> event.addSource(

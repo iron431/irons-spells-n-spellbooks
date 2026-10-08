@@ -117,7 +117,7 @@ public final class SkillSelectionManager {
         ItemStack stack = player.getItemBySlot(slot);
         stack.getComponents().stream().forEach(component -> {
             if (component.value() instanceof ISkillContainer skillContainer) {
-                event.addSource(skillContainer, slot, priority);
+                event.addSource(skillContainer, component.type(), slot, priority);
             }
         });
     }

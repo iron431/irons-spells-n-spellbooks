@@ -2,6 +2,9 @@ package io.redspace.skillcasting.api.event;
 
 import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.skill.ISkillContainer;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -22,15 +25,18 @@ public final class GatherSkillSelectionEvent extends PlayerEvent {
         super(player);
     }
 
-    public void addSource(ISkillContainer container, CastSource equipmentSlot, SkillSelectionPriority priority) {
-        if (container == null || equipmentSlot == null || priority == null) {
-            return;
-        }
+
+    public void addSource(@NotNull ISkillContainer container, @NotNull CastSource equipmentSlot, @NotNull SkillSelectionPriority priority) {
         sources.add(new Source(container, equipmentSlot, priority));
     }
 
-    public void addSource(ISkillContainer container, EquipmentSlot slot, SkillSelectionPriority priority) {
-        addSource(container, CastSource.of(slot), priority);
+    /**
+     * Adds a container found in an equipment slot, generating the cast source based on the slot and data component it comes from
+     */
+    public void addSource(@NotNull ISkillContainer container, @NotNull DataComponentType<?> origin, @NotNull EquipmentSlot slot, @NotNull SkillSelectionPriority priority) {
+        ResourceLocation originId = BuiltInRegistries.DATA_COMPONENT_TYPE.getKey(origin);
+        String type = originId == null ? slot.getName() : originId.toString();
+        addSource(container, CastSource.of(type, slot), priority);
     }
 
     public void clearSourcesBySlot(String equipmentSlot) {

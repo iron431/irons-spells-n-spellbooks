@@ -71,7 +71,7 @@ public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,
                 lines.add(Component.translatable("tooltip.irons_spellbooks.press_to_cast", Component.keybind(KeyMappings.CAST_SELECTED_SKILL_KEYMAP.getName())).withStyle(ChatFormatting.GOLD));
                 lines.add(Component.empty());
                 lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_tooltip").withStyle(ChatFormatting.GRAY));
-                var source = CastSource.of(SpellCastSources.SPELLBOOK);
+                var source = CastSource.of(SpellCastSources.SPELLBOOK, Curios.SPELLBOOK_SLOT);
                 lines.addAll(TooltipsUtils.createSpellAccordion(itemStack, source, player, activeSpellSlots));
             }
         }
@@ -98,7 +98,7 @@ public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,
                         var titleStyle = Style.EMPTY.withColor(color).withUnderlined(true).withBold(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/iron431"));
                         boolean hideStats = false;
                         if (player != null) {
-                            var scrollTooltip = TooltipsUtils.formatActiveSpellTooltip(null, slot.skillData(), CastSource.of(SpellCastSources.SPELLBOOK), (LocalPlayer) player);
+                            var scrollTooltip = TooltipsUtils.formatActiveSpellTooltip(null, slot.skillData(), CastSource.of(SpellCastSources.SPELLBOOK, Curios.SPELLBOOK_SLOT), (LocalPlayer) player);
                             scrollTooltip.remove(0); // this is a space for tooltip, which we don't want
                             titleStyle = titleStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, scrollTooltip.stream().reduce((a, b) -> a.append("\n").append(b)).get()));
                             if (spell.obfuscateStats(player)) {

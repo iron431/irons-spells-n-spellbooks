@@ -8,6 +8,12 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 
+/**
+ * Where a cast came from.
+ *
+ * @param type a string identifier for delineating your own cast sources. By default, it is populated by the key of the data component holding the {@link io.redspace.skillcasting.data.skill.ISkillContainer} granting this skill
+ * @param equipmentSlot which slot the source sits in, by {@link EquipmentSlot#getName()} or a mod-defined slot name (such as a curio slot).
+ */
 public record CastSource(String type, String equipmentSlot) {
     public static final CastSource EMPTY = new CastSource("", "");
     public static final Codec<CastSource> CODEC = RecordCodecBuilder.create(builder -> builder.group(
@@ -38,13 +44,5 @@ public record CastSource(String type, String equipmentSlot) {
 
     public static CastSource of(String name, EquipmentSlot equipmentSlot) {
         return new CastSource(name, equipmentSlot.getName());
-    }
-
-    public static CastSource of(EquipmentSlot equipmentSlot) {
-        return of(equipmentSlot.getName());
-    }
-
-    public static CastSource of(String equipmentSlot) {
-        return new CastSource(equipmentSlot, equipmentSlot);
     }
 }
