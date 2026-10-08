@@ -79,12 +79,12 @@ public class LightningBoltSpell extends AbstractSpell {
     public void onCast(ServerLevel level, CastContext castContext) {
         HitResult hitResult = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
-                .bbInflation(0.35f).build();
+                .bbInflation(1f).build();
         Vec3 pos = hitResult.getLocation();
         if (hitResult instanceof EntityHitResult entityHitResult) {
             pos = entityHitResult.getEntity().position();
         } else {
-            pos = Utils.moveToRelativeGroundLevel(level, pos, 16);
+            pos = Utils.moveToRelativeGroundLevel(level, pos, 10);
         }
 
 

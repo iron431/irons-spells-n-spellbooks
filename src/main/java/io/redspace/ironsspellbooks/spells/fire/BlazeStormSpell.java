@@ -45,7 +45,7 @@ public class BlazeStormSpell extends AbstractSpell {
         this.baseSpellPower = 2;
         this.spellPowerPerLevel = 0.4f;
         this.castTime = 60 - 5;
-        this.baseManaCost = 2;
+        this.baseManaCost = 5;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class BlazeStormSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
         //todo: factor in cast time attribute manually
-        castContext.set(SkillcastingComponentTypes.CAST_TIME, getCastTimeTicks() + 5 * (castContext.getSkillLevel() - 1));
+        castContext.set(SkillcastingComponentTypes.CAST_TIME, getCastTimeTicks() + 5 * castContext.getSkillLevel());
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.85f);
     }
 

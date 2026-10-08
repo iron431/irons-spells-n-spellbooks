@@ -147,7 +147,7 @@ public class TelekinesisSpell extends AbstractSpell {
         float resistance = Mth.clamp(1 - (float) targetEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE), 0.2f, 1f);
         float lockedDistance = targetData.getDistance();
         float actualDistance = (float) casterPos.distanceTo(targetEntity.position());
-        float distance = Mth.lerp(actualDistance > lockedDistance ? 0.25f : 0.1f, lockedDistance, actualDistance);
+        float distance = Mth.lerp(actualDistance > lockedDistance ? 0.05f : 0.02f, lockedDistance, actualDistance);
         targetData.setDistance(distance);
 
         Vec3 force = forward.normalize()

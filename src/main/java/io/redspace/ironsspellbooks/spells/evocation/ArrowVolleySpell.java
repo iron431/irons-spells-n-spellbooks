@@ -104,7 +104,7 @@ public class ArrowVolleySpell extends AbstractSpell {
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 targetLocation = SkillcastingUtils.getTargetedEntityPosition(level, castContext)
-                .orElse(RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
+                .orElse(RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 100f)
                         .checkForBlocks(true)
                         .bbInflation(0.35f)
                         .build()

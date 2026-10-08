@@ -31,7 +31,7 @@ public class GustSpell extends AbstractSpell {
 
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
-        float strength = castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 0f);
+        float strength = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f) * 0.2f;
         float levelOneStrength = baseSpellPower * 0.2f;
         return List.of(
                 Component.translatable("ui.irons_spellbooks.strength", String.format("%s%%", (int) (strength * 100 / levelOneStrength))),
@@ -88,14 +88,14 @@ public class GustSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 8f);
-        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, getSpellPower(castContext) * 0.2f);
+        castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.EFFECT_AMPLIFIER, castContext.getSkillLevel() - 1);
     }
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 8f);
-        float strength = castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_SPEED, 0f);
+        float strength = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f) * 0.2f;
 
         GustCollider gust = new GustCollider(level, castContext.asEntityCaster());
         gust.setPos(castContext.position(PositionAnchor.CENTER).add(castContext.direction().scale(2f)));

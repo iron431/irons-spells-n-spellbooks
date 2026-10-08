@@ -182,6 +182,12 @@ public class SpellcastingComponentTypes {
                     .synced(StreamCodecUtils.INT)
                     .build());
 
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> DIG_DEPTH =
+            COMPONENT_TYPES.register("dig_depth", () -> ComponentType.<Integer>builder()
+                    .persisted(Codec.INT)
+                    .synced(StreamCodecUtils.INT)
+                    .build());
+
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> ANIMATION_SPEED =
             COMPONENT_TYPES.register("animation_speed", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)

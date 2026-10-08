@@ -4,6 +4,7 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
+import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.entity.spells.spectral_hammer.SpectralHammer;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.skillcasting.data.cast.PositionAnchor;
@@ -35,7 +36,7 @@ public class SpectralHammerSpell extends AbstractSpell {
     @Override
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         int radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 1f).intValue();
-        int depth = (int) (castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 1f) * 2);
+        int depth = castContext.getOrDefault(SpellcastingComponentTypes.DIG_DEPTH, 1);
         return List.of(
                 Component.translatable("ui.irons_spellbooks.dimensions", 1 + radius * 2, 1 + radius * 2, depth + 1),
                 Component.translatable("ui.irons_spellbooks.distance", castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 16f).intValue())
@@ -73,6 +74,7 @@ public class SpectralHammerSpell extends AbstractSpell {
         float spellPower = getSpellPower(castContext);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 16f);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, Math.max(spellPower * 0.5f, 1f));
+        castContext.set(SpellcastingComponentTypes.DIG_DEPTH, (int) spellPower);
     }
 
     @Override
@@ -114,7 +116,7 @@ public class SpectralHammerSpell extends AbstractSpell {
 
         Direction face = blockHitResult.getDirection();
         int radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 1f).intValue();
-        int depth = (int) (castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 1f) * 2);
+        int depth = castContext.getOrDefault(SpellcastingComponentTypes.DIG_DEPTH, 1);
 
         SpectralHammer spectralHammer = new SpectralHammer(level, caster, blockHitResult, depth, radius, yRot, yHeadRot);
         SkillcastingUtils.attachToContext(spectralHammer, castContext);

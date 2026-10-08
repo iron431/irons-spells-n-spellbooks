@@ -92,7 +92,7 @@ public class SculkTentaclesSpell extends AbstractSpell {
         int rings = castContext.getOrDefault(SpellcastingComponentTypes.RING_COUNT, 0);
         int count = 2;
         Vec3 center = SkillcastingUtils.getTargetedEntityPosition(level, castContext)
-                .orElse(RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
+                .orElse(RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 48f)
                 .checkForBlocks(true)
                 .bbInflation(0.35f)
                 .build()

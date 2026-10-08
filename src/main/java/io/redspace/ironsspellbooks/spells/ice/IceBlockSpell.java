@@ -46,7 +46,7 @@ public class IceBlockSpell extends AbstractSpell {
         this.manaCostPerLevel = 10;
         this.baseSpellPower = 14;
         this.spellPowerPerLevel = 2;
-        this.castTime = 30;
+        this.castTime = 25;
         this.baseManaCost = 40;
     }
 
@@ -67,7 +67,7 @@ public class IceBlockSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        SkillcastingUtils.preCastTargetHelper(castContext, castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 48f).intValue(), 0.35f, false);
+        SkillcastingUtils.preCastTargetHelper(castContext, 48, 0.35f, false);
         return true;
     }
 

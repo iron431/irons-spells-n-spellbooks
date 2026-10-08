@@ -107,7 +107,7 @@ public class ShadowSlashSpell extends AbstractSpell {
         Vec3 forward = castContext.direction();
         Vec3 start = castContext.position(PositionAnchor.CASTING_POSITION);
         Vec3 end = Utils.raycastForBlock(level, start, start.add(forward.scale(DISTANCE)), ClipContext.Fluid.NONE).getLocation();
-        AABB hitbox = new AABB(start.x, start.y, start.z, end.z, end.y, end.z).inflate(2);
+        AABB hitbox = new AABB(start, end).inflate(2);
         var targetableEntities = level.getEntities(castContext.asEntityCaster(), hitbox, e ->
                 !e.isSpectator()
                         && (e instanceof LivingEntity || e instanceof Projectile)

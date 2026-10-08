@@ -65,8 +65,8 @@ public class FireballSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         float power = getSpellPower(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, 5 + 5 * power);
-        castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 2 + power);
-        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.0f);
+        castContext.set(SkillcastingComponentTypes.CAST_RADIUS, (float) (2 + (int) power));
+        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.15f);
     }
 
     @Override

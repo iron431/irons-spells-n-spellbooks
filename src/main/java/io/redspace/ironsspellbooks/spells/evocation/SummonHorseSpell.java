@@ -75,7 +75,7 @@ public class SummonHorseSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        castContext.set(SpellcastingComponentTypes.SUMMON_HEALTH, 15 * getSpellPowerMultiplier(castContext));
+        castContext.set(SpellcastingComponentTypes.SUMMON_HEALTH, 15 * getSpellPower(castContext) / 100f);
     }
 
     @Override

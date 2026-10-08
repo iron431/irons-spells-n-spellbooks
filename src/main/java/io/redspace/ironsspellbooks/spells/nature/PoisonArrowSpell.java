@@ -94,7 +94,7 @@ public class PoisonArrowSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         float power = getSpellPower(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, power);
-        castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, power * 0.2f);
+        castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, power * 0.185f);
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, PROJECTILE_BASE_SPEED);
         castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 200);
     }

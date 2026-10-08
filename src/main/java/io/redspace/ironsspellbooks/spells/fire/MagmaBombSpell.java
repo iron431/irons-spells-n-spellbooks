@@ -75,7 +75,7 @@ public class MagmaBombSpell extends AbstractSpell {
         castContext.set(SkillcastingComponentTypes.DAMAGE, baseSpellPower * getSpellPowerMultiplier(castContext));
         castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, 1 + getSpellPower(castContext) * 0.1f);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 3 + getSpellPowerMultiplier(castContext));
-        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.0f);
+        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 0.65f);
         castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 200);
     }
 

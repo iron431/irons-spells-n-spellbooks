@@ -94,7 +94,6 @@ public class MagicArrowSpell extends AbstractSpell {
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         magicArrow.setPos(origin.subtract(0, magicArrow.getBoundingBox().getYsize() * 0.5f, 0).add(castContext.direction()));
         magicArrow.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
-        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1f);
         magicArrow.shootFromContext(magicArrow, castContext);
         level.addFreshEntity(magicArrow);
     }

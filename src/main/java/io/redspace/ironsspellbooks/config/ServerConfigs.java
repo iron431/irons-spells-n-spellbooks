@@ -18,8 +18,8 @@ public class ServerConfigs {
 
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final ModConfigSpec SPEC;
-    public static final ModConfigSpec.ConfigValue<Boolean> SWORDS_CONSUME_MANA;
-    public static final ModConfigSpec.ConfigValue<Double> SWORDS_CD_MULTIPLIER;
+    public static final ModConfigSpec.ConfigValue<Boolean> IMBUES_CONSUME_MANA;
+    public static final ModConfigSpec.ConfigValue<Double> IMBUED_CD_MULTIPLIER;
     public static final ModConfigSpec.ConfigValue<Boolean> CAN_ATTACK_OWN_SUMMONS;
     public static final ModConfigSpec.ConfigValue<Integer> MAX_UPGRADES;
     public static final ModConfigSpec.ConfigValue<Double> MANA_SPAWN_PERCENT;
@@ -89,9 +89,9 @@ public class ServerConfigs {
                     .defineList("rarityConfig", List.of(.3d, .25d, .2d, .15d, .1d), x -> true);
 
             BUILDER.comment("Whether or not imbued weapons require mana to be casted. Default: true");
-            SWORDS_CONSUME_MANA = BUILDER.define("swordsConsumeMana", true);
+            IMBUES_CONSUME_MANA = BUILDER.define("imbuedConsumeMana", true);
             BUILDER.comment("The multiplier on the cooldown of imbued weapons. Default: 0.5 (50% of default cooldown)");
-            SWORDS_CD_MULTIPLIER = BUILDER.define("swordsCooldownMultiplier", .5);
+            IMBUED_CD_MULTIPLIER = BUILDER.define("imbuedCooldownMultiplier", .5);
             BUILDER.comment("Whether or not players can harm their own magic summons. Default: false");
             CAN_ATTACK_OWN_SUMMONS = BUILDER.define("canAttackOwnSummons", false);
             BUILDER.comment("The maximum amount of times an applicable piece of equipment can be upgraded in the arcane anvil. Default: 3");

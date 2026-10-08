@@ -84,6 +84,7 @@ public class ThrowSpell extends AbstractSpell {
             weaponDamage = Utils.getWeaponDamage(entity);
         }
         castContext.set(SkillcastingComponentTypes.WEAPON_DAMAGE, weaponDamage);
+        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.5f);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
     }
 

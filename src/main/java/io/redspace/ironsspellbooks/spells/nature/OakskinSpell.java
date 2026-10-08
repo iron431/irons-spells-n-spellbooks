@@ -12,10 +12,10 @@ import io.redspace.ironsspellbooks.effect.OakskinEffect;
 import io.redspace.ironsspellbooks.network.particles.OakskinParticlesPacket;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.skillcasting.data.cast.PositionAnchor;
 import io.redspace.skillcasting.data.CastContext;
-import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.data.cast.CastType;
+import io.redspace.skillcasting.data.cast.PositionAnchor;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -51,7 +51,7 @@ public class OakskinSpell extends AbstractSpell {
         int amplifier = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage_reduction",
-                        Utils.stringTruncation(OakskinEffect.getReductionAmount(amplifier, null) * 100, 0)),
+                        Utils.stringTruncation(OakskinEffect.getReductionAmount(amplifier, castContext.asEntityCaster() instanceof LivingEntity living ? living : null) * 100, 0)),
                 Component.translatable("attribute.modifier.take.1",
                         Utils.stringTruncation(OakskinEffect.SLOWNESS_MAGNITUDE * 100, 0),
                         Component.translatable("attribute.name.generic.movement_speed")).withStyle(ChatFormatting.RED),
