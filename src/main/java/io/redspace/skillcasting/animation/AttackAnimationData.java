@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.entity.mobs.goals.melee;
+package io.redspace.skillcasting.animation;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.world.phys.Vec3;

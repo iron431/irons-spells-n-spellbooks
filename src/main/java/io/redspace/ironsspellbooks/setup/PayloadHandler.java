@@ -6,11 +6,9 @@ import io.redspace.ironsspellbooks.network.EntityEventPacket;
 import io.redspace.ironsspellbooks.network.OpenEldritchScreenPacket;
 import io.redspace.ironsspellbooks.network.ScrollForgeSelectSpellPacket;
 import io.redspace.ironsspellbooks.network.SyncAllCameraShakesPacket;
-import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.network.SyncCameraShakePacket;
 import io.redspace.ironsspellbooks.network.SyncJsonConfigPacket;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
-import io.redspace.ironsspellbooks.network.debug.PlayPlayerAnimationPacket;
 import io.redspace.ironsspellbooks.network.particles.AbsorptionParticlesPacket;
 import io.redspace.ironsspellbooks.network.particles.BloodSiphonParticlesPacket;
 import io.redspace.ironsspellbooks.network.particles.FieryExplosionParticlesPacket;
@@ -41,11 +39,9 @@ public class PayloadHandler {
         payloadRegistrar.playToClient(AddMotionToPlayerPacket.TYPE, AddMotionToPlayerPacket.STREAM_CODEC, AddMotionToPlayerPacket::handle);
         payloadRegistrar.playToClient(EntityEventPacket.TYPE, EntityEventPacket.STREAM_CODEC, EntityEventPacket::handle);
         payloadRegistrar.playToClient(OpenEldritchScreenPacket.TYPE, OpenEldritchScreenPacket.STREAM_CODEC, OpenEldritchScreenPacket::handle);
-        payloadRegistrar.playToClient(SyncAnimationPacket.TYPE, SyncAnimationPacket.STREAM_CODEC, SyncAnimationPacket::handle);
         payloadRegistrar.playToClient(SyncCameraShakePacket.TYPE, SyncCameraShakePacket.STREAM_CODEC, SyncCameraShakePacket::handle);
         payloadRegistrar.playToClient(SyncAllCameraShakesPacket.TYPE, SyncAllCameraShakesPacket.STREAM_CODEC, SyncAllCameraShakesPacket::handle);
         payloadRegistrar.playToClient(SyncManaPacket.TYPE, SyncManaPacket.STREAM_CODEC, SyncManaPacket::handle);
-        payloadRegistrar.playToClient(PlayPlayerAnimationPacket.TYPE, PlayPlayerAnimationPacket.STREAM_CODEC, PlayPlayerAnimationPacket::handle);
 
         payloadRegistrar.playToServer(ScrollForgeSelectSpellPacket.TYPE, ScrollForgeSelectSpellPacket.STREAM_CODEC, ScrollForgeSelectSpellPacket::handle);
         payloadRegistrar.playToClient(SyncJsonConfigPacket.TYPE, SyncJsonConfigPacket.STREAM_CODEC, SyncJsonConfigPacket::handle);

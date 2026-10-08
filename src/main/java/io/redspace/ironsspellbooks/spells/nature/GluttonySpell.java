@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.skillcasting.animation.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.effect.GluttonyEffect;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -77,7 +77,7 @@ public class GluttonySpell extends AbstractSpell {
     }
 
     @Override
-    public AnimationHolder getCastFinishAnimation() {
+    public AnimationHolder provideCastFinishAnimation(CastContext castContext) {
         return SpellAnimations.SELF_CAST_ANIMATION;
     }
 }

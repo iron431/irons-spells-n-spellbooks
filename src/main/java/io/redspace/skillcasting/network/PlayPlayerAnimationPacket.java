@@ -1,7 +1,7 @@
-package io.redspace.ironsspellbooks.network.debug;
+package io.redspace.skillcasting.network;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.render.animation.AnimationHelper;
+import io.redspace.skillcasting.Skillcasting;
+import io.redspace.skillcasting.client.animation.AnimationHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -13,7 +13,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.UUID;
 
 public class PlayPlayerAnimationPacket implements CustomPacketPayload {
-    public static final Type<PlayPlayerAnimationPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "play_player_animation"));
+    public static final Type<PlayPlayerAnimationPacket> TYPE = new Type<>(Skillcasting.id("play_player_animation"));
     public static final StreamCodec<RegistryFriendlyByteBuf, PlayPlayerAnimationPacket> STREAM_CODEC = CustomPacketPayload.codec(PlayPlayerAnimationPacket::write, PlayPlayerAnimationPacket::new);
 
     private final UUID playerId;

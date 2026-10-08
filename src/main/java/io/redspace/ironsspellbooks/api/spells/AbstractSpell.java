@@ -4,16 +4,14 @@ import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;
-import io.redspace.ironsspellbooks.api.entity.IAnimatedCastingMob;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.skillcasting.animation.AnimationHolder;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.registries.DataAttachmentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.render.animation.AnimationHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.data.CastContext;
@@ -29,10 +27,8 @@ import io.redspace.skillcasting.data.selection.SkillSelectionManager;
 import io.redspace.skillcasting.data.skill.SkillWheelInfo;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
-import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -152,8 +148,6 @@ public abstract class AbstractSpell extends AbstractSkill {
                 castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
             }
         }
-        castContext.set(SpellcastingComponentTypes.CAST_START_ANIMATION, getCastStartAnimation());
-        castContext.set(SpellcastingComponentTypes.CAST_FINISH_ANIMATION, getCastFinishAnimation());
         float configPowerMultiplier = getConfigPowerMultiplier();
         if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
             castContext.set(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER) * configPowerMultiplier);
@@ -171,7 +165,6 @@ public abstract class AbstractSpell extends AbstractSkill {
                 castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
             }
         }
-        castContext.set(SpellcastingComponentTypes.ANIMATION_SPEED, SkillcastingUtils.getCastRateSpeed(castContext));
     }
 
     /**
@@ -265,50 +258,6 @@ public abstract class AbstractSpell extends AbstractSkill {
     }
 
     @Override
-    public void onClientCastComplete(CastContext castContext, CastEndReason castEndReason) {
-        super.onClientCastComplete(castContext, castEndReason);
-        handleCastFinishAnimation(castContext, castEndReason);
-    }
-
-    @Override
-    public void onClientCastStart(CastContext castContext) {
-        super.onClientCastStart(castContext);
-        MagicData.get(castContext.caster().get()).setCachedCastingEquipmentSlot(castContext.getCastSource().equipmentSlot());
-        handleCastStartAnimation(castContext);
-    }
-
-    protected void handleCastFinishAnimation(CastContext castContext, CastEndReason castEndReason) {
-        AnimationHolder finishAnimation = castContext.getOrDefault(SpellcastingComponentTypes.CAST_FINISH_ANIMATION, AnimationHolder.pass());
-        boolean cancelled = castEndReason == CastEndReason.INTERRUPTED;
-        if (finishAnimation.getType() == AnimationHolder.Type.PASS && !cancelled) {
-            return;
-        }
-        if (castContext.asEntityCaster() instanceof Player player) {
-            if (finishAnimation.getAnimation().isPresent() && !cancelled) {
-                float speedModifier = castContext.getOrDefault(SpellcastingComponentTypes.ANIMATION_SPEED, 1f);
-                AnimationHelper.animatePlayerStart(player, finishAnimation.getAnimation().get(), speedModifier);
-            } else {
-                AnimationHelper.cancelPlayerAnimation((AbstractClientPlayer) player);
-            }
-        } else if (castContext.asEntityCaster() instanceof IAnimatedCastingMob animatedCastingMob) {
-            animatedCastingMob.playCastingAnimation(cancelled ? AnimationHolder.stop() : finishAnimation, castContext.getOrDefault(SpellcastingComponentTypes.ANIMATION_SPEED, 1f));
-        }
-    }
-
-    protected void handleCastStartAnimation(CastContext castContext) {
-        AnimationHolder animation = castContext.getOrDefault(SpellcastingComponentTypes.CAST_START_ANIMATION, AnimationHolder.pass());
-        if (animation.getType() != AnimationHolder.Type.ANIMATION) {
-            return;
-        }
-        if (castContext.asEntityCaster() instanceof Player player) {
-            float speedModifier = castContext.getOrDefault(SpellcastingComponentTypes.ANIMATION_SPEED, 1f);
-            animation.getAnimation().ifPresent(resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation, speedModifier));
-        } else if (castContext.asEntityCaster() instanceof IAnimatedCastingMob animatedCastingMob) {
-            animatedCastingMob.playCastingAnimation(animation, castContext.getOrDefault(SpellcastingComponentTypes.ANIMATION_SPEED, 1f));
-        }
-    }
-
-    @Override
     public SkillWheelInfo buildSpellWheelInfo(CastContext castContext, SkillSelectionManager.SelectionOption selectionOption) {
         SkillWheelInfo info = new SkillWheelInfo();
         info.leftText().add(
@@ -328,7 +277,8 @@ public abstract class AbstractSpell extends AbstractSkill {
     /**
      * Default Animations Based on Cast Type. Override for specific spell-based animations
      */
-    public AnimationHolder getCastStartAnimation() {
+    @Override
+    public AnimationHolder provideCastStartAnimation(CastContext castContext) {
         return switch (getCastType()) {
             case CONTINUOUS -> ANIMATION_CONTINUOUS_CAST;
             case LONG -> ANIMATION_LONG_CAST;
@@ -339,7 +289,8 @@ public abstract class AbstractSpell extends AbstractSkill {
     /**
      * Default Animations Based on Cast Type. Override for specific spell-based animations
      */
-    public AnimationHolder getCastFinishAnimation() {
+    @Override
+    public AnimationHolder provideCastFinishAnimation(CastContext castContext) {
         return switch (getCastType()) {
             case LONG -> ANIMATION_LONG_CAST_FINISH;
             case INSTANT -> ANIMATION_INSTANT_CAST;

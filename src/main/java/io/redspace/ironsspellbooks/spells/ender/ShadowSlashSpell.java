@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.skillcasting.animation.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -195,7 +195,7 @@ public class ShadowSlashSpell extends AbstractSpell {
     }
 
     @Override
-    public AnimationHolder getCastFinishAnimation() {
+    public AnimationHolder provideCastFinishAnimation(CastContext castContext) {
         return SpellAnimations.ONE_HANDED_VERTICAL_UPSWING_ANIMATION;
     }
 }

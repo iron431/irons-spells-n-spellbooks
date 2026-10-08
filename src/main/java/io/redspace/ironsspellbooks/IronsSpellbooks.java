@@ -108,7 +108,7 @@ public class IronsSpellbooks {
         SpellcastingComponentTypes.register(modEventBus);
 
         // Standalone skillcasting API bootstrap (only mod -> api touch point; api never imports the mod).
-        Skillcasting.init(modEventBus);
+        Skillcasting.init(modEventBus, modContainer);
 
         modEventBus.addListener(this::addPackFinders);
         NeoForge.EVENT_BUS.addListener(this::addServerDataListeners);

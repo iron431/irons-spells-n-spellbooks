@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.entity.spells.summoned_weapons;
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
-import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
+import io.redspace.skillcasting.animation.AttackAnimationData;
+import io.redspace.skillcasting.animation.AttackKeyframe;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals.AnimatedActionGoal;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;

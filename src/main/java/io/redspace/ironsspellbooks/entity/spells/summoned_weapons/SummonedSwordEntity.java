@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.summoned_weapons;
 
-import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
+import io.redspace.skillcasting.animation.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.world.entity.EntityType;

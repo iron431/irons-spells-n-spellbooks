@@ -3,6 +3,7 @@ package io.redspace.skillcasting.registry;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.skillcasting.Skillcasting;
+import io.redspace.skillcasting.animation.AnimationHolder;
 import io.redspace.skillcasting.data.component.ComponentType;
 import io.redspace.skillcasting.data.component.TargetedEntitiesData;
 import io.redspace.skillcasting.data.recast.RecastConfig;
@@ -92,6 +93,22 @@ public final class SkillcastingComponentTypes {
             COMPONENT_TYPES.register("cooldown", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
                     .synced(StreamCodecUtils.INT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<AnimationHolder>> CAST_START_ANIMATION =
+            COMPONENT_TYPES.register("cast_start_animation", () -> ComponentType.<AnimationHolder>builder()
+                    .synced(AnimationHolder.STREAM_CODEC)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<AnimationHolder>> CAST_FINISH_ANIMATION =
+            COMPONENT_TYPES.register("cast_finish_animation", () -> ComponentType.<AnimationHolder>builder()
+                    .synced(AnimationHolder.STREAM_CODEC)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> ANIMATION_SPEED =
+            COMPONENT_TYPES.register("animation_speed", () -> ComponentType.<Float>builder()
+                    .persisted(Codec.FLOAT)
+                    .synced(StreamCodecUtils.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<PlayableSound>> CAST_START_SOUND =

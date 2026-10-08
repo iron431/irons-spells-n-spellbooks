@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.skillcasting.animation.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.snowball.Snowball;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -78,7 +78,7 @@ public class SnowballSpell extends AbstractSpell {
     }
 
     @Override
-    public AnimationHolder getCastStartAnimation() {
+    public AnimationHolder provideCastStartAnimation(CastContext castContext) {
         return SpellAnimations.ANIMATION_CHARGED_CAST;
     }
 }

@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals;
 
-import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
+import io.redspace.skillcasting.animation.IAnimatedAttacker;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 

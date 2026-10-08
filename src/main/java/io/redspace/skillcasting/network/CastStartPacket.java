@@ -47,6 +47,7 @@ public record CastStartPacket(
             CastContext castContext = new CastContext(packet.skill(), caster, level);
             castContext.set(SkillcastingComponentTypes.CAST_TIME, packet.durationTicks);
             castContext.components().applyFrom(packet.components);
+            data.setLastCastSource(castContext.getCastSource());
             data.activateCast(new ActiveCast(castContext));
             var localPlayer = context.player();
             if (localPlayer != null && packet.casterId().equals(CasterRef.entity(localPlayer).id())) {

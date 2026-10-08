@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.api.util;
+package io.redspace.skillcasting.animation;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

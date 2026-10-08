@@ -1,6 +1,4 @@
-package io.redspace.ironsspellbooks.api.entity;
-
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+package io.redspace.skillcasting.animation;
 
 public interface IAnimatedCastingMob {
     void playCastingAnimation(AnimationHolder animation, float speed);

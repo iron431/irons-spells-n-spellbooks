@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.render.animation;
+package io.redspace.skillcasting.client.animation;
 
 import dev.kosmx.playerAnim.api.TransformType;
 import dev.kosmx.playerAnim.api.layered.IAnimation;
@@ -7,7 +7,8 @@ import dev.kosmx.playerAnim.api.layered.modifier.AdjustmentModifier;
 import dev.kosmx.playerAnim.api.layered.modifier.MirrorModifier;
 import dev.kosmx.playerAnim.api.layered.modifier.SpeedModifier;
 import dev.kosmx.playerAnim.core.util.Vec3f;
-import io.redspace.ironsspellbooks.api.magic.MagicData;
+import io.redspace.skillcasting.data.SkillcastingData;
+import io.redspace.skillcasting.data.cast.CastSource;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -26,7 +27,9 @@ public class IronPlayerAnimationData<T extends IAnimation> extends ModifierLayer
         this.mirrorModifier = new MirrorModifier() {
             @Override
             public boolean isEnabled() {
-                return MagicData.get(player).getCachedCastingEquipmentSlot().equals(EquipmentSlot.OFFHAND.getName()) ^ player.getMainArm() == HumanoidArm.LEFT;
+                CastSource source = SkillcastingData.get(player).lastCastSource();
+                boolean offhand = source != null && source.isFromSlot(EquipmentSlot.OFFHAND);
+                return offhand ^ player.getMainArm() == HumanoidArm.LEFT;
             }
         };
         this.speedModifier = new SpeedModifier(1f);

@@ -1,16 +1,19 @@
 package io.redspace.skillcasting.client;
 
+import io.redspace.skillcasting.client.animation.AnimationHelper;
 import io.redspace.skillcasting.client.keybinds.KeyMappings;
 import io.redspace.skillcasting.client.overlays.OverlayRegistry;
 import io.redspace.skillcasting.client.overlays.RecastOverlay;
 import io.redspace.skillcasting.client.render.SkillcastClientTickManager;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 
 public final class SkillcastingClient {
     public static void register(IEventBus modEventBus, IEventBus neoForgeBus) {
         modEventBus.addListener(KeyMappings::register);
         modEventBus.addListener(SkillcastingClient::registerGuiLayers);
+        modEventBus.addListener(SkillcastingClient::onClientSetup);
         neoForgeBus.register(SkillcastingInputEvents.class);
         neoForgeBus.register(SkillcastingClientPlayerEvents.class);
         neoForgeBus.register(RecastOverlay.class);
@@ -19,5 +22,9 @@ public final class SkillcastingClient {
 
     private static void registerGuiLayers(RegisterGuiLayersEvent event) {
         OverlayRegistry.register(event);
+    }
+
+    private static void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(AnimationHelper::initializePlayerAnimationFactory);
     }
 }

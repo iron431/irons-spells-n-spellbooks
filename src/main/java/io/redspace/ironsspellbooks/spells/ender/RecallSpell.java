@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.skillcasting.animation.AnimationHolder;
 import io.redspace.ironsspellbooks.entity.mobs.goals.HomeOwner;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
@@ -123,12 +123,12 @@ public class RecallSpell extends AbstractSpell {
     }
 
     @Override
-    public AnimationHolder getCastStartAnimation() {
+    public AnimationHolder provideCastStartAnimation(CastContext castContext) {
         return SpellAnimations.CHARGE_ANIMATION;
     }
 
     @Override
-    public AnimationHolder getCastFinishAnimation() {
+    public AnimationHolder provideCastFinishAnimation(CastContext castContext) {
         return AnimationHolder.stop();
     }
 }

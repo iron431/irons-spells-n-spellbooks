@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.skillcasting.animation.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.effect.EchoingStrikesData;
@@ -120,7 +120,7 @@ public class EchoingStrikesSpell extends AbstractSpell {
     }
 
     @Override
-    public AnimationHolder getCastFinishAnimation() {
+    public AnimationHolder provideCastFinishAnimation(CastContext castContext) {
         return SpellAnimations.SELF_CAST_ANIMATION;
     }
 

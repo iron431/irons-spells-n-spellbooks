@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.api.spells;
 
 import com.mojang.serialization.Codec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonedEntitiesCastData;
 import io.redspace.ironsspellbooks.capabilities.magic.TelekinesisData;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
@@ -162,16 +161,6 @@ public class SpellcastingComponentTypes {
             COMPONENT_TYPES.register("hit_count", () -> ComponentType.<Integer>builder()
                     .build());
 
-    public static final DeferredHolder<ComponentType<?>, ComponentType<AnimationHolder>> CAST_START_ANIMATION =
-            COMPONENT_TYPES.register("cast_start_animation", () -> ComponentType.<AnimationHolder>builder()
-                    .synced(AnimationHolder.STREAM_CODEC)
-                    .build());
-
-    public static final DeferredHolder<ComponentType<?>, ComponentType<AnimationHolder>> CAST_FINISH_ANIMATION =
-            COMPONENT_TYPES.register("cast_finish_animation", () -> ComponentType.<AnimationHolder>builder()
-                    .synced(AnimationHolder.STREAM_CODEC)
-                    .build());
-
     public static final DeferredHolder<ComponentType<?>, ComponentType<ItemStack>> SCROLL_STACK =
             COMPONENT_TYPES.register("scroll_stack", () -> ComponentType.<ItemStack>builder()
                     .build());
@@ -186,11 +175,5 @@ public class SpellcastingComponentTypes {
             COMPONENT_TYPES.register("dig_depth", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
                     .synced(StreamCodecUtils.INT)
-                    .build());
-
-    public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> ANIMATION_SPEED =
-            COMPONENT_TYPES.register("animation_speed", () -> ComponentType.<Float>builder()
-                    .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
                     .build());
 }

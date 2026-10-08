@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.api.spells;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.skillcasting.animation.AnimationHolder;
 import net.minecraft.resources.ResourceLocation;
 
 public class SpellAnimations {

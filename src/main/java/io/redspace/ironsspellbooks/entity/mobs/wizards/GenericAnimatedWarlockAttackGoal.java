@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
+import io.redspace.skillcasting.animation.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.IDrinkPotions;
 import io.redspace.ironsspellbooks.entity.mobs.goals.WarlockAttackGoal;
-import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
-import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackKeyframe;
-import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
+import io.redspace.skillcasting.animation.AttackAnimationData;
+import io.redspace.skillcasting.animation.AttackKeyframe;
+import io.redspace.skillcasting.network.SyncAnimationPacket;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.skillcasting.data.SkillcastingData;
 import net.minecraft.util.Mth;

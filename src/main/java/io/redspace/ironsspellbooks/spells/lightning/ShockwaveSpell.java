@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.skillcasting.animation.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -141,12 +141,12 @@ public class ShockwaveSpell extends AbstractSpell {
     }
 
     @Override
-    public AnimationHolder getCastStartAnimation() {
+    public AnimationHolder provideCastStartAnimation(CastContext castContext) {
         return SpellAnimations.PREPARE_CROSS_ARMS;
     }
 
     @Override
-    public AnimationHolder getCastFinishAnimation() {
+    public AnimationHolder provideCastFinishAnimation(CastContext castContext) {
         return SpellAnimations.CAST_T_POSE;
     }
 }

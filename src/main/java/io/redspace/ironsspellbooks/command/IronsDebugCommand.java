@@ -12,7 +12,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.capabilities.magic.PocketDimensionManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
-import io.redspace.ironsspellbooks.network.debug.PlayPlayerAnimationPacket;
+import io.redspace.skillcasting.network.PlayPlayerAnimationPacket;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;

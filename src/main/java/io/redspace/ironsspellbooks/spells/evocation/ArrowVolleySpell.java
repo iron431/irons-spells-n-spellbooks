@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
 import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.skillcasting.animation.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.ArrowVolleyEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -81,7 +81,7 @@ public class ArrowVolleySpell extends AbstractSpell {
     }
 
     @Override
-    public AnimationHolder getCastStartAnimation() {
+    public AnimationHolder provideCastStartAnimation(CastContext castContext) {
         return SpellAnimations.CHARGE_RAISED_HAND;
     }
 

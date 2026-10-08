@@ -8,8 +8,6 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 public class ClientConfigs {
 
     public static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-    public static final ModConfigSpec.ConfigValue<Boolean> SHOW_FIRST_PERSON_ARMS;
-    public static final ModConfigSpec.ConfigValue<Boolean> SHOW_FIRST_PERSON_ITEMS;
     public static final ModConfigSpec.ConfigValue<Boolean> REPLACE_GHAST_FIREBALL;
     public static final ModConfigSpec.ConfigValue<Boolean> REPLACE_BLAZE_FIREBALL;
     public static final ModConfigSpec.ConfigValue<Integer> MANA_BAR_Y_OFFSET;
@@ -84,12 +82,6 @@ public class ClientConfigs {
 //        SPELL_WHEEL_CONSISTENT_SIZE = BUILDER.comment("Whether to Spell Wheel size ignores the Gui scale option").define("ignoreGuiScale", false);
 //        SPELL_WHEEL_SCALE = BUILDER.comment("If ignoreGuiScale is enabled, apply this multiplier to its size").define("ignoreGuiScaleSizeMultiplier", 1.0);
 //        BUILDER.pop();
-        BUILDER.pop();
-
-        BUILDER.push("Animations");
-        BUILDER.comment("What to render in first person while casting.");
-        SHOW_FIRST_PERSON_ARMS = BUILDER.define("showFirstPersonArms", true);
-        SHOW_FIRST_PERSON_ITEMS = BUILDER.define("showFirstPersonItems", true);
         BUILDER.pop();
 
         BUILDER.push("Renderers");

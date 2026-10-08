@@ -1,20 +1,19 @@
-package io.redspace.ironsspellbooks.network;
+package io.redspace.skillcasting.network;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
+import io.redspace.skillcasting.Skillcasting;
+import io.redspace.skillcasting.animation.IAnimatedAttacker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class SyncAnimationPacket<T extends Entity & IAnimatedAttacker> implements CustomPacketPayload {
     int entityId;
     String animationId;
-    public static final CustomPacketPayload.Type<SyncAnimationPacket<?>> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_animation"));
+    public static final CustomPacketPayload.Type<SyncAnimationPacket<?>> TYPE = new CustomPacketPayload.Type<>(Skillcasting.id("sync_animation"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncAnimationPacket<?>> STREAM_CODEC = CustomPacketPayload.codec(SyncAnimationPacket::write, SyncAnimationPacket::new);
 
     public SyncAnimationPacket(String animationId, T entity) {

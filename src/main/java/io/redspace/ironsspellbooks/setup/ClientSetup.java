@@ -149,7 +149,6 @@ import io.redspace.ironsspellbooks.render.ReplacedFireballRenderer;
 import io.redspace.ironsspellbooks.render.ScrollModel;
 import io.redspace.ironsspellbooks.render.SpectralItemModel;
 import io.redspace.ironsspellbooks.render.SpellBookCurioRenderer;
-import io.redspace.ironsspellbooks.render.animation.AnimationHelper;
 import io.redspace.ironsspellbooks.util.IMinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.client.Minecraft;
@@ -483,8 +482,6 @@ public class ClientSetup {
             FogRenderer.MOB_EFFECT_FOG.add(new PlanarSightEffect.EcholocationBlindnessFogFunction());
             // Register Curio renderers for vanilla spellbooks
             ItemRegistry.getIronsItems().stream().filter(item -> item.get() instanceof SpellBook).forEach((item) -> CuriosRendererRegistry.register(item.get(), SpellBookCurioRenderer::new));
-            // Init player animation stuff
-            AnimationHelper.initializePlayerAnimationFactory();
         });
 
 

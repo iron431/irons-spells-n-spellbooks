@@ -1,9 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.entity.IAnimatedCastingMob;
+import io.redspace.skillcasting.animation.IAnimatedCastingMob;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.util.AnimationHolder;
+import io.redspace.skillcasting.animation.AnimationHolder;
 import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.data.cast.CastEndReason;
 import io.redspace.skillcasting.data.cast.CasterRef;

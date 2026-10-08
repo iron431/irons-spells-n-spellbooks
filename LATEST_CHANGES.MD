@@ -21,3 +21,10 @@
 - Datapack `power_multiplier` and `mana_multiplier` and the `swordsConsumeMana` server config are applied again
 - Added `SpellcastingComponentTypes.DIG_DEPTH`
 - Restored 1.21 values for Blaze Storm, Ice Block, Fireball, Magma Bomb, Throw, Starfall, Magic Arrow, Summon Horse, Sculk Tentacles, Arrow Volley, Lightning Bolt, Poison Arrow, Spectral Hammer, Telekinesis; fixed Shadow Slash hitbox and Gust strength scaling; Earthquake, Root, Stomp, Thunderstorm apply school and config power again
+- [Breaking] Animation mechanism moved to skillcasting: `AnimationHolder`, `IAnimatedCastingMob`, `IAnimatedAttacker`, `AttackAnimationData`, `AttackKeyframe` now live in `io.redspace.skillcasting.animation`; `AnimationHelper`, `IronPlayerAnimationData`, `IronsAdjustmentModifier` in `io.redspace.skillcasting.client.animation`; `SyncAnimationPacket` and `PlayPlayerAnimationPacket` in `io.redspace.skillcasting.network`
+- [Breaking] `CAST_START_ANIMATION`, `CAST_FINISH_ANIMATION`, `ANIMATION_SPEED` moved from `SpellcastingComponentTypes` to `SkillcastingComponentTypes`
+- [Breaking] `getCastStartAnimation()` and `getCastFinishAnimation()` are now defined on `AbstractSkill` and take a `CastContext`; `AbstractSkill` defaults are pass/stop, `AbstractSpell` keeps the cast-type defaults
+- [Breaking] Removed `MagicData#getCachedCastingEquipmentSlot`; use `SkillcastingData#lastCastSource`
+- [Breaking] `Skillcasting.init` now takes the `ModContainer`
+- [Breaking] Animation resource ids moved to the `skillcasting` namespace: player animation layer `skillcasting:animation` (was `irons_spellbooks:animation`), packets `skillcasting:sync_animation` and `skillcasting:play_player_animation`, components `skillcasting:cast_start_animation`, `skillcasting:cast_finish_animation`, `skillcasting:animation_speed`
+- `showFirstPersonArms` and `showFirstPersonItems` moved from `irons_spellbooks-client.toml` to `skillcasting-client.toml` (existing values reset to defaults)

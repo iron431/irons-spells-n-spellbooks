@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.render.animation;
+package io.redspace.skillcasting.client.animation;
 
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonConfiguration;
 import dev.kosmx.playerAnim.api.firstPerson.FirstPersonMode;
@@ -10,14 +10,14 @@ import dev.kosmx.playerAnim.core.util.Ease;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationFactory;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationRegistry;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.config.ClientConfigs;
+import io.redspace.skillcasting.Skillcasting;
+import io.redspace.skillcasting.config.SkillcastingClientConfig;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 public class AnimationHelper {
-    public static ResourceLocation PLAYER_ANIMATION_RESOURCE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animation");
+    public static ResourceLocation PLAYER_ANIMATION_RESOURCE = Skillcasting.id("animation");
 
     public static void initializePlayerAnimationFactory() {
         PlayerAnimationFactory.ANIMATION_DATA_FACTORY.registerFactory(PLAYER_ANIMATION_RESOURCE,
@@ -48,8 +48,8 @@ public class AnimationHelper {
                 var playerAnimationData = (IronPlayerAnimationData<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(PLAYER_ANIMATION_RESOURCE);
                 playerAnimationData.adjustmentModifier.setupFade(animation.getData().endTick, 3);
                 playerAnimationData.setSpeed(speed);
-                var armsFlag = ClientConfigs.SHOW_FIRST_PERSON_ARMS.get();
-                var itemsFlag = ClientConfigs.SHOW_FIRST_PERSON_ITEMS.get();
+                var armsFlag = SkillcastingClientConfig.SHOW_FIRST_PERSON_ARMS.get();
+                var itemsFlag = SkillcastingClientConfig.SHOW_FIRST_PERSON_ITEMS.get();
                 if (armsFlag || itemsFlag) {
                     animation.setFirstPersonMode(FirstPersonMode.THIRD_PERSON_MODEL);
                     animation.setFirstPersonConfiguration(new FirstPersonConfiguration(armsFlag, armsFlag, itemsFlag, itemsFlag));
@@ -59,7 +59,7 @@ public class AnimationHelper {
                 playerAnimationData.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(fadein, Ease.INOUTSINE), animation, true);
             }
         } catch (Exception e) {
-            IronsSpellbooks.LOGGER.error("Failed to play player animation: {}", e.getMessage());
+            Skillcasting.LOGGER.error("Failed to play player animation: {}", e.getMessage());
         }
     }
 }

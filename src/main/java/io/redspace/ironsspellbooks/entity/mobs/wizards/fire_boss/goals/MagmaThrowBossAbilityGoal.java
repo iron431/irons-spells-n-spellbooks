@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.goals;
 
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
+import io.redspace.skillcasting.animation.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireBomb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;

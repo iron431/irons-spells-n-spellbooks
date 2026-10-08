@@ -1,6 +1,6 @@
-package io.redspace.ironsspellbooks.entity.mobs;
+package io.redspace.skillcasting.animation;
 
-import io.redspace.ironsspellbooks.network.SyncAnimationPacket;
+import io.redspace.skillcasting.network.SyncAnimationPacket;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.network.PacketDistributor;
 

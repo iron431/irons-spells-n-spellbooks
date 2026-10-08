@@ -3,6 +3,7 @@ package io.redspace.skillcasting.data;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.skillcasting.data.cast.ActiveCast;
+import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.recast.RecastInstance;
 import io.redspace.skillcasting.data.recast.RecastManager;
@@ -45,6 +46,21 @@ public final class SkillcastingData {
     private final SkillSelectionManager selectionManager = new SkillSelectionManager(selection);
     @Nullable
     private ActiveCast activeCast;
+
+    /**
+     * Client-side only. Cast source of the most recent cast started on this client. Survives the active cast ending so
+     * finish animations can still mirror for offhand casts. Not persisted.
+     */
+    @Nullable
+    private CastSource lastCastSource;
+
+    public @Nullable CastSource lastCastSource() {
+        return lastCastSource;
+    }
+
+    public void setLastCastSource(@Nullable CastSource lastCastSource) {
+        this.lastCastSource = lastCastSource;
+    }
 
     public boolean isCasting() {
         return activeCast != null;
