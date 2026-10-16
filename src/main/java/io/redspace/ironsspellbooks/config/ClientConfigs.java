@@ -117,7 +117,7 @@ public class ClientConfigs {
         try {
             summonGlowColor = Integer.decode(SUMMONS_GLOW_HEX_COLOR.get());
         } catch (Exception ignored) {
-            IronsSpellbooks.LOGGER.warn("Failed to parse summonGlowColor \"{}\", reverting to default", SUMMONS_GLOW_HEX_COLOR.get());
+            IronsSpellbooks.LOGGER.warn("Failed to parse summonGlowColor , reverting to default");
             summonGlowColor = 0xAAFFAA;
         }
     }

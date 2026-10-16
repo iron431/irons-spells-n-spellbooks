@@ -104,20 +104,19 @@ public final class SkillSelectionManager {
         return manager;
     }
 
+    private static final EquipmentSlot[] SCANNED_SLOTS = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
+
     private void gatherDefaultSources(Player player, GatherSkillSelectionEvent event) {
-        addContainerFromSlot(player, event, EquipmentSlot.HEAD, SkillSelectionPriority.ARMOR);
-        addContainerFromSlot(player, event, EquipmentSlot.CHEST, SkillSelectionPriority.ARMOR);
-        addContainerFromSlot(player, event, EquipmentSlot.LEGS, SkillSelectionPriority.ARMOR);
-        addContainerFromSlot(player, event, EquipmentSlot.FEET, SkillSelectionPriority.ARMOR);
-        addContainerFromSlot(player, event, EquipmentSlot.MAINHAND, SkillSelectionPriority.HANDHELD);
-        addContainerFromSlot(player, event, EquipmentSlot.OFFHAND, SkillSelectionPriority.HANDHELD);
+        for (EquipmentSlot slot : SCANNED_SLOTS) {
+            addContainerFromSlot(player, event, slot);
+        }
     }
 
-    private static void addContainerFromSlot(Player player, GatherSkillSelectionEvent event, EquipmentSlot slot, SkillSelectionPriority priority) {
+    private static void addContainerFromSlot(Player player, GatherSkillSelectionEvent event, EquipmentSlot slot) {
         ItemStack stack = player.getItemBySlot(slot);
         stack.getComponents().stream().forEach(component -> {
             if (component.value() instanceof ISkillContainer skillContainer) {
-                event.addSource(skillContainer, component.type(), slot, priority);
+                event.addSource(skillContainer, component.type(), slot);
             }
         });
     }

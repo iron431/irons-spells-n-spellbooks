@@ -1,5 +1,6 @@
 ### Changes
 - Tyros now uses cast components instead of attribute modifier hack to quickly channel his midair fireballs
+- Hand-held imbues (swords, staves, wands) now rank with armor imbues in the skill bar and wheel instead of after them
 
 ### API
 - Added `createLevelRenderable` to AbstractSkill
@@ -29,3 +30,7 @@
 - [Breaking] `Skillcasting.init` now takes the `ModContainer`
 - [Breaking] Animation resource ids moved to the `skillcasting` namespace: player animation layer `skillcasting:animation` (was `irons_spellbooks:animation`), packets `skillcasting:sync_animation` and `skillcasting:play_player_animation`, components `skillcasting:cast_start_animation`, `skillcasting:cast_finish_animation`, `skillcasting:animation_speed`
 - `showFirstPersonArms` and `showFirstPersonItems` moved from `irons_spellbooks-client.toml` to `skillcasting-client.toml` (existing values reset to defaults)
+- [Breaking] Added `ISkillContainer#getSelectionPriority()` (default `OTHER`); the library's equipment-slot auto-registration uses it instead of a per-slot rule. `GatherSkillSelectionEvent#addSource(container, origin, slot)` uses it too; the overloads taking an explicit `SkillSelectionPriority` override it; a data component holding a base `SkillContainer` now ranks `OTHER` in every slot (was `ARMOR`/`HANDHELD` by slot). Migrate by subclassing `SkillContainer` and overriding `getSelectionPriority`, or pass an explicit priority from a `GatherSkillSelectionEvent` listener
+- `SkillContainer` is now safe to subclass: subclasses pass a `SkillContainer.Factory` to the protected constructor, `copyWith` is final and rebuilds through it, and `mutableCopy()`/`toImmutable()` preserve the subclass. Added `ISkillContainer.streamCodec(constructor)`
+- Added `ImbuedContainer` (`ARMOR`) and `SpellbookSkillContainer` (`PRIMARY_SKILL_SOURCE`); `IMBUED_SPELL_CONTAINER` and `SPELLBOOK_CONTAINER` deserialize to them (same wire format) and the `ImbuedContainer`/`SpellbookContainer` helpers always produce them
+- [Breaking] `SkillContainer` constructors are private; build base containers with `SkillContainer.fromSerialized(size, wheel, equip, slots)` or `ISkillContainer.create(...)`

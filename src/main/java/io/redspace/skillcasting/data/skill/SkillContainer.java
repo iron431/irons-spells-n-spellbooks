@@ -1,7 +1,9 @@
 package io.redspace.skillcasting.data.skill;
 
+import com.mojang.datafixers.util.Function4;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.redspace.skillcasting.api.event.SkillSelectionPriority;
 import io.redspace.skillcasting.data.AbstractSkill;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -38,32 +40,53 @@ public class SkillContainer implements ISkillContainer {
             SkillContainer::fromSerialized
     );
 
-    public static ISkillContainer fromSerialized(int count, boolean wheel, boolean equip, List<SkillSlot> skills) {
-        var container = new SkillContainer(count, wheel, equip);
-        skills.forEach(slot -> container.slots[slot.index()] = slot);
-        container.activeSlots = skills.size();
-        return container;
+    public interface Factory<T extends SkillContainer> extends Function4<Integer, Boolean, Boolean, List<SkillSlot>, T> {
     }
 
+    private static SkillContainer basic(int maxSpells, boolean spellWheel, boolean mustEquip, List<SkillSlot> skills) {
+        return new SkillContainer(maxSpells, spellWheel, mustEquip, skills, SkillContainer::basic);
+    }
+
+    public static ISkillContainer fromSerialized(int count, boolean wheel, boolean equip, List<SkillSlot> skills) {
+        return basic(count, wheel, equip, skills);
+    }
+
+    protected final Factory<? extends SkillContainer> factory;
     protected SkillSlot[] slots;
     protected int maxSpells;
     protected int activeSlots;
     protected boolean spellWheel;
     protected boolean mustEquip;
 
-    public SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip) {
-        this.maxSpells = maxSpells;
-        this.slots = new SkillSlot[this.maxSpells];
-        this.spellWheel = spellWheel;
-        this.mustEquip = mustEquip;
+    private SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip) {
+        this(maxSpells, spellWheel, mustEquip, List.of(), SkillContainer::basic);
     }
 
-    public SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip, SkillSlot[] slots) {
+    private SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip, SkillSlot[] slots) {
+        this(maxSpells, spellWheel, mustEquip, slots, SkillContainer::basic);
+    }
+
+    protected SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip, List<SkillSlot> skills, Factory<? extends SkillContainer> factory) {
+        this.maxSpells = maxSpells;
+        this.slots = new SkillSlot[maxSpells];
+        this.spellWheel = spellWheel;
+        this.mustEquip = mustEquip;
+        this.factory = factory;
+        skills.forEach(slot -> this.slots[slot.index()] = slot);
+        this.activeSlots = skills.size();
+    }
+
+    protected SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip, SkillSlot[] slots, Factory<? extends SkillContainer> factory) {
         this.maxSpells = maxSpells;
         this.slots = slots;
         this.spellWheel = spellWheel;
         this.mustEquip = mustEquip;
+        this.factory = factory;
         this.activeSlots = (int) Arrays.stream(slots).filter(Objects::nonNull).count();
+    }
+
+    public final ISkillContainer copyWith(int maxSpells, boolean spellWheel, boolean mustEquip, SkillSlot[] slots) {
+        return factory.apply(maxSpells, spellWheel, mustEquip, Arrays.stream(slots).filter(Objects::nonNull).toList());
     }
 
     @Override
@@ -89,7 +112,7 @@ public class SkillContainer implements ISkillContainer {
     @Override
     public String toString() {
         return String.format(
-                "SkillContainer[maxSpells:%d, activeSlots:%d, spellWheel:%s, mustEquip:%s, slots:%s]",
+                getClass().getSimpleName() + "[maxSpells:%d, activeSlots:%d, spellWheel:%s, mustEquip:%s, slots:%s]",
                 maxSpells, activeSlots, spellWheel, mustEquip, Arrays.toString(slots));
     }
 
@@ -165,8 +188,16 @@ public class SkillContainer implements ISkillContainer {
     }
 
     public static class Mutable extends SkillContainer implements ISkillContainerMutable {
+        private final SkillContainer origin;
+
         public Mutable(SkillContainer container) {
-            super(container.maxSpells, container.spellWheel, container.mustEquip, Arrays.copyOf(container.slots, container.slots.length));
+            super(container.maxSpells, container.spellWheel, container.mustEquip, Arrays.copyOf(container.slots, container.slots.length), container.factory);
+            this.origin = container;
+        }
+
+        @Override
+        public SkillSelectionPriority getSelectionPriority() {
+            return origin.getSelectionPriority();
         }
 
         @Override
@@ -218,7 +249,7 @@ public class SkillContainer implements ISkillContainer {
 
         @Override
         public ISkillContainer toImmutable() {
-            return new SkillContainer(maxSpells, spellWheel, mustEquip, slots);
+            return copyWith(maxSpells, spellWheel, mustEquip, slots);
         }
     }
 }

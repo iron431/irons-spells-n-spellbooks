@@ -3,7 +3,11 @@ package io.redspace.skillcasting.data.skill;
 import com.mojang.datafixers.util.Function4;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.redspace.skillcasting.api.event.SkillSelectionPriority;
 import io.redspace.skillcasting.data.AbstractSkill;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,6 +22,15 @@ public interface ISkillContainer {
                 Codec.BOOL.fieldOf("equip").forGetter(ISkillContainer::mustEquip),
                 Codec.list(SkillSlot.CODEC).fieldOf("data").forGetter(ISkillContainer::getActiveSkills)
         ).apply(builder, constructor));
+    }
+
+    static <T extends ISkillContainer> StreamCodec<RegistryFriendlyByteBuf, T> streamCodec(Function4<Integer, Boolean, Boolean, List<SkillSlot>, T> constructor) {
+        return StreamCodec.composite(
+                ByteBufCodecs.VAR_INT, ISkillContainer::getMaxSkillCount,
+                ByteBufCodecs.BOOL, ISkillContainer::isSkillWheel,
+                ByteBufCodecs.BOOL, ISkillContainer::mustEquip,
+                SkillSlot.SKILL_SLOT.apply(ByteBufCodecs.list()), ISkillContainer::getActiveSkills,
+                constructor);
     }
 
     int getMaxSkillCount();
@@ -35,6 +48,10 @@ public interface ISkillContainer {
      * @return Whether this container contributes to the Skill Wheel, or is a self-contained casting item
      */
     boolean isSkillWheel();
+
+    default SkillSelectionPriority getSelectionPriority() {
+        return SkillSelectionPriority.OTHER;
+    }
 
     /**
      * @return Array base collection of all skill slots, including empty skill slots
@@ -59,7 +76,7 @@ public interface ISkillContainer {
     }
 
     static ISkillContainer create(boolean mustEquip, int extraSlots, SkillData... skills) {
-        var container = new SkillContainer(extraSlots + skills.length, true, mustEquip).mutableCopy();
+        var container = SkillContainer.fromSerialized(extraSlots + skills.length, true, mustEquip, List.of()).mutableCopy();
         for (SkillData data : skills) {
             container.addSpell(data);
         }

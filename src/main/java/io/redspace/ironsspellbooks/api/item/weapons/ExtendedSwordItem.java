@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.api.item.weapons;
 
+import io.redspace.ironsspellbooks.item.spell_containers.ImbuedContainer;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import io.redspace.skillcasting.data.skill.ISkillContainer;
 import io.redspace.skillcasting.data.skill.SkillData;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.item.weapons.IronsWeaponTier;
@@ -22,7 +22,7 @@ public class ExtendedSwordItem extends SwordItem {
      * Bakes a fixed, non-equip imbued container holding the given skills into the item default components.
      */
     public static Properties imbued(Properties properties, SkillData... skills) {
-        return properties.component(ComponentRegistry.IMBUED_SPELL_CONTAINER, ISkillContainer.create(false, skills));
+        return properties.component(ComponentRegistry.IMBUED_SPELL_CONTAINER, ImbuedContainer.create(false, skills));
     }
 
     public static ItemAttributeModifiers createAttributes(IronsWeaponTier pTier) {

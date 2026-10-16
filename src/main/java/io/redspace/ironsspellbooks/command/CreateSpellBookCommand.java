@@ -6,9 +6,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.item.spell_containers.SpellbookContainer;
+import io.redspace.ironsspellbooks.item.spell_containers.SpellbookSkillContainer;
 import io.redspace.ironsspellbooks.loot.SpellFilter;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.skillcasting.data.skill.SkillContainer;
 import io.redspace.skillcasting.data.skill.SkillData;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -32,7 +32,7 @@ public class CreateSpellBookCommand {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
-            var spellContainer = new SkillContainer(slots, true, true);
+            var spellContainer = SpellbookSkillContainer.create(slots);
             SpellbookContainer.set(itemstack, spellContainer);
 
             if (serverPlayer.getInventory().add(itemstack)) {
@@ -47,7 +47,7 @@ public class CreateSpellBookCommand {
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
             ItemStack itemstack = new ItemStack(ItemRegistry.WIMPY_SPELL_BOOK.get());
-            var spellContainer = new SkillContainer(slots, true, true).mutableCopy();
+            var spellContainer = SpellbookSkillContainer.create(slots).mutableCopy();
             for (int i = 0; i < slots; i++) {
                 AbstractSpell spell;
                 boolean added;

@@ -3,10 +3,10 @@ package io.redspace.ironsspellbooks.item;
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.item.spell_containers.SpellbookSkillContainer;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
-import io.redspace.skillcasting.data.skill.ISkillContainer;
 import io.redspace.skillcasting.data.skill.SkillData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class NecronomiconSpellBook extends SpellBook {
     public NecronomiconSpellBook(Item.Properties properties) {
-        super(properties.component(ComponentRegistry.SPELLBOOK_CONTAINER, ISkillContainer.create(true,
+        super(properties.component(ComponentRegistry.SPELLBOOK_CONTAINER, SpellbookSkillContainer.create(
                 6,
                 new SkillData(SpellRegistry.BLOOD_SLASH_SPELL, 5, true),
                 new SkillData(SpellRegistry.BLOOD_STEP_SPELL, 5, true),

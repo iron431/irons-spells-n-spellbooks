@@ -39,6 +39,13 @@ public final class GatherSkillSelectionEvent extends PlayerEvent {
         addSource(container, CastSource.of(type, slot), priority);
     }
 
+    /**
+     * Adds a container found in an equipment slot using the container's own {@link ISkillContainer#getSelectionPriority()}.
+     */
+    public void addSource(@NotNull ISkillContainer container, @NotNull DataComponentType<?> origin, @NotNull EquipmentSlot slot) {
+        addSource(container, origin, slot, container.getSelectionPriority());
+    }
+
     public void clearSourcesBySlot(String equipmentSlot) {
         sources.removeIf(source -> source.castSource.equipmentSlot().equals(equipmentSlot));
     }

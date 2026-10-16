@@ -2,9 +2,11 @@ package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellCastSources;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.item.spell_containers.SpellbookContainer;
+import io.redspace.ironsspellbooks.item.spell_containers.SpellbookSkillContainer;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
@@ -13,7 +15,6 @@ import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import io.redspace.skillcasting.client.keybinds.KeyMappings;
 import io.redspace.skillcasting.data.cast.CastSource;
-import io.redspace.skillcasting.data.skill.ISkillContainer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
@@ -36,7 +37,7 @@ import java.util.List;
 public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,*/ ILecternPlaceable {
 
     public SpellBook(int maxSpellSlots, Item.Properties properties) {
-        this(properties.component(ComponentRegistry.SPELLBOOK_CONTAINER, ISkillContainer.create(true, maxSpellSlots)));
+        this(properties.component(ComponentRegistry.SPELLBOOK_CONTAINER, SpellbookSkillContainer.create(maxSpellSlots)));
     }
 
     public SpellBook(Item.Properties properties) {
@@ -71,7 +72,8 @@ public class SpellBook extends CurioBaseItem implements /*IPresetSpellContainer,
                 lines.add(Component.translatable("tooltip.irons_spellbooks.press_to_cast", Component.keybind(KeyMappings.CAST_SELECTED_SKILL_KEYMAP.getName())).withStyle(ChatFormatting.GOLD));
                 lines.add(Component.empty());
                 lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_tooltip").withStyle(ChatFormatting.GRAY));
-                var source = CastSource.of(SpellCastSources.SPELLBOOK, Curios.SPELLBOOK_SLOT);
+                String equipmentSlot = itemStack == Utils.getPlayerSpellbookStack(player) ? Curios.SPELLBOOK_SLOT : "";
+                var source = CastSource.of(SpellCastSources.SPELLBOOK, equipmentSlot);
                 lines.addAll(TooltipsUtils.createSpellAccordion(itemStack, source, player, activeSpellSlots));
             }
         }

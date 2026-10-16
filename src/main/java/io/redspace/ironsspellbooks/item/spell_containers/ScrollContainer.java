@@ -10,6 +10,8 @@ import io.redspace.skillcasting.data.skill.SkillSlot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class ScrollContainer{
 
     public static boolean has(ItemStack stack) {
@@ -31,7 +33,7 @@ public class ScrollContainer{
     }
 
     public static ISkillContainer create(SkillData skillData) {
-        return new SkillContainer(1, false, false, new SkillSlot[]{new SkillSlot(skillData, 0)});
+        return SkillContainer.fromSerialized(1, false, false, List.of(new SkillSlot(skillData, 0)));
     }
 
     public static @Nullable SkillData getScrollData(ItemStack itemStack) {

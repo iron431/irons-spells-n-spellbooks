@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.item.armor;
 
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import io.redspace.skillcasting.data.skill.ISkillContainer;
 import net.minecraft.world.item.Item;
 import com.google.common.base.Suppliers;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
@@ -41,7 +40,7 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
      * Marks an armor piece as imbuable by baking an empty, must-equip, single-slot {@link ComponentRegistry#IMBUED_SPELL_CONTAINER} into its default components.
      */
     public static Item.Properties imbuable(Item.Properties properties) {
-        return properties.component(ComponentRegistry.IMBUED_SPELL_CONTAINER, ISkillContainer.create(true, 1));
+        return properties.component(ComponentRegistry.IMBUED_SPELL_CONTAINER, ImbuedContainer.create(true, 1));
     }
 
     private final Supplier<ItemAttributeModifiers> defaultModifiers;

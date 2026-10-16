@@ -18,6 +18,6 @@ public class SpellbookContainer {
     }
 
     public static void set(ItemStack stack, ISkillContainer container) {
-        stack.set(ComponentRegistry.SPELLBOOK_CONTAINER, container);
+        stack.set(ComponentRegistry.SPELLBOOK_CONTAINER, SpellbookSkillContainer.of(container));
     }
 }
