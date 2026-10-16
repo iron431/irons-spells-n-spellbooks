@@ -10,6 +10,7 @@ import io.redspace.ironsspellbooks.fluids.PotionFluid;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
+import io.redspace.ironsspellbooks.item.spell_containers.ImbuedContainer;
 import io.redspace.ironsspellbooks.item.spell_containers.SpellbookSkillContainer;
 import io.redspace.skillcasting.data.skill.ISkillContainer;
 import io.redspace.skillcasting.data.skill.SkillContainer;
@@ -42,7 +43,7 @@ public class ComponentRegistry {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> CLOTHING_VARIANT = register("clothing_variant", (builder) -> builder.persistent(Codec.STRING).networkSynchronized(ByteBufCodecs.STRING_UTF8).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<UpgradeOrbType>>> UPGRADE_ORB_TYPE = register("upgrade_orb_type", (builder) -> builder.persistent(ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY)).networkSynchronized(ByteBufCodecs.fromCodec(ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY))).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<PotionFluid.BottleType>> POTION_BOTTLE_TYPE = register("potion_bottle_type", (builder) -> builder.persistent(PotionFluid.BottleType.CODEC).networkSynchronized(PotionFluid.BottleType.STREAM_CODEC).cacheEncoding());
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> IMBUED_SPELL_CONTAINER = register("imbued_container", (builder) -> builder.persistent(ImbuedContainer.CODEC).networkSynchronized(ImbuedContainer.STREAM_CODEC).cacheEncoding());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ImbuedContainer>> IMBUED_SPELL_CONTAINER = register("imbued_container", (builder) -> builder.persistent(ImbuedContainer.CODEC).networkSynchronized(ImbuedContainer.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> SPELLBOOK_CONTAINER = register("spellbook_container", (builder) -> builder.persistent(SpellbookSkillContainer.CODEC).networkSynchronized(SpellbookSkillContainer.STREAM_CODEC).cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ISkillContainer>> SCROLL_CONTAINER = register("scroll_container", (builder) -> builder.persistent(SkillContainer.CODEC).networkSynchronized(SkillContainer.STREAM_CODEC).cacheEncoding());
     // todo(legacy-data): between MC versions; legacy 1.21.1 container, resolved lazily by Utils#resolveLegacySpellContainer. Remove at the 26.x port

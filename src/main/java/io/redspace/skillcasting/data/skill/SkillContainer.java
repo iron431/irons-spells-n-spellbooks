@@ -85,7 +85,7 @@ public class SkillContainer implements ISkillContainer {
         this.activeSlots = (int) Arrays.stream(slots).filter(Objects::nonNull).count();
     }
 
-    public final ISkillContainer copyWith(int maxSpells, boolean spellWheel, boolean mustEquip, SkillSlot[] slots) {
+    public final SkillContainer copyWith(int maxSpells, boolean spellWheel, boolean mustEquip, SkillSlot[] slots) {
         return factory.apply(maxSpells, spellWheel, mustEquip, Arrays.stream(slots).filter(Objects::nonNull).toList());
     }
 
@@ -183,14 +183,14 @@ public class SkillContainer implements ISkillContainer {
     }
 
     @Override
-    public ISkillContainerMutable mutableCopy() {
-        return new Mutable(this);
+    public Mutable<? extends SkillContainer> mutableCopy() {
+        return new Mutable<>(this);
     }
 
-    public static class Mutable extends SkillContainer implements ISkillContainerMutable {
-        private final SkillContainer origin;
+    public static class Mutable<C extends SkillContainer> extends SkillContainer implements ISkillContainerMutable {
+        private final C origin;
 
-        public Mutable(SkillContainer container) {
+        public Mutable(C container) {
             super(container.maxSpells, container.spellWheel, container.mustEquip, Arrays.copyOf(container.slots, container.slots.length), container.factory);
             this.origin = container;
         }
@@ -248,8 +248,9 @@ public class SkillContainer implements ISkillContainer {
         }
 
         @Override
-        public ISkillContainer toImmutable() {
-            return copyWith(maxSpells, spellWheel, mustEquip, slots);
+        @SuppressWarnings("unchecked")
+        public C toImmutable() {
+            return (C) copyWith(maxSpells, spellWheel, mustEquip, slots);
         }
     }
 }

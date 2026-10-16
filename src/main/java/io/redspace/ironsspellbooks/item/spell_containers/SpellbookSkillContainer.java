@@ -27,8 +27,13 @@ public final class SpellbookSkillContainer extends SkillContainer {
         return SkillSelectionPriority.PRIMARY_SKILL_SOURCE;
     }
 
+    @Override
+    public Mutable<SpellbookSkillContainer> mutableCopy() {
+        return new Mutable<>(this);
+    }
+
     /** Builds a must-equip, skill-wheel spellbook container with the given skills and {@code extraSlots} empty slots. */
-    public static ISkillContainer create(int extraSlots, SkillData... skills) {
+    public static SpellbookSkillContainer create(int extraSlots, SkillData... skills) {
         var container = new SpellbookSkillContainer(extraSlots + skills.length, true, true, List.of()).mutableCopy();
         for (SkillData data : skills) {
             container.addSpell(data);

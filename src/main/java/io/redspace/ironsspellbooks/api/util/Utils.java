@@ -17,6 +17,7 @@ import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.item.spell_containers.ImbuedContainer;
 import io.redspace.ironsspellbooks.item.spell_containers.SpellbookContainer;
+import io.redspace.skillcasting.data.skill.ISkillContainer;
 import io.redspace.ironsspellbooks.particle.FallingBlockParticleOption;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -890,8 +891,8 @@ public class Utils {
         } else if (stack.getItem() instanceof Scroll) {
             CodecHelper.replaceLegacy(stack, ComponentRegistry.SPELL_CONTAINER, ComponentRegistry.SCROLL_CONTAINER);
         } else {
-            CodecHelper.replaceLegacy(stack, ComponentRegistry.SPELL_CONTAINER, ComponentRegistry.IMBUED_SPELL_CONTAINER);
-            ImbuedContainer.set(stack, stack.get(ComponentRegistry.IMBUED_SPELL_CONTAINER));
+            ISkillContainer legacy = stack.remove(ComponentRegistry.SPELL_CONTAINER);
+            ImbuedContainer.set(stack, new ImbuedContainer(legacy.getMaxSkillCount(), legacy.isSkillWheel(), legacy.mustEquip(), legacy.getActiveSkills()));
         }
     }
 }
