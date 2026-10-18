@@ -16,6 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public final class SkillcastingNetwork {
     public static void syncSelection(ServerPlayer player, SkillcastingData data) {
@@ -76,8 +77,9 @@ public final class SkillcastingNetwork {
 
     public static void syncDirtyCastComponents(CasterRef caster, CastContext context) {
         Map<ComponentType<?>, Object> dirty = context.components().popDirtySync();
-        if (!dirty.isEmpty()) {
-            caster.distributeToClients(SyncCastComponentsPacket.of(caster, context.skill(), CastComponentMap.from(dirty)));
+        Set<ComponentType<?>> removed = context.components().popDirtyRemovals();
+        if (!dirty.isEmpty() || !removed.isEmpty()) {
+            caster.distributeToClients(SyncCastComponentsPacket.of(caster, context.skill(), CastComponentMap.from(dirty), removed));
         }
     }
 }

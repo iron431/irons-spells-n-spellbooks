@@ -130,7 +130,7 @@ public final class SkillSelectionManager {
             if (globalIndex >= 0
                     && !skillSelection.isEmpty()
                     && skillSelection.index() == skillSlot.index()
-                    && Objects.equals(skillSelection.equipmentSlot(), castSource)) {
+                    && Objects.equals(skillSelection.equipmentSlot(), castSource.equipmentSlot())) {
                 selectionIndex = globalIndex;
                 selectionValid = true;
             }

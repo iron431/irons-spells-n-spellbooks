@@ -204,6 +204,7 @@ public class SkillContainer implements ISkillContainer {
         public void setMaxSpellCount(int maxSpells) {
             this.maxSpells = maxSpells;
             slots = Arrays.copyOf(slots, maxSpells);
+            activeSlots = (int) Arrays.stream(slots).filter(Objects::nonNull).count();
         }
 
         @Override

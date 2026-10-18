@@ -3,6 +3,7 @@ package io.redspace.skillcasting.data.component;
 import com.mojang.serialization.Codec;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -17,6 +18,9 @@ import java.util.Set;
 
 public class CastComponentMap {
     public static final Codec<CastComponentMap> COMPONENT_CODEC = new CastComponentMapCodec();
+    public static final StreamCodec<ByteBuf, ComponentType<?>> COMPONENT_TYPE_STREAM_CODEC = ResourceLocation.STREAM_CODEC.map(
+            id -> Objects.requireNonNull(SkillcastingComponentTypes.get(id), "Cannot sync non-registered component type"),
+            type -> Objects.requireNonNull(SkillcastingRegistries.COMPONENT_TYPES.getKey(type), "Cannot sync non-registered component type"));
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static final StreamCodec<RegistryFriendlyByteBuf, CastComponentMap> STREAM_CODEC = StreamCodec.of(
             (buf, map) -> {
@@ -47,6 +51,7 @@ public class CastComponentMap {
     );
     private final Map<ComponentType<?>, Object> components;
     private final Set<ComponentType<?>> toSync = new HashSet<>();
+    private final Set<ComponentType<?>> toSyncRemoval = new HashSet<>();
 
     private CastComponentMap(Map<ComponentType<?>, Object> components) {
         this.components = components;
@@ -69,19 +74,35 @@ public class CastComponentMap {
         return (T) components.get(type);
     }
 
+    /**
+     * @return the removed value, or null if the component was absent
+     */
     @SuppressWarnings("unchecked")
+    @Nullable
     public <T> T remove(ComponentType<T> type) {
-        return (T) components.remove(type);
+        T prev = (T) components.remove(type);
+        if (prev != null && type.isSynced()) {
+            toSync.remove(type);
+            toSyncRemoval.add(type);
+        }
+        return prev;
     }
 
     public <T> Optional<T> find(ComponentType<T> type) {
         return Optional.ofNullable(getOrNull(type));
     }
 
+    /**
+     * Stores a component. Values are never null; use {@link #remove} to clear one.
+     */
     public <T> void set(ComponentType<T> type, T value) {
+        Objects.requireNonNull(value, () -> "Cast component " + SkillcastingRegistries.COMPONENT_TYPES.getKey(type) + " cannot be set to null");
         Object prev = components.put(type, value);
-        if (type.isSynced() && !Objects.equals(prev, value)) {
-            toSync.add(type);
+        if (type.isSynced()) {
+            toSyncRemoval.remove(type);
+            if (!Objects.equals(prev, value)) {
+                toSync.add(type);
+            }
         }
     }
 
@@ -96,6 +117,15 @@ public class CastComponentMap {
         }
         toSync.clear();
         return dirty;
+    }
+
+    /**
+     * Synced component types removed since the last pop. Paired with {@link #popDirtySync()} when building a sync packet.
+     */
+    public Set<ComponentType<?>> popDirtyRemovals() {
+        Set<ComponentType<?>> removed = new HashSet<>(toSyncRemoval);
+        toSyncRemoval.clear();
+        return removed;
     }
 
     public Map<ComponentType<?>, Object> getAllSynced() {

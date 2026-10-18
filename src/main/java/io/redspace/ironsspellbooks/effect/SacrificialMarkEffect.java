@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.blood.SacrificeSpell;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.data.CastContext;
+import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.component.TargetedEntitiesData;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
@@ -43,7 +44,7 @@ public class SacrificialMarkEffect extends MagicMobEffect implements ISyncedMobE
         // fixme: this is the perfect place for a level cast instance
         //  infrastructure is far from set up though
         CasterRef caster = CasterRef.entity(owner);
-        CastContext castContext = SkillcastingManager.buildCastContext(caster, SpellRegistry.SACRIFICE_SPELL, mark.getAmplifier() + 1, null);
+        CastContext castContext = SkillcastingManager.buildCastContext(caster, SpellRegistry.SACRIFICE_SPELL, mark.getAmplifier() + 1, CastSource.EMPTY);
         castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES, new TargetedEntitiesData(entity));
         spell.onCast(serverLevel, castContext);
         spell.onPostCast(castContext);

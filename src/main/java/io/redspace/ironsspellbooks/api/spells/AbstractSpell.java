@@ -34,6 +34,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.GameType;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -195,6 +196,9 @@ public abstract class AbstractSpell extends AbstractSkill {
 
     @Override
     public CastResult canBeCastBy(CastContext castContext) {
+        if (ServerConfigs.DISABLE_ADVENTURE_MODE_CASTING.get() && castContext.asEntityCaster() instanceof ServerPlayer serverPlayer && serverPlayer.gameMode.getGameModeForPlayer() == GameType.ADVENTURE) {
+            return CastResult.failure(Component.translatable("ui.irons_spellbooks.cast_error_adventure").withStyle(ChatFormatting.RED));
+        }
         MagicData magicData = castContext.caster().get().getData(DataAttachmentRegistry.MAGIC_DATA);
         if (this.requiresLearning() && !isLearned(castContext.caster().get())) {
             return CastResult.failure(Component.translatable("ui.irons_spellbooks.cast_error_unlearned", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED));

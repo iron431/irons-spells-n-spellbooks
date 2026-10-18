@@ -19,7 +19,11 @@
 - [Breaking] `CastSource.type` now identifies what kind of source cast the skill; for equipment gathered by skillcasting it is the registry id of the data component holding the container (e.g. `irons_spellbooks:imbued_container`). `SpellCastSources.SPELLBOOK/SCROLL/IMBUE` are those ids.
 - [Breaking] Removed `CastSource.of(EquipmentSlot)` and `CastSource.of(String)`; use `CastSource.of(type, slot)`
 - [Breaking] `GatherSkillSelectionEvent#addSource(container, EquipmentSlot, priority)` is now `addSource(container, DataComponentType origin, EquipmentSlot, priority)`
-- Datapack `power_multiplier` and `mana_multiplier` and the `swordsConsumeMana` server config are applied again
+- Datapack `power_multiplier` and `mana_cost_multiplier` and the `imbuedConsumeMana` server config are applied again
+- [Breaking config] `swordsConsumeMana` and `swordsCooldownMultiplier` in `irons_spellbooks-server.toml` are now `imbuedConsumeMana` and `imbuedCooldownMultiplier`; re-apply custom values
+- `disableAdventureModeCasting` works again
+- Removed the dead client config `spellBarDisplay` (the skill bar belongs to skillcasting)
+- Fixed: skill selection reset on every equipment change; summons treated every other owner's summons as allies; an empty spell config file aborted the whole config load; a spell config pointing at an unknown school crashed on first cast; school and rarity caches went stale after `/reload`; removed cast components never reached the client; Pyromancers had no attack spells
 - Added `SpellcastingComponentTypes.DIG_DEPTH`
 - Restored 1.21 values for Blaze Storm, Ice Block, Fireball, Magma Bomb, Throw, Starfall, Magic Arrow, Summon Horse, Sculk Tentacles, Arrow Volley, Lightning Bolt, Poison Arrow, Spectral Hammer, Telekinesis; fixed Shadow Slash hitbox and Gust strength scaling; Earthquake, Root, Stomp, Thunderstorm apply school and config power again
 - [Breaking] Animation mechanism moved to skillcasting: `AnimationHolder`, `IAnimatedCastingMob`, `IAnimatedAttacker`, `AttackAnimationData`, `AttackKeyframe` now live in `io.redspace.skillcasting.animation`; `AnimationHelper`, `IronPlayerAnimationData`, `IronsAdjustmentModifier` in `io.redspace.skillcasting.client.animation`; `SyncAnimationPacket` and `PlayPlayerAnimationPacket` in `io.redspace.skillcasting.network`

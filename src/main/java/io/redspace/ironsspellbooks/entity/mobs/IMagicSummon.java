@@ -42,10 +42,10 @@ public interface IMagicSummon extends AntiMagicSusceptible {
         }
         if (entity instanceof IMagicSummon magicSummon) {
             var otherOwner = magicSummon.getSummoner();
-            return otherOwner != null && (owner == otherOwner || otherOwner.isAlliedTo(otherOwner));
+            return otherOwner != null && (owner == otherOwner || owner.isAlliedTo(otherOwner));
         } else if (entity instanceof OwnableEntity tamableAnimal) {
             var otherOwner = tamableAnimal.getOwner();
-            return otherOwner != null && (owner == otherOwner || otherOwner.isAlliedTo(otherOwner));
+            return otherOwner != null && (owner == otherOwner || owner.isAlliedTo(otherOwner));
         }
         return false;
     }

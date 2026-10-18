@@ -18,7 +18,6 @@ public class ClientConfigs {
     public static final ModConfigSpec.ConfigValue<Boolean> ENABLE_BOSS_MUSIC;
     public static final ModConfigSpec.ConfigValue<ManaBarOverlay.Anchor> MANA_BAR_ANCHOR;
     public static final ModConfigSpec.ConfigValue<ManaBarOverlay.Display> MANA_BAR_DISPLAY;
-    public static final ModConfigSpec.ConfigValue<ManaBarOverlay.Display> SPELL_BAR_DISPLAY; //reusing same enum
 //    public static final ModConfigSpec.ConfigValue<Integer> SPELL_BAR_Y_OFFSET;
 //    public static final ModConfigSpec.ConfigValue<Integer> SPELL_BAR_X_OFFSET;
 //    public static final ModConfigSpec.ConfigValue<SpellBarOverlay.Anchor> SPELL_BAR_ANCHOR;
@@ -65,9 +64,6 @@ public class ClientConfigs {
         MANA_TEXT_X_OFFSET = BUILDER.define("manaTextXOffset", 0);
         MANA_TEXT_Y_OFFSET = BUILDER.define("manaTextYOffset", 0);
         BUILDER.pop();
-        BUILDER.push("SpellBar");
-        BUILDER.comment("By default (Always), the spell bar always shows the spells in your equipped spellbook. Contextual will hide them when not in use.");
-        SPELL_BAR_DISPLAY = BUILDER.defineEnum("spellBarDisplay", ManaBarOverlay.Display.Always);
 //        BUILDER.comment("Used to adjust spell bar's position.");
 //        SPELL_BAR_X_OFFSET = BUILDER.define("spellBarXOffset", 0);
 //        SPELL_BAR_Y_OFFSET = BUILDER.define("spellBarYOffset", 0);
@@ -82,7 +78,6 @@ public class ClientConfigs {
 //        SPELL_WHEEL_CONSISTENT_SIZE = BUILDER.comment("Whether to Spell Wheel size ignores the Gui scale option").define("ignoreGuiScale", false);
 //        SPELL_WHEEL_SCALE = BUILDER.comment("If ignoreGuiScale is enabled, apply this multiplier to its size").define("ignoreGuiScaleSizeMultiplier", 1.0);
 //        BUILDER.pop();
-        BUILDER.pop();
 
         BUILDER.push("Renderers");
         BUILDER.comment("By default, both fireballs are replaced with an enhanced model used by fire spells.");

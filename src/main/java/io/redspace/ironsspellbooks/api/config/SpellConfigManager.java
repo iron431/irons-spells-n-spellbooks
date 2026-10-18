@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.events.config.ModifyDefaultConfigValuesEvent;
 import io.redspace.ironsspellbooks.api.events.config.RegisterConfigParametersEvent;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
+import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.network.SyncJsonConfigPacket;
@@ -249,6 +250,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     public static final Set<SpellConfigParameter<?>> ALL_TYPES = new HashSet<>();
     private static boolean registered = false;
     private boolean dirty = true;
+    private boolean parseFailed = false;
 
     private static void registerConfigParameterTypes() {
         if (!registered) {
@@ -268,14 +270,21 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
 
     private Map<ResourceLocation, JsonElement> toJson(Map<ResourceLocation, byte[]> filestreams) {
         Map<ResourceLocation, JsonElement> configEntries = new HashMap<>();
+        parseFailed = false;
         for (var entry : filestreams.entrySet()/*JsonElement elem : array*/) {
             var id = entry.getKey();
             var file = entry.getValue();
             try {
                 JsonObject obj = gson.fromJson(new InputStreamReader(new ByteArrayInputStream(file)), JsonObject.class);
+                if (obj == null) {
+                    IronsSpellbooks.LOGGER.error("Failed to parse config file \"{}\": file is empty", id);
+                    parseFailed = true;
+                    continue;
+                }
                 configEntries.put(id, obj);
             } catch (Exception e) {
                 IronsSpellbooks.LOGGER.error("Failed to parse config file \"{}\": {}", id, e.getMessage());
+                parseFailed = true;
             }
         }
         return configEntries;
@@ -287,7 +296,8 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
      */
     @SuppressWarnings("unchecked")
     private <T> boolean buildConfigManager(Map<ResourceLocation, JsonElement> configEntries, boolean applyGlobalConfig) {
-        boolean hasErrors = false;
+        boolean hasErrors = parseFailed;
+        parseFailed = false;
         ImmutableMap.Builder<AbstractSpell, SpellConfigHolder> builder = ImmutableMap.builder();
         RegistryOps<JsonElement> registryops = this.makeConditionalOps();
         Map<SpellConfigParameter<?>, Object> globalValues = applyGlobalConfig ?
@@ -296,17 +306,27 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
             // Manually build defaults from static data object
             SpellConfigHolder config = new SpellConfigHolder();
             DefaultConfig raw = spell.getDefaultConfig();
-            config.setDefaultValue(SpellConfigParameter.SCHOOL, SchoolRegistry.getSchool(raw.schoolResource));
+            ResourceLocation spellId = spell.getSkillId();
+            SchoolType school = SchoolRegistry.getSchool(raw.schoolResource);
+            if (school == null) {
+                IronsSpellbooks.LOGGER.error("Spell \"{}\" declares unknown school \"{}\"; falling back to {}", spellId, raw.schoolResource, SchoolRegistry.EVOCATION_RESOURCE);
+                hasErrors = true;
+                school = SchoolRegistry.EVOCATION.get();
+            }
+            config.setDefaultValue(SpellConfigParameter.SCHOOL, school);
             config.setDefaultValue(SpellConfigParameter.MIN_RARITY, raw.minRarity);
             config.setDefaultValue(SpellConfigParameter.MAX_LEVEL, raw.maxLevel);
             config.setDefaultValue(SpellConfigParameter.ENABLED, raw.enabled);
             config.setDefaultValue(SpellConfigParameter.COOLDOWN_IN_SECONDS, raw.cooldownInSeconds);
             config.setDefaultValue(SpellConfigParameter.ALLOW_CRAFTING, raw.allowCrafting);
             // Handle user-specified Overrides
-            ResourceLocation spellId = spell.getSkillId();
-            if (configEntries.containsKey(spellId)) {
+            JsonElement spellEntry = configEntries.get(spellId);
+            if (spellEntry != null && !spellEntry.isJsonObject()) {
+                IronsSpellbooks.LOGGER.error("Spell config \"{}\" is not a json object", spellId);
+                hasErrors = true;
+            } else if (spellEntry != null) {
                 try {
-                    JsonObject json = configEntries.get(spellId).getAsJsonObject();
+                    JsonObject json = spellEntry.getAsJsonObject();
                     for (SpellConfigParameter<?> _paramType : ALL_TYPES) {
                         SpellConfigParameter<T> paramType = (SpellConfigParameter<T>) _paramType;
                         Optional<JsonElement> elem = resolveJsonElement(spellId, paramType, json);
@@ -320,7 +340,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
                             }
                         }
                     }
-                } catch (IllegalStateException e) {
+                } catch (RuntimeException e) {
                     IronsSpellbooks.LOGGER.error("Parsing error loading spell config {}: {}", spellId, e);
                     hasErrors = true;
                 }
@@ -339,6 +359,8 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         for (AbstractSpell spell : SpellRegistry.getAllSpells()) {
             NeoForge.EVENT_BUS.post(new ModifyDefaultConfigValuesEvent(spell, config.get(spell)));
         }
+        // Schools and rarities may have changed; drop the registry's derived caches
+        SpellRegistry.onConfigReload();
         return !hasErrors;
     }
 
