@@ -40,7 +40,7 @@ public class SpellBalanceDebugger {
         List<Component> info = List.of();
         var map = new HashMap<String, String>();
         map.put("Name", Component.translatable(spell.getDescriptionId()).getString());
-        map.put("Cooldown", Utils.timeFromTicks(spell.getCooldownTicks(), 0));
+        map.put("Cooldown", Utils.timeFromTicks(spell.provideCooldownTicks(null), 0));
         map.put("Cast Type", spell.getCastType().toString());
         Set<String> tracked = new HashSet<>();
         for (Component component : info) {

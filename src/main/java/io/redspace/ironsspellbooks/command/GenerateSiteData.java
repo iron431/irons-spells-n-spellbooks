@@ -491,7 +491,7 @@ public class GenerateSiteData {
                                 // fixme(skillcasting): mana cost now requires a CastContext; needs a caster-free context builder
                                 0,
                                 0,
-                                spellType.getCooldownTicks(),
+                                spellType.provideCooldownTicks(null),
                                 handleCapitalization(spellType.getCastType().name()),
                                 handleCapitalization(spellType.getRarity(spellMin).name()),
                                 handleCapitalization(spellType.getRarity(spellMax).name()),

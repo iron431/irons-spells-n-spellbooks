@@ -382,7 +382,7 @@ public final class SkillcastingUtils {
 
     public static float getCastRateSpeed(CastContext castContext) {
         float effectiveCastTime = castContext.getOrDefault(SkillcastingComponentTypes.CAST_TIME, 0);
-        return effectiveCastTime == 0 ? 1f : castContext.skill().value().getCastTimeTicks() / effectiveCastTime;
+        return effectiveCastTime == 0 ? 1f : castContext.skill().value().provideCastTimeTicks(castContext) / effectiveCastTime;
     }
 
     /**

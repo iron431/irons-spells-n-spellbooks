@@ -81,20 +81,23 @@ public abstract class AbstractSkill {
     }
 
     /**
-     * Default cast channel time in ticks for {@link CastType#LONG} and {@link CastType#CONTINUOUS}. Ignored for {@link CastType#INSTANT}
-     */
-    public int getCastTimeTicks() {
-        return 0;
-    }
-
-    /**
      * Tick interval between {@link #onCast} executions for {@link CastType#CONTINUOUS}.
      */
     public int continuousInterval() {
         return 10;
     }
 
-    public int getCooldownTicks() {
+    /**
+     * Base cast channeling time in ticks for {@link CastType#LONG} and {@link CastType#CONTINUOUS}, ignored for {@link CastType#INSTANT}.
+     */
+    public int provideCastTimeTicks(CastContext castContext) {
+        return 0;
+    }
+
+    /**
+     * Base cooldown for this cast in ticks
+     */
+    public int provideCooldownTicks(CastContext castContext) {
         return 0;
     }
 

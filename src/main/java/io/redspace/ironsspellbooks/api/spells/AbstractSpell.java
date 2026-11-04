@@ -65,7 +65,7 @@ public abstract class AbstractSpell extends AbstractSkill {
     private volatile List<Double> rarityWeights;
 
     @Override
-    public int getCastTimeTicks() {
+    public int provideCastTimeTicks(CastContext castContext) {
         return castTime;
     }
 
@@ -239,7 +239,7 @@ public abstract class AbstractSpell extends AbstractSkill {
     }
 
     @Override
-    public int getCooldownTicks() {
+    public int provideCooldownTicks(CastContext castContext) {
         return (int) (SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.COOLDOWN_IN_SECONDS) * 20);
     }
 

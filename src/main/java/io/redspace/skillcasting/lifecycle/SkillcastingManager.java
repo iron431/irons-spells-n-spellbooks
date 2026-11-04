@@ -66,15 +66,16 @@ public final class SkillcastingManager {
         AbstractSkill skill = skillHolder.value();
         context.set(SkillcastingComponentTypes.POSITION_RESOLVER, CasterPositionResolver.INSTANCE);
         context.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, CasterDirectionResolver.INSTANCE);
-        context.set(SkillcastingComponentTypes.CAST_TIME, skill.getCastTimeTicks());
-        context.set(SkillcastingComponentTypes.COOLDOWN_TICKS, skill.getCooldownTicks());
         context.set(SkillcastingComponentTypes.CAST_SOURCE, castSource);
 
         BuildCastContextEvent.Level levelEvent = new BuildCastContextEvent.Level(context, baseLevel);
         NeoForge.EVENT_BUS.post(levelEvent);
         context.set(SkillcastingComponentTypes.SKILL_LEVEL, levelEvent.getLevel());
 
+        context.set(SkillcastingComponentTypes.CAST_TIME, skill.provideCastTimeTicks(context));
+        context.set(SkillcastingComponentTypes.COOLDOWN_TICKS, skill.provideCooldownTicks(context));
         skill.buildContextComponents(context);
+
         NeoForge.EVENT_BUS.post(new BuildCastContextEvent.Post(context));
 
         skill.provideRecastConfig(context).ifPresent(recast -> context.set(SkillcastingComponentTypes.RECAST_CONFIG, recast));
@@ -275,7 +276,7 @@ public final class SkillcastingManager {
         if (castContext.has(SkillcastingComponentTypes.IGNORE_COOLDOWN)) {
             return;
         }
-        int cooldownTicks = castContext.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, skill.value().getCooldownTicks());
+        int cooldownTicks = castContext.getOrDefault(SkillcastingComponentTypes.COOLDOWN_TICKS, 0);
         if (cooldownTicks == 0) {
             return;
         }

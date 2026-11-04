@@ -80,7 +80,7 @@ public class TooltipsUtils {
         var context = SkillcastingManager.buildCastContext(CasterRef.entity(player), spell.holder(), spellData.getLevel(), castSource);
         var title = getTitleComponent(spellData, player, context);
         var uniqueInfo = spell.getUniqueInfo(context);
-        int castTimeTicks = context.getOrDefault(SkillcastingComponentTypes.CAST_TIME, spell.getCastTimeTicks());
+        int castTimeTicks = context.getOrDefault(SkillcastingComponentTypes.CAST_TIME, 0);
 
         List<MutableComponent> lines = new ArrayList<>();
         lines.add(Component.empty());
@@ -104,7 +104,7 @@ public class TooltipsUtils {
             return List.of();
         }
         CastContext context = SkillcastingManager.buildCastContext(CasterRef.entity(player), spell.holder(), spellData.getLevel(), CastSource.of(SpellCastSources.SCROLL, ""));
-        int castTimeTicks = context.getOrDefault(SkillcastingComponentTypes.CAST_TIME, spell.getCastTimeTicks());
+        int castTimeTicks = context.getOrDefault(SkillcastingComponentTypes.CAST_TIME, 0);
 
         MutableComponent levelText = getLevelNumberComponent(spellData, context);
         MutableComponent title = Component.translatable("tooltip.irons_spellbooks.level", levelText)

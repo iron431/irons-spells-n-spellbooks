@@ -68,6 +68,7 @@ public class RecallSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        // re-set to override attribute scaling
         castContext.set(SkillcastingComponentTypes.CAST_TIME, castTime);
     }
 

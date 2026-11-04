@@ -89,8 +89,12 @@ public class TelekinesisSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         int level = castContext.getSkillLevel();
-        castContext.set(SkillcastingComponentTypes.CAST_TIME, castTime + 20 * (level - 1));
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 12f + (level - 1) * 2f);
+    }
+
+    @Override
+    public int provideCastTimeTicks(CastContext castContext) {
+        return castTime + 20 * (castContext.getSkillLevel() - 1);
     }
 
     @Override
