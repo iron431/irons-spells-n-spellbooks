@@ -100,7 +100,7 @@ public class SpellBarrageGoal extends Goal {
         if (distanceSquared < attackRadiusSqr) {
             //IronsSpellbooks.LOGGER.debug("SpellBarrageGoal ({}) initiate cast on tick {}", this.hashCode(), attackTime);
             this.mob.getLookControl().setLookAt(this.target, 45, 45);
-            SkillcastingUtils.attemptInitiateMobCast(mob, SkillRegistry.holder(spell), mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel), null);
+            SkillcastingUtils.initiateMobCast(mob, SkillRegistry.holder(spell), mob.getRandom().nextIntBetweenInclusive(minSpellLevel, maxSpellLevel), null);
             stop();
         }
 

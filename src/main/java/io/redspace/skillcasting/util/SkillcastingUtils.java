@@ -363,13 +363,13 @@ public final class SkillcastingUtils {
     }
 
     /**
-     * Helper dedicated for setting up a mob's skillcast by weaving in {@link AbstractSkill#setupAIContext(CastContext, Mob)} and {@link AbstractSkill#shouldAIStopCasting(CastContext, Mob, LivingEntity)}
+     * Helper for setting a mob's cast context and skillcast utilizing {@link AbstractSkill#setupAIContext(CastContext, Mob)} and {@link AbstractSkill#shouldAIStopCasting(CastContext, Mob, LivingEntity)}
      *
      * @return Whether cast is initiated
      */
-    public static boolean attemptInitiateMobCast(Mob mob, Holder<AbstractSkill> skill, int spellLevel, @Nullable CastComponentMap componentPatch) {
+    public static boolean initiateMobCast(Mob mob, Holder<AbstractSkill> skill, int skillLevel, @Nullable CastComponentMap componentPatch) {
         CasterRef casterRef = CasterRef.entity(mob);
-        var castContext = SkillcastingManager.buildCastContext(casterRef, skill, spellLevel, CastSource.EMPTY);
+        var castContext = SkillcastingManager.buildCastContext(casterRef, skill, skillLevel, CastSource.EMPTY);
         if (mob.getTarget() != null && skill.value().shouldAIStopCasting(castContext, mob, mob.getTarget())) {
             return false;
         }

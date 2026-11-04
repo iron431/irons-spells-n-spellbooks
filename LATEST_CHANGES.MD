@@ -15,7 +15,7 @@
 - Cast-produced summons are now attached to the cast context (`ATTACHED_ENTITIES`)
 - [Breaking] Removed `MagicSwordItem`; use `ExtendedSwordItem.imbued(properties, skills...)`
 - [Breaking] Removed `ImbuableChestplateArmorItem`; use `ExtendedArmorItem.imbuable(properties)` at registration
-- [Breaking] Removed `AbstractSpellCastingMob#attemptInitiateCastSpell`; use `SkillcastingUtils.attemptInitiateMobCast`
+- [Breaking] Removed `AbstractSpellCastingMob#attemptInitiateCastSpell`; use `SkillcastingUtils.initiateMobCast` (deliberately skips `canBeCastBy`; checked casts go through `SkillcastingManager.attemptInitiateCast`)
 - [Breaking] `CastSource.type` now identifies what kind of source cast the skill; for equipment gathered by skillcasting it is the registry id of the data component holding the container (e.g. `irons_spellbooks:imbued_container`). `SpellCastSources.SPELLBOOK/SCROLL/IMBUE` are those ids.
 - [Breaking] Removed `CastSource.of(EquipmentSlot)` and `CastSource.of(String)`; use `CastSource.of(type, slot)`
 - [Breaking] `GatherSkillSelectionEvent#addSource(container, EquipmentSlot, priority)` is now `addSource(container, DataComponentType origin, EquipmentSlot, priority)`

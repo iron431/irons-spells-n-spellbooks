@@ -185,7 +185,7 @@ public class WizardSupportGoal<T extends PathfinderMob & SupportMob> extends Goa
         }
         int spellLevel = (int) (abstractSpell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
         spellLevel = Math.max(spellLevel, 1);
-        SkillcastingUtils.attemptInitiateMobCast(mob, SkillRegistry.holder(abstractSpell), spellLevel, null);
+        SkillcastingUtils.initiateMobCast(mob, SkillRegistry.holder(abstractSpell), spellLevel, null);
         mob.setSupportTarget(null);
     }
 

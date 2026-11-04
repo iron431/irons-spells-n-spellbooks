@@ -295,7 +295,7 @@ public class WizardAttackGoal<T extends PathfinderMob & IDrinkPotions> extends G
         }
         int spellLevel = (int) (spell.getMaxLevel() * Mth.lerp(mob.getRandom().nextFloat(), minSpellQuality, maxSpellQuality));
         spellLevel = Math.max(spellLevel, 1);
-        SkillcastingUtils.attemptInitiateMobCast(mob, SkillRegistry.holder(spell), spellLevel, null);
+        SkillcastingUtils.initiateMobCast(mob, SkillRegistry.holder(spell), spellLevel, null);
         fleeCooldown = 7;
     }
 

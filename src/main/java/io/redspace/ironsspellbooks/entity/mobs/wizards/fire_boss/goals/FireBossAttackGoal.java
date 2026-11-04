@@ -99,7 +99,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
                     // insta-cast that fireball: override cast time via component instead of a mob attribute modifier
                     CastComponentMap components = new CastComponentMap();
                     components.set(SkillcastingComponentTypes.CAST_TIME.get(), FIREBALLER);
-                    SkillcastingUtils.attemptInitiateMobCast(mob, SpellRegistry.FIREBALL_SPELL, mob.isSoulMode() ? 6 : 5, components);
+                    SkillcastingUtils.initiateMobCast(mob, SpellRegistry.FIREBALL_SPELL, mob.isSoulMode() ? 6 : 5, components);
                     fireballcooldown = 20 * 10;
                     return;
                 }

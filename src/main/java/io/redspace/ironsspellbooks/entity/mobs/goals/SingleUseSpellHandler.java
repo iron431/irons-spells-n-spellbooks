@@ -23,7 +23,7 @@ public class SingleUseSpellHandler {
 
     public boolean attemptCastSpell(Mob mob) {
         if (canUseSingleUse(mob) && singleUseSpell != null && singleUseDelay <= 0) {
-            if (SkillcastingUtils.attemptInitiateMobCast(mob, SkillRegistry.holder(singleUseSpell), singleUseLevel, null)) {
+            if (SkillcastingUtils.initiateMobCast(mob, SkillRegistry.holder(singleUseSpell), singleUseLevel, null)) {
                 markSingleUseCooldown(mob, 5 * 60 * 20);
                 return true;
             }
