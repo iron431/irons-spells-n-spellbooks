@@ -1,6 +1,8 @@
 ### Changes
 - Tyros now uses cast components instead of attribute modifier hack to quickly channel his midair fireballs
 - Hand-held imbues (swords, staves, wands) now rank with armor imbues in the skill bar and wheel instead of after them
+- Shadow Slash now reads its dash distance and hit radius from the cast range and cast radius components, so spell range and spell radius attributes affect it
+- Mobs casting Fire Breath, Dragon Breath, Poison Breath or Cone of Cold now track their target while channeling, like Ray of Siphoning
 
 ### API
 - Added `createLevelRenderable` to AbstractSkill
@@ -38,3 +40,6 @@
 - `SkillContainer` is now safe to subclass: subclasses pass a `SkillContainer.Factory` to the protected constructor, `copyWith` is final and rebuilds through it, and `mutableCopy()`/`toImmutable()` preserve the subclass. Added `ISkillContainer.streamCodec(constructor)`
 - Added `ImbuedContainer` (`ARMOR`) and `SpellbookSkillContainer` (`PRIMARY_SKILL_SOURCE`); `IMBUED_SPELL_CONTAINER` and `SPELLBOOK_CONTAINER` deserialize to them (same wire format) and the `ImbuedContainer`/`SpellbookContainer` helpers always produce them
 - [Breaking] `SkillContainer` constructors are private; build base containers with `SkillContainer.fromSerialized(size, wheel, equip, slots)` or `ISkillContainer.create(...)`
+- Skill containers with a slot index outside their size now decode with those slots dropped instead of throwing, and a negative size is rejected; `SkillContainer.CODEC` now shares `ISkillContainer.codec`
+- Saved skillcasting data with a missing `cooldowns`, `recasts` or `selection` field now loads with that part empty instead of failing
+- The cast component, position resolver and direction resolver registries are now synced, so a client missing an addon component gets a registry mismatch screen instead of a disconnect

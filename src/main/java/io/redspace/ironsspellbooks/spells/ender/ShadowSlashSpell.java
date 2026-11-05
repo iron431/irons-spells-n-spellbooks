@@ -43,6 +43,7 @@ import java.util.Optional;
 public class ShadowSlashSpell extends AbstractSpell {
 
     private static final float DISTANCE = 12f;
+    private static final float HIT_RADIUS = 2.5f;
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.COMMON)
@@ -92,6 +93,8 @@ public class ShadowSlashSpell extends AbstractSpell {
         }
         castContext.set(SkillcastingComponentTypes.WEAPON_DAMAGE, weaponDamage);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
+        castContext.set(SkillcastingComponentTypes.CAST_RANGE, DISTANCE);
+        castContext.set(SkillcastingComponentTypes.CAST_RADIUS, HIT_RADIUS);
     }
 
     @Override
@@ -106,7 +109,8 @@ public class ShadowSlashSpell extends AbstractSpell {
     public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 forward = castContext.direction();
         Vec3 start = castContext.position(PositionAnchor.CASTING_POSITION);
-        Vec3 end = Utils.raycastForBlock(level, start, start.add(forward.scale(DISTANCE)), ClipContext.Fluid.NONE).getLocation();
+        float distance = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, DISTANCE);
+        Vec3 end = Utils.raycastForBlock(level, start, start.add(forward.scale(distance)), ClipContext.Fluid.NONE).getLocation();
         AABB hitbox = new AABB(start, end).inflate(2);
         var targetableEntities = level.getEntities(castContext.asEntityCaster(), hitbox, e ->
                 !e.isSpectator()
@@ -118,9 +122,9 @@ public class ShadowSlashSpell extends AbstractSpell {
                 + castContext.getOrDefault(SkillcastingComponentTypes.WEAPON_DAMAGE, 0f);
         var damageSource = getDamageSourceDirect(castContext);
 
-        if (!targetableEntities.isEmpty() && targetableEntities.getFirst().distanceToSqr(start) < DISTANCE * DISTANCE) {
+        if (!targetableEntities.isEmpty() && targetableEntities.getFirst().distanceToSqr(start) < distance * distance) {
             var closestEntity = targetableEntities.getFirst();
-            float radius = 2.5f;
+            float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, HIT_RADIUS);
             AABB damageBox = AABB.ofSize(closestEntity.getBoundingBox().getCenter(), radius, radius + 1, radius)
                     .move(forward.scale(radius / 2));
             end = damageBox.getCenter().add(end).scale(0.5);
