@@ -12,6 +12,7 @@ import io.redspace.skillcasting.data.resolver.PositionResolver;
 import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.util.StreamCodecUtils;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
 import net.minecraft.world.phys.HitResult;
@@ -46,11 +47,13 @@ public final class SkillcastingComponentTypes {
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<PositionResolver>> POSITION_RESOLVER =
             COMPONENT_TYPES.register("position_resolver", () -> ComponentType.<PositionResolver>builder()
+                    .persisted(PositionResolver.persistentCodec(SkillcastingRegistries.POSITION_RESOLVER_TYPES))
                     .synced(PositionResolver.codec(SkillcastingRegistries.POSITION_RESOLVER_TYPES))
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<DirectionResolver>> DIRECTION_RESOLVER =
             COMPONENT_TYPES.register("direction_resolver", () -> ComponentType.<DirectionResolver>builder()
+                    .persisted(DirectionResolver.persistentCodec(SkillcastingRegistries.DIRECTION_RESOLVER_TYPES))
                     .synced(DirectionResolver.codec(SkillcastingRegistries.DIRECTION_RESOLVER_TYPES))
                     .build());
 
@@ -69,7 +72,7 @@ public final class SkillcastingComponentTypes {
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> SKILL_LEVEL =
             COMPONENT_TYPES.register("skill_level", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<TargetedEntitiesData>> TARGETED_ENTITIES =
@@ -86,13 +89,13 @@ public final class SkillcastingComponentTypes {
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> CAST_TIME =
             COMPONENT_TYPES.register("cast_time", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> COOLDOWN_TICKS =
             COMPONENT_TYPES.register("cooldown", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<AnimationHolder>> CAST_START_ANIMATION =
@@ -108,7 +111,7 @@ public final class SkillcastingComponentTypes {
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> ANIMATION_SPEED =
             COMPONENT_TYPES.register("animation_speed", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<PlayableSound>> CAST_START_SOUND =
@@ -142,79 +145,79 @@ public final class SkillcastingComponentTypes {
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> CAST_RADIUS =
             COMPONENT_TYPES.register("cast_radius", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> CAST_RANGE =
             COMPONENT_TYPES.register("cast_range", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> TELEPORT_RANGE =
             COMPONENT_TYPES.register("teleport_range", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> EFFECT_DURATION_TICKS =
             COMPONENT_TYPES.register("effect_duration_ticks", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> EFFECT_AMPLIFIER =
             COMPONENT_TYPES.register("effect_amplifier", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> SPIKE_COUNT =
             COMPONENT_TYPES.register("spike_count", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> HEALING =
             COMPONENT_TYPES.register("healing", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> DAMAGE =
             COMPONENT_TYPES.register("damage", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> WEAPON_DAMAGE =
             COMPONENT_TYPES.register("weapon_damage", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> DOT_DAMAGE =
             COMPONENT_TYPES.register("dot_damage", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> PROJECTILE_SPEED =
             COMPONENT_TYPES.register("projectile_speed", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> PROJECTILE_PIERCE =
             COMPONENT_TYPES.register("projectile_pierce", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> PROJECTILE_RICOCHET =
             COMPONENT_TYPES.register("projectile_ricochet", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Unit>> CURSOR_HOMING =
@@ -231,25 +234,25 @@ public final class SkillcastingComponentTypes {
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> RANDOM_SEED =
             COMPONENT_TYPES.register("random_seed", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .build());
 
     // fixme(skillcasting): overloaded 'how many things' integer (arrow rows, recast count, needle count); split per purpose rather than rename
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> PROJECTILE_COUNT =
             COMPONENT_TYPES.register("projectile_count", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> MAX_TARGETS =
             COMPONENT_TYPES.register("max_targets", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> CASTING_MOVESPEED_MULTIPLIER =
             COMPONENT_TYPES.register("casting_movespeed", () -> ComponentType.<Float>builder()
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
 

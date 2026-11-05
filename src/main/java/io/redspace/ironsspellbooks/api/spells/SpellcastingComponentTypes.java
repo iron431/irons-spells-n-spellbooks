@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.entity.spells.portal.PortalData;
 import io.redspace.ironsspellbooks.spells.FireWallCastComponent;
 import io.redspace.ironsspellbooks.spells.StarfallCastComponent;
 import io.redspace.skillcasting.data.component.ComponentType;
-import io.redspace.skillcasting.util.StreamCodecUtils;
+import net.minecraft.network.codec.ByteBufCodecs;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
@@ -38,7 +38,7 @@ public class SpellcastingComponentTypes {
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> MANA_COST =
             COMPONENT_TYPES.register("mana_cost", () -> ComponentType.<Integer>builder()
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .persisted(Codec.INT)
                     .build());
 
@@ -56,85 +56,85 @@ public class SpellcastingComponentTypes {
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> SPELL_POWER_MULTIPLIER =
             COMPONENT_TYPES.register("spell_power", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> FIRE_POWER_MULTIPLIER =
             COMPONENT_TYPES.register("fire_power", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> ICE_POWER_MULTIPLIER =
             COMPONENT_TYPES.register("ice_power", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> LIGHTNING_POWER_MULTIPLIER =
             COMPONENT_TYPES.register("lightning_power", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> HOLY_POWER_MULTIPLIER =
             COMPONENT_TYPES.register("holy_power", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> ENDER_POWER_MULTIPLIER =
             COMPONENT_TYPES.register("ender_power", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> BLOOD_POWER_MULTIPLIER =
             COMPONENT_TYPES.register("blood_power", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> EVOCATION_POWER_MULTIPLIER =
             COMPONENT_TYPES.register("evocation_power", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> NATURE_POWER_MULTIPLIER =
             COMPONENT_TYPES.register("nature_power", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> ELDRITCH_POWER_MULTIPLIER =
             COMPONENT_TYPES.register("eldritch_power", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> SUMMON_HEALTH =
             COMPONENT_TYPES.register("summon_health", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> CONSTRUCT_HEALTH =
             COMPONENT_TYPES.register("construct_health", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Float>> SUMMON_ATTACK_DAMAGE =
             COMPONENT_TYPES.register("summon_attack_damage", () -> ComponentType.<Float>builder()
                     .persisted(Codec.FLOAT)
-                    .synced(StreamCodecUtils.FLOAT)
+                    .synced(ByteBufCodecs.FLOAT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> SUMMON_COUNT =
             COMPONENT_TYPES.register("summon_count", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<SummonedEntitiesCastData>> SUMMONED_ENTITY_DATA =
@@ -168,12 +168,12 @@ public class SpellcastingComponentTypes {
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> RING_COUNT =
             COMPONENT_TYPES.register("ring_count", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .build());
 
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> DIG_DEPTH =
             COMPONENT_TYPES.register("dig_depth", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)
-                    .synced(StreamCodecUtils.INT)
+                    .synced(ByteBufCodecs.INT)
                     .build());
 }

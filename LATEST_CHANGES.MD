@@ -48,3 +48,6 @@
 - [Breaking] `SkillSelectionPriority` is now a record `SkillSelectionPriority(int order)` in `io.redspace.skillcasting.data.selection` (was an enum in `api.event`), so addons can define their own priorities; `sortOrder()` is now `order()`, and the network encoding is the order value instead of the enum ordinal. Equal priorities sort by cast source type, then equipment slot (`SkillSelectionPriority.SOURCE_ORDER`)
 - [Breaking] `SkillSelectionManager.SelectionOption` is now an immutable record: fields are read through accessors (`skillData()`, `castSource()`, `localIndex()`, `globalIndex()`, `priority()`), `withGlobalIndex(int)` replaces writing the field, and `getAllOptions()` is unmodifiable
 - Fixed: `SkillSelectionManager#copy` shared its `SkillSelection` with the original
+- [Breaking] `ComponentType.Builder#synced` and `ComponentType#streamCodec` take `StreamCodec<? super RegistryFriendlyByteBuf, T>`; removed `StreamCodecUtils.INT`, `FLOAT` and `UUID` (use `ByteBufCodecs`); `StreamCodecUtils.VEC3` and `VEC2` are now `StreamCodec<ByteBuf, ...>`
+- [Breaking] `PositionResolver.Type` and `DirectionResolver.Type` now take a `MapCodec` before the stream codec; every resolver type must supply one. Added `PositionResolver.persistentCodec` and `DirectionResolver.persistentCodec`
+- The position and direction resolver cast components are now persisted

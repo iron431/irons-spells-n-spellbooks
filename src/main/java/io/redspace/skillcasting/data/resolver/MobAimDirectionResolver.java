@@ -1,5 +1,6 @@
 package io.redspace.skillcasting.data.resolver;
 
+import com.mojang.serialization.MapCodec;
 import io.redspace.skillcasting.data.cast.PositionAnchor;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.util.StreamCodecUtils;
@@ -12,6 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 public class MobAimDirectionResolver implements DirectionResolver {
+    public static final MapCodec<MobAimDirectionResolver> CODEC = Vec3.CODEC.fieldOf("aim_position").xmap(MobAimDirectionResolver::new, MobAimDirectionResolver::getAimPosition);
     public static final StreamCodec<RegistryFriendlyByteBuf, MobAimDirectionResolver> STREAM_CODEC = StreamCodec.composite(
             StreamCodecUtils.VEC3, MobAimDirectionResolver::getAimPosition,
             MobAimDirectionResolver::new);

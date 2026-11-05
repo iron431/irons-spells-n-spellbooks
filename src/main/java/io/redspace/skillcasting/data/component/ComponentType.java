@@ -12,9 +12,9 @@ public class ComponentType<T> {
     @Nullable
     private final Codec<T> codec;
     @Nullable
-    private final StreamCodec<RegistryFriendlyByteBuf, T> streamCodec;
+    private final StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec;
 
-    protected ComponentType(@Nullable Codec<T> codec, @Nullable StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
+    protected ComponentType(@Nullable Codec<T> codec, @Nullable StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
         this.codec = codec;
         this.streamCodec = streamCodec;
     }
@@ -23,7 +23,7 @@ public class ComponentType<T> {
         return Optional.ofNullable(codec);
     }
 
-    public Optional<StreamCodec<RegistryFriendlyByteBuf, T>> streamCodec() {
+    public Optional<StreamCodec<? super RegistryFriendlyByteBuf, T>> streamCodec() {
         return Optional.ofNullable(streamCodec);
     }
 
@@ -43,14 +43,14 @@ public class ComponentType<T> {
         @Nullable
         private Codec<T> codec;
         @Nullable
-        private StreamCodec<RegistryFriendlyByteBuf, T> streamCodec;
+        private StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec;
 
         public Builder<T> persisted(Codec<T> codec) {
             this.codec = codec;
             return this;
         }
 
-        public Builder<T> synced(StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
+        public Builder<T> synced(StreamCodec<? super RegistryFriendlyByteBuf, T> streamCodec) {
             this.streamCodec = streamCodec;
             return this;
         }

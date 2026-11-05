@@ -1,6 +1,8 @@
 package io.redspace.skillcasting.data.resolver;
 
 import io.redspace.skillcasting.data.cast.PositionAnchor;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.redspace.skillcasting.data.CastContext;
 import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -16,7 +18,7 @@ public interface PositionResolver {
 
     Vec3 resolve(CastContext castContext, PositionAnchor anchor);
 
-    record Type<T extends PositionResolver>(StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
+    record Type<T extends PositionResolver>(MapCodec<T> codec, StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
         @SuppressWarnings("unchecked")
         void encode(RegistryFriendlyByteBuf buf, PositionResolver resolver) {
             streamCodec.encode(buf, (T) resolver);
@@ -25,6 +27,10 @@ public interface PositionResolver {
         public PositionResolver decode(RegistryFriendlyByteBuf buf) {
             return streamCodec.decode(buf);
         }
+    }
+
+    static Codec<PositionResolver> persistentCodec(Registry<Type<?>> registry) {
+        return registry.byNameCodec().dispatch(PositionResolver::type, Type::codec);
     }
 
     static StreamCodec<RegistryFriendlyByteBuf, PositionResolver> codec(Registry<Type<?>> registry) {

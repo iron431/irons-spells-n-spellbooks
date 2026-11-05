@@ -1,6 +1,7 @@
 package io.redspace.skillcasting.data.resolver;
 
 import io.redspace.skillcasting.data.cast.PositionAnchor;
+import com.mojang.serialization.MapCodec;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.registry.SkillcastingResolverTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -8,6 +9,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
 
 public record FixedPositionResolver(Vec3 value) implements PositionResolver {
+    public static final MapCodec<FixedPositionResolver> CODEC = Vec3.CODEC.fieldOf("value").xmap(FixedPositionResolver::new, FixedPositionResolver::value);
     public static final StreamCodec<RegistryFriendlyByteBuf, FixedPositionResolver> STREAM_CODEC =
             StreamCodec.of(
                     (buf, fixed) -> buf.writeVec3(fixed.value),

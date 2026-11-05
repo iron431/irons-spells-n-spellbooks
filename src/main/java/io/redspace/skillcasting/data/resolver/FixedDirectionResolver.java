@@ -1,5 +1,6 @@
 package io.redspace.skillcasting.data.resolver;
 
+import com.mojang.serialization.MapCodec;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.registry.SkillcastingResolverTypes;
 import net.minecraft.core.Direction;
@@ -8,6 +9,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
 
 public record FixedDirectionResolver(Vec3 value) implements DirectionResolver {
+    public static final MapCodec<FixedDirectionResolver> CODEC = Vec3.CODEC.fieldOf("value").xmap(FixedDirectionResolver::new, FixedDirectionResolver::value);
     public static final StreamCodec<RegistryFriendlyByteBuf, FixedDirectionResolver> STREAM_CODEC =
             StreamCodec.of(
                     (buf, fixed) -> buf.writeVec3(fixed.value),

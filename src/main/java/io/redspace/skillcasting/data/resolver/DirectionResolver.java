@@ -1,5 +1,7 @@
 package io.redspace.skillcasting.data.resolver;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.redspace.skillcasting.data.CastContext;
 import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -23,7 +25,7 @@ public interface DirectionResolver {
         return new FixedDirectionResolver(Vec3.directionFromRotation(rotation));
     }
 
-    record Type<T extends DirectionResolver>(StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
+    record Type<T extends DirectionResolver>(MapCodec<T> codec, StreamCodec<RegistryFriendlyByteBuf, T> streamCodec) {
         @SuppressWarnings("unchecked")
         void encode(RegistryFriendlyByteBuf buf, DirectionResolver resolver) {
             streamCodec.encode(buf, (T) resolver);
@@ -32,6 +34,10 @@ public interface DirectionResolver {
         public DirectionResolver decode(RegistryFriendlyByteBuf buf) {
             return streamCodec.decode(buf);
         }
+    }
+
+    static Codec<DirectionResolver> persistentCodec(Registry<Type<?>> registry) {
+        return registry.byNameCodec().dispatch(DirectionResolver::type, Type::codec);
     }
 
     static StreamCodec<RegistryFriendlyByteBuf, DirectionResolver> codec(Registry<Type<?>> registry) {

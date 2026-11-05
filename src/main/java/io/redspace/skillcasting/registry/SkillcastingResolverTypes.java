@@ -1,5 +1,6 @@
 package io.redspace.skillcasting.registry;
 
+import com.mojang.serialization.MapCodec;
 import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.data.resolver.CasterDirectionResolver;
 import io.redspace.skillcasting.data.resolver.CasterPositionResolver;
@@ -21,19 +22,19 @@ public final class SkillcastingResolverTypes {
             DeferredRegister.create(SkillcastingRegistries.DIRECTION_RESOLVER_TYPE_KEY, Skillcasting.NAMESPACE);
 
     public static final DeferredHolder<PositionResolver.Type<?>, PositionResolver.Type<CasterPositionResolver>> POSITION_CASTER =
-            POSITION_RESOLVER_TYPES.register("caster", () -> new PositionResolver.Type<>(StreamCodec.unit(CasterPositionResolver.INSTANCE)));
+            POSITION_RESOLVER_TYPES.register("caster", () -> new PositionResolver.Type<>(MapCodec.unit(CasterPositionResolver.INSTANCE), StreamCodec.unit(CasterPositionResolver.INSTANCE)));
 
     public static final DeferredHolder<PositionResolver.Type<?>, PositionResolver.Type<FixedPositionResolver>> POSITION_FIXED =
-            POSITION_RESOLVER_TYPES.register("fixed", () -> new PositionResolver.Type<>(FixedPositionResolver.STREAM_CODEC));
+            POSITION_RESOLVER_TYPES.register("fixed", () -> new PositionResolver.Type<>(FixedPositionResolver.CODEC, FixedPositionResolver.STREAM_CODEC));
 
     public static final DeferredHolder<DirectionResolver.Type<?>, DirectionResolver.Type<CasterDirectionResolver>> DIRECTION_CASTER =
-            DIRECTION_RESOLVER_TYPES.register("caster", () -> new DirectionResolver.Type<>(StreamCodec.unit(CasterDirectionResolver.INSTANCE)));
+            DIRECTION_RESOLVER_TYPES.register("caster", () -> new DirectionResolver.Type<>(MapCodec.unit(CasterDirectionResolver.INSTANCE), StreamCodec.unit(CasterDirectionResolver.INSTANCE)));
 
     public static final DeferredHolder<DirectionResolver.Type<?>, DirectionResolver.Type<FixedDirectionResolver>> DIRECTION_FIXED =
-            DIRECTION_RESOLVER_TYPES.register("fixed", () -> new DirectionResolver.Type<>(FixedDirectionResolver.STREAM_CODEC));
+            DIRECTION_RESOLVER_TYPES.register("fixed", () -> new DirectionResolver.Type<>(FixedDirectionResolver.CODEC, FixedDirectionResolver.STREAM_CODEC));
 
     public static final DeferredHolder<DirectionResolver.Type<?>, DirectionResolver.Type<MobAimDirectionResolver>> DIRECTION_MOB_AIM =
-            DIRECTION_RESOLVER_TYPES.register("mob_aim", () -> new DirectionResolver.Type<>(MobAimDirectionResolver.STREAM_CODEC));
+            DIRECTION_RESOLVER_TYPES.register("mob_aim", () -> new DirectionResolver.Type<>(MobAimDirectionResolver.CODEC, MobAimDirectionResolver.STREAM_CODEC));
 
     private SkillcastingResolverTypes() {
     }
