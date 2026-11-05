@@ -2,7 +2,8 @@ package io.redspace.skillcasting.lifecycle;
 
 import io.redspace.skillcasting.api.event.BuildCastContextEvent;
 import io.redspace.skillcasting.api.event.BuildCooldownEvent;
-import io.redspace.skillcasting.api.event.SkillEvent;
+import io.redspace.skillcasting.api.event.SkillCastEvent;
+import io.redspace.skillcasting.api.event.SkillRecastEvent;
 import io.redspace.skillcasting.cooldown.CooldownInstance;
 import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.data.CastContext;
@@ -25,9 +26,11 @@ import io.redspace.skillcasting.network.SkillcastingNetwork;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.common.NeoForge;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -104,7 +107,9 @@ public final class SkillcastingManager {
         if (!skill.checkPreCastConditions(castContext)) {
             return false;
         }
-        if (NeoForge.EVENT_BUS.post(new SkillEvent.BeforeCastStart(castContext)).isCanceled()) {
+        SkillCastEvent.PreCast preEvent = NeoForge.EVENT_BUS.post(new SkillCastEvent.PreCast(castContext));
+        if (preEvent.isCanceled()) {
+            showActionBarMessage(caster, preEvent.getCancelMessage());
             return false;
         }
 
@@ -134,14 +139,18 @@ public final class SkillcastingManager {
             }
         }
         CastContext castContext = buildCastContext(caster, skillHolder, baseLevel, castSource);
-        CastResult result = skillHolder.value().canBeCastBy(castContext);
-        if (caster.get() instanceof ServerPlayer serverPlayer && result.message() != null) {
-            serverPlayer.displayClientMessage(result.message(), true);
-        }
+        CastResult result = NeoForge.EVENT_BUS.post(new SkillCastEvent.Check(castContext, skillHolder.value().canBeCastBy(castContext))).getResult();
+        showActionBarMessage(caster, result.message());
         if (result.isFailure()) {
             return false;
         }
         return initiateCast(caster, castContext);
+    }
+
+    private static void showActionBarMessage(CasterRef caster, @Nullable Component message) {
+        if (message != null && caster.get() instanceof ServerPlayer serverPlayer) {
+            serverPlayer.displayClientMessage(message, true);
+        }
     }
 
     public static void select(ServerPlayer player, SkillSelection selection) {
@@ -223,7 +232,7 @@ public final class SkillcastingManager {
     private static void onCast(CastContext castContext) {
         castContext.skill().value().onCast((ServerLevel) castContext.level(), castContext);
         castContext.skill().value().onPostCast(castContext);
-        NeoForge.EVENT_BUS.post(new SkillEvent.OnCast(castContext));
+        NeoForge.EVENT_BUS.post(new SkillCastEvent.PostCast(castContext));
     }
 
     private static void endCast(CasterRef caster, SkillcastingData data, ActiveCast active, CastEndReason reason) {
@@ -235,19 +244,18 @@ public final class SkillcastingManager {
         AbstractSkill skill = castContext.skill().value();
         // on cast complete
         skill.onServerCastComplete(castContext, reason);
-        NeoForge.EVENT_BUS.post(new SkillEvent.OnCastComplete(castContext, reason));
+        NeoForge.EVENT_BUS.post(new SkillCastEvent.Complete(castContext, reason));
         // handle recasting
-        boolean isOnRecast = false;
+        boolean hadRecast = false;
+        boolean startedRecast = false;
         boolean completedToFruition = reason.isCompletion() || skill.getCastType() == CastType.CONTINUOUS;
         if (completedToFruition) {
             RecastManager recasts = castContext.getSkillcastingData().recasts();
             Holder<AbstractSkill> skillHolder = castContext.skill();
-            if (recasts.hasRecast(skillHolder)) {
-                isOnRecast = recasts.handleRecastConsumption(castContext);
-                RecastInstance recast = recasts.get(skillHolder);
-                if (recast == null) {
-                    SkillcastingNetwork.syncRecastRemove(caster, skillHolder);
-                } else {
+            hadRecast = recasts.hasRecast(skillHolder);
+            if (hadRecast) {
+                if (recasts.handleRecastConsumption(castContext)) {
+                    RecastInstance recast = recasts.get(skillHolder);
                     recast.components().applyFrom(castContext.components());
                     SkillcastingNetwork.syncRecast(caster, skillHolder, recast);
                 }
@@ -255,16 +263,16 @@ public final class SkillcastingManager {
                 RecastConfig recastConfig = castContext.getOrNull(SkillcastingComponentTypes.RECAST_CONFIG);
                 if (recastConfig != null && recastConfig.totalCasts() > 1) {
                     RecastInstance instance = new RecastInstance(recastConfig, castContext);
-                    if (!NeoForge.EVENT_BUS.post(new SkillEvent.OnRecastStart(castContext, instance)).isCanceled()) {
+                    if (!NeoForge.EVENT_BUS.post(new SkillRecastEvent.Start(castContext, instance)).isCanceled()) {
                         data.recasts().addRecast(instance);
-                        isOnRecast = true;
+                        startedRecast = true;
                         SkillcastingNetwork.syncRecast(caster, instance.skill(), instance);
                     }
                 }
             }
         }
-        // handle cooldown
-        if (completedToFruition && !isOnRecast) {
+        // a finished recast triggers its own cooldown
+        if (completedToFruition && !hadRecast && !startedRecast) {
             triggerCooldown(castContext);
         }
         // sync

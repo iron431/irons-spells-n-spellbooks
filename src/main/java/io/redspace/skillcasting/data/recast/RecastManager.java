@@ -1,7 +1,7 @@
 package io.redspace.skillcasting.data.recast;
 
 import com.mojang.serialization.Codec;
-import io.redspace.skillcasting.api.event.SkillEvent;
+import io.redspace.skillcasting.api.event.SkillRecastEvent;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.AbstractSkill;
@@ -32,17 +32,23 @@ public final class RecastManager {
     private final Map<Holder<AbstractSkill>, RecastInstance> recasts = new HashMap<>();
 
     public void removeRecast(CasterRef caster, Holder<AbstractSkill> skill, RecastResult result) {
-        RecastInstance instance = recasts.remove(skill);
+        RecastInstance instance = recasts.get(skill);
         if (instance == null) {
             return;
         }
         if (caster.level().isClientSide) {
+            recasts.remove(skill);
             return;
         }
         CastContext castContext = new CastContext(skill, caster, caster.level());
         castContext.components().applyFrom(instance.components());
+        finishRecast(caster, skill, instance, result, castContext);
+    }
+
+    private void finishRecast(CasterRef caster, Holder<AbstractSkill> skill, RecastInstance instance, RecastResult result, CastContext castContext) {
+        recasts.remove(skill);
         skill.value().onRecastFinished(castContext, result);
-        NeoForge.EVENT_BUS.post(new SkillEvent.OnRecastComplete(castContext, instance, result));
+        NeoForge.EVENT_BUS.post(new SkillRecastEvent.Finish(castContext, instance, result));
         SkillcastingManager.triggerCooldown(castContext);
         SkillcastingNetwork.syncRecastRemove(caster, skill);
     }
@@ -122,9 +128,7 @@ public final class RecastManager {
         }
         instance.consumeCast();
         if (instance.usedAllCasts()) {
-            skill.value().onRecastFinished(castContext, RecastResult.USED_ALL_RECASTS);
-            NeoForge.EVENT_BUS.post(new SkillEvent.OnRecastComplete(castContext, instance, RecastResult.USED_ALL_RECASTS));
-            recasts.remove(skill);
+            finishRecast(castContext.caster(), skill, instance, RecastResult.USED_ALL_RECASTS, castContext);
             return false;
         }
         return true;
