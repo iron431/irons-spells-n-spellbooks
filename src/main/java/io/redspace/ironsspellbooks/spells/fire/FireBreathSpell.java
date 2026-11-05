@@ -23,6 +23,7 @@ import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.RaycastBuilder;
 import io.redspace.skillcasting.util.SkillcastingUtils;
+import io.redspace.skillcasting.data.resolver.MobAimDirectionResolver;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -86,8 +87,23 @@ public class FireBreathSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        if (castContext.asEntityCaster() instanceof Mob) {
+            castContext.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, new MobAimDirectionResolver(castContext));
+        }
         castContext.set(SkillcastingComponentTypes.DAMAGE, 1 + getSpellPower(castContext) * 0.75f);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 8f);
+    }
+
+    @Override
+    public void onServerCastTick(CastContext castContext) {
+        MobAimDirectionResolver aimResolver = castContext.find(SkillcastingComponentTypes.DIRECTION_RESOLVER).map(resolver -> resolver instanceof MobAimDirectionResolver aim ? aim : null).orElse(null);
+        if (aimResolver == null || !(castContext.asEntityCaster() instanceof Mob mob)) {
+            return;
+        }
+        Entity target = mob.getTarget();
+        if (target != null) {
+            aimResolver.updateAim(castContext, target, 0.15f);
+        }
     }
 
     @Override
