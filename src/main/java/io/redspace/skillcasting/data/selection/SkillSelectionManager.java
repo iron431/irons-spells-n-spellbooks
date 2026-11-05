@@ -66,7 +66,7 @@ public final class SkillSelectionManager {
         NeoForge.EVENT_BUS.post(event);
 
         var sortedSources = new ArrayList<>(event.getSources());
-        sortedSources.sort(SkillSelectionPriority.SOURCE_ORDER);
+        sortedSources.sort(GatherSkillSelectionEvent.Source.ORDER);
 
         for (var source : sortedSources) {
             addFromContainer(source.container(), source.castSource(), source.priority());
@@ -300,9 +300,6 @@ public final class SkillSelectionManager {
         return options.isEmpty();
     }
 
-    /**
-     * @return threadsafe shallow copy
-     */
     public SkillSelectionManager copy() {
         SkillSelection selectionCopy = new SkillSelection();
         selectionCopy.copyFrom(this.skillSelection);

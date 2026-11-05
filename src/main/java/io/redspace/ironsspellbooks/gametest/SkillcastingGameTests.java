@@ -54,11 +54,19 @@ public class SkillcastingGameTests {
 
         var forward = new ArrayList<>(List.of(b, a));
         var reversed = new ArrayList<>(List.of(a, b));
-        forward.sort(SkillSelectionPriority.SOURCE_ORDER);
-        reversed.sort(SkillSelectionPriority.SOURCE_ORDER);
+        forward.sort(GatherSkillSelectionEvent.Source.ORDER);
+        reversed.sort(GatherSkillSelectionEvent.Source.ORDER);
 
         helper.assertTrue(forward.equals(List.of(a, b)), "[b, a] should sort to [a, b]");
         helper.assertTrue(reversed.equals(List.of(a, b)), "[a, b] should stay [a, b]");
+
+        var feet = new GatherSkillSelectionEvent.Source(container, CastSource.of("same", "feet"), SkillSelectionPriority.ARMOR);
+        var head = new GatherSkillSelectionEvent.Source(container, CastSource.of("same", "head"), SkillSelectionPriority.ARMOR);
+        var feetFirst = new ArrayList<>(List.of(feet, head));
+        var headFirst = new ArrayList<>(List.of(head, feet));
+        feetFirst.sort(GatherSkillSelectionEvent.Source.ORDER);
+        headFirst.sort(GatherSkillSelectionEvent.Source.ORDER);
+        helper.assertTrue(feetFirst.equals(List.of(head, feet)) && headFirst.equals(List.of(head, feet)), "head should sort before feet");
         helper.succeed();
     }
 
@@ -101,7 +109,7 @@ public class SkillcastingGameTests {
             RecastManager recasts = caster.skillcastingData().recasts();
             for (int i = 0; i < 100 && (i == 0 || recasts.hasRecast(skill)); i++) {
                 SkillcastingManager.initiateCast(caster, recastableContext(caster, skill));
-                SkillcastingManager.cancelCast(caster, CastEndReason.COMPLETED, false);
+                SkillcastingManager.cancelCast(caster, CastEndReason.COMPLETED);
             }
         });
     }
@@ -155,6 +163,14 @@ public class SkillcastingGameTests {
 
     private static void assertRecastFinishCooldownOnce(GameTestHelper helper, BiConsumer<CasterRef, Holder<AbstractSkill>> finishRecast) {
         Zombie zombie = helper.spawn(EntityType.ZOMBIE, 1, 1, 1);
+        try {
+            assertRecastFinishCooldownOnce(helper, finishRecast, zombie);
+        } finally {
+            zombie.discard();
+        }
+    }
+
+    private static void assertRecastFinishCooldownOnce(GameTestHelper helper, BiConsumer<CasterRef, Holder<AbstractSkill>> finishRecast, Zombie zombie) {
         CasterRef caster = CasterRef.entity(zombie);
         Holder<AbstractSkill> skill = SkillRegistry.holder(SpellRegistry.FLAMING_BARRAGE_SPELL.get());
         RecastManager recasts = caster.skillcastingData().recasts();

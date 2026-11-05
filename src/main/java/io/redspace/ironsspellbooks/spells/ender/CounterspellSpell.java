@@ -103,7 +103,7 @@ public class CounterspellSpell extends AbstractSpell {
             RecastManager recasts = skillcastingData.recasts();
             if (skillcastingData.isCasting()) {
                 didWork = true;
-                SkillcastingManager.cancelCast(target, CastEndReason.INTERRUPTED, true);
+                SkillcastingManager.cancelCastWithCooldown(target, CastEndReason.INTERRUPTED);
             }
             if (recasts.hasRecastsActive()) {
                 for (RecastInstance instance : recasts.getActiveRecasts()) {

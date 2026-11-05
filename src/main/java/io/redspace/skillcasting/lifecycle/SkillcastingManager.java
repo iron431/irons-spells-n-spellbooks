@@ -158,10 +158,17 @@ public final class SkillcastingManager {
     }
 
     public static void cancelCast(CasterRef caster, CastEndReason reason) {
-        cancelCast(caster, reason, reason == CastEndReason.COMPLETED || caster.skillcastingData().getActiveCastType() == CastType.CONTINUOUS);
+        if (caster.level().isClientSide()) {
+            return;
+        }
+        ActiveCast active = caster.skillcastingData().getActiveCast();
+        if (active == null) {
+            return;
+        }
+        endCast(caster, caster.skillcastingData(), active, reason);
     }
 
-    public static void cancelCast(CasterRef caster, CastEndReason reason, boolean triggerCooldown) {
+    public static void cancelCastWithCooldown(CasterRef caster, CastEndReason reason) {
         if (caster.level().isClientSide()) {
             return;
         }
@@ -170,8 +177,8 @@ public final class SkillcastingManager {
             return;
         }
         CastContext context = active.context();
-        endCast(caster, caster.skillcastingData(), active, reason);
-        if (triggerCooldown) {
+        cancelCast(caster, reason);
+        if (!caster.skillcastingData().cooldowns().isOnCooldown(context.skill())) {
             triggerCooldown(context);
         }
     }

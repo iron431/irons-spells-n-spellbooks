@@ -19,7 +19,7 @@ public abstract class SkillCastEvent extends SkillEvent {
 
         public Check(CastContext castContext, CastResult result) {
             super(castContext);
-            this.result = result;
+            this.result = Objects.requireNonNull(result);
         }
 
         public CastResult getResult() {

@@ -12,12 +12,29 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public final class GatherSkillSelectionEvent extends PlayerEvent {
 
     public record Source(@NotNull ISkillContainer container, @NotNull CastSource castSource,
                          @NotNull SkillSelectionPriority priority) {
+        private static final List<String> SLOT_RANK = List.of("head", "chest", "legs", "feet", "mainhand", "offhand");
+
+        // fallback to cast source comparison for deterministic client ordering in case of priority ties
+        public static final Comparator<Source> ORDER =
+                Comparator.<Source>comparingInt(source -> source.priority().order())
+                        .thenComparing(source -> source.castSource().type())
+                        .thenComparingInt(source -> slotRank(source.castSource().equipmentSlot()))
+                        .thenComparing(source -> source.castSource().equipmentSlot());
+
+        private static int slotRank(String slot) {
+            int rank = SLOT_RANK.indexOf(slot);
+            if (rank == -1) {
+                return SLOT_RANK.size();
+            }
+            return rank;
+        }
     }
 
     private final List<Source> sources = new ArrayList<>();
