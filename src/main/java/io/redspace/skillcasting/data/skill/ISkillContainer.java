@@ -2,7 +2,7 @@ package io.redspace.skillcasting.data.skill;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.redspace.skillcasting.api.event.SkillSelectionPriority;
+import io.redspace.skillcasting.data.selection.SkillSelectionPriority;
 import io.redspace.skillcasting.data.AbstractSkill;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

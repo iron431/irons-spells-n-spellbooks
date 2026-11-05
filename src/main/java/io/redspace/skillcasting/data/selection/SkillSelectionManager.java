@@ -1,8 +1,6 @@
 package io.redspace.skillcasting.data.selection;
 
-import io.netty.buffer.ByteBuf;
 import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
-import io.redspace.skillcasting.api.event.SkillSelectionPriority;
 import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.skill.ISkillContainer;
@@ -21,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,7 +66,7 @@ public final class SkillSelectionManager {
         NeoForge.EVENT_BUS.post(event);
 
         var sortedSources = new ArrayList<>(event.getSources());
-        sortedSources.sort(Comparator.comparingInt(source -> source.priority().sortOrder()));
+        sortedSources.sort(SkillSelectionPriority.SOURCE_ORDER);
 
         for (var source : sortedSources) {
             addFromContainer(source.container(), source.castSource(), source.priority());
@@ -85,7 +83,7 @@ public final class SkillSelectionManager {
     public synchronized void replaceFrom(SkillSelectionManager other) {
         options.clear();
         for (SelectionOption option : other.options) {
-            options.add(option.copy());
+            options.add(option);
         }
         skillSelection.copyFrom(other.skillSelection);
         selectionIndex = other.selectionIndex;
@@ -142,23 +140,22 @@ public final class SkillSelectionManager {
     }
 
     private int addOrMergeSelectionOption(SelectionOption option) {
-        SelectionOption existing = findExistingSkill(option.skillData.getHolder());
+        SelectionOption existing = findExistingSkill(option.skillData().getHolder());
         if (existing != null) {
-            if (option.skillData.getLevel() > existing.skillData.getLevel()) {
-                option.globalIndex = existing.globalIndex;
-                options.set(existing.globalIndex, option);
-                return existing.globalIndex;
+            if (option.skillData().getLevel() > existing.skillData().getLevel()) {
+                options.set(existing.globalIndex(), option.withGlobalIndex(existing.globalIndex()));
+                return existing.globalIndex();
             }
             return -1;
         }
-        option.globalIndex = options.size();
-        options.add(option);
-        return option.globalIndex;
+        int globalIndex = options.size();
+        options.add(option.withGlobalIndex(globalIndex));
+        return globalIndex;
     }
 
     private @Nullable SelectionOption findExistingSkill(Holder<AbstractSkill> skill) {
         for (SelectionOption option : options) {
-            if (option.skillData.getHolder().equals(skill)) {
+            if (option.skillData().getHolder().equals(skill)) {
                 return option;
             }
         }
@@ -168,16 +165,16 @@ public final class SkillSelectionManager {
     private void tryLastSelectionOrDefault() {
         if (skillSelection.lastIndex() < 0 || skillSelection.lastEquipmentSlot() == null) {
             options.stream().findFirst().ifPresent(selection ->
-                    makeLocalSelection(selection.castSource.equipmentSlot(), selection.localIndex, selection.globalIndex, false));
+                    makeLocalSelection(selection.castSource().equipmentSlot(), selection.localIndex(), selection.globalIndex(), false));
         } else {
             var skillsForSource = getOptionsForSlot(skillSelection.lastEquipmentSlot());
             if (!skillsForSource.isEmpty()) {
                 if (skillSelection.lastIndex() < skillsForSource.size()) {
                     var selection = skillsForSource.get(skillSelection.lastIndex());
-                    makeLocalSelection(skillSelection.lastEquipmentSlot(), skillSelection.lastIndex(), selection.globalIndex, false);
+                    makeLocalSelection(skillSelection.lastEquipmentSlot(), skillSelection.lastIndex(), selection.globalIndex(), false);
                 } else {
                     var selection = skillsForSource.getFirst();
-                    makeLocalSelection(skillSelection.lastEquipmentSlot(), 0, selection.globalIndex, false);
+                    makeLocalSelection(skillSelection.lastEquipmentSlot(), 0, selection.globalIndex(), false);
                 }
             }
         }
@@ -198,7 +195,7 @@ public final class SkillSelectionManager {
     public void makeSelection(int globalIndex) {
         if (globalIndex != selectionIndex && globalIndex >= 0 && globalIndex < options.size()) {
             var option = options.get(globalIndex);
-            makeLocalSelection(option.castSource.equipmentSlot(), option.localIndex, globalIndex, true);
+            makeLocalSelection(option.castSource().equipmentSlot(), option.localIndex(), globalIndex, true);
         }
     }
 
@@ -219,7 +216,7 @@ public final class SkillSelectionManager {
             return false;
         }
         for (SelectionOption option : options) {
-            if (option.castSource.equipmentSlot().equals(incoming.equipmentSlot()) && option.localIndex == incoming.index()) {
+            if (option.castSource().equipmentSlot().equals(incoming.equipmentSlot()) && option.localIndex() == incoming.index()) {
                 return true;
             }
         }
@@ -229,8 +226,8 @@ public final class SkillSelectionManager {
     private void reconcileSelectionIndexFromPointer() {
         selectionValid = false;
         for (SelectionOption option : options) {
-            if (Objects.equals(option.castSource.equipmentSlot(), skillSelection.equipmentSlot()) && option.localIndex == skillSelection.index()) {
-                selectionIndex = option.globalIndex;
+            if (Objects.equals(option.castSource().equipmentSlot(), skillSelection.equipmentSlot()) && option.localIndex() == skillSelection.index()) {
+                selectionIndex = option.globalIndex();
                 selectionValid = true;
                 return;
             }
@@ -248,7 +245,7 @@ public final class SkillSelectionManager {
 
     public int getGlobalSelectionIndex() {
         var selection = getSelection();
-        return selection == null ? -1 : selection.globalIndex;
+        return selection == null ? -1 : selection.globalIndex();
     }
 
     public @Nullable SelectionOption getSelection() {
@@ -262,7 +259,7 @@ public final class SkillSelectionManager {
 
     public @Nullable SkillData getSelectedSkillData() {
         if (selectionIndex >= 0 && selectionIndex < options.size()) {
-            return options.get(selectionIndex).skillData;
+            return options.get(selectionIndex).skillData();
         }
         return null;
     }
@@ -276,21 +273,21 @@ public final class SkillSelectionManager {
 
     public @Nullable SkillData getSkillData(int index) {
         var option = getOptionAt(index);
-        return option == null ? null : option.skillData;
+        return option == null ? null : option.skillData();
     }
 
     public @NotNull List<SelectionOption> getAllOptions() {
-        return options;
+        return Collections.unmodifiableList(options);
     }
 
     public @NotNull List<SelectionOption> getOptionsForSlot(String equipmentSlot) {
-        return options.stream().filter(option -> option.castSource.equipmentSlot().equals(equipmentSlot)).toList();
+        return options.stream().filter(option -> option.castSource().equipmentSlot().equals(equipmentSlot)).toList();
     }
 
     public @Nullable SkillData getSkillForSlot(String equipmentSlot, int index) {
         var skills = getOptionsForSlot(equipmentSlot);
         if (index >= 0 && index < skills.size()) {
-            return skills.get(index).skillData;
+            return skills.get(index).skillData();
         }
         return null;
     }
@@ -307,39 +304,25 @@ public final class SkillSelectionManager {
      * @return threadsafe shallow copy
      */
     public SkillSelectionManager copy() {
-        SkillSelectionManager copy = new SkillSelectionManager(this.skillSelection);
+        SkillSelection selectionCopy = new SkillSelection();
+        selectionCopy.copyFrom(this.skillSelection);
+        SkillSelectionManager copy = new SkillSelectionManager(selectionCopy);
         copy.options.addAll(this.options);
         copy.selectionIndex = this.selectionIndex;
         copy.selectionValid = this.selectionValid;
         return copy;
     }
 
-    public static final class SelectionOption {
-        public static final StreamCodec<ByteBuf, SkillSelectionPriority> PRIORITY_STREAM_CODEC =
-                ByteBufCodecs.idMapper(i -> SkillSelectionPriority.values()[i], SkillSelectionPriority::ordinal);
-
+    public record SelectionOption(SkillData skillData, CastSource castSource, int localIndex, int globalIndex,
+                                  SkillSelectionPriority priority) {
         public static final StreamCodec<RegistryFriendlyByteBuf, SelectionOption> STREAM_CODEC = StreamCodec.composite(
-                SkillData.STREAM_CODEC, o -> o.skillData,
-                CastSource.STREAM_CODEC, o -> o.castSource,
-                ByteBufCodecs.VAR_INT, o -> o.localIndex,
-                ByteBufCodecs.VAR_INT, o -> o.globalIndex,
-                PRIORITY_STREAM_CODEC, o -> o.priority,
+                SkillData.STREAM_CODEC, SelectionOption::skillData,
+                CastSource.STREAM_CODEC, SelectionOption::castSource,
+                ByteBufCodecs.VAR_INT, SelectionOption::localIndex,
+                ByteBufCodecs.VAR_INT, SelectionOption::globalIndex,
+                SkillSelectionPriority.STREAM_CODEC, SelectionOption::priority,
                 SelectionOption::new
         );
-
-        public SkillData skillData;
-        public CastSource castSource;
-        public int localIndex;
-        public int globalIndex;
-        public SkillSelectionPriority priority;
-
-        public SelectionOption(SkillData skillData, CastSource castSource, int localIndex, int globalIndex, SkillSelectionPriority priority) {
-            this.skillData = skillData;
-            this.castSource = castSource;
-            this.localIndex = localIndex;
-            this.globalIndex = globalIndex;
-            this.priority = priority;
-        }
 
         public AbstractSkill getSkill() {
             return skillData.getSkill();
@@ -349,7 +332,7 @@ public final class SkillSelectionManager {
             return skillData.getLevel();
         }
 
-        SelectionOption copy() {
+        public SelectionOption withGlobalIndex(int globalIndex) {
             return new SelectionOption(skillData, castSource, localIndex, globalIndex, priority);
         }
     }

@@ -1,6 +1,7 @@
 package io.redspace.skillcasting.api.event;
 
 import io.redspace.skillcasting.data.cast.CastSource;
+import io.redspace.skillcasting.data.selection.SkillSelectionPriority;
 import io.redspace.skillcasting.data.skill.ISkillContainer;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;

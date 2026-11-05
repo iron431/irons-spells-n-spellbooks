@@ -45,7 +45,7 @@ import io.redspace.ironsspellbooks.worldgen.IceSpiderPatrolSpawner;
 import io.redspace.skillcasting.api.event.BuildCastContextEvent;
 import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
 import io.redspace.skillcasting.api.event.SkillEvent;
-import io.redspace.skillcasting.api.event.SkillSelectionPriority;
+import io.redspace.skillcasting.data.selection.SkillSelectionPriority;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.data.cast.CastEndReason;

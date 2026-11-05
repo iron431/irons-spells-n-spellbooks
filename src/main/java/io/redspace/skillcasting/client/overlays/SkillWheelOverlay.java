@@ -121,7 +121,7 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
             CastContext castContext = SkillcastingManager.buildCastContext(CasterRef.entity(player),
                     SkillRegistry.holder(selectedSkill),
                     selectionOption.getLevel(),
-                    selectionOption.castSource);
+                    selectionOption.castSource());
             Font font = Minecraft.getInstance().font;
             SkillWheelInfo info = selectedSkill.buildSkillWheelInfo(castContext, selectionOption);
             int textHeight = Math.max(2, Math.max(info.leftText().size(), info.rightText().size())) * font.lineHeight + 5;

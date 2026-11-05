@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.item.spell_containers;
 
 import com.mojang.serialization.Codec;
-import io.redspace.skillcasting.api.event.SkillSelectionPriority;
+import io.redspace.skillcasting.data.selection.SkillSelectionPriority;
 import io.redspace.skillcasting.data.skill.ISkillContainer;
 import io.redspace.skillcasting.data.skill.SkillContainer;
 import io.redspace.skillcasting.data.skill.SkillData;

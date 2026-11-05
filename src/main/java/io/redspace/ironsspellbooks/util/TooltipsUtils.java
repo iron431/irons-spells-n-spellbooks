@@ -234,9 +234,9 @@ public class TooltipsUtils {
             var spellData = activeSpellSlots.get(i).skillData();
             var spellText = getTitleComponent(spellData, (LocalPlayer) player, SkillcastingManager.buildCastContext(CasterRef.entity(player), spellData.getHolder(), spellData.getLevel(), castSource)).setStyle(Style.EMPTY);
             if (playerSelection != null &&
-                    castSource.equipmentSlot().equals(playerSelection.castSource.equipmentSlot()) &&
-                    playerSelection.localIndex == i) {
-                var shiftMessage = formatActiveSpellTooltip(itemStack, playerSelection.skillData, castSource, (LocalPlayer) player);
+                    castSource.equipmentSlot().equals(playerSelection.castSource().equipmentSlot()) &&
+                    playerSelection.localIndex() == i) {
+                var shiftMessage = formatActiveSpellTooltip(itemStack, playerSelection.skillData(), castSource, (LocalPlayer) player);
                 shiftMessage.remove(0); // remove buffering empty line
                 addShiftTooltip(
                         lines,

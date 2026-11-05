@@ -265,7 +265,7 @@ public abstract class AbstractSpell extends AbstractSkill {
     public SkillWheelInfo buildSkillWheelInfo(CastContext castContext, SkillSelectionManager.SelectionOption selectionOption) {
         SkillWheelInfo info = new SkillWheelInfo();
         info.leftText().add(
-                Component.translatable("tooltip.skillcasting.level", TooltipsUtils.getLevelNumberComponent(selectionOption.skillData, castContext))
+                Component.translatable("tooltip.skillcasting.level", TooltipsUtils.getLevelNumberComponent(selectionOption.skillData(), castContext))
                         .withStyle(this.getRarity(castContext.getSkillLevel()).getDisplayName().getStyle())
         );
         TooltipsUtils.getManaCostComponent(castContext).ifPresent(

@@ -2,7 +2,7 @@ package io.redspace.skillcasting.client.overlays;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.skillcasting.Skillcasting;
-import io.redspace.skillcasting.api.event.SkillSelectionPriority;
+import io.redspace.skillcasting.data.selection.SkillSelectionPriority;
 import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.client.render.ClientRenderCache;
 import io.redspace.skillcasting.data.skill.SkillData;
@@ -66,7 +66,7 @@ public final class SkillBarOverlay implements LayeredDraw.Layer {
         for (int i = 0; i < locations.size(); i++) {
             if (i != selectedSkillIndex) {
                 boolean primarySource = i < options.size()
-                        && options.get(i).priority == SkillSelectionPriority.PRIMARY_SKILL_SOURCE;
+                        && options.get(i).priority().equals(SkillSelectionPriority.PRIMARY_SKILL_SOURCE);
                 guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y,
                         22 + (primarySource ? 0 : 110), 84, 22, 22);
             }
