@@ -39,7 +39,7 @@ public class ImbuedContainer extends SkillContainer {
     public static ImbuedContainer create(boolean mustEquip, int extraSlots, SkillData... skills) {
         var container = new ImbuedContainer(extraSlots + skills.length, true, mustEquip, List.of()).mutableCopy();
         for (SkillData data : skills) {
-            container.addSpell(data);
+            container.addSkill(data);
         }
         return container.toImmutable();
     }

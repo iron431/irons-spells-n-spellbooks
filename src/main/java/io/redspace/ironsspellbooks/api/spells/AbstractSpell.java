@@ -262,7 +262,7 @@ public abstract class AbstractSpell extends AbstractSkill {
     }
 
     @Override
-    public SkillWheelInfo buildSpellWheelInfo(CastContext castContext, SkillSelectionManager.SelectionOption selectionOption) {
+    public SkillWheelInfo buildSkillWheelInfo(CastContext castContext, SkillSelectionManager.SelectionOption selectionOption) {
         SkillWheelInfo info = new SkillWheelInfo();
         info.leftText().add(
                 Component.translatable("tooltip.skillcasting.level", TooltipsUtils.getLevelNumberComponent(selectionOption.skillData, castContext))

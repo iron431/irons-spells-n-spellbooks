@@ -170,13 +170,13 @@ public final class SkillSelectionManager {
             options.stream().findFirst().ifPresent(selection ->
                     makeLocalSelection(selection.castSource.equipmentSlot(), selection.localIndex, selection.globalIndex, false));
         } else {
-            var spellsForSource = getOptionsForSlot(skillSelection.lastEquipmentSlot());
-            if (!spellsForSource.isEmpty()) {
-                if (skillSelection.lastIndex() < spellsForSource.size()) {
-                    var selection = spellsForSource.get(skillSelection.lastIndex());
+            var skillsForSource = getOptionsForSlot(skillSelection.lastEquipmentSlot());
+            if (!skillsForSource.isEmpty()) {
+                if (skillSelection.lastIndex() < skillsForSource.size()) {
+                    var selection = skillsForSource.get(skillSelection.lastIndex());
                     makeLocalSelection(skillSelection.lastEquipmentSlot(), skillSelection.lastIndex(), selection.globalIndex, false);
                 } else {
-                    var selection = spellsForSource.getFirst();
+                    var selection = skillsForSource.getFirst();
                     makeLocalSelection(skillSelection.lastEquipmentSlot(), 0, selection.globalIndex, false);
                 }
             }
@@ -288,9 +288,9 @@ public final class SkillSelectionManager {
     }
 
     public @Nullable SkillData getSkillForSlot(String equipmentSlot, int index) {
-        var spells = getOptionsForSlot(equipmentSlot);
-        if (index >= 0 && index < spells.size()) {
-            return spells.get(index).skillData;
+        var skills = getOptionsForSlot(equipmentSlot);
+        if (index >= 0 && index < skills.size()) {
+            return skills.get(index).skillData;
         }
         return null;
     }

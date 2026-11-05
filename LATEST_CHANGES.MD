@@ -43,3 +43,5 @@
 - Skill containers with a slot index outside their size now decode with those slots dropped instead of throwing, and a negative size is rejected; `SkillContainer.CODEC` now shares `ISkillContainer.codec`
 - Saved skillcasting data with a missing `cooldowns`, `recasts` or `selection` field now loads with that part empty instead of failing
 - The cast component, position resolver and direction resolver registries are now synced, so a client missing an addon component gets a registry mismatch screen instead of a disconnect
+- [Breaking] Renamed spell identifiers to skill in `ISkillContainerMutable` (`setMaxSkillCount`, `setSkillAtIndex`, `addSkill`, `removeSkillAtIndex`, `removeSkill`), `SkillContainer` (`SKILL_DATA`, `SKILL_WHEEL`), `AbstractSkill.buildSkillWheelInfo` and the library `ClientRenderCache` (`relativeSkillBarSlotLocations`, `SKILL_LAYOUT`). Saved values are unchanged
+- [Breaking] `ISkillContainer.Factory` replaces `SkillContainer.Factory` and `Function4` in `ISkillContainer.codec`, `streamCodec` and the `SkillContainer` constructors. `SkillContainer.equals` and `hashCode` now distinguish subclasses

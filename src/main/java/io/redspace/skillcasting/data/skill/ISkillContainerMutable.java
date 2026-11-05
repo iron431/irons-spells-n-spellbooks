@@ -3,15 +3,15 @@ package io.redspace.skillcasting.data.skill;
 import io.redspace.skillcasting.data.AbstractSkill;
 
 public interface ISkillContainerMutable extends ISkillContainer {
-    void setMaxSpellCount(int maxSpells);
+    void setMaxSkillCount(int maxSkills);
 
-    boolean setSpellAtIndex(SkillData skillData, int index);
+    boolean setSkillAtIndex(SkillData skillData, int index);
 
-    boolean addSpell(SkillData skillData);
+    boolean addSkill(SkillData skillData);
 
-    boolean removeSpellAtIndex(int index);
+    boolean removeSkillAtIndex(int index);
 
-    boolean removeSpell(AbstractSkill spell);
+    boolean removeSkill(AbstractSkill skill);
 
     ISkillContainer toImmutable();
 }

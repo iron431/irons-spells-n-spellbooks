@@ -53,7 +53,7 @@ public class CreateSpellBookCommand {
                 boolean added;
                 do {
                     spell = new SpellFilter().getRandomSpell(source.getLevel().random);
-                    added = spell != null && spellContainer.addSpell(new SkillData(spell, source.getLevel().random.nextIntBetweenInclusive(1, spell.getMaxLevel())));
+                    added = spell != null && spellContainer.addSkill(new SkillData(spell, source.getLevel().random.nextIntBetweenInclusive(1, spell.getMaxLevel())));
                 } while (!added);
             }
             SpellbookContainer.set(itemstack, spellContainer.toImmutable());

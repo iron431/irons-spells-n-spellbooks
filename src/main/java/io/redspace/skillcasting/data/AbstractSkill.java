@@ -278,7 +278,7 @@ public abstract class AbstractSkill {
     public void onRecastFinished(CastContext castContext, RecastResult result) {
     }
 
-    public SkillWheelInfo buildSpellWheelInfo(CastContext castContext, SkillSelectionManager.SelectionOption selectionOption) {
+    public SkillWheelInfo buildSkillWheelInfo(CastContext castContext, SkillSelectionManager.SelectionOption selectionOption) {
         SkillWheelInfo info = new SkillWheelInfo();
         Component levelComponent;
         int levelTotal = castContext.getSkillLevel();

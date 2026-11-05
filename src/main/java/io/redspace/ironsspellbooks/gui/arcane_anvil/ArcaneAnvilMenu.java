@@ -122,8 +122,8 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
 
                         if (overridden == null || !overridden.isLocked()) {
                             result = baseItemStack.copy();
-                            imbueContainer.removeSpellAtIndex(nextSlotIndex);
-                            imbueContainer.setSpellAtIndex(new SkillData(scrollSlot.getSkill(), scrollSlot.getLevel(), false), nextSlotIndex);
+                            imbueContainer.removeSkillAtIndex(nextSlotIndex);
+                            imbueContainer.setSkillAtIndex(new SkillData(scrollSlot.getSkill(), scrollSlot.getLevel(), false), nextSlotIndex);
                             ImbuedContainer.set(result, imbueContainer.toImmutable());
                         }
                     }
@@ -178,7 +178,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
                     if (spellBookContainer.getMaxSkillCount() < max) {
                         result = baseItemStack.copy();
                         var upgradedContainer = SpellbookContainer.get(result).mutableCopy();
-                        upgradedContainer.setMaxSpellCount(upgradedContainer.getMaxSkillCount() + 1);
+                        upgradedContainer.setMaxSkillCount(upgradedContainer.getMaxSkillCount() + 1);
                         SpellbookContainer.set(result, upgradedContainer.toImmutable());
                     }
                 }
@@ -195,8 +195,8 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             SkillData data = spellContainer.getSkillAtIndex(nextSlotIndex);
             if (data != null && data.isLocked() && data.getHolder().equals(scrollSlot.getHolder()) && data.getLevel() < scrollSlot.getLevel()) {
                 result = baseItemStack.copy();
-                spellContainer.removeSpellAtIndex(nextSlotIndex);
-                spellContainer.setSpellAtIndex(new SkillData(scrollSlot.getSkill(), scrollSlot.getLevel(), false), nextSlotIndex);
+                spellContainer.removeSkillAtIndex(nextSlotIndex);
+                spellContainer.setSkillAtIndex(new SkillData(scrollSlot.getSkill(), scrollSlot.getLevel(), false), nextSlotIndex);
                 if (!result.has(DataComponents.ITEM_NAME)) {
                     result.set(DataComponents.ITEM_NAME, Component.translatable("tooltip.irons_spellbooks.improved_format", result.getHoverName()));
                 }

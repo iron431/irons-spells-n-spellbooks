@@ -86,9 +86,9 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
 
         SkillcastingData data = SkillcastingData.get(player);
         SkillSelectionManager manager = data.selectionManager();
-        int totalSpellsAvailable = manager.getSkillCount();
+        int totalSkillsAvailable = manager.getSkillCount();
 
-        if (totalSpellsAvailable <= 0) {
+        if (totalSkillsAvailable <= 0) {
             close();
             return;
         }
@@ -100,19 +100,19 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
 
         Vec2 screenCenter = new Vec2(minecraft.getWindow().getScreenWidth() * .5f, minecraft.getWindow().getScreenHeight() * .5f);
         Vec2 mousePos = new Vec2((float) minecraft.mouseHandler.xpos(), (float) minecraft.mouseHandler.ypos());
-        double radiansPerSpell = Math.toRadians(360 / (float) totalSpellsAvailable);
+        double radiansPerSkill = Math.toRadians(360 / (float) totalSkillsAvailable);
 
-        float mouseRotation = (getAngle(mousePos, screenCenter) + 1.570f + (float) radiansPerSpell * .5f) % 6.283f;
+        float mouseRotation = (getAngle(mousePos, screenCenter) + 1.570f + (float) radiansPerSkill * .5f) % 6.283f;
 
-        wheelSelection = (int) Mth.clamp(mouseRotation / radiansPerSpell, 0, totalSpellsAvailable - 1);
+        wheelSelection = (int) Mth.clamp(mouseRotation / radiansPerSkill, 0, totalSkillsAvailable - 1);
         if (mousePos.distanceToSqr(screenCenter) < ringOuterEdgeMin * ringOuterEdgeMin) {
             // do not make selection from interior of wheel
             wheelSelection = Math.max(0, manager.getSelectionIndex());
         }
 
         guiHelper.fill(0, 0, screenWidth, screenHeight, 0);
-        drawRadialBackgrounds(guiHelper, centerX, centerY, totalSpellsAvailable, wheelSelection);
-        drawDividingLines(guiHelper, centerX, centerY, totalSpellsAvailable);
+        drawRadialBackgrounds(guiHelper, centerX, centerY, totalSkillsAvailable, wheelSelection);
+        drawDividingLines(guiHelper, centerX, centerY, totalSkillsAvailable);
 
         //Text Tooltip and Background
         SkillSelectionManager.SelectionOption selectionOption = manager.getOptionAt(wheelSelection);
@@ -123,7 +123,7 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
                     selectionOption.getLevel(),
                     selectionOption.castSource);
             Font font = Minecraft.getInstance().font;
-            SkillWheelInfo info = selectedSkill.buildSpellWheelInfo(castContext, selectionOption);
+            SkillWheelInfo info = selectedSkill.buildSkillWheelInfo(castContext, selectionOption);
             int textHeight = Math.max(2, Math.max(info.leftText().size(), info.rightText().size())) * font.lineHeight + 5;
             int textCenterMargin = 5;
             int textTitleMargin = 5;
@@ -142,17 +142,17 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
         }
 
         // Skill Icons
-        float scale = Mth.lerp(totalSpellsAvailable / 15f, 2, 1.25f) * .65f;
-        double radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .25f * (totalSpellsAvailable / 15f));
-        Vec2[] locations = new Vec2[totalSpellsAvailable];
+        float scale = Mth.lerp(totalSkillsAvailable / 15f, 2, 1.25f) * .65f;
+        double radius = 3 / scale * (ringInnerEdge + ringInnerEdge) * .5 * (.85f + .25f * (totalSkillsAvailable / 15f));
+        Vec2[] locations = new Vec2[totalSkillsAvailable];
         for (int i = 0; i < locations.length; i++) {
-            locations[i] = new Vec2((float) (Math.sin(radiansPerSpell * i) * radius), (float) (-Math.cos(radiansPerSpell * i) * radius));
+            locations[i] = new Vec2((float) (Math.sin(radiansPerSkill * i) * radius), (float) (-Math.cos(radiansPerSkill * i) * radius));
         }
         for (int i = 0; i < locations.length; i++) {
             SkillData skillData = manager.getSkillData(i);
-            AbstractSkill spell = skillData == null ? null : skillData.getSkill();
-            if (spell != null) {
-                var texture = spell.getIconLocation();
+            AbstractSkill skill = skillData == null ? null : skillData.getSkill();
+            if (skill != null) {
+                var texture = skill.getIconLocation();
                 poseStack.pushPose();
                 poseStack.translate(centerX, centerY, 0);
                 poseStack.scale(scale, scale, scale);
@@ -162,7 +162,7 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
                 int cdWidth = 16 / 2;
                 guiHelper.blit(texture, (int) locations[i].x - iconWidth, (int) locations[i].y - iconWidth, 0, 0, 16, 16, 16, 16);
                 guiHelper.blit(TEXTURE, (int) locations[i].x - borderWidth, (int) locations[i].y - borderWidth, manager.getSelectionIndex() == i ? 32 : 0, 106, 32, 32);
-                float f = data.cooldowns().getCooldownPercent(spell);
+                float f = data.cooldowns().getCooldownPercent(skill);
                 if (f > 0) {
                     RenderSystem.enableBlend();
                     int pixels = (int) (16 * f + 1f);
@@ -201,7 +201,7 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
         RenderSystem.disableBlend();
     }
 
-    private void drawRadialBackgrounds(GuiGraphics guiGraphics, float centerX, float centerY, int skillsAvailable, int selectedSpellIndex) {
+    private void drawRadialBackgrounds(GuiGraphics guiGraphics, float centerX, float centerY, int skillsAvailable, int selectedSkillIndex) {
         float quarterCircle = Mth.HALF_PI;
         int segments;
         if (skillsAvailable < 6) {
@@ -210,11 +210,11 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
             segments = skillsAvailable * 2;
         }
         float radiansPerObject = 2 * Mth.PI / segments;
-        float radiansPerSpell = 2 * Mth.PI / skillsAvailable;
+        float radiansPerSkill = 2 * Mth.PI / skillsAvailable;
         ringOuterEdge = Math.max(ringOuterEdgeMin, ringOuterEdgeMax);
         for (int i = 0; i < segments; i++) {
-            final float beginRadians = i * radiansPerObject - (quarterCircle + (radiansPerSpell / 2));
-            final float endRadians = (i + 1) * radiansPerObject - (quarterCircle + (radiansPerSpell / 2));
+            final float beginRadians = i * radiansPerObject - (quarterCircle + (radiansPerSkill / 2));
+            final float endRadians = (i + 1) * radiansPerObject - (quarterCircle + (radiansPerSkill / 2));
 
             final float x1m1 = Mth.cos(beginRadians) * ringInnerEdge;
             final float x2m1 = Mth.cos(endRadians) * ringInnerEdge;
@@ -226,7 +226,7 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
             final float y1m2 = Mth.sin(beginRadians) * ringOuterEdge;
             final float y2m2 = Mth.sin(endRadians) * ringOuterEdge;
 
-            boolean isHighlighted = (i * skillsAvailable) / segments == selectedSpellIndex;
+            boolean isHighlighted = (i * skillsAvailable) / segments == selectedSkillIndex;
 
             Vector4f color = radialButtonColor;
             if (isHighlighted) color = highlightColor;
@@ -262,15 +262,15 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
             return;
 
         float quarterCircle = Mth.HALF_PI;
-        float radiansPerSpell = 2 * Mth.PI / skillsAvailable;
+        float radiansPerSkill = 2 * Mth.PI / skillsAvailable;
         ringOuterEdge = Math.max(ringOuterEdgeMin, ringOuterEdgeMax);
 
         for (int i = 0; i < skillsAvailable; i++) {
             final float closeWidth = 8 * Mth.DEG_TO_RAD;
             final float farWidth = closeWidth / 4;
-            final float beginCloseRadians = i * radiansPerSpell - (quarterCircle + (radiansPerSpell / 2)) - (closeWidth / 4);
+            final float beginCloseRadians = i * radiansPerSkill - (quarterCircle + (radiansPerSkill / 2)) - (closeWidth / 4);
             final float endCloseRadians = beginCloseRadians + closeWidth;
-            final float beginFarRadians = i * radiansPerSpell - (quarterCircle + (radiansPerSpell / 2)) - (farWidth / 4);
+            final float beginFarRadians = i * radiansPerSkill - (quarterCircle + (radiansPerSkill / 2)) - (farWidth / 4);
             final float endFarRadians = beginCloseRadians + farWidth;
 
             final float x1m1 = Mth.cos(beginCloseRadians) * ringInnerEdge;

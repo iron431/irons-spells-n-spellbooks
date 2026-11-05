@@ -56,7 +56,7 @@ public final class SkillcastingClientPlayerEvents {
 
     @SubscribeEvent
     public static void handleTooltips(ItemTooltipEvent event) {
-        // Active Spell Tooltip
+        // Active Skill Tooltip
         ItemStack stack = event.getItemStack();
         if (stack.has(SkillcastingDataComponents.CASTING_IMPLEMENT)) {
             handleCastingImplementTooltip(stack, null, event.getToolTip(), event.getFlags().isAdvanced());

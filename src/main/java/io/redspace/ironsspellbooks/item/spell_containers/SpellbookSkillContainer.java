@@ -36,7 +36,7 @@ public final class SpellbookSkillContainer extends SkillContainer {
     public static SpellbookSkillContainer create(int extraSlots, SkillData... skills) {
         var container = new SpellbookSkillContainer(extraSlots + skills.length, true, true, List.of()).mutableCopy();
         for (SkillData data : skills) {
-            container.addSpell(data);
+            container.addSkill(data);
         }
         return container.toImmutable();
     }

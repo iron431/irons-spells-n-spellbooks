@@ -46,10 +46,10 @@ public final class SkillBarOverlay implements LayeredDraw.Layer {
         int centerY = screenHeight - Math.max(55, screenHeight / 8);
 
         var options = manager.getAllOptions();
-        var locations = ClientRenderCache.relativeSpellBarSlotLocations;
+        var locations = ClientRenderCache.relativeSkillBarSlotLocations;
         int approximateWidth = locations.size() / 3;
         centerX -= approximateWidth * 5;
-        int selectedSpellIndex = manager.getSelectionIndex();
+        int selectedSkillIndex = manager.getSelectionIndex();
 
         prepTranslucency();
         for (Vec2 location : locations) {
@@ -64,7 +64,7 @@ public final class SkillBarOverlay implements LayeredDraw.Layer {
             }
         }
         for (int i = 0; i < locations.size(); i++) {
-            if (i != selectedSpellIndex) {
+            if (i != selectedSkillIndex) {
                 boolean primarySource = i < options.size()
                         && options.get(i).priority == SkillSelectionPriority.PRIMARY_SKILL_SOURCE;
                 guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y,
@@ -81,7 +81,7 @@ public final class SkillBarOverlay implements LayeredDraw.Layer {
             }
         }
         for (int i = 0; i < locations.size(); i++) {
-            if (i == selectedSpellIndex) {
+            if (i == selectedSkillIndex) {
                 guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 0, 84, 22, 22);
             }
         }

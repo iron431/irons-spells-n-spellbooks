@@ -7,21 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ClientRenderCache {
-    public static List<Vec2> relativeSpellBarSlotLocations = new ArrayList<>();
+    public static List<Vec2> relativeSkillBarSlotLocations = new ArrayList<>();
 
     private ClientRenderCache() {
     }
 
-    public static int[] getRowCounts(int spellCount) {
+    public static int[] getRowCounts(int skillCount) {
         int topRow = 0;
         int middleRow = 0;
         int bottomRow = 0;
-        if (spellCount <= 6) {
-            topRow = SPELL_LAYOUT[spellCount - 1][0];
-            middleRow = SPELL_LAYOUT[spellCount - 1][1];
-            bottomRow = SPELL_LAYOUT[spellCount - 1][2];
+        if (skillCount <= 6) {
+            topRow = SKILL_LAYOUT[skillCount - 1][0];
+            middleRow = SKILL_LAYOUT[skillCount - 1][1];
+            bottomRow = SKILL_LAYOUT[skillCount - 1][2];
         } else {
-            for (int i = 0; i < spellCount; i++) {
+            for (int i = 0; i < skillCount; i++) {
                 if (middleRow * 2 < (topRow + bottomRow + 1)) {
                     middleRow++;
                 } else if (topRow <= bottomRow) {
@@ -35,12 +35,12 @@ public final class ClientRenderCache {
     }
 
     public static void generateRelativeLocations(SkillSelectionManager manager, int boxSize, int spriteSize) {
-        relativeSpellBarSlotLocations.clear();
-        int spellCount = manager.getSkillCount();
-        if (spellCount == 0) {
+        relativeSkillBarSlotLocations.clear();
+        int skillCount = manager.getSkillCount();
+        if (skillCount == 0) {
             return;
         }
-        int[] rowCounts = getRowCounts(spellCount);
+        int[] rowCounts = getRowCounts(skillCount);
         int[] row1 = new int[rowCounts[0]];
         int[] row2 = new int[rowCounts[1]];
         int[] row3 = new int[rowCounts[2]];
@@ -59,14 +59,14 @@ public final class ClientRenderCache {
         for (int row = 0; row < display.length; row++) {
             for (int column = 0; column < display[row].length; column++) {
                 int offset = -rowWidth[row] / 2;
-                relativeSpellBarSlotLocations.add(new Vec2(
+                relativeSkillBarSlotLocations.add(new Vec2(
                         offset + column * boxSize - spriteSize / 2f,
                         row * boxSize - overallHeight / 2f - spriteSize / 2f));
             }
         }
     }
 
-    public static final int[][] SPELL_LAYOUT = {
+    public static final int[][] SKILL_LAYOUT = {
             {1, 0, 0},
             {2, 0, 0},
             {2, 1, 0},

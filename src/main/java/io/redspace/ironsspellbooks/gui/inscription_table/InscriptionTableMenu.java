@@ -108,7 +108,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             public void onTake(Player player, ItemStack stack) {
                 var spellBookStack = spellBookSlot.getItem();
                 var spellList = SpellbookContainer.get(spellBookStack).mutableCopy();
-                spellList.removeSpellAtIndex(selectedSpellIndex);
+                spellList.removeSkillAtIndex(selectedSpellIndex);
                 SpellbookContainer.set(spellBookStack, spellList.toImmutable());
                 super.onTake(player, spellBookStack);
             }
@@ -157,7 +157,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             ISkillContainer bookContainer = SpellbookContainer.get(spellBookItemStack);
             SkillData scrollSlot = ScrollContainer.getScrollData(scrollItemStack);
             var mutableBookContainer = bookContainer.mutableCopy();
-            if (scrollSlot != null && bookContainer.getSkillAtIndex(selectedIndex) == null && mutableBookContainer.setSpellAtIndex(scrollSlot, selectedIndex)) {
+            if (scrollSlot != null && bookContainer.getSkillAtIndex(selectedIndex) == null && mutableBookContainer.setSkillAtIndex(scrollSlot, selectedIndex)) {
                 getScrollSlot().remove(1);
                 SpellbookContainer.set(spellBookItemStack, mutableBookContainer.toImmutable());
                 setupResultSlot();

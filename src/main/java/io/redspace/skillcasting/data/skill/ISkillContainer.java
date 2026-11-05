@@ -1,6 +1,5 @@
 package io.redspace.skillcasting.data.skill;
 
-import com.mojang.datafixers.util.Function4;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.skillcasting.api.event.SkillSelectionPriority;
@@ -15,23 +14,28 @@ import java.util.List;
 
 public interface ISkillContainer {
 
-    static <T extends ISkillContainer> Codec<T> codec(Function4<Integer, Boolean, Boolean, List<SkillSlot>, T> constructor) {
+    @FunctionalInterface
+    interface Factory<C extends ISkillContainer> {
+        C create(int size, boolean skillWheel, boolean mustEquip, List<SkillSlot> slots);
+    }
+
+    static <C extends ISkillContainer> Codec<C> codec(Factory<C> factory) {
         return RecordCodecBuilder.create(builder -> builder.group(
                 Codec.intRange(0, Integer.MAX_VALUE).fieldOf("size").forGetter(ISkillContainer::getMaxSkillCount),
                 Codec.BOOL.fieldOf("wheel").forGetter(ISkillContainer::isSkillWheel),
                 Codec.BOOL.fieldOf("equip").forGetter(ISkillContainer::mustEquip),
                 Codec.list(SkillSlot.CODEC).fieldOf("data").forGetter(ISkillContainer::getActiveSkills)
-        ).apply(builder, (size, wheel, equip, slots) -> constructor.apply(size, wheel, equip,
+        ).apply(builder, (size, wheel, equip, slots) -> factory.create(size, wheel, equip,
                 slots.stream().filter(slot -> slot.index() >= 0 && slot.index() < size).toList())));
     }
 
-    static <T extends ISkillContainer> StreamCodec<RegistryFriendlyByteBuf, T> streamCodec(Function4<Integer, Boolean, Boolean, List<SkillSlot>, T> constructor) {
+    static <C extends ISkillContainer> StreamCodec<RegistryFriendlyByteBuf, C> streamCodec(Factory<C> factory) {
         return StreamCodec.composite(
                 ByteBufCodecs.VAR_INT, ISkillContainer::getMaxSkillCount,
                 ByteBufCodecs.BOOL, ISkillContainer::isSkillWheel,
                 ByteBufCodecs.BOOL, ISkillContainer::mustEquip,
                 SkillSlot.SKILL_SLOT.apply(ByteBufCodecs.list()), ISkillContainer::getActiveSkills,
-                constructor);
+                factory::create);
     }
 
     int getMaxSkillCount();
@@ -79,7 +83,7 @@ public interface ISkillContainer {
     static ISkillContainer create(boolean mustEquip, int extraSlots, SkillData... skills) {
         var container = SkillContainer.fromSerialized(extraSlots + skills.length, true, mustEquip, List.of()).mutableCopy();
         for (SkillData data : skills) {
-            container.addSpell(data);
+            container.addSkill(data);
         }
         return container.toImmutable();
     }

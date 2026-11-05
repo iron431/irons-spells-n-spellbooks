@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Grouping of text components to render at the head of the skill wheel when previewing this spell selection
+ * Grouping of text components to render at the head of the skill wheel when previewing this skill selection
  *
  * @param leftText  The left half of the tooltip, typically displaying generic stats (level, cooldown, etc)
  * @param rightText The right half of the tooltip, typically displaying specific stats (skill damage, skill attributes, etc)

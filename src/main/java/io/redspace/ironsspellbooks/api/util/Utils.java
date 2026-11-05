@@ -459,7 +459,7 @@ public class Utils {
             var container = ImbuedContainer.get(result).mutableCopy();
             for (SkillSlot slot : container.getActiveSkills()) {
                 if (!slot.isLocked()) {
-                    container.removeSpellAtIndex(slot.index());
+                    container.removeSkillAtIndex(slot.index());
                     hasResult = true;
                 }
             }

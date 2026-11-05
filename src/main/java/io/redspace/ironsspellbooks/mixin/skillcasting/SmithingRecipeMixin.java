@@ -35,7 +35,7 @@ public class SmithingRecipeMixin {
                                 //copy previous spells using new container vessel
                                 ISkillContainerMutable mutable = resultSkillContainer.mutableCopy();
                                 for (var slot : inputContainer.get().getActiveSkills()) {
-                                    mutable.setSpellAtIndex(slot.skillData(), slot.index());
+                                    mutable.setSkillAtIndex(slot.skillData(), slot.index());
                                 }
                                 result.set(type, (T) mutable.toImmutable());
                             }

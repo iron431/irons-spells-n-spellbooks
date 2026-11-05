@@ -1,11 +1,9 @@
 package io.redspace.skillcasting.data.skill;
 
-import com.mojang.datafixers.util.Function4;
 import com.mojang.serialization.Codec;
 import io.redspace.skillcasting.api.event.SkillSelectionPriority;
 import io.redspace.skillcasting.data.AbstractSkill;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
@@ -17,88 +15,81 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SkillContainer implements ISkillContainer {
-    public static final String SPELL_DATA = "data";
+    public static final String SKILL_DATA = "data";
     public static final String MAX_SLOTS = "size";
     public static final String MUST_EQUIP = "equip";
-    public static final String SPELL_WHEEL = "wheel";
+    public static final String SKILL_WHEEL = "wheel";
 
     public static final String SLOT_INDEX = "index";
 
     public static final Codec<ISkillContainer> CODEC = ISkillContainer.codec(SkillContainer::fromSerialized);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ISkillContainer> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT, ISkillContainer::getMaxSkillCount,
-            ByteBufCodecs.BOOL, ISkillContainer::isSkillWheel,
-            ByteBufCodecs.BOOL, ISkillContainer::mustEquip,
-            SkillSlot.SKILL_SLOT.apply(ByteBufCodecs.list()), ISkillContainer::getActiveSkills,
-            SkillContainer::fromSerialized
-    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, ISkillContainer> STREAM_CODEC = ISkillContainer.streamCodec(SkillContainer::fromSerialized);
 
-    public interface Factory<T extends SkillContainer> extends Function4<Integer, Boolean, Boolean, List<SkillSlot>, T> {
-    }
-
-    private static SkillContainer basic(int maxSpells, boolean spellWheel, boolean mustEquip, List<SkillSlot> skills) {
-        return new SkillContainer(maxSpells, spellWheel, mustEquip, skills, SkillContainer::basic);
+    private static SkillContainer basic(int maxSkills, boolean skillWheel, boolean mustEquip, List<SkillSlot> skills) {
+        return new SkillContainer(maxSkills, skillWheel, mustEquip, skills, SkillContainer::basic);
     }
 
     public static ISkillContainer fromSerialized(int count, boolean wheel, boolean equip, List<SkillSlot> skills) {
         return basic(count, wheel, equip, skills);
     }
 
-    protected final Factory<? extends SkillContainer> factory;
+    protected final ISkillContainer.Factory<? extends SkillContainer> factory;
     protected SkillSlot[] slots;
-    protected int maxSpells;
+    protected int maxSkills;
     protected int activeSlots;
-    protected boolean spellWheel;
+    protected boolean skillWheel;
     protected boolean mustEquip;
 
-    private SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip) {
-        this(maxSpells, spellWheel, mustEquip, List.of(), SkillContainer::basic);
+    private SkillContainer(int maxSkills, boolean skillWheel, boolean mustEquip) {
+        this(maxSkills, skillWheel, mustEquip, List.of(), SkillContainer::basic);
     }
 
-    private SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip, SkillSlot[] slots) {
-        this(maxSpells, spellWheel, mustEquip, slots, SkillContainer::basic);
+    private SkillContainer(int maxSkills, boolean skillWheel, boolean mustEquip, SkillSlot[] slots) {
+        this(maxSkills, skillWheel, mustEquip, slots, SkillContainer::basic);
     }
 
-    protected SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip, List<SkillSlot> skills, Factory<? extends SkillContainer> factory) {
-        this.maxSpells = maxSpells;
-        this.slots = new SkillSlot[maxSpells];
-        this.spellWheel = spellWheel;
+    protected SkillContainer(int maxSkills, boolean skillWheel, boolean mustEquip, List<SkillSlot> skills, ISkillContainer.Factory<? extends SkillContainer> factory) {
+        this.maxSkills = maxSkills;
+        this.slots = new SkillSlot[maxSkills];
+        this.skillWheel = skillWheel;
         this.mustEquip = mustEquip;
         this.factory = factory;
         skills.forEach(slot -> this.slots[slot.index()] = slot);
         this.activeSlots = skills.size();
     }
 
-    protected SkillContainer(int maxSpells, boolean spellWheel, boolean mustEquip, SkillSlot[] slots, Factory<? extends SkillContainer> factory) {
-        this.maxSpells = maxSpells;
+    protected SkillContainer(int maxSkills, boolean skillWheel, boolean mustEquip, SkillSlot[] slots, ISkillContainer.Factory<? extends SkillContainer> factory) {
+        this.maxSkills = maxSkills;
         this.slots = slots;
-        this.spellWheel = spellWheel;
+        this.skillWheel = skillWheel;
         this.mustEquip = mustEquip;
         this.factory = factory;
         this.activeSlots = (int) Arrays.stream(slots).filter(Objects::nonNull).count();
     }
 
-    public final SkillContainer copyWith(int maxSpells, boolean spellWheel, boolean mustEquip, SkillSlot[] slots) {
-        return factory.apply(maxSpells, spellWheel, mustEquip, Arrays.stream(slots).filter(Objects::nonNull).toList());
+    public final SkillContainer copyWith(int maxSkills, boolean skillWheel, boolean mustEquip, SkillSlot[] slots) {
+        return factory.create(maxSkills, skillWheel, mustEquip, Arrays.stream(slots).filter(Objects::nonNull).toList());
     }
 
     @Override
     public boolean equals(Object obj) {
         return obj == this || (obj instanceof SkillContainer o &&
+                getClass() == obj.getClass() &&
                 Arrays.equals(o.slots, this.slots) &&
-                this.maxSpells == o.maxSpells &&
+                this.maxSkills == o.maxSkills &&
                 this.activeSlots == o.activeSlots &&
-                this.spellWheel == o.spellWheel &&
+                this.skillWheel == o.skillWheel &&
                 this.mustEquip == o.mustEquip);
     }
 
     @Override
     public int hashCode() {
         int hash = Arrays.hashCode(slots);
-        hash = (hash * 31 + maxSpells) * 31 + activeSlots;
+        hash = hash * 31 + getClass().hashCode();
+        hash = (hash * 31 + maxSkills) * 31 + activeSlots;
         hash *= 1000;
-        hash += spellWheel ? 100 : 0;
+        hash += skillWheel ? 100 : 0;
         hash += mustEquip ? 10 : 0;
         return hash;
     }
@@ -106,13 +97,13 @@ public class SkillContainer implements ISkillContainer {
     @Override
     public String toString() {
         return String.format(
-                getClass().getSimpleName() + "[maxSpells:%d, activeSlots:%d, spellWheel:%s, mustEquip:%s, slots:%s]",
-                maxSpells, activeSlots, spellWheel, mustEquip, Arrays.toString(slots));
+                getClass().getSimpleName() + "[maxSkills:%d, activeSlots:%d, skillWheel:%s, mustEquip:%s, slots:%s]",
+                maxSkills, activeSlots, skillWheel, mustEquip, Arrays.toString(slots));
     }
 
     @Override
     public int getMaxSkillCount() {
-        return maxSpells;
+        return maxSkills;
     }
 
     @Override
@@ -127,8 +118,8 @@ public class SkillContainer implements ISkillContainer {
 
     @Override
     public SkillSlot[] getAllSkills() {
-        var result = new SkillSlot[maxSpells];
-        if (maxSpells > 0) {
+        var result = new SkillSlot[maxSkills];
+        if (maxSkills > 0) {
             System.arraycopy(slots, 0, result, 0, slots.length);
         }
         return result;
@@ -151,12 +142,12 @@ public class SkillContainer implements ISkillContainer {
 
     @Override
     public boolean isSkillWheel() {
-        return spellWheel;
+        return skillWheel;
     }
 
     @Override
     public @Nullable SkillData getSkillAtIndex(int index) {
-        if (index >= 0 && index < maxSpells) {
+        if (index >= 0 && index < maxSkills) {
             var result = slots[index];
             if (result != null) {
                 return result.skillData();
@@ -166,10 +157,10 @@ public class SkillContainer implements ISkillContainer {
     }
 
     @Override
-    public int getIndexForSkill(AbstractSkill spell) {
-        for (int i = 0; i < maxSpells; i++) {
+    public int getIndexForSkill(AbstractSkill skill) {
+        for (int i = 0; i < maxSkills; i++) {
             var slot = slots[i];
-            if (slot != null && spell.equals(slot.getSkill())) {
+            if (slot != null && skill.equals(slot.getSkill())) {
                 return i;
             }
         }
@@ -185,7 +176,7 @@ public class SkillContainer implements ISkillContainer {
         private final C origin;
 
         public Mutable(C container) {
-            super(container.maxSpells, container.spellWheel, container.mustEquip, Arrays.copyOf(container.slots, container.slots.length), container.factory);
+            super(container.maxSkills, container.skillWheel, container.mustEquip, Arrays.copyOf(container.slots, container.slots.length), container.factory);
             this.origin = container;
         }
 
@@ -195,15 +186,15 @@ public class SkillContainer implements ISkillContainer {
         }
 
         @Override
-        public void setMaxSpellCount(int maxSpells) {
-            this.maxSpells = maxSpells;
-            slots = Arrays.copyOf(slots, maxSpells);
+        public void setMaxSkillCount(int maxSkills) {
+            this.maxSkills = maxSkills;
+            slots = Arrays.copyOf(slots, maxSkills);
             activeSlots = (int) Arrays.stream(slots).filter(Objects::nonNull).count();
         }
 
         @Override
-        public boolean setSpellAtIndex(SkillData skillData, int index) {
-            if (index > -1 && index < maxSpells && Arrays.stream(slots).noneMatch(s -> s != null && skillData.getHolder().equals(s.skillData().getHolder()))) {
+        public boolean setSkillAtIndex(SkillData skillData, int index) {
+            if (index > -1 && index < maxSkills && Arrays.stream(slots).noneMatch(s -> s != null && skillData.getHolder().equals(s.skillData().getHolder()))) {
                 if(slots[index] == null){
                     activeSlots++;
                 }
@@ -214,13 +205,13 @@ public class SkillContainer implements ISkillContainer {
         }
 
         @Override
-        public boolean addSpell(SkillData skillData) {
-            return setSpellAtIndex(skillData, getNextAvailableIndex());
+        public boolean addSkill(SkillData skillData) {
+            return setSkillAtIndex(skillData, getNextAvailableIndex());
         }
 
         @Override
-        public boolean removeSpellAtIndex(int index) {
-            if (index > -1 && index < maxSpells && slots[index] != null) {
+        public boolean removeSkillAtIndex(int index) {
+            if (index > -1 && index < maxSkills && slots[index] != null) {
                 slots[index] = null;
                 activeSlots--;
                 return true;
@@ -229,14 +220,14 @@ public class SkillContainer implements ISkillContainer {
         }
 
         @Override
-        public boolean removeSpell(AbstractSkill spell) {
-            if (spell == null) {
+        public boolean removeSkill(AbstractSkill skill) {
+            if (skill == null) {
                 return false;
             }
-            for (int i = 0; i < maxSpells; i++) {
+            for (int i = 0; i < maxSkills; i++) {
                 var slot = slots[i];
-                if (slot != null && spell.equals(slot.getSkill())) {
-                    return removeSpellAtIndex(i);
+                if (slot != null && skill.equals(slot.getSkill())) {
+                    return removeSkillAtIndex(i);
                 }
             }
             return false;
@@ -245,7 +236,7 @@ public class SkillContainer implements ISkillContainer {
         @Override
         @SuppressWarnings("unchecked")
         public C toImmutable() {
-            return (C) copyWith(maxSpells, spellWheel, mustEquip, slots);
+            return (C) copyWith(maxSkills, skillWheel, mustEquip, slots);
         }
     }
 }
