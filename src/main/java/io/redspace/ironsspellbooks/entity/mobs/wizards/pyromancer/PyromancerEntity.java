@@ -82,7 +82,7 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
         );
         this.goalSelector.addGoal(3, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(10, new WizardRecoverGoal(this));
+        this.goalSelector.addGoal(10, new WizardRecoverGoal<>(this));
 
         //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));

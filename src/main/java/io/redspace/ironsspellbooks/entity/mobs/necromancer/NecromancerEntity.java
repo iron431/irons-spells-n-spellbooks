@@ -56,7 +56,7 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
         this.goalSelector.addGoal(5, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(10, new WizardRecoverGoal(this));
+        this.goalSelector.addGoal(10, new WizardRecoverGoal<>(this));
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));

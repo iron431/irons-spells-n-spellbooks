@@ -2,8 +2,6 @@ package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.util.SkillcastingUtils;
-import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.data.SkillcastingData;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,7 +14,6 @@ import java.util.EnumSet;
 public class SpellBarrageGoal extends Goal {
     protected static final int interval = 5;
     protected final PathfinderMob mob;
-    protected final AbstractSpellCastingMob spellCastingMob;
     protected LivingEntity target;
     protected final int attackIntervalMin;
     protected final int attackIntervalMax;
@@ -29,11 +26,10 @@ public class SpellBarrageGoal extends Goal {
     protected final int minSpellLevel;
     protected final int maxSpellLevel;
 
-    public SpellBarrageGoal(Mob abstractSpellCastingMob, AbstractSkill spell, int minLevel, int maxLevel, int pAttackIntervalMin, int pAttackIntervalMax, int projectileCount) {
+    public SpellBarrageGoal(Mob mob, AbstractSkill spell, int minLevel, int maxLevel, int pAttackIntervalMin, int pAttackIntervalMax, int projectileCount) {
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Flag.TARGET));
-        if (abstractSpellCastingMob instanceof PathfinderMob m && abstractSpellCastingMob instanceof AbstractSpellCastingMob castingMob) {
+        if (mob instanceof PathfinderMob m) {
             this.mob = m;
-            this.spellCastingMob = castingMob;
         } else
             throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
         this.attackIntervalMin = pAttackIntervalMin;

@@ -57,3 +57,4 @@
 - [Breaking] Every recast end (all casts used, timeout, forced removal) now removes the recast before `SkillRecastEvent.Finish` and then triggers the cooldown once. `SkillRecastEvent.Finish` listeners see `hasRecast` false on every path (it was true when all casts were used), and `AbstractSkill.onRecastFinished` overrides now run after the removal too
 - [Breaking] `AttributeRegistry#simpleAddition`, `simpleScale`, `modifyComponentAsBase` and `modifyComponentAsBaseInt` are removed; spell attributes now modify cast components in one place. The attribute's own base is ignored. A component the spell did not set is only created by a flat modifier, starting from 0
 - [Breaking] `SchoolType` is built with `SchoolType.builder()`; both public constructors are removed
+- [Breaking] `WizardRecoverGoal` is now `WizardRecoverGoal<T extends PathfinderMob & IDrinkPotions>` and `SpellBarrageGoal` no longer requires an `AbstractSpellCastingMob`

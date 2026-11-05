@@ -1,27 +1,22 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
-import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.IDrinkPotions;
+import io.redspace.skillcasting.data.SkillcastingData;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 
-public class WizardRecoverGoal extends Goal {
+public class WizardRecoverGoal<T extends PathfinderMob & IDrinkPotions> extends Goal {
 
-    protected final PathfinderMob mob;
-    protected final AbstractSpellCastingMob spellCastingMob;
+    protected final T mob;
     protected final int minDelay, maxDelay;
     protected int delay = 15;
 
-    public WizardRecoverGoal(AbstractSpellCastingMob mob) {
+    public WizardRecoverGoal(T mob) {
         this(mob, 50, 120);
     }
 
-    public WizardRecoverGoal(AbstractSpellCastingMob mob, int minDelay, int maxDelay) {
-        this.spellCastingMob = mob;
-        if (mob instanceof PathfinderMob m) {
-            this.mob = m;
-        } else
-            throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
-
+    public WizardRecoverGoal(T mob, int minDelay, int maxDelay) {
+        this.mob = mob;
         this.minDelay = minDelay;
         this.maxDelay = maxDelay;
     }
@@ -30,12 +25,12 @@ public class WizardRecoverGoal extends Goal {
     public boolean canUse() {
         // Delay only gets decremented if the first conditions are true, so it's smart.
         //IronsSpellbooks.LOGGER.debug("WizardRecoverGoal {} {} {} {}", mob.getTarget(), mob.isDrinkingPotion(), mob.isCasting(), delay);
-        return mob.getTarget() == null && mob.getHealth() < mob.getMaxHealth() && !spellCastingMob.isDrinkingPotion() && !spellCastingMob.isCasting() && --delay <= 0;
+        return mob.getTarget() == null && mob.getHealth() < mob.getMaxHealth() && !mob.isDrinkingPotion() && !SkillcastingData.get(mob).isCasting() && --delay <= 0;
     }
 
     @Override
     public void start() {
-        spellCastingMob.startDrinkingPotion();
+        mob.startDrinkingPotion();
         delay = mob.getRandom().nextIntBetweenInclusive(minDelay, maxDelay);
         //IronsSpellbooks.LOGGER.debug("WizardRecoverGoal begin {}", delay);
     }

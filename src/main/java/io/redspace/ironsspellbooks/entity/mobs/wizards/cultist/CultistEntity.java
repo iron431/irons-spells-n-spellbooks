@@ -110,7 +110,7 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
         );
         this.goalSelector.addGoal(4, new PatrolNearLocationGoal(this, 30, .75f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(10, new WizardRecoverGoal(this));
+        this.goalSelector.addGoal(10, new WizardRecoverGoal<>(this));
         //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));

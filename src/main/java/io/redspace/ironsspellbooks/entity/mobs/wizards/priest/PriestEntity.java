@@ -120,7 +120,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.goalSelector.addGoal(6, new ReturnToHomeAtNightGoal<>(this, 1f));
         this.goalSelector.addGoal(7, new PatrolNearLocationGoal(this, 30, 1f));
         this.goalSelector.addGoal(8, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(10, new WizardRecoverGoal(this));
+        this.goalSelector.addGoal(10, new WizardRecoverGoal<>(this));
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new GenericDefendVillageTargetGoal(this));
