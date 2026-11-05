@@ -21,9 +21,9 @@ import java.util.Map;
 
 public final class SkillcastingData {
     public static final Codec<SkillcastingData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            CooldownManager.CODEC.fieldOf("cooldowns").forGetter(SkillcastingData::cooldowns),
-            RecastManager.CODEC.fieldOf("recasts").forGetter(SkillcastingData::recasts),
-            SkillSelection.CODEC.fieldOf("selection").forGetter(SkillcastingData::selection)
+            CooldownManager.CODEC.optionalFieldOf("cooldowns", new CooldownManager()).forGetter(SkillcastingData::cooldowns),
+            RecastManager.CODEC.optionalFieldOf("recasts", new RecastManager()).forGetter(SkillcastingData::recasts),
+            SkillSelection.CODEC.optionalFieldOf("selection", new SkillSelection()).forGetter(SkillcastingData::selection)
     ).apply(builder, (cooldowns, recasts, selection) -> {
         SkillcastingData data = new SkillcastingData();
         data.cooldowns.replaceFrom(cooldowns);

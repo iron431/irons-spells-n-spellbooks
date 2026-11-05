@@ -2,7 +2,6 @@ package io.redspace.skillcasting.data.skill;
 
 import com.mojang.datafixers.util.Function4;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.skillcasting.api.event.SkillSelectionPriority;
 import io.redspace.skillcasting.data.AbstractSkill;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -25,12 +24,7 @@ public class SkillContainer implements ISkillContainer {
 
     public static final String SLOT_INDEX = "index";
 
-    public static final Codec<ISkillContainer> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.INT.fieldOf(MAX_SLOTS).forGetter(ISkillContainer::getMaxSkillCount),
-            Codec.BOOL.fieldOf(SPELL_WHEEL).forGetter(ISkillContainer::isSkillWheel),
-            Codec.BOOL.fieldOf(MUST_EQUIP).forGetter(ISkillContainer::mustEquip),
-            Codec.list(SkillSlot.CODEC).fieldOf(SPELL_DATA).forGetter(ISkillContainer::getActiveSkills)
-    ).apply(builder, SkillContainer::fromSerialized));
+    public static final Codec<ISkillContainer> CODEC = ISkillContainer.codec(SkillContainer::fromSerialized);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ISkillContainer> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, ISkillContainer::getMaxSkillCount,

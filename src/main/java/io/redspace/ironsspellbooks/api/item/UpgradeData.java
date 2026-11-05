@@ -45,42 +45,44 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
     ).apply(builder, (slot, list) -> new UpgradeData(list, slot)));
 
     @Deprecated(forRemoval = true)
-    private static final Codec<UpgradeData> DEPRECATED_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.STRING.fieldOf(SLOT).forGetter(UpgradeData::getUpgradedSlot),
-            Codec.list(ELEMENT_CODEC).fieldOf(UPGRADES)
-                    .forGetter(
-                            (data) -> data.upgrades().entrySet().stream().map(entry -> new ObjectObjectImmutablePair<>(entry.getKey().getKey().location().toString(), entry.getValue())).toList())
-    ).apply(builder, (slot, list) -> new UpgradeData(parseCodec(list), slot)));
+    private record LegacyUpgradeData(String slot, List<ObjectObjectImmutablePair<String, Integer>> upgrades) {
+    }
 
-    // todo(legacy-data): between MC versions; pre-map upgrade list format (2025-03). At the 26.x port delete ELEMENT_CODEC, DEPRECATED_CODEC,
-    //  ops, parseCodec and the deprecated*Wrapper methods and set CODEC = REAL_CODEC. The forRemoval markers on those private members carry no addon meaning.
+    @Deprecated(forRemoval = true)
+    private static final Codec<LegacyUpgradeData> DEPRECATED_CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            Codec.STRING.fieldOf(SLOT).forGetter(LegacyUpgradeData::slot),
+            Codec.list(ELEMENT_CODEC).fieldOf(UPGRADES).forGetter(LegacyUpgradeData::upgrades)
+    ).apply(builder, LegacyUpgradeData::new));
+
+    // todo(legacy-data): between MC versions; pre-map upgrade list format (2025-03). At the 26.x port delete ELEMENT_CODEC, LegacyUpgradeData,
+    //  DEPRECATED_CODEC, parseCodec and the deprecated*Wrapper methods and set CODEC = REAL_CODEC. The forRemoval markers on those private members carry no addon meaning.
     public static final Codec<UpgradeData> CODEC = Codec.withAlternative(REAL_CODEC, Codec.of(
             UpgradeData::deprecatedEncodeWrapper,
             UpgradeData::deprecatedDecodeWrapper
     ));
 
-    @Deprecated(forRemoval = true) // holy scary...
+    @Deprecated(forRemoval = true)
     private static <T> DataResult<T> deprecatedEncodeWrapper(final UpgradeData input, final DynamicOps<T> ops, final T prefix) {
-        return DEPRECATED_CODEC.encode(input, ops, prefix);
+        var legacyUpgrades = input.upgrades().entrySet().stream()
+                .map(entry -> new ObjectObjectImmutablePair<>(entry.getKey().getKey().location().toString(), entry.getValue()))
+                .toList();
+        return DEPRECATED_CODEC.encode(new LegacyUpgradeData(input.getUpgradedSlot(), legacyUpgrades), ops, prefix);
     }
 
-    @Deprecated(forRemoval = true)
     /**
-     * holy scary... temporarily store for decoding ops, so that a record-built-codec can access the ops, which usually doesnt have registry access, can now reference the static registry ops.
+     * Upgrade ids in the legacy list are resolved against the registry access carried by this call's ops, so no ops
+     * need to be stashed for the record codec.
      */
-    private static DynamicOps<?> ops;
-
     @Deprecated(forRemoval = true)
     private static <T> DataResult<com.mojang.datafixers.util.Pair<UpgradeData, T>> deprecatedDecodeWrapper(final DynamicOps<T> ops, final T input) {
-        UpgradeData.ops = ops;
-        var result = DEPRECATED_CODEC.decode(ops, input);
-        UpgradeData.ops = null;
-        return result;
+        return DEPRECATED_CODEC.decode(ops, input).map(result -> result.mapFirst(
+                legacy -> new UpgradeData(parseCodec(legacy.upgrades(), ops), legacy.slot())
+        ));
     }
 
     @Deprecated(forRemoval = true)
-    private static ImmutableMap<Holder<UpgradeOrbType>, Integer> parseCodec(List<ObjectObjectImmutablePair<String, Integer>> data) {
-        if (UpgradeData.ops instanceof RegistryOps<?> ops) {
+    private static ImmutableMap<Holder<UpgradeOrbType>, Integer> parseCodec(List<ObjectObjectImmutablePair<String, Integer>> data, DynamicOps<?> decodingOps) {
+        if (decodingOps instanceof RegistryOps<?> ops) {
             var reg = ops.getter(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).get();
             ImmutableMap.Builder<Holder<UpgradeOrbType>, Integer> map = ImmutableMap.builder();
             for (Pair<String, Integer> pair : data) {

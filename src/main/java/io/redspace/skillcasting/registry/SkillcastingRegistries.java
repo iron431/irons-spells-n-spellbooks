@@ -30,11 +30,11 @@ public final class SkillcastingRegistries {
             ResourceKey.createRegistryKey(Skillcasting.id("direction_resolver_types"));
 
     public static final Registry<AbstractSkill> SKILL_REGISTRY = new RegistryBuilder<>(SKILL_REGISTRY_KEY).sync(true).create();
-    public static final Registry<ComponentType<?>> COMPONENT_TYPES = new RegistryBuilder<>(COMPONENT_TYPE_REGISTRY_KEY).create();
+    public static final Registry<ComponentType<?>> COMPONENT_TYPES = new RegistryBuilder<>(COMPONENT_TYPE_REGISTRY_KEY).sync(true).create();
     public static final Registry<PositionResolver.Type<?>> POSITION_RESOLVER_TYPES =
-            new RegistryBuilder<>(POSITION_RESOLVER_TYPE_KEY).create();
+            new RegistryBuilder<>(POSITION_RESOLVER_TYPE_KEY).sync(true).create();
     public static final Registry<DirectionResolver.Type<?>> DIRECTION_RESOLVER_TYPES =
-            new RegistryBuilder<>(DIRECTION_RESOLVER_TYPE_KEY).create();
+            new RegistryBuilder<>(DIRECTION_RESOLVER_TYPE_KEY).sync(true).create();
 
     public static final Codec<Holder<AbstractSkill>> SKILL_HOLDER_CODEC = SKILL_REGISTRY.holderByNameCodec();
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<AbstractSkill>> SKILL_HOLDER_STREAM_CODEC =

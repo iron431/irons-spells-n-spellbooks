@@ -15,13 +15,14 @@ import java.util.List;
 
 public interface ISkillContainer {
 
-    static <T extends ISkillContainer> Codec<T> codec(Function4<Integer, Boolean, Boolean, List<SkillSlot>, T> constructor){
+    static <T extends ISkillContainer> Codec<T> codec(Function4<Integer, Boolean, Boolean, List<SkillSlot>, T> constructor) {
         return RecordCodecBuilder.create(builder -> builder.group(
-                Codec.INT.fieldOf("size").forGetter(ISkillContainer::getMaxSkillCount),
+                Codec.intRange(0, Integer.MAX_VALUE).fieldOf("size").forGetter(ISkillContainer::getMaxSkillCount),
                 Codec.BOOL.fieldOf("wheel").forGetter(ISkillContainer::isSkillWheel),
                 Codec.BOOL.fieldOf("equip").forGetter(ISkillContainer::mustEquip),
                 Codec.list(SkillSlot.CODEC).fieldOf("data").forGetter(ISkillContainer::getActiveSkills)
-        ).apply(builder, constructor));
+        ).apply(builder, (size, wheel, equip, slots) -> constructor.apply(size, wheel, equip,
+                slots.stream().filter(slot -> slot.index() >= 0 && slot.index() < size).toList())));
     }
 
     static <T extends ISkillContainer> StreamCodec<RegistryFriendlyByteBuf, T> streamCodec(Function4<Integer, Boolean, Boolean, List<SkillSlot>, T> constructor) {
