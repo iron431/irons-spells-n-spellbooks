@@ -65,6 +65,7 @@ public class BloodSlashSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
+        castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1f);
     }
 
     @Override
