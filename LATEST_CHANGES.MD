@@ -2,6 +2,7 @@
 - Tyros now uses cast components instead of attribute modifier hack to quickly channel his midair fireballs
 - Hand-held imbues (swords, staves, wands) now rank with armor imbues in the skill bar and wheel instead of after them
 - Shadow Slash now reads its dash distance and hit radius from the cast range and cast radius components, so spell range and spell radius attributes affect it
+- Flat bonuses from range, radius, piercing, ricochet, projectile speed and effect duration attributes now apply to spells that never set that value
 - Mobs casting Fire Breath, Dragon Breath, Poison Breath or Cone of Cold now track their target while channeling, like Ray of Siphoning
 
 ### API
@@ -54,4 +55,5 @@
 - [Breaking] Skill events are split into top-level `SkillCastEvent` (Check/PreCast/PostCast/Complete) and `SkillRecastEvent` (Start/Finish) families (both extend `SkillEvent`): `BeforeCastStart` is `SkillCastEvent.PreCast`, `OnCast` is `SkillCastEvent.PostCast`, `OnCastComplete` is `SkillCastEvent.Complete`, `OnRecastStart` is `SkillRecastEvent.Start`, `OnRecastComplete` is `SkillRecastEvent.Finish`
 - Added `SkillCastEvent.Check`, posted right after `canBeCastBy`; its result replaces the skill's, including the action bar message. Added `SkillCastEvent.PreCast#cancelWithMessage`, which shows the message on a player caster's action bar
 - [Breaking] Every recast end (all casts used, timeout, forced removal) now removes the recast before `SkillRecastEvent.Finish` and then triggers the cooldown once. `SkillRecastEvent.Finish` listeners see `hasRecast` false on every path (it was true when all casts were used), and `AbstractSkill.onRecastFinished` overrides now run after the removal too
+- [Breaking] `AttributeRegistry#simpleAddition`, `simpleScale`, `modifyComponentAsBase` and `modifyComponentAsBaseInt` are removed; spell attributes now modify cast components in one place. The attribute's own base is ignored. A component the spell did not set is only created by a flat modifier, starting from 0
 - [Breaking] `SchoolType` is built with `SchoolType.builder()`; both public constructors are removed

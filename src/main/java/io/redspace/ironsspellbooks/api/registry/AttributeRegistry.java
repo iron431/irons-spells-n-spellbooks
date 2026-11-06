@@ -3,15 +3,18 @@ package io.redspace.ironsspellbooks.api.registry;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.TickRepresentativeAttribute;
+import io.redspace.ironsspellbooks.mixin.AttributeInstanceAccessor;
+import io.redspace.skillcasting.api.event.BuildCastContextEvent;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.component.ComponentType;
-import io.redspace.skillcasting.api.event.BuildCastContextEvent;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,7 +24,9 @@ import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Map;
+import java.util.function.DoubleFunction;
 import java.util.function.Supplier;
 
 
@@ -102,63 +107,40 @@ public class AttributeRegistry {
     @SubscribeEvent
     public static void applyAttributesToContext(BuildCastContextEvent.Post event) {
         CastContext castContext = event.context();
-        if (!(castContext.skill().value() instanceof AbstractSpell spell) || !(castContext.asEntityCaster() instanceof LivingEntity livingEntity)) {
+        if (!(castContext.skill().value() instanceof AbstractSpell) || !(castContext.asEntityCaster() instanceof LivingEntity livingEntity)) {
             return;
         }
-        modifyComponentAsBase(castContext, SkillcastingComponentTypes.CAST_RADIUS, livingEntity.getAttribute(AttributeRegistry.SPELL_RADIUS));
-        modifyComponentAsBase(castContext, SkillcastingComponentTypes.CAST_RANGE, livingEntity.getAttribute(AttributeRegistry.SPELL_RANGE));
-        modifyComponentAsBase(castContext, SkillcastingComponentTypes.TELEPORT_RANGE, livingEntity.getAttribute(AttributeRegistry.SPELL_RANGE));
-        simpleAddition(castContext, livingEntity, SkillcastingComponentTypes.PROJECTILE_RICOCHET, AttributeRegistry.SPELL_RICOCHET, 0);
-        simpleAddition(castContext, livingEntity, SkillcastingComponentTypes.PROJECTILE_PIERCE, AttributeRegistry.SPELL_PIERCING, 0);
-        simpleScale(castContext, livingEntity, SkillcastingComponentTypes.PROJECTILE_SPEED, AttributeRegistry.SPELL_PROJECTILE_SPEED, 1.0f);
-        modifyComponentAsBase(castContext, SkillcastingComponentTypes.DOT_DAMAGE, livingEntity.getAttribute(AttributeRegistry.SPELL_DAMAGE_OVER_TIME));
-        modifyComponentAsBase(castContext, SkillcastingComponentTypes.HEALING, livingEntity.getAttribute(AttributeRegistry.SPELL_HEALING));
-        modifyComponentAsBaseInt(castContext, SkillcastingComponentTypes.EFFECT_DURATION_TICKS, livingEntity.getAttribute(AttributeRegistry.SPELL_EFFECT_DURATION));
+        applyToComponent(castContext, livingEntity, SkillcastingComponentTypes.CAST_RADIUS, SPELL_RADIUS, value -> (float) value);
+        applyToComponent(castContext, livingEntity, SkillcastingComponentTypes.CAST_RANGE, SPELL_RANGE, value -> (float) value);
+        applyToComponent(castContext, livingEntity, SkillcastingComponentTypes.TELEPORT_RANGE, SPELL_RANGE, value -> (float) value);
+        applyToComponent(castContext, livingEntity, SkillcastingComponentTypes.PROJECTILE_RICOCHET, SPELL_RICOCHET, value -> (int) value);
+        applyToComponent(castContext, livingEntity, SkillcastingComponentTypes.PROJECTILE_PIERCE, SPELL_PIERCING, value -> (int) value);
+        applyToComponent(castContext, livingEntity, SkillcastingComponentTypes.PROJECTILE_SPEED, SPELL_PROJECTILE_SPEED, value -> (float) value);
+        applyToComponent(castContext, livingEntity, SkillcastingComponentTypes.DOT_DAMAGE, SPELL_DAMAGE_OVER_TIME, value -> (float) value);
+        applyToComponent(castContext, livingEntity, SkillcastingComponentTypes.HEALING, SPELL_HEALING, value -> (float) value);
+        applyToComponent(castContext, livingEntity, SkillcastingComponentTypes.EFFECT_DURATION_TICKS, SPELL_EFFECT_DURATION, value -> (int) value);
     }
 
-    public static void simpleAddition(CastContext castContext, LivingEntity livingEntity, Supplier<ComponentType<Integer>> componentType, Holder<Attribute> attribute, int defaultValue) {
-        int value = (int) livingEntity.getAttributeValue(attribute);
-        if (value == 0) {
+    private static <T extends Number> void applyToComponent(CastContext castContext, LivingEntity livingEntity, Supplier<ComponentType<T>> componentType, Holder<Attribute> attribute, DoubleFunction<T> cast) {
+        AttributeInstance instance = livingEntity.getAttribute(attribute);
+        if (instance == null) {
             return;
         }
-        castContext.set(componentType, castContext.getOrDefault(componentType, defaultValue) + value);
-    }
-
-    public static void simpleScale(CastContext castContext, LivingEntity livingEntity, Supplier<ComponentType<Float>> componentType, Holder<Attribute> attribute, float defaultValue) {
-        float value = (float) livingEntity.getAttributeValue(attribute);
-        if (value == 0) {
+        Map<AttributeModifier.Operation, Map<ResourceLocation, AttributeModifier>> modifiers = ((AttributeInstanceAccessor) instance).irons_spellbooks$modifiersByOperation();
+        Collection<AttributeModifier> addValue = modifiers.getOrDefault(AttributeModifier.Operation.ADD_VALUE, Map.of()).values();
+        if (!castContext.has(componentType) && addValue.isEmpty()) {
             return;
         }
-        castContext.set(componentType, castContext.getOrDefault(componentType, defaultValue) * value);
-    }
-
-    public static void modifyComponentAsBase(CastContext castContext, Supplier<ComponentType<Float>> componentType, @Nullable AttributeInstance attribute) {
-        if (attribute == null) {
-            return;
-        }
-        castContext.mutate(componentType,
-                value -> {
-                    AttributeInstance simulated = new AttributeInstance(attribute.getAttribute(), (atr) -> {
-                    });
-                    simulated.replaceFrom(attribute);
-                    simulated.setBaseValue(simulated.getBaseValue() + value.doubleValue());
-                    return (float) simulated.getValue();
-                }
-        );
-    }
-
-    public static void modifyComponentAsBaseInt(CastContext castContext, Supplier<ComponentType<Integer>> componentType, @Nullable AttributeInstance attribute) {
-        if (attribute == null) {
-            return;
-        }
-        castContext.mutate(componentType,
-                value -> {
-                    AttributeInstance simulated = new AttributeInstance(attribute.getAttribute(), (atr) -> {
-                    });
-                    simulated.replaceFrom(attribute);
-                    simulated.setBaseValue(simulated.getBaseValue() + value.doubleValue());
-                    return (int) simulated.getValue();
-                }
-        );
+        double base = castContext.getOrDefault(componentType, cast.apply(0)).doubleValue();
+        double add = addValue.stream()
+                .mapToDouble(AttributeModifier::amount)
+                .sum();
+        double multiplyBase = 1 + modifiers.getOrDefault(AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Map.of()).values().stream()
+                .mapToDouble(AttributeModifier::amount)
+                .sum();
+        double multiplyTotal = modifiers.getOrDefault(AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL, Map.of()).values().stream()
+                .mapToDouble(modifier -> 1 + modifier.amount())
+                .reduce(1, (a, b) -> a * b);
+        castContext.set(componentType, cast.apply((base + add) * multiplyBase * multiplyTotal));
     }
 }

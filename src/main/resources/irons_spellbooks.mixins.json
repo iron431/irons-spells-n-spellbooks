@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "AbstractArrowAccessor",
+    "AttributeInstanceAccessor",
     "BeardifierMixin",
     "CreeperMixin",
     "CurioHooksMixin",

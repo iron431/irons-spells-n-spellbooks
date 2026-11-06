@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.gametest;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.skillcasting.api.event.BuildCooldownEvent;
 import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
@@ -20,14 +21,20 @@ import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.monster.Zombie;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +104,53 @@ public class SkillcastingGameTests {
                 SkillcastingManager.cancelCast(caster, CastEndReason.COMPLETED, false);
             }
         });
+    }
+
+    @GameTest(template = "empty")
+    public static void attributesModifyCastComponents(GameTestHelper helper) {
+        Zombie zombie = helper.spawn(EntityType.ZOMBIE, 1, 1, 1);
+        CasterRef caster = CasterRef.entity(zombie);
+        Holder<AbstractSkill> firebolt = SkillRegistry.holder(SpellRegistry.FIREBOLT_SPELL.get());
+
+        CastContext unmodified = fireboltContext(caster, firebolt);
+        helper.assertTrue(unmodified.getOrNull(SkillcastingComponentTypes.PROJECTILE_SPEED) == 1.75f, "firebolt speed should be 1.75");
+        helper.assertFalse(unmodified.has(SkillcastingComponentTypes.CAST_RANGE), "firebolt should not set a range");
+        helper.assertFalse(unmodified.has(SkillcastingComponentTypes.PROJECTILE_PIERCE), "firebolt should not set pierce");
+
+        addModifier(helper, zombie, AttributeRegistry.SPELL_PROJECTILE_SPEED, modifier("speed", 0.2, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        addModifier(helper, zombie, AttributeRegistry.SPELL_RANGE, modifier("range_base", 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        CastContext percentOnly = fireboltContext(caster, firebolt);
+        helper.assertTrue(Math.abs(percentOnly.getOrNull(SkillcastingComponentTypes.PROJECTILE_SPEED) - 2.1f) < 1e-5, "speed 1.75 with +20% should be 2.1");
+        helper.assertFalse(percentOnly.has(SkillcastingComponentTypes.CAST_RANGE), "percent alone should not create a range");
+
+        addModifier(helper, zombie, AttributeRegistry.SPELL_RANGE, modifier("range_flat", 1, AttributeModifier.Operation.ADD_VALUE));
+        addModifier(helper, zombie, AttributeRegistry.SPELL_RANGE, modifier("range_total", 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        addModifier(helper, zombie, AttributeRegistry.SPELL_PIERCING, modifier("pierce", 2, AttributeModifier.Operation.ADD_VALUE));
+        CastContext withFlat = fireboltContext(caster, firebolt);
+        helper.assertTrue(Math.abs(withFlat.getOrNull(SkillcastingComponentTypes.CAST_RANGE) - 3f) < 1e-5, "range (0 + 1) * 1.5 * 2 should be 3");
+        helper.assertTrue(withFlat.getOrNull(SkillcastingComponentTypes.PROJECTILE_PIERCE) == 2, "pierce 0 + 2 should be 2");
+
+        attribute(helper, zombie, AttributeRegistry.SPELL_PIERCING).removeModifier(IronsSpellbooks.id("test_pierce"));
+        CastContext flatRemoved = fireboltContext(caster, firebolt);
+        helper.assertFalse(flatRemoved.has(SkillcastingComponentTypes.PROJECTILE_PIERCE), "a removed flat modifier should not create pierce");
+        helper.succeed();
+    }
+
+    private static CastContext fireboltContext(CasterRef caster, Holder<AbstractSkill> firebolt) {
+        return SkillcastingManager.buildCastContext(caster, firebolt, 1, CastSource.of("test", EquipmentSlot.MAINHAND));
+    }
+
+    private static AttributeModifier modifier(String name, double amount, AttributeModifier.Operation operation) {
+        return new AttributeModifier(IronsSpellbooks.id("test_" + name), amount, operation);
+    }
+
+    private static void addModifier(GameTestHelper helper, LivingEntity entity, DeferredHolder<Attribute, Attribute> attribute, AttributeModifier modifier) {
+        attribute(helper, entity, attribute).addTransientModifier(modifier);
+    }
+
+    private static AttributeInstance attribute(GameTestHelper helper, LivingEntity entity, DeferredHolder<Attribute, Attribute> attribute) {
+        Holder<Attribute> holder = helper.getLevel().registryAccess().registryOrThrow(Registries.ATTRIBUTE).getHolderOrThrow(attribute.getKey());
+        return entity.getAttribute(holder);
     }
 
     private static void assertRecastFinishCooldownOnce(GameTestHelper helper, BiConsumer<CasterRef, Holder<AbstractSkill>> finishRecast) {
