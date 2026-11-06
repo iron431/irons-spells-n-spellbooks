@@ -31,37 +31,21 @@ public class SchoolType {
     private final boolean requiresLearning;
     private final boolean allowLooting;
 
-    public SchoolType(
-            TagKey<Item> focus,
-            Component displayName,
-            Supplier<ComponentType<Float>> powerComponent,
-            Holder<Attribute> powerAttribute,
-            Holder<Attribute> resistanceAttribute,
-            Holder<SoundEvent> defaultCastSound,
-            ResourceKey<DamageType> damageType,
-            boolean requiresLearning,
-            boolean allowLooting) {
-        this.focus = focus;
-        this.displayName = displayName;
-        this.displayStyle = displayName.getStyle();
-        this.powerAttribute = powerAttribute;
-        this.resistanceAttribute = resistanceAttribute;
-        this.defaultCastSound = defaultCastSound;
-        this.damageType = damageType;
-        this.requiresLearning = requiresLearning;
-        this.allowLooting = allowLooting;
-        this.powerComponent = powerComponent;
+    private SchoolType(Builder builder) {
+        this.focus = builder.focus;
+        this.displayName = builder.displayName;
+        this.displayStyle = builder.displayName.getStyle();
+        this.powerAttribute = builder.powerAttribute;
+        this.resistanceAttribute = builder.resistanceAttribute;
+        this.defaultCastSound = builder.castSound;
+        this.damageType = builder.damageType;
+        this.requiresLearning = builder.requiresLearning;
+        this.allowLooting = builder.allowLooting;
+        this.powerComponent = builder.powerComponent;
     }
 
-    public SchoolType(
-            TagKey<Item> focus,
-            Component displayName,
-            Supplier<ComponentType<Float>> powerComponent,
-            Holder<Attribute> powerAttribute,
-            Holder<Attribute> resistanceAttribute,
-            Holder<SoundEvent> defaultCastSound,
-            ResourceKey<DamageType> damageType) {
-        this(focus, displayName, powerComponent, powerAttribute, resistanceAttribute, defaultCastSound, damageType, false, true);
+    public static Builder builder() {
+        return new Builder();
     }
 
     /**
@@ -117,5 +101,82 @@ public class SchoolType {
 
     public Supplier<ComponentType<Float>> getPowerComponent() {
         return powerComponent;
+    }
+
+    public static final class Builder {
+        private TagKey<Item> focus;
+        private Component displayName;
+        private Supplier<ComponentType<Float>> powerComponent;
+        private Holder<Attribute> powerAttribute;
+        private Holder<Attribute> resistanceAttribute;
+        private Holder<SoundEvent> castSound;
+        private ResourceKey<DamageType> damageType;
+        private boolean requiresLearning = false;
+        private boolean allowLooting = true;
+
+        private Builder() {
+        }
+
+        public Builder focus(TagKey<Item> focus) {
+            this.focus = focus;
+            return this;
+        }
+
+        public Builder displayName(Component displayName) {
+            this.displayName = displayName;
+            return this;
+        }
+
+        public Builder powerComponent(Supplier<ComponentType<Float>> powerComponent) {
+            this.powerComponent = powerComponent;
+            return this;
+        }
+
+        public Builder powerAttribute(Holder<Attribute> powerAttribute) {
+            this.powerAttribute = powerAttribute;
+            return this;
+        }
+
+        public Builder resistanceAttribute(Holder<Attribute> resistanceAttribute) {
+            this.resistanceAttribute = resistanceAttribute;
+            return this;
+        }
+
+        public Builder castSound(Holder<SoundEvent> castSound) {
+            this.castSound = castSound;
+            return this;
+        }
+
+        public Builder damageType(ResourceKey<DamageType> damageType) {
+            this.damageType = damageType;
+            return this;
+        }
+
+        public Builder requiresLearning() {
+            this.requiresLearning = true;
+            return this;
+        }
+
+        public Builder noLooting() {
+            this.allowLooting = false;
+            return this;
+        }
+
+        public SchoolType build() {
+            require(focus, "focus");
+            require(displayName, "displayName");
+            require(powerComponent, "powerComponent");
+            require(powerAttribute, "powerAttribute");
+            require(resistanceAttribute, "resistanceAttribute");
+            require(castSound, "castSound");
+            require(damageType, "damageType");
+            return new SchoolType(this);
+        }
+
+        private static void require(Object value, String field) {
+            if (value == null) {
+                throw new IllegalStateException("SchoolType.Builder is missing " + field);
+            }
+        }
     }
 }
