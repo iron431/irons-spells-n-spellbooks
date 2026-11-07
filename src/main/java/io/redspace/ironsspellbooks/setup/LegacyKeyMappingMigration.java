@@ -24,10 +24,7 @@ import java.util.Map;
 public final class LegacyKeyMappingMigration {
     private static final String LEGACY_PREFIX = "key_key.irons_spellbooks.";
 
-    private LegacyKeyMappingMigration() {
-    }
-
-    // NeoForge reads mod keybinds from options.txt after this event, so a key set here stays unless the new name is already saved.
+    // right before keybinds are loaded from options.txt
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void migrate(RegisterKeyMappingsEvent event) {
         Path optionsFile = FMLPaths.GAMEDIR.get().resolve("options.txt");
