@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.api.item.curios;
 import com.google.common.collect.HashMultimap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.skillcasting.data.AbstractSkill;
@@ -26,7 +27,8 @@ import java.util.Map;
 public record AffinityData(Map<Holder<AbstractSpell>, Integer> affinityData) {
 
     private static final Codec<Map<Holder<AbstractSkill>, Integer>> SKILL_BONUSES_CODEC =
-            Codec.unboundedMap(SkillcastingRegistries.SKILL_HOLDER_CODEC, Codec.INT);
+            Codec.unboundedMap(SkillcastingRegistries.SKILL_HOLDER_CODEC, Codec.INT)
+                    .promotePartial(error -> IronsSpellbooks.LOGGER.warn("Dropped unreadable affinity bonuses: {}", error));
 
     public static final Codec<AffinityData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             SKILL_BONUSES_CODEC.fieldOf("bonuses").forGetter(AffinityData::toSkillMap)

@@ -2,6 +2,7 @@ package io.redspace.skillcasting.data.skill;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.data.selection.SkillSelectionPriority;
 import io.redspace.skillcasting.data.AbstractSkill;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -24,7 +25,7 @@ public interface ISkillContainer {
                 Codec.intRange(0, Integer.MAX_VALUE).fieldOf("size").forGetter(ISkillContainer::getMaxSkillCount),
                 Codec.BOOL.fieldOf("wheel").forGetter(ISkillContainer::isSkillWheel),
                 Codec.BOOL.fieldOf("equip").forGetter(ISkillContainer::mustEquip),
-                Codec.list(SkillSlot.CODEC).fieldOf("data").forGetter(ISkillContainer::getActiveSkills)
+                Codec.list(SkillSlot.CODEC).promotePartial(error -> Skillcasting.LOGGER.warn("Dropped unreadable skill slots: {}", error)).fieldOf("data").forGetter(ISkillContainer::getActiveSkills)
         ).apply(builder, (size, wheel, equip, slots) -> factory.create(size, wheel, equip,
                 slots.stream().filter(slot -> slot.index() >= 0 && slot.index() < size).toList())));
     }

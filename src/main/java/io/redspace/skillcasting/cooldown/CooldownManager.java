@@ -1,6 +1,7 @@
 package io.redspace.skillcasting.cooldown;
 
 import com.mojang.serialization.Codec;
+import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import net.minecraft.core.Holder;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 public final class CooldownManager {
     public static final Codec<CooldownManager> CODEC = Codec.unboundedMap(SkillcastingRegistries.SKILL_HOLDER_CODEC, CooldownInstance.CODEC)
+            .promotePartial(error -> Skillcasting.LOGGER.warn("Dropped unreadable cooldowns: {}", error))
             .xmap(CooldownManager::fromMap, CooldownManager::toMap);
 
     private final Map<Holder<AbstractSkill>, CooldownInstance> cooldowns = new HashMap<>();

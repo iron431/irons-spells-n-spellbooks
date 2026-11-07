@@ -1,8 +1,13 @@
 package io.redspace.ironsspellbooks.gametest;
 
+import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
+import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import io.redspace.skillcasting.api.event.BuildCooldownEvent;
 import io.redspace.skillcasting.api.event.GatherSkillSelectionEvent;
 import io.redspace.skillcasting.api.event.SkillRecastEvent;
@@ -11,12 +16,15 @@ import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastEndReason;
 import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.cast.CasterRef;
+import io.redspace.skillcasting.data.component.CastComponentMap;
 import io.redspace.skillcasting.data.recast.RecastInstance;
 import io.redspace.skillcasting.data.recast.RecastManager;
 import io.redspace.skillcasting.data.selection.SkillSelection;
 import io.redspace.skillcasting.data.selection.SkillSelectionManager;
 import io.redspace.skillcasting.data.selection.SkillSelectionPriority;
 import io.redspace.skillcasting.data.skill.SkillContainer;
+import io.redspace.skillcasting.data.skill.SkillData;
+import io.redspace.skillcasting.data.skill.SkillSlot;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillRegistry;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -24,6 +32,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -38,6 +47,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -141,6 +151,35 @@ public class SkillcastingGameTests {
         attribute(helper, zombie, AttributeRegistry.SPELL_PIERCING).removeModifier(IronsSpellbooks.id("test_pierce"));
         CastContext flatRemoved = fireboltContext(caster, firebolt);
         helper.assertFalse(flatRemoved.has(SkillcastingComponentTypes.PROJECTILE_PIERCE), "a removed flat modifier should not create pierce");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void unknownIdsDropOnlyTheirEntry(GameTestHelper helper) {
+        var registryAccess = helper.getLevel().registryAccess();
+        var ops = RegistryOps.create(JsonOps.INSTANCE, registryAccess);
+
+        var container = SkillContainer.fromSerialized(2, true, false, List.of(
+                SkillSlot.of(new SkillData(SpellRegistry.FIREBOLT_SPELL.get(), 1), 0),
+                SkillSlot.of(new SkillData(SpellRegistry.FIREBALL_SPELL.get(), 1), 1)));
+        JsonObject containerJson = SkillContainer.CODEC.encodeStart(ops, container).getOrThrow().getAsJsonObject();
+        containerJson.getAsJsonArray("data").get(1).getAsJsonObject().getAsJsonObject("skill").addProperty("skill", "irons_spellbooks:missing");
+        var slots = SkillContainer.CODEC.parse(ops, containerJson).getOrThrow().getActiveSkills();
+        helper.assertTrue(slots.size() == 1 && slots.get(0).getSkill() == SpellRegistry.FIREBOLT_SPELL.get(), "container should keep only firebolt, kept " + slots);
+
+        var components = new CastComponentMap();
+        components.set(SkillcastingComponentTypes.SKILL_LEVEL.get(), 3);
+        JsonObject componentsJson = CastComponentMap.COMPONENT_CODEC.encodeStart(ops, components).getOrThrow().getAsJsonObject();
+        componentsJson.addProperty("skillcasting:missing", 1);
+        componentsJson.addProperty(SkillcastingComponentTypes.CAST_START_ANIMATION.getId().toString(), 1);
+        var decodedComponents = CastComponentMap.COMPONENT_CODEC.parse(ops, componentsJson).getOrThrow();
+        helper.assertTrue(Integer.valueOf(3).equals(decodedComponents.getOrNull(SkillcastingComponentTypes.SKILL_LEVEL.get())), "skill level should survive unknown and non-persisted components");
+
+        Holder<UpgradeOrbType> fire = registryAccess.registryOrThrow(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).getHolderOrThrow(UpgradeOrbTypeRegistry.FIRE_SPELL_POWER);
+        JsonObject upgradeJson = UpgradeData.REAL_CODEC.encodeStart(ops, new UpgradeData(Map.of(fire, 2), "chest")).getOrThrow().getAsJsonObject();
+        upgradeJson.getAsJsonObject("upgrades").addProperty("irons_spellbooks:missing", 1);
+        var upgrades = UpgradeData.CODEC.parse(ops, upgradeJson).getOrThrow().upgrades();
+        helper.assertTrue(upgrades.size() == 1 && upgrades.get(fire) == 2, "upgrades should keep only fire power, kept " + upgrades);
         helper.succeed();
     }
 

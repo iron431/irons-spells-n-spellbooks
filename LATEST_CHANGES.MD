@@ -4,6 +4,7 @@
 - Shadow Slash now reads its dash distance and hit radius from the cast range and cast radius components, so spell range and spell radius attributes affect it
 - A flat (ADD_VALUE) bonus to spell radius, range, teleport range, piercing, ricochet, healing, damage over time, projectile speed or effect duration now applies to spells that never set that value. These add flat to the spell's value, including Projectile Speed, which previously multiplied; use ADD_MULTIPLIED_BASE for percent bonuses
 - Mobs casting Fire Breath, Dragon Breath, Poison Breath or Cone of Cold now track their target while channeling, like Ray of Siphoning
+- Saved data naming a skill, cast component, upgrade orb or affinity that no longer exists (for example after removing an addon) now drops only that entry with a warning. Previously a spellbook with one unknown spell failed to load entirely, and an unknown entry in cooldowns, recasts or cast components wiped the player's casting data
 
 ### API
 - Added `createLevelRenderable` to AbstractSkill

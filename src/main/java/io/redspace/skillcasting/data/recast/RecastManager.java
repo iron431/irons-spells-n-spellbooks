@@ -1,6 +1,7 @@
 package io.redspace.skillcasting.data.recast;
 
 import com.mojang.serialization.Codec;
+import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.api.event.SkillRecastEvent;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CasterRef;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 public final class RecastManager {
     public static final Codec<RecastManager> CODEC = Codec.list(RecastInstance.CODEC)
+            .promotePartial(error -> Skillcasting.LOGGER.warn("Dropped unreadable recasts: {}", error))
             .xmap(RecastManager::fromList, RecastManager::getActiveRecasts);
 
     private static RecastManager fromList(List<RecastInstance> instances) {

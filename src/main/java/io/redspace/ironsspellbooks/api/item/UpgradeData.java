@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import it.unimi.dsi.fastutil.Pair;
@@ -41,7 +42,9 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
 
     public static final Codec<UpgradeData> REAL_CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.STRING.fieldOf(SLOT).forGetter(UpgradeData::getUpgradedSlot),
-            Codec.unboundedMap(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_CODEC, Codec.INT).fieldOf(UPGRADES).forGetter(UpgradeData::upgrades)
+            Codec.unboundedMap(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_CODEC, Codec.INT)
+                    .promotePartial(error -> IronsSpellbooks.LOGGER.warn("Dropped unreadable upgrades: {}", error))
+                    .fieldOf(UPGRADES).forGetter(UpgradeData::upgrades)
     ).apply(builder, (slot, list) -> new UpgradeData(list, slot)));
 
     @Deprecated(forRemoval = true)
