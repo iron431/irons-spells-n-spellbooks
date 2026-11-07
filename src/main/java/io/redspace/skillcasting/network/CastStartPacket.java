@@ -25,6 +25,7 @@ public record CastStartPacket(
         CasterId casterId,
         Holder<AbstractSkill> skill,
         int durationTicks,
+        int elapsedTicks,
         CastComponentMap components) implements CustomPacketPayload {
 
     public static final Type<CastStartPacket> TYPE = new Type<>(Skillcasting.id("cast_start_packet"));
@@ -33,6 +34,7 @@ public record CastStartPacket(
             CasterId.STREAM_CODEC, CastStartPacket::casterId,
             SkillcastingRegistries.SKILL_HOLDER_STREAM_CODEC, CastStartPacket::skill,
             ByteBufCodecs.VAR_INT, CastStartPacket::durationTicks,
+            ByteBufCodecs.VAR_INT, CastStartPacket::elapsedTicks,
             CastComponentMap.STREAM_CODEC, CastStartPacket::components,
             CastStartPacket::new);
 
@@ -48,7 +50,7 @@ public record CastStartPacket(
             castContext.set(SkillcastingComponentTypes.CAST_TIME, packet.durationTicks);
             castContext.components().applyFrom(packet.components);
             data.setLastCastSource(castContext.getCastSource());
-            data.activateCast(new ActiveCast(castContext));
+            data.activateCast(new ActiveCast(castContext, level.getGameTime() - packet.elapsedTicks));
             var localPlayer = context.player();
             if (localPlayer != null && packet.casterId().equals(CasterRef.entity(localPlayer).id())) {
                 if (packet.skill().value().getCastType() == CastType.CONTINUOUS) {

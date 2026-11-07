@@ -13,6 +13,7 @@ import io.redspace.skillcasting.data.component.ComponentType;
 import io.redspace.skillcasting.data.recast.RecastInstance;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,13 +34,21 @@ public final class SkillcastingNetwork {
     }
 
     public static void syncCastStart(CasterRef casterRef, ActiveCast activeCast) {
+        casterRef.distributeToClients(castStartPacket(casterRef, activeCast));
+    }
+
+    public static void syncCastStart(ServerPlayer recipient, CasterRef casterRef, ActiveCast activeCast) {
+        PacketDistributor.sendToPlayer(recipient, castStartPacket(casterRef, activeCast));
+    }
+
+    private static CastStartPacket castStartPacket(CasterRef casterRef, ActiveCast activeCast) {
         CastContext context = activeCast.context();
-        var packet = new CastStartPacket(
+        return new CastStartPacket(
                 casterRef.id(),
                 context.skill(),
                 activeCast.durationTicks(),
+                activeCast.elapsedTicks(casterRef.level().getGameTime()),
                 CastComponentMap.from(context.components().getAllSynced()));
-        casterRef.distributeToClients(packet);
     }
 
     public static void syncCastEnd(CasterRef casterRef, CastContext castContext, CastEndReason reason) {

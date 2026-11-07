@@ -2,6 +2,7 @@ package io.redspace.skillcasting.lifecycle;
 
 
 import io.redspace.skillcasting.data.SkillcastingData;
+import io.redspace.skillcasting.data.cast.ActiveCast;
 import io.redspace.skillcasting.data.cast.CastEndReason;
 import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.network.SkillcastingNetwork;
@@ -46,6 +47,16 @@ public final class SkillcastingEvents {
     @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
 //        SkillcastingDevCommands.register(event.getDispatcher());
+    }
+
+    @SubscribeEvent
+    public static void onStartTracking(PlayerEvent.StartTracking event) {
+        if (event.getEntity() instanceof ServerPlayer player && SkillcastingData.has(event.getTarget())) {
+            ActiveCast activeCast = SkillcastingData.get(event.getTarget()).getActiveCast();
+            if (activeCast != null) {
+                SkillcastingNetwork.syncCastStart(player, CasterRef.entity(event.getTarget()), activeCast);
+            }
+        }
     }
 
     @SubscribeEvent
