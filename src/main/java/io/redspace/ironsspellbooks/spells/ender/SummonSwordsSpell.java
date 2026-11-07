@@ -24,8 +24,10 @@ import io.redspace.skillcasting.data.PlayableSound;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -56,8 +58,14 @@ public class SummonSwordsSpell extends AbstractSpell {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.summon_count", 3),
                 Component.translatable("ui.irons_spellbooks.percent_damage", (int) (100 + getDamageBonus(power) * 100)),
-                Component.translatable("ui.irons_spellbooks.percent_health", (int) (100 + getHealthBonus(power) * 100))
+                Component.translatable("ui.irons_spellbooks.percent_health", (int) (getHealthScale(castContext) * 100))
         );
+    }
+
+    @Override
+    public void buildContextComponents(CastContext castContext) {
+        super.buildContextComponents(castContext);
+        castContext.set(SpellcastingComponentTypes.SUMMON_HEALTH, provideSwordHealth(castContext));
     }
 
     @Override
@@ -97,8 +105,6 @@ public class SummonSwordsSpell extends AbstractSpell {
         }
         float power = getSpellPower(castContext);
         SummonedEntitiesCastData summonedEntitiesCastData = new SummonedEntitiesCastData();
-        AttributeModifier healthModifier = new AttributeModifier(
-                IronsSpellbooks.id("spell_power_health_bonus"), getHealthBonus(power), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
         AttributeModifier damageModifier = new AttributeModifier(
                 IronsSpellbooks.id("spell_power_damage_bonus"), getDamageBonus(power), AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
@@ -107,18 +113,28 @@ public class SummonSwordsSpell extends AbstractSpell {
         SummonedWeaponEntity sword = new SummonedSwordEntity(EntityRegistry.SUMMONED_SWORD.get(), level);
 
         Vec3 spawnBase = castContext.position(PositionAnchor.ORIGIN).add(0, 1.2, 0);
+        double healthScale = getHealthScale(castContext);
         for (SummonedWeaponEntity weapon : List.of(claymore, rapier, sword)) {
             weapon.moveTo(spawnBase.add(Utils.getRandomVec3(1)));
             weapon.getAttribute(Attributes.ATTACK_DAMAGE).addPermanentModifier(damageModifier);
-            weapon.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(healthModifier);
+            AttributeInstance maxHealth = weapon.getAttribute(Attributes.MAX_HEALTH);
+            maxHealth.setBaseValue(maxHealth.getBaseValue() * healthScale);
             weapon.setHealth(weapon.getMaxHealth());
             SummonManager.summon(castContext, weapon, SUMMON_DURATION_TICKS, summonedEntitiesCastData);
         }
         castContext.set(SpellcastingComponentTypes.SUMMONED_ENTITY_DATA, summonedEntitiesCastData);
     }
 
-    private static double getHealthBonus(float spellPower) {
-        return (spellPower - 1) * 0.10;
+    private float provideSwordHealth(CastContext castContext) {
+        return (float) (plainSwordHealth() * (1 + (getSpellPower(castContext) - 1) * 0.10));
+    }
+
+    private static double getHealthScale(CastContext castContext) {
+        return castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_HEALTH, (float) plainSwordHealth()) / plainSwordHealth();
+    }
+
+    private static double plainSwordHealth() {
+        return DefaultAttributes.getSupplier(EntityRegistry.SUMMONED_SWORD.get()).getBaseValue(Attributes.MAX_HEALTH);
     }
 
     private static double getDamageBonus(float spellPower) {

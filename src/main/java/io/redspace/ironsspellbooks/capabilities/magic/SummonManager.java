@@ -88,6 +88,19 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
         return Set.copyOf(INSTANCE.ownerToSummons.getOrDefault(owner.getUUID(), Set.of()));
     }
 
+    public static boolean isRecastSummon(Entity owner, UUID summon) {
+        if (!SkillcastingData.has(owner)) {
+            return false;
+        }
+        for (RecastInstance recast : SkillcastingData.get(owner).recasts().getActiveRecasts()) {
+            SummonedEntitiesCastData summons = recast.components().getOrNull(SpellcastingComponentTypes.SUMMONED_ENTITY_DATA.get());
+            if (summons != null && summons.getSummons().contains(summon)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Assigns summon to given owner. Removes any previously present associations
      */

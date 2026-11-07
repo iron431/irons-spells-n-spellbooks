@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.mixin;
 
+import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
+import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
@@ -18,10 +20,9 @@ public class MinecraftMixin {
         if (Minecraft.getInstance().player == null || pEntity == null || cir.getReturnValue()) {
             return;
         }
-        // fixme: reimplement summon client cache
-        /*if (ClientConfigs.SUMMONS_GLOW.get() && ClientMagicData.getActiveSummons().contains(pEntity.getUUID())) {
+        if (ClientConfigs.SPEC.isLoaded() && ClientConfigs.SUMMONS_GLOW.get() && SummonManager.isRecastSummon(Minecraft.getInstance().player, pEntity.getUUID())) {
             cir.setReturnValue(true);
-        } else*/ if (Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT) && pEntity instanceof LivingEntity && Mth.abs((float) (pEntity.getY() - Minecraft.getInstance().player.getY())) < 18) {
+        } else if (Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT) && pEntity instanceof LivingEntity && Mth.abs((float) (pEntity.getY() - Minecraft.getInstance().player.getY())) < 18) {
             cir.setReturnValue(true);
         }
     }
