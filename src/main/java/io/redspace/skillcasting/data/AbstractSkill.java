@@ -133,7 +133,6 @@ public abstract class AbstractSkill {
         }
         castContext.set(SkillcastingComponentTypes.CAST_START_ANIMATION, provideCastStartAnimation(castContext));
         castContext.set(SkillcastingComponentTypes.CAST_FINISH_ANIMATION, provideCastFinishAnimation(castContext));
-        castContext.set(SkillcastingComponentTypes.ANIMATION_SPEED, SkillcastingUtils.getCastRateSpeed(castContext));
     }
 
     public float getBaseCastingMovespeedMultiplier() {
@@ -246,15 +245,15 @@ public abstract class AbstractSkill {
         if (finishAnimation.getType() == AnimationHolder.Type.PASS && !cancelled) {
             return;
         }
+        float animationSpeed = castContext.getOrDefault(SkillcastingComponentTypes.ANIMATION_SPEED, SkillcastingUtils.getCastRateSpeed(castContext));
         if (castContext.asEntityCaster() instanceof Player player) {
             if (finishAnimation.getAnimation().isPresent() && !cancelled) {
-                float speedModifier = castContext.getOrDefault(SkillcastingComponentTypes.ANIMATION_SPEED, 1f);
-                AnimationHelper.animatePlayerStart(player, finishAnimation.getAnimation().get(), speedModifier);
+                AnimationHelper.animatePlayerStart(player, finishAnimation.getAnimation().get(), animationSpeed);
             } else {
                 AnimationHelper.cancelPlayerAnimation((AbstractClientPlayer) player);
             }
         } else if (castContext.asEntityCaster() instanceof IAnimatedCastingMob animatedCastingMob) {
-            animatedCastingMob.playCastingAnimation(cancelled ? AnimationHolder.stop() : finishAnimation, castContext.getOrDefault(SkillcastingComponentTypes.ANIMATION_SPEED, 1f));
+            animatedCastingMob.playCastingAnimation(cancelled ? AnimationHolder.stop() : finishAnimation, animationSpeed);
         }
     }
 
@@ -263,11 +262,11 @@ public abstract class AbstractSkill {
         if (animation.getType() != AnimationHolder.Type.ANIMATION) {
             return;
         }
+        float animationSpeed = castContext.getOrDefault(SkillcastingComponentTypes.ANIMATION_SPEED, SkillcastingUtils.getCastRateSpeed(castContext));
         if (castContext.asEntityCaster() instanceof Player player) {
-            float speedModifier = castContext.getOrDefault(SkillcastingComponentTypes.ANIMATION_SPEED, 1f);
-            animation.getAnimation().ifPresent(resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation, speedModifier));
+            animation.getAnimation().ifPresent(resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation, animationSpeed));
         } else if (castContext.asEntityCaster() instanceof IAnimatedCastingMob animatedCastingMob) {
-            animatedCastingMob.playCastingAnimation(animation, castContext.getOrDefault(SkillcastingComponentTypes.ANIMATION_SPEED, 1f));
+            animatedCastingMob.playCastingAnimation(animation, animationSpeed);
         }
     }
 

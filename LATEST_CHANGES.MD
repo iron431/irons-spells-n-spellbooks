@@ -1,5 +1,6 @@
 ### Changes
 - Tyros now uses cast components instead of attribute modifier hack to quickly channel his midair fireballs
+- Cast animations now play at the speed of the final cast time, including cast-time changes from `BuildCastContextEvent.Post` listeners and mob component patches such as Tyros' quick fireball
 - Hand-held imbues (swords, staves, wands) now rank with armor imbues in the skill bar and wheel instead of after them
 - Shadow Slash now reads its dash distance and hit radius from the cast range and cast radius components, so spell range and spell radius attributes affect it
 - A flat (ADD_VALUE) bonus to spell radius, range, teleport range, piercing, ricochet, healing, damage over time, projectile speed or effect duration now applies to spells that never set that value. These add flat to the spell's value, including Projectile Speed, which previously multiplied; use ADD_MULTIPLIED_BASE for percent bonuses
@@ -32,6 +33,7 @@
 - Restored 1.21 values for Blaze Storm, Ice Block, Fireball, Magma Bomb, Throw, Starfall, Magic Arrow, Summon Horse, Sculk Tentacles, Arrow Volley, Lightning Bolt, Poison Arrow, Spectral Hammer, Telekinesis; fixed Shadow Slash hitbox and Gust strength scaling; Earthquake, Root, Stomp, Thunderstorm apply school and config power again
 - [Breaking] Animation mechanism moved to skillcasting: `AnimationHolder`, `IAnimatedCastingMob`, `IAnimatedAttacker`, `AttackAnimationData`, `AttackKeyframe` now live in `io.redspace.skillcasting.animation`; `AnimationHelper`, `IronPlayerAnimationData`, `IronsAdjustmentModifier` in `io.redspace.skillcasting.client.animation`; `SyncAnimationPacket` and `PlayPlayerAnimationPacket` in `io.redspace.skillcasting.network`
 - [Breaking] `CAST_START_ANIMATION`, `CAST_FINISH_ANIMATION`, `ANIMATION_SPEED` moved from `SpellcastingComponentTypes` to `SkillcastingComponentTypes`
+- `ANIMATION_SPEED` is no longer set during context build. When unset, cast animations derive their speed from the final cast time; set it to override
 - [Breaking] `getCastStartAnimation()` and `getCastFinishAnimation()` are now `provideCastStartAnimation(CastContext)` and `provideCastFinishAnimation(CastContext)` on `AbstractSkill`; `AbstractSkill` defaults are pass/stop, `AbstractSpell` keeps the cast-type defaults
 - [Breaking] `AbstractSkill#getCastStartSound` and `getOnCastSound` renamed to `provideCastStartSound` and `provideOnCastSound`. Convention: `provide*` hooks compute a base value that is stored into the cast context during context build; `get*` helpers only read stored components
 - [Breaking] Removed `MagicData#getCachedCastingEquipmentSlot`; use `SkillcastingData#lastCastSource`
