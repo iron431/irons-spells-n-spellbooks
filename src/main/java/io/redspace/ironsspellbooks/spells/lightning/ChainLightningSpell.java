@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.ChainLightning;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
+import io.redspace.skillcasting.data.cast.PositionAnchor;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
@@ -71,7 +72,7 @@ public class ChainLightningSpell extends AbstractSpell {
         if (targetEntity == null) {
             return;
         }
-        ChainLightning chainLightning = new ChainLightning(level, castContext.asEntityCaster(), targetEntity);
+        ChainLightning chainLightning = new ChainLightning(level, castContext.asEntityCaster(), castContext.position(PositionAnchor.CASTING_POSITION_CENTER).lerp(castContext.position(PositionAnchor.CENTER), 0.5f), targetEntity);
         SkillcastingUtils.attachToContext(chainLightning, castContext);
         chainLightning.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         chainLightning.range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f);

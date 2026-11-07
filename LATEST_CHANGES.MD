@@ -6,6 +6,7 @@
 - A flat (ADD_VALUE) bonus to spell radius, range, teleport range, piercing, ricochet, healing, damage over time, projectile speed or effect duration now applies to spells that never set that value. These add flat to the spell's value, including Projectile Speed, which previously multiplied; use ADD_MULTIPLIED_BASE for percent bonuses
 - Mobs casting Fire Breath, Dragon Breath, Poison Breath or Cone of Cold now track their target while channeling, like Ray of Siphoning
 - Keybinds moved to the `key.skillcasting.*` names. Bindings saved by 3.x (spell wheel, wheel toggle, cast, bar modifier, quick casts) are carried over once on first launch
+- Chain Lightning cast from a dispenser now renders its first zap
 - Owned summons glow again (`ownedSummonsGlow` and `summonGlowColor` in `irons_spellbooks-client.toml`)
 - Summoned Swords now reads its health from the summon health component, so summon health changes apply to it. The component holds the plain sword's health; the claymore and rapier keep their ratio to it, so default values are unchanged
 - Players who come into range of an entity mid-cast (such as a boss channeling) now see the cast, with its progress, instead of nothing until the next cast

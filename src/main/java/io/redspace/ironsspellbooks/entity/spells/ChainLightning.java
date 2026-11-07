@@ -16,6 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,6 +28,7 @@ public class ChainLightning extends AbstractMagicProjectile {
     List<Entity> allVictims;
     List<Entity> lastVictims;
     Entity initialVictim;
+    Vec3 origin;
     public int maxConnections = 4;
     public int maxConnectionsPerWave = 3;
     public float range = 3f;
@@ -39,10 +41,11 @@ public class ChainLightning extends AbstractMagicProjectile {
         this.noPhysics = true;
     }
 
-    public ChainLightning(Level level, Entity owner, Entity initialVictim) {
+    public ChainLightning(Level level, @Nullable Entity owner, Vec3 origin, Entity initialVictim) {
         this(EntityRegistry.CHAIN_LIGHTNING.get(), level);
         this.setOwner(owner);
         this.setPos(initialVictim.position());
+        this.origin = origin;
         this.initialVictim = initialVictim;
     }
 
@@ -56,12 +59,8 @@ public class ChainLightning extends AbstractMagicProjectile {
             if (f == 0 && !allVictims.contains(initialVictim)) {
                 //First time zap
                 doHurt(initialVictim);
-                if (getOwner() != null) {
-                    Vec3 start = getOwner().position().add(0, getOwner().getBbHeight() / 2, 0);
-                    var dest = initialVictim.position().add(0, initialVictim.getBbHeight() / 2, 0);
-                    ((ServerLevel) level).sendParticles(new ZapParticleOption(dest), start.x, start.y, start.z, 1, 0, 0, 0, 0);
-                }
-
+                var dest = initialVictim.getBoundingBox().getCenter();
+                ((ServerLevel) level).sendParticles(new ZapParticleOption(dest), origin.x, origin.y, origin.z, 1, 0, 0, 0, 0);
             } else {
                 int j = lastVictims.size();
                 AtomicInteger zapsThisWave = new AtomicInteger();
