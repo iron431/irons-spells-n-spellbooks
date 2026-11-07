@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.skillcasting.Skillcasting;
+import io.redspace.skillcasting.config.SkillcastingClientConfig;
 import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.SkillcastingData;
@@ -94,9 +95,16 @@ public final class SkillWheelOverlay implements LayeredDraw.Layer {
         }
         PoseStack poseStack = guiHelper.pose();
         poseStack.pushPose();
-
-        int centerX = screenWidth / 2;
-        int centerY = screenHeight / 2;
+        float guiScale = 1f;
+        if (SkillcastingClientConfig.SKILL_WHEEL_IGNORE_GUI_SCALE.get()) {
+            float invertedGuiScaleFactor = (float) (1 / minecraft.getWindow().getGuiScale());
+            float physicalScaleFactor = Math.min(minecraft.getWindow().getScreenWidth() / 1920f, minecraft.getWindow().getScreenHeight() / 1080f);
+            guiScale = invertedGuiScaleFactor * physicalScaleFactor * 3 * SkillcastingClientConfig.SKILL_WHEEL_SCALE.get().floatValue();
+        }
+        poseStack.translate(screenWidth / 2f, screenHeight / 2f, 0);
+        poseStack.scale(guiScale, guiScale, 1);
+        int centerX = 0;
+        int centerY = 0;
 
         Vec2 screenCenter = new Vec2(minecraft.getWindow().getScreenWidth() * .5f, minecraft.getWindow().getScreenHeight() * .5f);
         Vec2 mousePos = new Vec2((float) minecraft.mouseHandler.xpos(), (float) minecraft.mouseHandler.ypos());

@@ -32,6 +32,7 @@
 - [Breaking config] `swordsConsumeMana` and `swordsCooldownMultiplier` in `irons_spellbooks-server.toml` are now `imbuedConsumeMana` and `imbuedCooldownMultiplier`; re-apply custom values
 - `disableAdventureModeCasting` works again
 - Removed the dead client config `spellBarDisplay` (the skill bar belongs to skillcasting)
+- The 3.x HUD options are back, now in `skillcasting-client.toml` under `UI`: skill bar display mode (Always, Contextual, Never), anchor and offsets; recast overlay anchor and offsets; skill wheel `ignoreGuiScale` and size multiplier. Values set in `irons_spellbooks-client.toml` under 3.x do not carry over. Corner anchors now keep the skill bar and recast overlay fully on screen (they clipped off the edge, and `TopRight` drew at the bottom left); recasts anchored at the bottom stack upward
 - Fixed: skill selection reset on every equipment change; summons treated every other owner's summons as allies; an empty spell config file aborted the whole config load; a spell config pointing at an unknown school crashed on first cast; school and rarity caches went stale after `/reload`; removed cast components never reached the client; Pyromancers had no attack spells
 - Added `SpellcastingComponentTypes.DIG_DEPTH`
 - Restored 1.21 values for Blaze Storm, Ice Block, Fireball, Magma Bomb, Throw, Starfall, Magic Arrow, Summon Horse, Sculk Tentacles, Arrow Volley, Lightning Bolt, Poison Arrow, Spectral Hammer, Telekinesis; fixed Shadow Slash hitbox and Gust strength scaling; Earthquake, Root, Stomp, Thunderstorm apply school and config power again

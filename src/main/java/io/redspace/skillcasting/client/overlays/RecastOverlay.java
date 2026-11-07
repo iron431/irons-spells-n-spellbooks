@@ -2,6 +2,7 @@ package io.redspace.skillcasting.client.overlays;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.skillcasting.Skillcasting;
+import io.redspace.skillcasting.config.SkillcastingClientConfig;
 import io.redspace.skillcasting.data.recast.RecastInstance;
 import io.redspace.skillcasting.data.SkillcastingData;
 import net.minecraft.ChatFormatting;
@@ -26,12 +27,17 @@ public final class RecastOverlay implements LayeredDraw.Layer {
     static final int CONNECTOR_TEXTURE_OFFSET_X = 109;
     static final int CONNECTOR_TEXTURE_OFFSET_Y = 8;
     static final int CONNECTOR_WIDTH = 6;
+    static final int ROW_HEIGHT = 18;
+    static final int EDGE_MARGIN = 6;
+    static final int ICON_LEFT_OVERHANG = 20;
+    static final int ICON_TOP_OVERHANG = 4;
+    static final int ICON_BOTTOM_OVERHANG = 14;
 
     public enum Anchor {
         Center(0.5f, 0.5f),
         TopCenter(0.5f, 0),
         TopLeft(0, 0),
-        TopRight(0, 1),
+        TopRight(1, 0),
         BottomLeft(0, 1),
         BottomRight(1, 1);
         final float m1, m2;
@@ -61,9 +67,7 @@ public final class RecastOverlay implements LayeredDraw.Layer {
             return;
         }
 
-        int totalHeightPerBar = 18;
-        int screenTopBuffer = 6;
-        Anchor anchor = Anchor.TopCenter;
+        Anchor anchor = SkillcastingClientConfig.RECAST_ANCHOR.get();
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
@@ -74,17 +78,28 @@ public final class RecastOverlay implements LayeredDraw.Layer {
             int total = recastInstance.config().totalCasts();
             int remaining = recastInstance.remainingCasts();
             int totalWidth = total * ORB_WIDTH + (total - 1) * CONNECTOR_WIDTH;
+            String time = formatTime(recastInstance.ticksRemaining(), recastInstance.config().durationTicks());
             int barX = (int) (screenWidth * anchor.m1);
             int barY = (int) (screenHeight * anchor.m2);
-            if (anchor == Anchor.Center || anchor == Anchor.TopCenter) {
+            if (anchor.m1 == 0) {
+                barX += EDGE_MARGIN + ICON_LEFT_OVERHANG;
+            } else if (anchor.m1 == 1) {
+                barX -= EDGE_MARGIN + (ORB_WIDTH + CONNECTOR_WIDTH) * total + Minecraft.getInstance().font.width(time);
+            } else {
                 barX -= totalWidth / 2;
             }
+            int rowOffset = ROW_HEIGHT * castIndex;
             if (anchor == Anchor.TopCenter) {
-                barY += screenTopBuffer + bossbarsActive * 19;
+                barY += EDGE_MARGIN + bossbarsActive * 19 + rowOffset;
+            } else if (anchor.m2 == 0) {
+                barY += EDGE_MARGIN + ICON_TOP_OVERHANG + rowOffset;
+            } else if (anchor.m2 == 1) {
+                barY -= EDGE_MARGIN + ICON_BOTTOM_OVERHANG + rowOffset;
+            } else {
+                barY += rowOffset;
             }
-//            barX += ClientConfigs.RECAST_X_OFFSET.get();
-//            barY += ClientConfigs.RECAST_Y_OFFSET.get();
-            barY += totalHeightPerBar * castIndex;
+            barX += SkillcastingClientConfig.RECAST_X_OFFSET.get();
+            barY += SkillcastingClientConfig.RECAST_Y_OFFSET.get();
 
             var poseStack = guiGraphics.pose();
             poseStack.pushPose();
@@ -116,7 +131,7 @@ public final class RecastOverlay implements LayeredDraw.Layer {
                 guiGraphics.blit(TEXTURE, orbX, barY, ORB_TEXTURE_OFFSET_X, ORB_TEXTURE_OFFSET_Y, ORB_WIDTH, ORB_WIDTH, 256, 256);
             }
             int textX = (barX + (ORB_WIDTH + CONNECTOR_WIDTH) * total);
-            guiGraphics.drawString(Minecraft.getInstance().font, formatTime(recastInstance.ticksRemaining(), recastInstance.config().durationTicks()), textX, barY + (ORB_WIDTH - Minecraft.getInstance().font.lineHeight) / 2, ChatFormatting.WHITE.getColor());
+            guiGraphics.drawString(Minecraft.getInstance().font, time, textX, barY + (ORB_WIDTH - Minecraft.getInstance().font.lineHeight) / 2, ChatFormatting.WHITE.getColor());
             castIndex++;
         }
         bossbarsActive = 0;
