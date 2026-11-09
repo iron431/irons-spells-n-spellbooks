@@ -104,7 +104,7 @@ public class ConeOfColdSpell extends AbstractSpell {
             if (entity instanceof LivingEntity livingEntity) {
                 DamageSources.ignoreNextKnockback(livingEntity);
             }
-            DamageSources.applyDamage(entity, damage, getDamageSourceIndirect(castContext));
+            DamageSources.applyDamage(entity, damage, getDamageSource(castContext, false));
         });
     }
 

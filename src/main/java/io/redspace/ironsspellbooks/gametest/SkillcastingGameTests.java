@@ -165,7 +165,7 @@ public class SkillcastingGameTests {
         context.set(SkillcastingComponentTypes.FREEZE_TICKS, 30);
         Zombie target = helper.spawn(EntityType.ZOMBIE, 2, 1, 2);
 
-        DamageSources.applyDamage(target, 1, SpellRegistry.FIREBOLT_SPELL.get().getDamageSourceIndirect(context));
+        DamageSources.applyDamage(target, 1, SpellRegistry.FIREBOLT_SPELL.get().getDamageSource(context, false));
 
         helper.assertTrue(target.getRemainingFireTicks() == 100, "burn should be 100, was " + target.getRemainingFireTicks());
         helper.assertTrue(target.getTicksFrozen() == 30 * DamageSources.FREEZE_THAW_RATE, "frozen ticks should be 60, was " + target.getTicksFrozen());

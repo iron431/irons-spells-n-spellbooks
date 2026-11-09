@@ -120,7 +120,7 @@ public class ShadowSlashSpell extends AbstractSpell {
 
         float totalDamage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f)
                 + castContext.getOrDefault(SkillcastingComponentTypes.WEAPON_DAMAGE, 0f);
-        var damageSource = getDamageSourceDirect(castContext);
+        var damageSource = getDamageSource(castContext, true);
 
         if (!targetableEntities.isEmpty() && targetableEntities.getFirst().distanceToSqr(start) < distance * distance) {
             var closestEntity = targetableEntities.getFirst();

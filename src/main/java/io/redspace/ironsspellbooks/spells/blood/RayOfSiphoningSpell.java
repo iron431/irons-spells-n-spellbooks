@@ -142,7 +142,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
                         DamageSources.ignoreNextKnockback((LivingEntity) target);
                     }
                     if (DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f),
-                            getDamageSourceIndirect(castContext))) {
+                            getDamageSource(castContext, false))) {
                         Vec3 targetPos = target.position().add(0, target.getBbHeight() / 2, 0);
                         Vec3 casterPos = castContext.position(PositionAnchor.CENTER);
                         castContext.caster().distributeToClients(new BloodSiphonParticlesPacket(targetPos, casterPos));

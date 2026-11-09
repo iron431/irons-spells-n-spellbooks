@@ -110,7 +110,7 @@ public class FireBreathSpell extends AbstractSpell {
         handleSpellGriefing(level, castContext);
         Set<Entity> entities = SkillcastingUtils.collectConeTargets(castContext,
                 target -> target.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(castContext.asEntityCaster(), target));
-        var source = getDamageSourceIndirect(castContext);
+        var source = getDamageSource(castContext, false);
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         entities.forEach(entity -> {
                 if (entity instanceof LivingEntity livingEntity) {

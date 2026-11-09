@@ -101,7 +101,7 @@ public class EldritchBlastSpell extends AbstractSpell {
         if (hitResult.getType() == HitResult.Type.ENTITY) {
             Entity target = ((EntityHitResult) hitResult).getEntity();
             if (target.canBeHitByProjectile()) {
-                DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), getDamageSourceIndirect(castContext));
+                DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), getDamageSource(castContext, false));
             }
         }
         Vec3 hit = hitResult.getLocation();
