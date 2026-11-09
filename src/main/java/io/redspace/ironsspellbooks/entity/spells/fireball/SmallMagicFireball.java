@@ -71,8 +71,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile {
     protected void onHitEntity(@NotNull EntityHitResult pResult) {
         if (!this.level.isClientSide) {
             var target = pResult.getEntity();
-            var owner = getOwner();
-            DamageSources.applyDamage(target, damage, SpellRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this.level(), this, owner).setFireTicks(getFireTicks()));
+            DamageSources.applyDamage(target, damage, SpellRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this));
         }
     }
 

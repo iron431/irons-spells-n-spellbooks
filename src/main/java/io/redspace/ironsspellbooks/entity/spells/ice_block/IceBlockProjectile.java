@@ -117,7 +117,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
             return;
         if (!canHitEntity(target) || victims.contains(target))
             return;
-        boolean flag = DamageSources.applyDamage(target, getDamage() / 2, SpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this.level(), this, getOwner()).setFreezeTicks(getFreezeTicks()));
+        boolean flag = DamageSources.applyDamage(target, getDamage() / 2, SpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this));
         if (flag) {
             victims.add(target);
         }
@@ -135,7 +135,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
                     float damage = (float) (this.damage * p);
                     //Ironsspellbooks.logger.debug("IceBlockProjectile.doImpactDamage distance: {} p: {}", Math.sqrt(distance), p);
 
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this.level(), this, getOwner()).setFreezeTicks(getFreezeTicks()));
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.ICE_BLOCK_SPELL.get().getDamageSource(this));
                 }
             }
 

@@ -43,7 +43,7 @@ public class IcicleProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.ICICLE_SPELL.get().getDamageSource(this.level(), this, getOwner()).setFreezeTicks(getFreezeTicks()));
+        DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.ICICLE_SPELL.get().getDamageSource(this));
         consumeEntityImpact(entityHitResult, true);
     }
 

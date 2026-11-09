@@ -24,6 +24,7 @@ import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.cast.PositionAnchor;
 import io.redspace.skillcasting.data.component.TargetedEntitiesData;
 import io.redspace.skillcasting.data.selection.SkillSelectionManager;
+import io.redspace.skillcasting.data.skill.ISkillProjectile;
 import io.redspace.skillcasting.data.skill.SkillWheelInfo;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
@@ -41,6 +42,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import org.joml.Vector3f;
@@ -95,6 +97,17 @@ public abstract class AbstractSpell extends AbstractSkill {
         source.sourcePosition = castContext.position(PositionAnchor.BOTTOM_CENTER);
         castContext.find(SkillcastingComponentTypes.FIRE_TICKS).ifPresent(source::setFireTicks);
         castContext.find(SkillcastingComponentTypes.FREEZE_TICKS).ifPresent(source::setFreezeTicks);
+        return source;
+    }
+
+    public final <T extends Projectile & ISkillProjectile> SpellDamageSource getDamageSource(T projectile) {
+        var source = getDamageSource(projectile.level(), projectile, projectile.getOwner());
+        if (projectile.getFireTicks() > 0) {
+            source.setFireTicks(projectile.getFireTicks());
+        }
+        if (projectile.getFreezeTicks() > 0) {
+            source.setFreezeTicks(projectile.getFreezeTicks());
+        }
         return source;
     }
 
