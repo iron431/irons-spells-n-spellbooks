@@ -70,6 +70,7 @@ public class BlizzardSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.FREEZE_TICKS, 5);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 2f + 6f * getSpellPowerMultiplier(castContext));
         castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, (int) (20 * (10 + 1.5f * castContext.getSkillLevel())));
@@ -99,6 +100,7 @@ public class BlizzardSpell extends AbstractSpell {
         aoe.setOwner(castContext.asEntityCaster());
         aoe.setRadius(radius);
         aoe.setDuration(duration);
+        aoe.setFreezeTicks(castContext.getOrDefault(SkillcastingComponentTypes.FREEZE_TICKS, 5));
         aoe.setDeltaMovement(castContext.direction().multiply(1, 0, 1).normalize().scale(0.05f));
         level.addFreshEntity(aoe);
     }

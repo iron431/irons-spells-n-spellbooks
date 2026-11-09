@@ -18,6 +18,7 @@ public class FrostField extends AoeEntity {
     public FrostField(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         reapplicationDelay = 1;
+        freezeTicks = 5;
     }
 
     public FrostField(Level level) {
@@ -27,7 +28,7 @@ public class FrostField extends AoeEntity {
     @Override
     public void applyEffect(LivingEntity target) {
         if (!DamageSources.isFriendlyFireBetween(this.getOwner(), target)) {
-            Utils.addFreezeTicks(target, 10);
+            Utils.addFreezeTicks(target, freezeTicks * DamageSources.FREEZE_THAW_RATE);
         }
     }
 

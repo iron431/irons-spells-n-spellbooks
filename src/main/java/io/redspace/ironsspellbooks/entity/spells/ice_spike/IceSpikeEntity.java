@@ -45,6 +45,7 @@ public class IceSpikeEntity extends AoeEntity {
     public IceSpikeEntity(EntityType<? extends AoeEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.victims = new ArrayList<>();
+        this.freezeTicks = 20;
     }
 
     public IceSpikeEntity(Level level, Entity owner) {
@@ -120,7 +121,7 @@ public class IceSpikeEntity extends AoeEntity {
                 if (DamageSources.applyDamage(entity, damage, SpellRegistry.ICE_SPIKES_SPELL.get().getDamageSource(this.level(), this, getOwner()))) {
                     entity.setDeltaMovement(entity.getDeltaMovement().add(0, this.getSpikeSize() * 0.3, 0));
                     entity.hurtMarked = true;
-                    entity.setTicksFrozen(entity.getTicksFrozen() + (int) (40 * getSpikeSize()));
+                    entity.setTicksFrozen(entity.getTicksFrozen() + (int) (freezeTicks * DamageSources.FREEZE_THAW_RATE * getSpikeSize()));
                 }
                 victims.add(entity);
                 if (entity instanceof ShieldPart || entity instanceof AbstractShieldEntity) {

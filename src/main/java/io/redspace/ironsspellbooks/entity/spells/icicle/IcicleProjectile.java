@@ -26,6 +26,7 @@ public class IcicleProjectile extends AbstractMagicProjectile {
         super(entityType, level);
         this.setNoGravity(true);
         this.setInfinitePiercing();
+        this.freezeTicks = 80;
     }
 
     public IcicleProjectile(Level levelIn, @Nullable Entity shooter) {
@@ -42,7 +43,7 @@ public class IcicleProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.ICICLE_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+        DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), SpellRegistry.ICICLE_SPELL.get().getDamageSource(this.level(), this, getOwner()).setFreezeTicks(getFreezeTicks()));
         consumeEntityImpact(entityHitResult, true);
     }
 

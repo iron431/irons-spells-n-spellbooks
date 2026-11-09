@@ -41,7 +41,7 @@ public class RayOfFrostSpell extends AbstractSpell {
     public List<MutableComponent> getUniqueInfo(CastContext castContext) {
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f), 2)),
-                Component.translatable("ui.irons_spellbooks.freeze_time", Utils.timeFromTicks(provideFreezeTime(castContext), 2)),
+                Component.translatable("ui.irons_spellbooks.freeze_time", Utils.timeFromTicks(castContext.getOrDefault(SkillcastingComponentTypes.FREEZE_TICKS, 0), 2)),
                 Component.translatable("ui.irons_spellbooks.distance", Utils.stringTruncation(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f), 1))
         );
     }
@@ -74,6 +74,7 @@ public class RayOfFrostSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, 3 + getSpellPower(castContext) * 1.5f);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 30f);
+        castContext.set(SkillcastingComponentTypes.FREEZE_TICKS, (int) (getSpellPower(castContext) * 15));
     }
 
     @Override
@@ -100,16 +101,12 @@ public class RayOfFrostSpell extends AbstractSpell {
             Entity target = entityhit.getEntity();
             // Set freeze time right here (instead of statically in damage source) because it scales off of level and power
             DamageSources.applyDamage(target, castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f),
-                    getDamageSourceIndirect(castContext).setFreezeTicks(target.getTicksRequiredToFreeze() + provideFreezeTime(castContext)));
+                    getDamageSourceIndirect(castContext).setFreezeTicks(target.getTicksRequiredToFreeze() + castContext.getOrDefault(SkillcastingComponentTypes.FREEZE_TICKS, 0)));
             MagicManager.spawnParticles(level, ParticleHelper.SNOW_DUST, entityhit.getLocation().x, entityhit.getLocation().y, entityhit.getLocation().z, 10, 0, .1, 0, .06, false);
         }
         if (!hitResults.isEmpty()) {
             var lastHitResult = hitResults.get(hitResults.size() - 1);
             MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, lastHitResult.getLocation().x, lastHitResult.getLocation().y, lastHitResult.getLocation().z, 50, 0, 0, 0, .3, false);
         }
-    }
-
-    private int provideFreezeTime(CastContext castContext) {
-        return (int) (getSpellPower(castContext) * 15);
     }
 }

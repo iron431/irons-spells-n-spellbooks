@@ -12,6 +12,7 @@
 - Players who come into range of an entity mid-cast (such as a boss channeling) now see the cast, with its progress, instead of nothing until the next cast
 - Saved data naming a skill, cast component, upgrade orb or affinity that no longer exists (for example after removing an addon) now drops only that entry with a warning. Previously a spellbook with one unknown spell failed to load entirely, and an unknown entry in cooldowns, recasts or cast components wiped the player's casting data
 - Burn durations from fire spells can now be changed by addons; default values are unchanged
+- Freeze durations from ice spells can now be changed by addons; default values are unchanged
 
 ### API
 - Added `createLevelRenderable` to AbstractSkill

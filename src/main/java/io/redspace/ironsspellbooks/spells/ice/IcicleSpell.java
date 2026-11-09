@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.spells.ice;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleProjectile;
@@ -13,10 +12,7 @@ import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class IcicleSpell extends AbstractSpell {
@@ -54,6 +50,7 @@ public class IcicleSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.FREEZE_TICKS, 80);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.PROJECTILE_PIERCE, -1); // -1 = infinite pierce
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.4f);
@@ -66,10 +63,5 @@ public class IcicleSpell extends AbstractSpell {
         icicle.shootFromContext(icicle, castContext);
         icicle.setNoGravity(true);
         level.addFreshEntity(icicle);
-    }
-
-    @Override
-    public SpellDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
-        return super.getDamageSource(level, projectile, attacker).setFreezeTicks(80);
     }
 }

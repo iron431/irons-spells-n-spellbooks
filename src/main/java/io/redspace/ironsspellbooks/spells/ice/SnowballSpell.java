@@ -58,6 +58,7 @@ public class SnowballSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.FREEZE_TICKS, 5);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 3.5f + castContext.getSkillLevel() * .5f);
         castContext.set(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, (int) (200 * Mth.sqrt(getSpellPowerMultiplier(castContext))));
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1f);

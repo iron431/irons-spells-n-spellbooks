@@ -291,7 +291,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         for (Entity entity : entities) {
             double distanceSqr = entity.distanceToSqr(center);
             if (distanceSqr < radius * radius && entity.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(entity, getOwner()) && Utils.hasLineOfSight(level, center, entity.getBoundingBox().getCenter(), true)) {
-                DamageSources.applyDamage(entity, damage, SpellRegistry.ICICLE_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+                DamageSources.applyDamage(entity, damage, SpellRegistry.ICICLE_SPELL.get().getDamageSource(this.level(), this, getOwner()).setFreezeTicks(80));
             }
         }
         MagicManager.spawnParticles(level, ParticleHelper.SNOW_DUST, getX(), getY() + 1, getZ(), 50, 0.2, 0.2, 0.2, 0.2, false);

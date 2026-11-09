@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.spells.ice;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -26,10 +25,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -78,6 +75,7 @@ public class ConeOfColdSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.FREEZE_TICKS, 80);
         if (castContext.asEntityCaster() instanceof Mob) {
             castContext.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, new MobAimDirectionResolver(castContext));
         }
@@ -106,7 +104,7 @@ public class ConeOfColdSpell extends AbstractSpell {
             if (entity instanceof LivingEntity livingEntity) {
                 DamageSources.ignoreNextKnockback(livingEntity);
             }
-            DamageSources.applyDamage(entity, damage, getDamageSource(level, null, castContext.asEntityCaster()));
+            DamageSources.applyDamage(entity, damage, getDamageSourceIndirect(castContext));
         });
     }
 
@@ -138,11 +136,6 @@ public class ConeOfColdSpell extends AbstractSpell {
             casterRef.level().addParticle(Math.random() > .15 ? ParticleHelper.SNOW_DUST : ParticleHelper.SNOWFLAKE, x + ox, y + oy, z + oz, result.x, result.y, result.z);
 
         }
-    }
-
-    @Override
-    public SpellDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
-        return super.getDamageSource(level, projectile, attacker).setFreezeTicks(80);
     }
 
     @Override

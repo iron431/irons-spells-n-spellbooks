@@ -66,6 +66,7 @@ public class IceSpikesSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.FREEZE_TICKS, 20);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.SPIKE_COUNT, (int) (7 + 3 * castContext.getSkillLevel() / 2.0f));
     }
@@ -115,6 +116,7 @@ public class IceSpikesSpell extends AbstractSpell {
                 spike.moveTo(spawn.add(0, 0, 0));
                 spike.setWaitTime(delay);
                 spike.setDamage(damage * (isFinalSpike ? 1 : 0.5f));
+                spike.setFreezeTicks(castContext.getOrDefault(SkillcastingComponentTypes.FREEZE_TICKS, 20));
                 spike.setYRot((castContext.getYRot() - 45 + Utils.random.nextIntBetweenInclusive(-20, 20)));
                 spike.setXRot(Utils.random.nextIntBetweenInclusive(-15, 15));
                 level.addFreshEntity(spike);

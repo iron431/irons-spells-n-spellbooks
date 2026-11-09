@@ -74,6 +74,7 @@ public class IceBlockSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.FREEZE_TICKS, 100);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
     }
@@ -107,6 +108,7 @@ public class IceBlockSpell extends AbstractSpell {
         }
         iceBlock.setAirTime(target == null ? 25 : 35);
         iceBlock.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
+        iceBlock.setFreezeTicks(castContext.getOrDefault(SkillcastingComponentTypes.FREEZE_TICKS, 100));
         level.addFreshEntity(iceBlock);
     }
 
@@ -123,6 +125,6 @@ public class IceBlockSpell extends AbstractSpell {
 
     @Override
     public SpellDamageSource getDamageSource(Level level, @Nullable Entity projectile, Entity attacker) {
-        return super.getDamageSource(level, projectile, attacker).setFreezeTicks(100).setIFrames(0);
+        return super.getDamageSource(level, projectile, attacker).setIFrames(0);
     }
 }

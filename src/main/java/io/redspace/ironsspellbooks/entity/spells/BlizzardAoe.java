@@ -27,6 +27,7 @@ public class BlizzardAoe extends AoeEntity {
         super(pEntityType, pLevel);
         this.setCircular();
         this.reapplicationDelay = 2;
+        this.freezeTicks = 5;
     }
 
     @Override
@@ -41,7 +42,7 @@ public class BlizzardAoe extends AoeEntity {
 
     @Override
     public void applyEffect(LivingEntity target) {
-        Utils.addFreezeTicks(target, 10);
+        Utils.addFreezeTicks(target, freezeTicks * DamageSources.FREEZE_THAW_RATE);
     }
 
     @Override
