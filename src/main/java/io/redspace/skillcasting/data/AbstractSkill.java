@@ -219,9 +219,9 @@ public abstract class AbstractSkill {
      * Called on the client when a channeled cast ({@link CastType#LONG}, {@link CastType#CONTINUOUS}) begins. CastContext only has synced parameters.
      */
     public void onClientCastStart(CastContext castContext) {
-        createClientTicker(castContext).ifPresent(ticker -> SkillcastClientTickManager.track(castContext.caster(), ticker));
+        createClientTicker(castContext).ifPresent(ticker -> SkillcastClientTickManager.track(castContext, ticker));
         createLevelRenderable(castContext).ifPresent(renderable ->
-                SkillcastLevelRenderableManager.track(castContext.caster(), renderable, levelRenderableRotatesWithCast()));
+                SkillcastLevelRenderableManager.track(castContext, renderable, levelRenderableRotatesWithCast()));
         handleCastStartAnimation(castContext);
     }
 

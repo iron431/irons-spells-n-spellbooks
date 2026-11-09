@@ -3,6 +3,7 @@ package io.redspace.skillcasting.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import io.redspace.skillcasting.Skillcasting;
+import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.PositionAnchor;
 import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.cast.ActiveCast;
@@ -23,7 +24,7 @@ import java.util.List;
 public class SkillcastLevelRenderableManager {
     private static final List<Wrapped> RENDERABLES = new ArrayList<>();
 
-    private record Wrapped(CasterRef casterRef, LevelRenderable renderable, RenderInfoMutable renderInfo,
+    private record Wrapped(CastContext castContext, LevelRenderable renderable, RenderInfoMutable renderInfo,
                            boolean rotateWithCast) {
     }
 
@@ -61,7 +62,7 @@ public class SkillcastLevelRenderableManager {
         MultiBufferSource buf = Minecraft.getInstance().renderBuffers().bufferSource();
         List<Wrapped> toRemove = new ArrayList<>();
         for (Wrapped wrapped : RENDERABLES) {
-            CasterRef casterRef = wrapped.casterRef;
+            CasterRef casterRef = wrapped.castContext.caster();
             LevelRenderable renderable = wrapped.renderable;
             if (!casterRef.isValid()) {
                 toRemove.add(wrapped);
@@ -69,7 +70,7 @@ public class SkillcastLevelRenderableManager {
             }
             SkillcastingData data = casterRef.skillcastingData();
             ActiveCast activeCast = data.getActiveCast();
-            if (activeCast == null) {
+            if (activeCast == null || activeCast.context() != wrapped.castContext) {
                 toRemove.add(wrapped);
                 continue;
             }
@@ -98,7 +99,7 @@ public class SkillcastLevelRenderableManager {
         RENDERABLES.removeAll(toRemove);
     }
 
-    public static void track(CasterRef casterRef, LevelRenderable ticker, boolean rotateWithCast) {
-        RENDERABLES.add(new Wrapped(casterRef, ticker, new RenderInfoMutable(), rotateWithCast));
+    public static void track(CastContext castContext, LevelRenderable renderable, boolean rotateWithCast) {
+        RENDERABLES.add(new Wrapped(castContext, renderable, new RenderInfoMutable(), rotateWithCast));
     }
 }

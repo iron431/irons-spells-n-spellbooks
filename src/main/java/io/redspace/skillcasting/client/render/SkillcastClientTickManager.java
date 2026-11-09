@@ -1,5 +1,6 @@
 package io.redspace.skillcasting.client.render;
 
+import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.cast.ActiveCast;
 import io.redspace.skillcasting.data.SkillcastingData;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SkillcastClientTickManager {
-    private record Wrapped(CasterRef casterRef, ClientSkillTicker ticker) {
+    private record Wrapped(CastContext castContext, ClientSkillTicker ticker) {
     }
 
     private static final List<Wrapped> TICKING = new ArrayList<>();
@@ -30,7 +31,7 @@ public class SkillcastClientTickManager {
         }
         List<Wrapped> toRemove = new ArrayList<>();
         for (Wrapped wrapped : TICKING) {
-            CasterRef casterRef = wrapped.casterRef;
+            CasterRef casterRef = wrapped.castContext.caster();
             ClientSkillTicker ticker = wrapped.ticker;
             if (!casterRef.isValid()) {
                 toRemove.add(wrapped);
@@ -38,7 +39,7 @@ public class SkillcastClientTickManager {
             }
             SkillcastingData data = casterRef.skillcastingData();
             ActiveCast activeCast = data.getActiveCast();
-            if (activeCast == null) {
+            if (activeCast == null || activeCast.context() != wrapped.castContext) {
                 toRemove.add(wrapped);
                 continue;
             }
@@ -47,7 +48,7 @@ public class SkillcastClientTickManager {
         TICKING.removeAll(toRemove);
     }
 
-    public static void track(CasterRef casterRef, ClientSkillTicker ticker) {
-        TICKING.add(new Wrapped(casterRef, ticker));
+    public static void track(CastContext castContext, ClientSkillTicker ticker) {
+        TICKING.add(new Wrapped(castContext, ticker));
     }
 }

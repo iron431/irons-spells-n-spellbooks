@@ -7,6 +7,7 @@
 - Mobs casting Fire Breath, Dragon Breath, Poison Breath or Cone of Cold now track their target while channeling, like Ray of Siphoning
 - Keybinds moved to the `key.skillcasting.*` names. Bindings saved by 3.x (spell wheel, wheel toggle, cast, bar modifier, quick casts) are carried over once on first launch
 - Chain Lightning cast from a dispenser now renders its first zap
+- A cast's held model and particles no longer carry over into a cast started in the same tick (for example quick-casting while channeling)
 - Owned summons glow again (`ownedSummonsGlow` and `summonGlowColor` in `irons_spellbooks-client.toml`)
 - Summoned Swords now reads its health from the summon health component, so summon health changes apply to it. The component holds the plain sword's health; the claymore and rapier keep their ratio to it, so default values are unchanged
 - Players who come into range of an entity mid-cast (such as a boss channeling) now see the cast, with its progress, instead of nothing until the next cast
