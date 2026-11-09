@@ -64,6 +64,7 @@ public class FlamingBarrageSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.FIRE_TICKS, 40);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 0.925f);
         castContext.set(SkillcastingComponentTypes.CURSOR_HOMING, Unit.INSTANCE);

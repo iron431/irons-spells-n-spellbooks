@@ -25,6 +25,7 @@ public class FireboltProjectile extends AbstractMagicProjectile {
     public FireboltProjectile(EntityType<? extends FireboltProjectile> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
+        this.fireTicks = 60;
     }
 
     public FireboltProjectile(Level levelIn, @org.jetbrains.annotations.Nullable Entity shooter) {
@@ -47,7 +48,7 @@ public class FireboltProjectile extends AbstractMagicProjectile {
     protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         var target = entityHitResult.getEntity();
-        DamageSources.applyDamage(target, getDamage(), SpellRegistry.FIREBOLT_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+        DamageSources.applyDamage(target, getDamage(), SpellRegistry.FIREBOLT_SPELL.get().getDamageSource(this.level(), this, getOwner()).setFireTicks(getFireTicks()));
         consumeEntityImpact(entityHitResult, true);
     }
 

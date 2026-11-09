@@ -72,6 +72,7 @@ public class BlazeStormSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.FIRE_TICKS, 40);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.85f);
     }
@@ -97,6 +98,6 @@ public class BlazeStormSpell extends AbstractSpell {
 
     @Override
     public SpellDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
-        return super.getDamageSource(level, projectile, attacker).setFireTicks(40).setIFrames(0);
+        return super.getDamageSource(level, projectile, attacker).setIFrames(0);
     }
 }

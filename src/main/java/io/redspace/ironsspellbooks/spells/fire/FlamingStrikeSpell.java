@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
-import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.skillcasting.animation.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -27,7 +26,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -88,6 +86,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.FIRE_TICKS, 60);
         float weaponDamage = 0;
         if (castContext.asEntityCaster() instanceof LivingEntity entity) {
             weaponDamage = Utils.getWeaponDamage(entity);
@@ -125,11 +124,6 @@ public class FlamingStrikeSpell extends AbstractSpell {
         boolean mirrored = SkillSelectionManager.OFFHAND.equals(castContext.getCastSource().equipmentSlot());
         MagicManager.spawnParticles(level, new FlameStrikeParticleOptions((float) forward.x, (float) forward.y, (float) forward.z, mirrored, false, 1f),
                 hitLocation.x, hitLocation.y + 0.5, hitLocation.z, 1, 0, 0, 0, 0, true);
-    }
-
-    @Override
-    public SpellDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
-        return super.getDamageSource(level, projectile, attacker).setFireTicks(60);
     }
 
     @Override

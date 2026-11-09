@@ -37,6 +37,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
     @Nullable
     private Entity cachedOwner;
     protected float damage;
+    protected int fireTicks = 80;
 
     protected int lifetime = 12 * 20;
 
@@ -45,6 +46,14 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
         //Ironsspellbooks.logger.debug("WallOfFire.attempting to create sub entities");
         subEntities = new ShieldPart[0];
 
+    }
+
+    public void setFireTicks(int fireTicks) {
+        this.fireTicks = fireTicks;
+    }
+
+    public int getFireTicks() {
+        return fireTicks;
     }
 
     @Override
@@ -86,7 +95,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
             } else {
                 for (LivingEntity livingentity : this.level.getEntitiesOfClass(LivingEntity.class, subEntity.getBoundingBox().inflate(0.2D, 0.0D, 0.2D))) {
                     if (livingentity != getOwner()) {
-                        DamageSources.applyDamage(livingentity, damage, SpellRegistry.WALL_OF_FIRE_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+                        DamageSources.applyDamage(livingentity, damage, SpellRegistry.WALL_OF_FIRE_SPELL.get().getDamageSource(this.level(), this, getOwner()).setFireTicks(fireTicks));
                     }
                 }
             }
@@ -161,6 +170,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
             compoundTag.putUUID("Owner", this.ownerUUID);
         }
         compoundTag.putInt("lifetime", lifetime);
+        compoundTag.putInt("FireTicks", fireTicks);
 
         ListTag anchors = new ListTag();
         for (Vec3 vec : anchorPoints) {
@@ -181,6 +191,8 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
         }
         if (compoundTag.contains("lifetime"))
             this.lifetime = compoundTag.getInt("lifetime");
+        if (compoundTag.contains("FireTicks"))
+            this.fireTicks = compoundTag.getInt("FireTicks");
 
         //9 is list tag id
         anchorPoints = new ArrayList<>();

@@ -90,6 +90,7 @@ public class HeatSurgeSpell extends AbstractSpell {
         castContext.caster().distributeToClients(new ShockwaveParticlesPacket(new Vec3(position.x, position.y, position.z), radius, ParticleRegistry.FIRE_PARTICLE.get()));
         int duration = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0);
         int amplifier = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
+        int fireTicks = castContext.getOrDefault(SkillcastingComponentTypes.FIRE_TICKS, Math.min(duration / 2, 160));
         float radiusSqr = radius * radius;
         level.getEntities(castContext.asEntityCaster(), AABB.ofSize(position, radius * 2, 4, radius * 2),
                         target -> !DamageSources.isFriendlyFireBetween(target, castContext.asEntityCaster())
@@ -97,7 +98,7 @@ public class HeatSurgeSpell extends AbstractSpell {
                 .forEach(target -> {
                     if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(position) < radiusSqr) {
                         livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REND, duration, amplifier));
-                        livingEntity.setRemainingFireTicks(Math.min(duration / 2, 160));
+                        livingEntity.setRemainingFireTicks(fireTicks);
                         MagicManager.spawnParticles(level, ParticleHelper.EMBERS, livingEntity.getX(), livingEntity.getY() + livingEntity.getBbHeight() * 0.5f, livingEntity.getZ(),
                                 50, livingEntity.getBbWidth() * 0.5f, livingEntity.getBbHeight() * 0.5f, livingEntity.getBbWidth() * 0.5f, 0.03, false);
                     }

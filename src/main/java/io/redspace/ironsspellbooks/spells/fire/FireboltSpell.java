@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.spells.fire;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltProjectile;
@@ -13,10 +12,7 @@ import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class FireboltSpell extends AbstractSpell {
@@ -55,6 +51,7 @@ public class FireboltSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.FIRE_TICKS, 60);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.PROJECTILE_SPEED, 1.75f);
     }
@@ -65,10 +62,5 @@ public class FireboltSpell extends AbstractSpell {
         firebolt.setPos(castContext.position());
         firebolt.shootFromContext(firebolt, castContext);
         level.addFreshEntity(firebolt);
-    }
-
-    @Override
-    public SpellDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
-        return super.getDamageSource(level, projectile, attacker).setFireTicks(60);
     }
 }

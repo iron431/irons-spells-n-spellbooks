@@ -20,6 +20,7 @@ public class FireField extends AoeEntity {
 
     public FireField(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.fireTicks = 60;
     }
 
     public FireField(Level level) {
@@ -34,7 +35,7 @@ public class FireField extends AoeEntity {
         if (!DamageSources.isFriendlyFireBetween(this.getOwner(), target)) {
             DamageSources.ignoreNextKnockback(target);
             if (target.hurt(damageSource, getDamage())) {
-                target.setRemainingFireTicks(60);
+                target.setRemainingFireTicks(fireTicks);
             }
         }
     }

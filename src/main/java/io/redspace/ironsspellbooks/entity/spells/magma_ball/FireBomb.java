@@ -24,6 +24,7 @@ import java.util.Optional;
 public class FireBomb extends AbstractMagicProjectile {
     public FireBomb(EntityType<? extends FireBomb> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.fireTicks = 60;
     }
 
     public FireBomb(Level level, @org.jetbrains.annotations.Nullable Entity shooter) {
@@ -72,6 +73,7 @@ public class FireBomb extends AbstractMagicProjectile {
             FireField fire = new FireField(level);
             fire.setOwner(getOwner());
             fire.setDuration(getEffectDuration());
+            fire.setFireTicks(getFireTicks());
             fire.setDamage(dotDamage);
             fire.setRadius(getRadius());
             fire.setCircular();

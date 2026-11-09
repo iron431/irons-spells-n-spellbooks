@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SpellAnimations;
-import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.skillcasting.animation.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -28,10 +27,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -80,6 +77,7 @@ public class ScorchSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.FIRE_TICKS, 60);
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 32f);
         castContext.set(SkillcastingComponentTypes.CAST_RADIUS, 2.5f);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
@@ -134,7 +132,7 @@ public class ScorchSpell extends AbstractSpell {
         float radiusSqr = radius * radius;
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         Entity caster = castContext.asEntityCaster();
-        var source = getDamageSource(level, null, caster);
+        var source = getDamageSourceIndirect(castContext);
         Vec3 _targetArea = targetArea;
         level.getEntitiesOfClass(LivingEntity.class, new AABB(targetArea.subtract(radius, radius, radius), targetArea.add(radius, radius, radius)),
                         livingEntity -> livingEntity != caster &&
@@ -150,6 +148,7 @@ public class ScorchSpell extends AbstractSpell {
         FireField fire = new FireField(level);
         fire.setOwner(caster);
         fire.setDuration(200);
+        fire.setFireTicks(castContext.getOrDefault(SkillcastingComponentTypes.FIRE_TICKS, 60));
         fire.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));
         fire.setRadius(radius);
         fire.setCircular();
@@ -161,11 +160,6 @@ public class ScorchSpell extends AbstractSpell {
         double dx = livingEntity.getX() - vec3.x;
         double dz = livingEntity.getZ() - vec3.z;
         return (float) (dx * dx + dz * dz);
-    }
-
-    @Override
-    public SpellDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
-        return super.getDamageSource(level, projectile, attacker).setFireTicks(60);
     }
 
     @Override

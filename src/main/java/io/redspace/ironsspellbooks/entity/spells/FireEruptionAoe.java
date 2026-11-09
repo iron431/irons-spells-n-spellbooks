@@ -32,6 +32,7 @@ public class FireEruptionAoe extends AoeEntity {
     public FireEruptionAoe(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.reapplicationDelay = 25;
+        this.fireTicks = 100;
         this.setCircular();
     }
 
@@ -52,7 +53,7 @@ public class FireEruptionAoe extends AoeEntity {
                 : SpellRegistry.RAISE_HELL_SPELL.get().getDamageSource(this.level(), owner, owner);
         DamageSources.ignoreNextKnockback(target);
         if (target.hurt(damageSource, getDamage())) {
-            target.igniteForSeconds(5);
+            target.igniteForTicks(fireTicks);
             target.setDeltaMovement(target.getDeltaMovement().add(0, .65, 0));
             target.hurtMarked = true;
         }

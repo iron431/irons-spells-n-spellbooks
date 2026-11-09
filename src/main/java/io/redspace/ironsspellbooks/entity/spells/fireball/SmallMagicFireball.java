@@ -28,6 +28,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile {
     public SmallMagicFireball(EntityType<? extends SmallMagicFireball> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.setNoGravity(true);
+        this.fireTicks = 40;
     }
 
     public SmallMagicFireball(Level pLevel, Entity pShooter) {
@@ -71,7 +72,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile {
         if (!this.level.isClientSide) {
             var target = pResult.getEntity();
             var owner = getOwner();
-            DamageSources.applyDamage(target, damage, SpellRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this.level(), this, owner));
+            DamageSources.applyDamage(target, damage, SpellRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this.level(), this, owner).setFireTicks(getFireTicks()));
         }
     }
 

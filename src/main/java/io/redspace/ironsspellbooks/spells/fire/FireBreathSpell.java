@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.spells.fire;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
@@ -37,7 +36,6 @@ import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -87,6 +85,7 @@ public class FireBreathSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.FIRE_TICKS, 80);
         if (castContext.asEntityCaster() instanceof Mob) {
             castContext.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, new MobAimDirectionResolver(castContext));
         }
@@ -111,7 +110,7 @@ public class FireBreathSpell extends AbstractSpell {
         handleSpellGriefing(level, castContext);
         Set<Entity> entities = SkillcastingUtils.collectConeTargets(castContext,
                 target -> target.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(castContext.asEntityCaster(), target));
-        var source = getDamageSource(level, null, castContext.asEntityCaster());
+        var source = getDamageSourceIndirect(castContext);
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         entities.forEach(entity -> {
                 if (entity instanceof LivingEntity livingEntity) {
@@ -172,11 +171,6 @@ public class FireBreathSpell extends AbstractSpell {
             Vec3 result = (rotation.scale(3).add(randomVec)).normalize().scale(speed);
             casterRef.level().addParticle(ParticleHelper.FIRE_EMITTER, pos.x + ox, pos.y + oy, pos.z + oz, result.x, result.y, result.z);
         }
-    }
-
-    @Override
-    public SpellDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
-        return super.getDamageSource(level, projectile, attacker).setFireTicks(80);
     }
 
     @Override

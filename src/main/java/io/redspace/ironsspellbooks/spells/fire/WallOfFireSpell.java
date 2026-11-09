@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.spells.fire;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellDamageSource;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -23,14 +22,12 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -78,6 +75,7 @@ public class WallOfFireSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.FIRE_TICKS, 80);
         castContext.set(SkillcastingComponentTypes.DOT_DAMAGE, getSpellPower(castContext));
         // fixme(skillcasting): CAST_RANGE repurposed as wall length; raycast range hardcoded
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, provideWallLength(castContext));
@@ -101,11 +99,6 @@ public class WallOfFireSpell extends AbstractSpell {
         spawnWall(castContext.level(), castContext);
     }
 
-    @Override
-    public SpellDamageSource getDamageSource(Level level, @Nullable Entity projectile, @Nullable Entity attacker) {
-        return super.getDamageSource(level, projectile, attacker).setFireTicks(80);
-    }
-
     private void spawnWall(Level level, CastContext castContext) {
         FireWallCastComponent data = castContext.getOrNull(SpellcastingComponentTypes.FIRE_WALL_DATA);
         if (data == null || data.anchorPoints.isEmpty()) {
@@ -119,6 +112,7 @@ public class WallOfFireSpell extends AbstractSpell {
         }
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f);
         WallOfFireEntity fireWall = new WallOfFireEntity(level, castContext.asEntityCaster(), data.anchorPoints, damage);
+        fireWall.setFireTicks(castContext.getOrDefault(SkillcastingComponentTypes.FIRE_TICKS, 80));
         Vec3 origin = Vec3.ZERO;
         for (Vec3 anchor : data.anchorPoints) {
             origin = origin.add(anchor);

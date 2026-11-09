@@ -96,6 +96,7 @@ public class RaiseHellSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
+        castContext.set(SkillcastingComponentTypes.FIRE_TICKS, 100);
         float weaponDamage = 0;
         if (castContext.asEntityCaster() instanceof LivingEntity entity) {
             weaponDamage = Utils.getWeaponDamage(entity);
@@ -118,6 +119,7 @@ public class RaiseHellSpell extends AbstractSpell {
         FireEruptionAoe aoe = new FireEruptionAoe(level, radius);
         SkillcastingUtils.attachToContext(aoe, castContext);
         aoe.setOwner(castContext.asEntityCaster());
+        aoe.setFireTicks(castContext.getOrDefault(SkillcastingComponentTypes.FIRE_TICKS, 100));
         aoe.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f) + castContext.getOrDefault(SkillcastingComponentTypes.WEAPON_DAMAGE, 0f));
         aoe.setDamageSource(getDamageSource(level, aoe, castContext.asEntityCaster()).get());
         aoe.moveTo(hitLocation);

@@ -11,6 +11,7 @@
 - Summoned Swords now reads its health from the summon health component, so summon health changes apply to it. The component holds the plain sword's health; the claymore and rapier keep their ratio to it, so default values are unchanged
 - Players who come into range of an entity mid-cast (such as a boss channeling) now see the cast, with its progress, instead of nothing until the next cast
 - Saved data naming a skill, cast component, upgrade orb or affinity that no longer exists (for example after removing an addon) now drops only that entry with a warning. Previously a spellbook with one unknown spell failed to load entirely, and an unknown entry in cooldowns, recasts or cast components wiped the player's casting data
+- Burn durations from fire spells can now be changed by addons; default values are unchanged
 
 ### API
 - Added `createLevelRenderable` to AbstractSkill
@@ -67,3 +68,4 @@
 - [Breaking] `AttributeRegistry#simpleAddition`, `simpleScale`, `modifyComponentAsBase` and `modifyComponentAsBaseInt` are removed; spell attributes now modify cast components in one place. The attribute's own base is ignored. A component the spell did not set is only created by a flat modifier, starting from 0
 - [Breaking] `SchoolType` is built with `SchoolType.builder()`; both public constructors are removed
 - [Breaking] `WizardRecoverGoal` is now `WizardRecoverGoal<T extends PathfinderMob & IDrinkPotions>` and `SpellBarrageGoal` no longer requires an `AbstractSpellCastingMob`; their protected `spellCastingMob` fields were removed
+- Added `SkillcastingComponentTypes.FIRE_TICKS` and `FREEZE_TICKS`. Spells set their burn and freeze durations there, so attributes and `BuildCastContextEvent` listeners can change them; `ISkillProjectile` carries both.
