@@ -35,6 +35,11 @@ public class SpellSelectionManager {
      */
     private final List<SelectionOption> selectionOptionList;
     /**
+     * Lazily built {@link #getDisplaySpells()} result: the selectable spells plus the spells of held must-equip containers
+     */
+    @Nullable
+    private List<SelectionOption> displayOptionList;
+    /**
      * Current Selected Spell
      */
     private SpellSelection spellSelection = null;
@@ -119,6 +124,43 @@ public class SpellSelectionManager {
                         selectionValid = true;
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * Spells to render in the spell bar: every selectable spell, followed by the spells of a must-equip
+     * container held in hand (spell books). Held containers are only displayed so the player can see what
+     * the item in their hand offers; they are not part of {@link #getAllSpells()} and therefore cannot be
+     * selected or cast until the item is equipped in its own slot.
+     */
+    public List<SelectionOption> getDisplaySpells() {
+        if (displayOptionList == null) {
+            displayOptionList = new ArrayList<>(selectionOptionList);
+            addHeldSpellsToDisplay(displayOptionList, player.getItemBySlot(EquipmentSlot.MAINHAND), MAINHAND);
+            addHeldSpellsToDisplay(displayOptionList, player.getItemBySlot(EquipmentSlot.OFFHAND), OFFHAND);
+        }
+        return displayOptionList;
+    }
+
+    /**
+     * Appends the spells of a must-equip container to the display list. Containers that do not require
+     * equipping are already part of the selection list and thus already displayed.
+     */
+    private static void addHeldSpellsToDisplay(List<SelectionOption> displaySpells, ItemStack itemStack, String equipmentSlot) {
+        if (!ISpellContainer.isSpellContainer(itemStack)) {
+            return;
+        }
+        var spellContainer = ISpellContainer.get(itemStack);
+        if (!spellContainer.isSpellWheel() || !spellContainer.mustEquip()) {
+            return;
+        }
+        var activeSpells = spellContainer.getActiveSpells();
+        for (int i = 0; i < activeSpells.size(); i++) {
+            var spellData = activeSpells.get(i).spellData();
+            boolean alreadyDisplayed = displaySpells.stream().anyMatch(option -> option.spellData.getSpell().equals(spellData.getSpell()));
+            if (!alreadyDisplayed) {
+                displaySpells.add(new SelectionOption(spellData, equipmentSlot, i, displaySpells.size()));
             }
         }
     }

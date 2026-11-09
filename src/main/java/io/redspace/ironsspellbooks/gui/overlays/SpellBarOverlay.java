@@ -2,6 +2,7 @@ package io.redspace.ironsspellbooks.gui.overlays;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.compat.Curios;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
@@ -70,14 +71,16 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
         }
 
         var ssm = ClientMagicData.getSpellSelectionManager();
-        if (ssm.getSpellCount() != lastSpellCount) {
-            lastSpellCount = ssm.getSpellCount();
-            ClientRenderCache.generateRelativeLocations(ssm, 20, 22);
+        List<SpellSelectionManager.SelectionOption> displaySpells = ssm.getDisplaySpells();
+        int displaySpellCount = displaySpells.size();
+        if (displaySpellCount != lastSpellCount) {
+            lastSpellCount = displaySpellCount;
+            ClientRenderCache.generateRelativeLocations(displaySpellCount, 20, 22);
             if (displayMode == ManaBarOverlay.Display.Contextual) {
                 fadeoutDelay = CONTEXTUAL_FADE_WAIT;
             }
         }
-        if (ssm.getSpellCount() <= 0) {
+        if (displaySpellCount <= 0) {
             return;
         }
         //System.out.println("SpellBarDisplay: Holding Spellbook");
@@ -99,8 +102,7 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
         //
         //  Render Spells
         //
-        List<SpellData> spells = ssm.getAllSpells().stream().map((slot) -> slot.spellData).toList();
-        int spellbookCount = ssm.getSpellsForSlot(Curios.SPELLBOOK_SLOT).size();
+        List<SpellData> spells = displaySpells.stream().map((slot) -> slot.spellData).toList();
         var locations = ClientRenderCache.relativeSpellBarSlotLocations;
         int approximateWidth = locations.size() / 3;
         //Move spellbar away from hotbar as it gets bigger
@@ -120,7 +122,7 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
         //Border + Cooldowns
         for (int i = 0; i < locations.size(); i++) {
             if (i != selectedSpellIndex) {
-                guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22 + (!ssm.getAllSpells().get(i).slot.equals(Curios.SPELLBOOK_SLOT) ? 110 : 0), 84, 22, 22);
+                guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22 + (!displaySpells.get(i).slot.equals(Curios.SPELLBOOK_SLOT) ? 110 : 0), 84, 22, 22);
             }
             float f = ClientMagicData.getCooldownPercent(spells.get(i).getSpell());
             if (f > 0) {
