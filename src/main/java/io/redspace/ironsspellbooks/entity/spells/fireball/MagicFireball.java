@@ -79,14 +79,14 @@ public class MagicFireball extends AbstractMagicProjectile {
                 if (distanceSqr < explosionRadiusSqr && canHitEntity(entity) && Utils.hasLineOfSight(level, losPoint, entity.getBoundingBox().getCenter(), true)) {
                     double p = (1 - distanceSqr / explosionRadiusSqr);
                     float damage = (float) (this.damage * p);
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this));
                 }
             }
             if (ServerConfigs.SPELL_GREIFING.get()) {
                 Explosion explosion = new Explosion(
                         level,
                         null,
-                        SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this.level(), this, getOwner()),
+                        SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this),
                         null,
                         this.getX(), this.getY(), this.getZ(),
                         this.getRadius() / 2,

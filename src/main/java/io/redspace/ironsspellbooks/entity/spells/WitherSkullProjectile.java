@@ -49,7 +49,7 @@ public class WitherSkullProjectile extends AbstractMagicProjectile {
             Entity directHit = hitResult instanceof EntityHitResult entityHitResult ? entityHitResult.getEntity() : null;
             var explosionRadius = getRadius();
             var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
-            var damageSource = SpellRegistry.WITHER_SKULL_SPELL.get().getDamageSource(this.level(), this, getOwner());
+            var damageSource = SpellRegistry.WITHER_SKULL_SPELL.get().getDamageSource(this);
             for (Entity entity : entities) {
                 if (entity == directHit) {
                     DamageSources.applyDamage(entity, damage, damageSource);

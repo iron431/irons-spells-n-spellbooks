@@ -101,7 +101,7 @@ public class BallLightning extends AbstractMagicProjectile {
         if (target instanceof LivingEntity livingEntity) {
             DamageSources.ignoreNextKnockback(livingEntity);
         }
-        DamageSources.applyDamage(target, getDamage(), SpellRegistry.BALL_LIGHTNING_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+        DamageSources.applyDamage(target, getDamage(), SpellRegistry.BALL_LIGHTNING_SPELL.get().getDamageSource(this));
         victims.put(target.getUUID(), target.tickCount);
     }
 

@@ -82,7 +82,7 @@ public class CreeperHeadProjectile extends AbstractMagicProjectile {
                         break;
                     }
                     float damage = (float) (this.damage * (1 - Math.pow(distance / (explosionRadius), 2)));
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.LOB_CREEPER_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.LOB_CREEPER_SPELL.get().getDamageSource(this));
                     if (chainOnKill && contextSnapshot != null && entity instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying()) {
                         ChainCreeperSpell.summonCreeperRing(this.level(), livingEntity.getEyePosition(), contextSnapshot, this.chainCount);
                     }

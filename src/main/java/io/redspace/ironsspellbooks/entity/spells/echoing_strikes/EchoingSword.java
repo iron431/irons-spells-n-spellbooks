@@ -99,7 +99,7 @@ public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAt
                 double p = Mth.clamp((1 - distanceSqr / explosionRadiusSqr) + .4f, 0, 1);
                 float damage = (float) (this.damage * p);
                 entity.invulnerableTime = 0;
-                DamageSources.applyDamage(entity, damage, SpellRegistry.ECHOING_STRIKES_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+                DamageSources.applyDamage(entity, damage, SpellRegistry.ECHOING_STRIKES_SPELL.get().getDamageSource(this));
             }
         }
     }

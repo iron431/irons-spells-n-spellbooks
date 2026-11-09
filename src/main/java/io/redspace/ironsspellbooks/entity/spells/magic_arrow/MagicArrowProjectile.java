@@ -80,7 +80,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
     protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         Entity entity = entityHitResult.getEntity();
         if (!victims.contains(entity.getUUID())) {
-            DamageSources.applyDamage(entity, damage, SpellRegistry.MAGIC_ARROW_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+            DamageSources.applyDamage(entity, damage, SpellRegistry.MAGIC_ARROW_SPELL.get().getDamageSource(this));
             victims.add(entity.getUUID());
         }
         consumeEntityImpact(entityHitResult, true);

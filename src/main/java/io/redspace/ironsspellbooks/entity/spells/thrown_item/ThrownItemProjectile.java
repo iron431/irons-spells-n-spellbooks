@@ -94,7 +94,7 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
         var item = getThrownItem();
         double damage = getDamage();
         var target = pResult.getEntity();
-        var damageSource = SpellRegistry.THROW_SPELL.get().getDamageSource(this.level(), this, getOwner());
+        var damageSource = SpellRegistry.THROW_SPELL.get().getDamageSource(this);
         if (DamageSources.applyDamage(target, (float) damage, damageSource) && !item.isEmpty() && level instanceof ServerLevel serverLevel) {
             EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, target, damageSource, item);
         }

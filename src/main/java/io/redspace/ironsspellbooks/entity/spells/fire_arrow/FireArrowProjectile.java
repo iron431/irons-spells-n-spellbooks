@@ -90,7 +90,7 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
             UUID ignore = null;
             if (hitResult instanceof EntityHitResult entityHitResult) {
                 var directHit = entityHitResult.getEntity();
-                DamageSources.applyDamage(directHit, directDamage, SpellRegistry.FIRE_ARROW_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+                DamageSources.applyDamage(directHit, directDamage, SpellRegistry.FIRE_ARROW_SPELL.get().getDamageSource(this));
                 ignore = directHit.getUUID();
             }
 
@@ -103,7 +103,7 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
                 if (ignore != entity.getUUID() && distanceSqr < explosionRadiusSqr && canHitEntity(entity) && Utils.hasLineOfSight(level, losPoint, entity.getBoundingBox().getCenter(), true)) {
                     double p = (1 - distanceSqr / explosionRadiusSqr);
                     float damage = (float) (explosionDamage * p);
-                    DamageSources.applyDamage(entity, damage, SpellRegistry.FIRE_ARROW_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+                    DamageSources.applyDamage(entity, damage, SpellRegistry.FIRE_ARROW_SPELL.get().getDamageSource(this));
                 }
             }
             if (ServerConfigs.SPELL_GREIFING.get()) {

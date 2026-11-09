@@ -164,7 +164,7 @@ public class BloodSlashProjectile extends AbstractMagicProjectile {
 
     private void damageEntity(Entity entity) {
         if (!victims.contains(entity)) {
-            DamageSources.applyDamage(entity, damage, SpellRegistry.BLOOD_SLASH_SPELL.get().getDamageSource(this.level(), this, getOwner()));
+            DamageSources.applyDamage(entity, damage, SpellRegistry.BLOOD_SLASH_SPELL.get().getDamageSource(this));
             victims.add(entity);
         }
     }

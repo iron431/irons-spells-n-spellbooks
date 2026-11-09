@@ -43,20 +43,16 @@ import io.redspace.ironsspellbooks.entity.spells.black_hole.BlackHole;
 import io.redspace.ironsspellbooks.entity.spells.blood_needle.BloodNeedle;
 import io.redspace.ironsspellbooks.entity.spells.blood_slash.BloodSlashProjectile;
 import io.redspace.ironsspellbooks.entity.spells.comet.Comet;
-import io.redspace.ironsspellbooks.entity.spells.cone_of_cold.ConeOfColdProjectile;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProjectile;
 import io.redspace.ironsspellbooks.entity.spells.devour_jaw.DevourJaw;
 import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathPool;
-import io.redspace.ironsspellbooks.entity.spells.dragon_breath.DragonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingArrowProjectile;
 import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingSword;
 import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastVisualEntity;
-import io.redspace.ironsspellbooks.entity.spells.electrocute.ElectrocuteProjectile;
 import io.redspace.ironsspellbooks.entity.spells.ender_chain.ArcaneShackleProjectile;
 import io.redspace.ironsspellbooks.entity.spells.ender_chain.EnderChain;
 import io.redspace.ironsspellbooks.entity.spells.fiery_dagger.FieryDaggerEntity;
 import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowProjectile;
-import io.redspace.ironsspellbooks.entity.spells.fire_breath.FireBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.entity.spells.fireball.SmallMagicFireball;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltProjectile;
@@ -73,7 +69,6 @@ import io.redspace.ironsspellbooks.entity.spells.magic_missile.MagicMissileProje
 import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireBomb;
 import io.redspace.ironsspellbooks.entity.spells.magma_ball.FireField;
 import io.redspace.ironsspellbooks.entity.spells.poison_arrow.PoisonArrow;
-import io.redspace.ironsspellbooks.entity.spells.poison_breath.PoisonBreathProjectile;
 import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonCloud;
 import io.redspace.ironsspellbooks.entity.spells.poison_cloud.PoisonSplash;
 import io.redspace.ironsspellbooks.entity.spells.portal.PortalEntity;
@@ -137,23 +132,11 @@ public class EntityRegistry {
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "thrown_item").toString()));
 
-    public static final DeferredHolder<EntityType<?>, EntityType<ConeOfColdProjectile>> CONE_OF_COLD_PROJECTILE =
-            ENTITIES.register("cone_of_cold", () -> EntityType.Builder.<ConeOfColdProjectile>of(ConeOfColdProjectile::new, MobCategory.MISC)
-                    .sized(1f, 1f)
-                    .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "cone_of_cold").toString()));
-
     public static final DeferredHolder<EntityType<?>, EntityType<BloodSlashProjectile>> BLOOD_SLASH_PROJECTILE =
             ENTITIES.register("blood_slash", () -> EntityType.Builder.<BloodSlashProjectile>of(BloodSlashProjectile::new, MobCategory.MISC)
                     .sized(2f, .5f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "blood_slash").toString()));
-
-    public static final DeferredHolder<EntityType<?>, EntityType<ElectrocuteProjectile>> ELECTROCUTE_PROJECTILE =
-            ENTITIES.register("electrocute", () -> EntityType.Builder.<ElectrocuteProjectile>of(ElectrocuteProjectile::new, MobCategory.MISC)
-                    .sized(1f, 1f)
-                    .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "electrocute").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<FireboltProjectile>> FIREBOLT_PROJECTILE =
             ENTITIES.register("firebolt", () -> EntityType.Builder.<FireboltProjectile>of(FireboltProjectile::new, MobCategory.MISC)
@@ -166,18 +149,6 @@ public class EntityRegistry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "icicle").toString()));
-
-    public static final DeferredHolder<EntityType<?>, EntityType<FireBreathProjectile>> FIRE_BREATH_PROJECTILE =
-            ENTITIES.register("fire_breath", () -> EntityType.Builder.<FireBreathProjectile>of(FireBreathProjectile::new, MobCategory.MISC)
-                    .sized(1f, 1f)
-                    .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "fire_breath").toString()));
-
-    public static final DeferredHolder<EntityType<?>, EntityType<DragonBreathProjectile>> DRAGON_BREATH_PROJECTILE =
-            ENTITIES.register("dragon_breath", () -> EntityType.Builder.<DragonBreathProjectile>of(DragonBreathProjectile::new, MobCategory.MISC)
-                    .sized(1f, 1f)
-                    .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "dragon_breath").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<DebugWizard>> DEBUG_WIZARD =
             ENTITIES.register("debug_wizard", () -> EntityType.Builder.<DebugWizard>of(DebugWizard::new, MobCategory.MONSTER)
@@ -374,12 +345,6 @@ public class EntityRegistry {
                     .sized(4f, 1.2f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "dragon_breath_pool").toString()));
-
-    public static final DeferredHolder<EntityType<?>, EntityType<PoisonBreathProjectile>> POISON_BREATH_PROJECTILE =
-            ENTITIES.register("poison_breath", () -> EntityType.Builder.<PoisonBreathProjectile>of(PoisonBreathProjectile::new, MobCategory.MISC)
-                    .sized(1f, 1f)
-                    .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "poison_breath").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<PoisonArrow>> POISON_ARROW =
             ENTITIES.register("poison_arrow", () -> EntityType.Builder.<PoisonArrow>of(PoisonArrow::new, MobCategory.MISC)
