@@ -166,6 +166,18 @@ public final class SkillcastingComponentTypes {
                     .synced(ByteBufCodecs.INT)
                     .build());
 
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> FIRE_TICKS =
+            COMPONENT_TYPES.register("fire_ticks", () -> ComponentType.<Integer>builder()
+                    .persisted(Codec.INT)
+                    .synced(ByteBufCodecs.INT)
+                    .build());
+
+    public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> FREEZE_TICKS =
+            COMPONENT_TYPES.register("freeze_ticks", () -> ComponentType.<Integer>builder()
+                    .persisted(Codec.INT)
+                    .synced(ByteBufCodecs.INT)
+                    .build());
+
     public static final DeferredHolder<ComponentType<?>, ComponentType<Integer>> EFFECT_AMPLIFIER =
             COMPONENT_TYPES.register("effect_amplifier", () -> ComponentType.<Integer>builder()
                     .persisted(Codec.INT)

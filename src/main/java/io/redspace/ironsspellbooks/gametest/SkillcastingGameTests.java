@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import io.redspace.skillcasting.api.event.BuildCooldownEvent;
@@ -151,6 +152,25 @@ public class SkillcastingGameTests {
         attribute(helper, zombie, AttributeRegistry.SPELL_PIERCING).removeModifier(IronsSpellbooks.id("test_pierce"));
         CastContext flatRemoved = fireboltContext(caster, firebolt);
         helper.assertFalse(flatRemoved.has(SkillcastingComponentTypes.PROJECTILE_PIERCE), "a removed flat modifier should not create pierce");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void contextFireAndFreezeTicksReachTarget(GameTestHelper helper) {
+        Zombie zombie = helper.spawn(EntityType.ZOMBIE, 1, 1, 1);
+        CasterRef caster = CasterRef.entity(zombie);
+        Holder<AbstractSkill> firebolt = SkillRegistry.holder(SpellRegistry.FIREBOLT_SPELL.get());
+        CastContext context = fireboltContext(caster, firebolt);
+        context.set(SkillcastingComponentTypes.FIRE_TICKS, 100);
+        context.set(SkillcastingComponentTypes.FREEZE_TICKS, 30);
+        Zombie target = helper.spawn(EntityType.ZOMBIE, 2, 1, 2);
+
+        DamageSources.applyDamage(target, 1, SpellRegistry.FIREBOLT_SPELL.get().getDamageSourceIndirect(context));
+
+        helper.assertTrue(target.getRemainingFireTicks() == 100, "burn should be 100, was " + target.getRemainingFireTicks());
+        helper.assertTrue(target.getTicksFrozen() == 30 * DamageSources.FREEZE_THAW_RATE, "frozen ticks should be 60, was " + target.getTicksFrozen());
+        zombie.discard();
+        target.discard();
         helper.succeed();
     }
 

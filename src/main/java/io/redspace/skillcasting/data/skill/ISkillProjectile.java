@@ -39,6 +39,14 @@ public interface ISkillProjectile {
 
     void setEffectAmplifier(int effectAmplifier);
 
+    int getFireTicks();
+
+    void setFireTicks(int fireTicks);
+
+    int getFreezeTicks();
+
+    void setFreezeTicks(int freezeTicks);
+
     default void copyFrom(ISkillProjectile parent) {
         this.setRadius(parent.getRadius());
         this.setDamage(parent.getDamage());
@@ -46,6 +54,8 @@ public interface ISkillProjectile {
         this.setRicochetLevel(parent.getRicochetLevel());
         this.setEffectDuration(parent.getEffectDuration());
         this.setEffectAmplifier(parent.getEffectAmplifier());
+        this.setFireTicks(parent.getFireTicks());
+        this.setFreezeTicks(parent.getFreezeTicks());
     }
 
     default void applyContext(CastContext context) {
@@ -55,6 +65,8 @@ public interface ISkillProjectile {
         context.find(SkillcastingComponentTypes.PROJECTILE_RICOCHET).ifPresent(this::setRicochetLevel);
         context.find(SkillcastingComponentTypes.EFFECT_DURATION_TICKS).ifPresent(this::setEffectDuration);
         context.find(SkillcastingComponentTypes.EFFECT_AMPLIFIER).ifPresent(this::setEffectAmplifier);
+        context.find(SkillcastingComponentTypes.FIRE_TICKS).ifPresent(this::setFireTicks);
+        context.find(SkillcastingComponentTypes.FREEZE_TICKS).ifPresent(this::setFreezeTicks);
         context.find(SkillcastingComponentTypes.CURSOR_HOMING).ifPresent(u -> this.setCursorHoming(true));
     }
 

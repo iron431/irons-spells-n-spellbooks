@@ -49,6 +49,8 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
     protected float radius;
     protected int effectDuration;
     protected int effectAmplifier;
+    protected int fireTicks;
+    protected int freezeTicks;
 
     @Nullable
     protected Entity cachedHomingTarget;
@@ -101,6 +103,26 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
     @Override
     public void setEffectDuration(int effectDuration) {
         this.effectDuration = effectDuration;
+    }
+
+    @Override
+    public int getFireTicks() {
+        return fireTicks;
+    }
+
+    @Override
+    public void setFireTicks(int fireTicks) {
+        this.fireTicks = fireTicks;
+    }
+
+    @Override
+    public int getFreezeTicks() {
+        return freezeTicks;
+    }
+
+    @Override
+    public void setFreezeTicks(int freezeTicks) {
+        this.freezeTicks = freezeTicks;
     }
 
     @Override
@@ -433,6 +455,12 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
         if (effectAmplifier != 0) {
             tag.putInt("EffectAmplifier", effectAmplifier);
         }
+        if (fireTicks > 0) {
+            tag.putInt("FireTicks", fireTicks);
+        }
+        if (freezeTicks > 0) {
+            tag.putInt("FreezeTicks", freezeTicks);
+        }
         if (getPierceLevel() != 0) {
             tag.putInt("PierceLevel", getPierceLevel());
         }
@@ -457,6 +485,12 @@ public class AbstractSkillProjectile extends Projectile implements ISkillProject
         }
         if (tag.contains("EffectAmplifier")) {
             this.effectAmplifier = tag.getInt("EffectAmplifier");
+        }
+        if (tag.contains("FireTicks")) {
+            this.fireTicks = tag.getInt("FireTicks");
+        }
+        if (tag.contains("FreezeTicks")) {
+            this.freezeTicks = tag.getInt("FreezeTicks");
         }
         if (tag.contains("PierceLevel")) {
             this.setPierceLevel(tag.getInt("PierceLevel"));

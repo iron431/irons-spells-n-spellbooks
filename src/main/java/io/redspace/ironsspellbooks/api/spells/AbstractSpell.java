@@ -89,13 +89,20 @@ public abstract class AbstractSpell extends AbstractSkill {
     public final SpellDamageSource getDamageSourceDirect(CastContext castContext) {
         var source = getDamageSource(castContext.level(), castContext.asEntityCaster(), castContext.asEntityCaster());
         source.sourcePosition = castContext.position(PositionAnchor.BOTTOM_CENTER);
+        applyFireAndFreezeTicks(source, castContext);
         return source;
     }
 
     public final SpellDamageSource getDamageSourceIndirect(CastContext castContext) {
         var source = getDamageSource(castContext.level(), null, castContext.asEntityCaster());
         source.sourcePosition = castContext.position(PositionAnchor.BOTTOM_CENTER);
+        applyFireAndFreezeTicks(source, castContext);
         return source;
+    }
+
+    private static void applyFireAndFreezeTicks(SpellDamageSource source, CastContext castContext) {
+        castContext.find(SkillcastingComponentTypes.FIRE_TICKS).ifPresent(source::setFireTicks);
+        castContext.find(SkillcastingComponentTypes.FREEZE_TICKS).ifPresent(source::setFreezeTicks);
     }
 
     @Override

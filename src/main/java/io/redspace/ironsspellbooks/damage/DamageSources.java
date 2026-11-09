@@ -27,6 +27,9 @@ import java.util.UUID;
 
 @EventBusSubscriber
 public class DamageSources {
+    // frozen ticks thaw at 2 per tick
+    public static final int FREEZE_THAW_RATE = 2;
+
     public static DamageSource get(Level level, ResourceKey<DamageType> damageType) {
         return level.damageSources().source(damageType);
     }
@@ -96,7 +99,7 @@ public class DamageSources {
             }
             if (spellDamageSource.getFreezeTicks() > 0 && target.canFreeze()) {
                 //Freeze ticks count down by 2, so we * 2 so the spell damages source can be dumb
-                target.setTicksFrozen(target.getTicksFrozen() + spellDamageSource.getFreezeTicks() * 2);
+                target.setTicksFrozen(target.getTicksFrozen() + spellDamageSource.getFreezeTicks() * FREEZE_THAW_RATE);
             }
             if (spellDamageSource.getFireTime() > 0 && target instanceof LivingEntity) {
                 target.igniteForTicks(spellDamageSource.getFireTime());

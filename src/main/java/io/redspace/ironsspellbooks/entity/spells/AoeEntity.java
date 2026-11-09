@@ -68,6 +68,8 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
 
     protected float radiusPerTick;
     protected int effectDuration;
+    protected int fireTicks;
+    protected int freezeTicks;
 
     public AoeEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -93,6 +95,22 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
 
     public int getEffectDuration() {
         return effectDuration;
+    }
+
+    public void setFireTicks(int fireTicks) {
+        this.fireTicks = fireTicks;
+    }
+
+    public int getFireTicks() {
+        return fireTicks;
+    }
+
+    public void setFreezeTicks(int freezeTicks) {
+        this.freezeTicks = freezeTicks;
+    }
+
+    public int getFreezeTicks() {
+        return freezeTicks;
     }
 
     @Override
@@ -301,6 +319,8 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
         pCompound.putFloat("Damage", this.getDamage());
         pCompound.putBoolean("Circular", this.isCircular());
         pCompound.putInt("EffectDuration", this.effectDuration);
+        pCompound.putInt("FireTicks", this.fireTicks);
+        pCompound.putInt("FreezeTicks", this.freezeTicks);
         pCompound.putInt("Delay", this.getDelay());
         super.addAdditionalSaveData(pCompound);
 
@@ -322,6 +342,10 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
             this.radiusPerTick = pCompound.getFloat("RadiusPerTick");
         if (pCompound.getInt("EffectDuration") > 0)
             this.effectDuration = pCompound.getInt("EffectDuration");
+        if (pCompound.getInt("FireTicks") > 0)
+            this.fireTicks = pCompound.getInt("FireTicks");
+        if (pCompound.getInt("FreezeTicks") > 0)
+            this.freezeTicks = pCompound.getInt("FreezeTicks");
         if (pCompound.getInt("Delay") > 0)
             setDelay(pCompound.getInt("Delay"));
         this.setDamage(pCompound.getFloat("Damage"));
