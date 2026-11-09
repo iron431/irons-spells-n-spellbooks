@@ -48,7 +48,6 @@ import io.redspace.ironsspellbooks.entity.spells.fire_arrow.FireArrowRenderer;
 import io.redspace.ironsspellbooks.entity.spells.fireball.FireballRenderer;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltRenderer;
 import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltRenderer;
-import io.redspace.ironsspellbooks.entity.spells.gust.GustRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ice_spike.IceSpikeRenderer;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombRenderer;
@@ -119,6 +118,7 @@ import io.redspace.ironsspellbooks.particle.ShockwaveParticle;
 import io.redspace.ironsspellbooks.particle.SiphonParticle;
 import io.redspace.ironsspellbooks.particle.SnowDustParticle;
 import io.redspace.ironsspellbooks.particle.SnowflakeParticle;
+import io.redspace.ironsspellbooks.particle.GustParticle;
 import io.redspace.ironsspellbooks.particle.SoulfireRayParticle;
 import io.redspace.ironsspellbooks.particle.SparkParticle;
 import io.redspace.ironsspellbooks.particle.SwirlingParticle;
@@ -253,7 +253,7 @@ public class ClientSetup {
 
         event.registerLayerDefinition(ShieldModel.LAYER_LOCATION, ShieldModel::createBodyLayer);
         event.registerLayerDefinition(AcidOrbRenderer.MODEL_LAYER_LOCATION, AcidOrbRenderer::createBodyLayer);
-        event.registerLayerDefinition(GustRenderer.MODEL_LAYER_LOCATION, GustRenderer::createBodyLayer);
+        event.registerLayerDefinition(GustParticle.MODEL_LAYER_LOCATION, GustParticle::createBodyLayer);
         event.registerLayerDefinition(RayOfFrostRenderer.MODEL_LAYER_LOCATION, RayOfFrostRenderer::createBodyLayer);
         event.registerLayerDefinition(EldritchBlastRenderer.MODEL_LAYER_LOCATION, EldritchBlastRenderer::createBodyLayer);
         event.registerLayerDefinition(FireballRenderer.MODEL_LAYER_LOCATION, FireballRenderer::createBodyLayer);
@@ -359,7 +359,6 @@ public class ClientSetup {
         event.registerEntityRenderer(EntityRegistry.HEALING_AOE.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.PRIEST.get(), PriestRenderer::new);
         event.registerEntityRenderer(EntityRegistry.GUIDING_BOLT.get(), GuidingBoltRenderer::new);
-        event.registerEntityRenderer(EntityRegistry.GUST_COLLIDER.get(), GustRenderer::new);
         event.registerEntityRenderer(EntityRegistry.CHAIN_LIGHTNING.get(), NoopRenderer::new);
         event.registerEntityRenderer(EntityRegistry.DEVOUR_JAW.get(), DevourJawRenderer::new);
         event.registerEntityRenderer(EntityRegistry.FIREFLY_SWARM.get(), NoopRenderer::new);
@@ -442,6 +441,7 @@ public class ClientSetup {
 
         event.registerSpecial(ParticleRegistry.FALLING_BLOCK_PARTICLE.get(), new FallingBlockParticle.Provider());
         event.registerSpecial(ParticleRegistry.SWIRLING_PARTICLE.get(), new SwirlingParticle.Provider());
+        event.registerSpecial(ParticleRegistry.GUST_PARTICLE.get(), new GustParticle.Provider());
 
     }
 

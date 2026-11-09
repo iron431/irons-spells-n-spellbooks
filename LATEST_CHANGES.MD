@@ -73,4 +73,4 @@
 - Added `SkillcastingComponentTypes.FIRE_TICKS` and `FREEZE_TICKS`. Spells set their burn and freeze durations there, so attributes and `BuildCastContextEvent` listeners can change them; `ISkillProjectile` carries both.
 - `AbstractSpell#getDamageSourceDirect(ctx)` and `getDamageSourceIndirect(ctx)` are replaced by `getDamageSource(CastContext, boolean direct)`
 - Added `AbstractSpell#getDamageSource(projectile)` for skill projectiles: it uses the projectile's owner and applies its fire and freeze ticks
-- Removed the unused cone projectile entity types (`cone_of_cold`, `dragon_breath`, `electrocute`, `fire_breath`, `poison_breath`) and their `EntityRegistry` entries
+- Removed the cone projectile entity types (`cone_of_cold`, `dragon_breath`, `electrocute`, `fire_breath`, `poison_breath`, `gust`), their `EntityRegistry` entries, `AbstractConeProjectile` and `ConePart`. Gust now hits with `SkillcastingUtils.collectConeTargets` and draws with the `gust` particle

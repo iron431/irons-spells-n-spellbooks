@@ -58,7 +58,6 @@ import io.redspace.ironsspellbooks.entity.spells.fireball.SmallMagicFireball;
 import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltProjectile;
 import io.redspace.ironsspellbooks.entity.spells.firefly_swarm.FireflySwarmProjectile;
 import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltProjectile;
-import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
 import io.redspace.ironsspellbooks.entity.spells.ice_block.IceBlockProjectile;
 import io.redspace.ironsspellbooks.entity.spells.ice_spike.IceSpikeEntity;
 import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombEntity;
@@ -441,12 +440,6 @@ public class EntityRegistry {
                     .sized(.5f, .5f)
                     .clientTrackingRange(64)
                     .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "guiding_bolt").toString()));
-
-    public static final DeferredHolder<EntityType<?>, EntityType<GustCollider>> GUST_COLLIDER =
-            ENTITIES.register("gust", () -> EntityType.Builder.<GustCollider>of(GustCollider::new, MobCategory.MISC)
-                    .sized(1f, 1f)
-                    .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "gust").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<ChainLightning>> CHAIN_LIGHTNING =
             ENTITIES.register("chain_lightning", () -> EntityType.Builder.<ChainLightning>of(ChainLightning::new, MobCategory.MISC)

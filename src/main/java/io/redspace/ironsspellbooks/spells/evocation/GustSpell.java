@@ -8,24 +8,31 @@ import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.skillcasting.animation.AnimationHolder;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.effect.AirborneEffect;
-import io.redspace.ironsspellbooks.entity.spells.gust.GustCollider;
+import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
+import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.skillcasting.data.cast.PositionAnchor;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class GustSpell extends AbstractSpell {
 
@@ -94,21 +101,24 @@ public class GustSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 8f);
         float strength = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f) * 0.2f;
-
-        GustCollider gust = new GustCollider(level, castContext.asEntityCaster());
-        gust.setPos(castContext.position(PositionAnchor.CENTER).add(castContext.direction().scale(2f)));
-        gust.setYRot(castContext.getYRot() * -Mth.RAD_TO_DEG);
-        gust.setXRot(castContext.getXRot() * -Mth.RAD_TO_DEG);
-        gust.range = range;
-        gust.strength = strength;
-        gust.amplifier = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
-        level.addFreshEntity(gust);
-        gust.setDealDamageActive();
-        gust.tick();
-
+        int amplifier = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
         Entity caster = castContext.asEntityCaster();
+        Vec3 casterPos = castContext.position(PositionAnchor.BOTTOM_CENTER);
+        Set<Entity> targets = SkillcastingUtils.collectConeTargets(castContext, target -> !DamageSources.isFriendlyFireBetween(caster, target));
+        for (Entity entity : targets) {
+            if (entity instanceof LivingEntity target) {
+                Vec3 knockback = target.position().subtract(casterPos).normalize().scale(strength);
+                target.setDeltaMovement(target.getDeltaMovement().add(knockback));
+                target.hurtMarked = true;
+                target.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE, 60, amplifier));
+            }
+        }
+
+        Vec3 direction = castContext.direction();
+        Vec3 gustPos = castContext.position(PositionAnchor.CENTER).add(direction.scale(2f));
+        MagicManager.spawnParticles(level, ParticleRegistry.GUST_PARTICLE.get(), gustPos.x, gustPos.y, gustPos.z, 0, direction.x, direction.y, direction.z, 1, true);
+
         if (caster instanceof LivingEntity living) {
             float kickback = (float) living.getBoundingBox().getCenter().distanceToSqr(Utils.getTargetBlock(level, living, ClipContext.Fluid.NONE, 3.5f).getLocation());
             kickback = Mth.clamp(1 / (kickback + 1) - .11f, 0f, .95f);
