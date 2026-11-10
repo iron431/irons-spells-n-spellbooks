@@ -189,6 +189,10 @@ public final class SkillcastingManager {
             CasterRef caster = entry.getValue();
 
             if (!caster.isValid()) {
+                ActiveCast orphaned = caster.skillcastingData().getActiveCast();
+                if (orphaned != null) {
+                    endCast(caster, caster.skillcastingData(), orphaned, CastEndReason.INTERRUPTED);
+                }
                 TRACKED.remove(id);
                 continue;
             }
@@ -201,6 +205,10 @@ public final class SkillcastingManager {
                 TRACKED.remove(id);
             }
         }
+    }
+
+    public static boolean isPulseTick(int elapsedTicks, int interval) {
+        return elapsedTicks > 0 && (elapsedTicks - 1) % interval == 0;
     }
 
     public static void serverStopped() {
@@ -222,7 +230,7 @@ public final class SkillcastingManager {
         int elapsed = active.elapsedTicks(gameTime);
         if (castType == CastType.CONTINUOUS) {
             int interval = Math.max(1, skill.continuousInterval());
-            if (elapsed % interval == 1) {
+            if (isPulseTick(elapsed, interval)) {
                 onCast(castContext);
             }
         }

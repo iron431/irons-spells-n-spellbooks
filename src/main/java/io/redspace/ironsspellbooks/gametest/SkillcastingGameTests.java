@@ -1,5 +1,12 @@
 package io.redspace.ironsspellbooks.gametest;
 
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.util.Unit;
+import net.minecraft.core.BlockPos;
+import io.redspace.skillcasting.data.cast.BlockCasterRef;
+import io.redspace.skillcasting.api.event.SkillCastEvent;
+import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
@@ -237,6 +244,47 @@ public class SkillcastingGameTests {
         helper.assertTrue(cow.getHealth() > 2, "ownerless healing should heal, health " + cow.getHealth());
         cow.discard();
         helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void pulseTickEveryInterval(GameTestHelper helper) {
+        for (int t = 1; t <= 5; t++) {
+            helper.assertTrue(SkillcastingManager.isPulseTick(t, 1), "interval 1 should pulse at " + t);
+        }
+        List<Integer> pulses = new ArrayList<>();
+        for (int t = 1; t <= 25; t++) {
+            if (SkillcastingManager.isPulseTick(t, 10)) {
+                pulses.add(t);
+            }
+        }
+        helper.assertTrue(pulses.equals(List.of(1, 11, 21)), "interval 10 should pulse at 1, 11, 21, got " + pulses);
+        helper.assertFalse(SkillcastingManager.isPulseTick(0, 10), "tick 0 should not pulse");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void brokenDispenserEndsCast(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 2, 1);
+        helper.setBlock(pos, Blocks.DISPENSER);
+        BlockEntity dispenser = helper.getBlockEntity(pos);
+        CasterRef caster = CasterRef.block(dispenser);
+        CastContext context = SkillcastingManager.buildCastContext(caster, SkillRegistry.holder(SpellRegistry.FIREBALL_SPELL.get()), 1, CastSource.of("dispenser", ""));
+        context.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
+        context.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
+        List<CastEndReason> reasons = new ArrayList<>();
+        Consumer<SkillCastEvent.Complete> onComplete = event -> {
+            if (event.getCastContext().caster() instanceof BlockCasterRef block && block.blockEntity() == dispenser) {
+                reasons.add(event.getCastEndReason());
+            }
+        };
+        NeoForge.EVENT_BUS.addListener(SkillCastEvent.Complete.class, onComplete);
+        helper.assertTrue(SkillcastingManager.initiateCast(caster, context), "dispenser cast should start");
+        helper.setBlock(pos, Blocks.AIR);
+        helper.runAfterDelay(2, () -> {
+            NeoForge.EVENT_BUS.unregister(onComplete);
+            helper.assertTrue(reasons.equals(List.of(CastEndReason.INTERRUPTED)), "broken dispenser cast should end interrupted, got " + reasons);
+            helper.succeed();
+        });
     }
 
     private static CastContext fireboltContext(CasterRef caster, Holder<AbstractSkill> firebolt) {
