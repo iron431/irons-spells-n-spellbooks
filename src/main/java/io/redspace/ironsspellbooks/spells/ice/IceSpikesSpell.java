@@ -117,7 +117,7 @@ public class IceSpikesSpell extends AbstractSpell {
                 spike.setWaitTime(delay);
                 spike.setDamage(damage * (isFinalSpike ? 1 : 0.5f));
                 spike.setFreezeTicks(castContext.getOrDefault(SkillcastingComponentTypes.FREEZE_TICKS, 20));
-                spike.setYRot((castContext.getYRot() - 45 + Utils.random.nextIntBetweenInclusive(-20, 20)));
+                spike.setYRot(-castContext.getYRot() * Mth.RAD_TO_DEG - 45 + Utils.random.nextIntBetweenInclusive(-20, 20));
                 spike.setXRot(Utils.random.nextIntBetweenInclusive(-15, 15));
                 level.addFreshEntity(spike);
             }

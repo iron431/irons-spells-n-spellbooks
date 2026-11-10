@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.ender;
 
+import net.minecraft.world.entity.Entity;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -74,8 +75,9 @@ public class RecallSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        if (!(castContext.asEntityCaster() instanceof ServerPlayer serverPlayer)) {
-            return false;
+        Entity entity = castContext.asEntityCaster();
+        if (!(entity instanceof ServerPlayer serverPlayer)) {
+            return entity instanceof HomeOwner homeOwner && homeOwner.getHome() != null;
         }
         if (serverPlayer.getCombatTracker().inCombat) {
             serverPlayer.displayClientMessage(Component.translatable("ui.irons_spellbooks.cast_error_combat")

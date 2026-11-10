@@ -112,7 +112,7 @@ public class ArrowVolleySpell extends AbstractSpell {
         Vec3 casterPos = castContext.position(PositionAnchor.ORIGIN);
         double casterX = casterPos.x;
         double casterZ = casterPos.z;
-        float casterYRot = castContext.getYRot();
+        float casterYRot = -castContext.getYRot() * Mth.RAD_TO_DEG;
 
         Vec3 backward = new Vec3(targetLocation.x - casterX, 0, targetLocation.z - casterZ).normalize().scale(-4);
         Vec3 raycastTarget = Utils.moveToRelativeGroundLevel(level, targetLocation.add(0, 2, 0), 4).add(backward).add(0, 6, 0);

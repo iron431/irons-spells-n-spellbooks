@@ -81,7 +81,7 @@ public class AscensionSpell extends AbstractSpell {
         float radiusSqr = radius * radius;
         Entity casterEntity = castContext.asEntityCaster();
         Vec3 casterPos = castContext.position();
-        AABB searchBox = AABB.ofSize(casterPos, radius * 2, radius * 2, radius * 2);
+        AABB searchBox = AABB.ofSize(strikePos, radius * 2, radius * 2, radius * 2);
         level.getEntities(casterEntity, searchBox).forEach(target -> {
             double distance = target.distanceToSqr(strikePos);
             if (distance < radiusSqr) {
