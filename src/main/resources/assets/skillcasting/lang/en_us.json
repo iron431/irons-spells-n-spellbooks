@@ -28,5 +28,7 @@
   "tooltip.skillcasting.level_plus": "%d (+%d)",
   "tooltip.skillcasting.level_minus": "%d (%d)",
   "tooltip.skillcasting.cooldown_length": " %d Cooldown",
-  "ui.skillcasting.cast_error_cooldown": " %s is on cooldown."
+  "ui.skillcasting.cast_error_cooldown": " %s is on cooldown.",
+  "commands.skillcasting.cast.no_block_entity": "No block entity at %s, %s, %s",
+  "commands.skillcasting.cast.unknown_skill": "Unknown skill: %s"
 }

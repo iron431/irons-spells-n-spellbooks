@@ -1,4 +1,4 @@
-package io.redspace.ironsspellbooks.command;
+package io.redspace.skillcasting.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -6,8 +6,8 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.Dynamic3CommandExceptionType;
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
 import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastSource;
@@ -16,9 +16,12 @@ import io.redspace.skillcasting.data.resolver.DirectionResolver;
 import io.redspace.skillcasting.data.resolver.FixedPositionResolver;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.registry.SkillcastingRegistries;
 import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
@@ -32,7 +35,9 @@ import org.jetbrains.annotations.Nullable;
 
 
 public class CastCommand {
-    private static final Dynamic3CommandExceptionType ERROR_NO_BLOCK_ENTITY = new Dynamic3CommandExceptionType((x, y, z) -> Component.translatable("commands.irons_spellbooks.cast.no_block_entity", x, y, z));
+    private static final Dynamic3CommandExceptionType ERROR_NO_BLOCK_ENTITY = new Dynamic3CommandExceptionType((x, y, z) -> Component.translatable("commands.skillcasting.cast.no_block_entity", x, y, z));
+    private static final DynamicCommandExceptionType ERROR_UNKNOWN_SKILL = new DynamicCommandExceptionType(id -> Component.translatable("commands.skillcasting.cast.unknown_skill", id));
+    private static final SuggestionProvider<CommandSourceStack> SKILLS = (context, builder) -> SharedSuggestionProvider.suggestResource(SkillcastingRegistries.SKILL_REGISTRY.keySet(), builder);
 
     @FunctionalInterface
     private interface Cast {
@@ -50,7 +55,7 @@ public class CastCommand {
                                 .then(withSpell(CastCommand::castFromBlock))))
                 // position and facing come from the command source, so /execute positioned/rotated places it
                 .then(Commands.literal("virtual")
-                        .then(Commands.argument("spell", SpellArgument.spellArgument())
+                        .then(Commands.argument("skill", ResourceLocationArgument.id()).suggests(SKILLS)
                                 .executes(context -> castVirtual(context, skill(context), 1, null))
                                 .then(Commands.argument("level", IntegerArgumentType.integer(1))
                                         .executes(context -> castVirtual(context, skill(context), IntegerArgumentType.getInteger(context, "level"), null))
@@ -60,7 +65,7 @@ public class CastCommand {
 
     private static ArgumentBuilder<CommandSourceStack, ?> withSpell(Cast cast) {
         // rotation is rasterized by the command chain; we can't tell whether it was set by the chain, relative, etc, so we rely on the "absolute" flag for whether to listen
-        return Commands.argument("spell", SpellArgument.spellArgument())
+        return Commands.argument("skill", ResourceLocationArgument.id()).suggests(SKILLS)
                 .executes(context -> cast.run(context, skill(context), 1, false))
                 .then(Commands.literal("absolute")
                         .executes(context -> cast.run(context, skill(context), 1, true)))
@@ -70,12 +75,9 @@ public class CastCommand {
                                 .executes(context -> cast.run(context, skill(context), IntegerArgumentType.getInteger(context, "level"), true))));
     }
 
-    private static Holder<AbstractSkill> skill(CommandContext<CommandSourceStack> context) {
-        String spellId = context.getArgument("spell", String.class);
-        if (!spellId.contains(":")) {
-            spellId = IronsSpellbooks.MODID + ":" + spellId;
-        }
-        return SpellRegistry.getSpell(ResourceLocation.parse(spellId)).holder();
+    private static Holder<AbstractSkill> skill(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        ResourceLocation id = ResourceLocationArgument.getId(context, "skill");
+        return SkillcastingRegistries.SKILL_REGISTRY.getHolder(id).orElseThrow(() -> ERROR_UNKNOWN_SKILL.create(id));
     }
 
     private static int castFromEntities(CommandContext<CommandSourceStack> context, Holder<AbstractSkill> skill, int level, boolean absolute) throws CommandSyntaxException {

@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.registries;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.redspace.ironsspellbooks.command.CastCommand;
 import io.redspace.ironsspellbooks.command.ClearCooldownCommand;
 import io.redspace.ironsspellbooks.command.CreateDebugWizardCommand;
 import io.redspace.ironsspellbooks.command.CreateImbuedSwordCommand;
@@ -37,7 +36,6 @@ public class CommandRegistry {
         CreateSpellBookCommand.register(commandDispatcher);
         CreateImbuedSwordCommand.register(commandDispatcher, commandBuildContext);
         CreateDebugWizardCommand.register(commandDispatcher);
-        CastCommand.register(commandDispatcher);
         ManaCommand.register(commandDispatcher);
         GenerateModList.register(commandDispatcher);
         LearnCommand.register(commandDispatcher);

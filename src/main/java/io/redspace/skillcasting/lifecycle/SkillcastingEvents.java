@@ -17,6 +17,7 @@ import net.minecraft.world.InteractionResult;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import io.redspace.skillcasting.command.CastCommand;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
@@ -64,7 +65,7 @@ public final class SkillcastingEvents {
 
     @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
-//        SkillcastingDevCommands.register(event.getDispatcher());
+        CastCommand.register(event.getDispatcher());
     }
 
     @SubscribeEvent
