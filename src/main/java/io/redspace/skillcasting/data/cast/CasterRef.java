@@ -10,7 +10,7 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface CasterRef {
+public sealed interface CasterRef permits EntityCasterRef, BlockCasterRef, VirtualCasterRef {
     static EntityCasterRef entity(@NotNull Entity entity) {
         return new EntityCasterRef(entity);
     }

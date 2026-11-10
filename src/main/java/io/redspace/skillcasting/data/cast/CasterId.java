@@ -1,5 +1,6 @@
 package io.redspace.skillcasting.data.cast;
 
+import io.redspace.skillcasting.lifecycle.VirtualCasters;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
@@ -48,9 +49,18 @@ public sealed interface CasterId permits CasterId.Entity, CasterId.Block, Caster
     }
 
     record Virtual(ResourceKey<Level> dimension, UUID id) implements CasterId {
+        public static final StreamCodec<RegistryFriendlyByteBuf, Virtual> STREAM_CODEC = StreamCodec.composite(
+                ResourceKey.streamCodec(Registries.DIMENSION), Virtual::dimension,
+                UUIDUtil.STREAM_CODEC, Virtual::id,
+                Virtual::new);
+
         @Override
         public @Nullable CasterRef resolve(Level level) {
-            return null;
+            if (!level.dimension().equals(this.dimension)) {
+                return null;
+            }
+            VirtualCaster caster = VirtualCasters.get(level, this.id);
+            return caster == null ? null : new VirtualCasterRef(caster);
         }
     }
 
@@ -68,15 +78,14 @@ public sealed interface CasterId permits CasterId.Entity, CasterId.Block, Caster
                     }
                     case Virtual v -> {
                         buf.writeByte(2);
-                        buf.writeResourceKey(v.dimension);
-                        UUIDUtil.STREAM_CODEC.encode(buf, v.id);
+                        Virtual.STREAM_CODEC.encode(buf, v);
                     }
                 }
             },
             buf -> switch (buf.readByte()) {
                 case 0 -> new Entity(buf.readInt());
                 case 1 -> new Block(buf.readResourceKey(Registries.DIMENSION), buf.readBlockPos());
-                case 2 -> new Virtual(buf.readResourceKey(Registries.DIMENSION), UUIDUtil.STREAM_CODEC.decode(buf));
+                case 2 -> Virtual.STREAM_CODEC.decode(buf);
                 default -> throw new IllegalStateException("Unknown caster id kind");
             });
 }

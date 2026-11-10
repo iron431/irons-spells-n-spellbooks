@@ -18,6 +18,8 @@ public final class SkillcastingPayloads {
         registrar.playToClient(SyncCastComponentsPacket.TYPE, SyncCastComponentsPacket.STREAM_CODEC, SyncCastComponentsPacket::handle);
         registrar.playToClient(SyncAnimationPacket.TYPE, SyncAnimationPacket.STREAM_CODEC, SyncAnimationPacket::handle);
         registrar.playToClient(PlayPlayerAnimationPacket.TYPE, PlayPlayerAnimationPacket.STREAM_CODEC, PlayPlayerAnimationPacket::handle);
+        registrar.playToClient(VirtualCasterAddPacket.TYPE, VirtualCasterAddPacket.STREAM_CODEC, VirtualCasterAddPacket::handle);
+        registrar.playToClient(VirtualCasterRemovePacket.TYPE, VirtualCasterRemovePacket.STREAM_CODEC, VirtualCasterRemovePacket::handle);
 
         registrar.playToServer(ServerboundCastSelectedSkillPacket.TYPE, ServerboundCastSelectedSkillPacket.STREAM_CODEC, ServerboundCastSelectedSkillPacket::handle);
         registrar.playToServer(ServerboundCancelSkillCastPacket.TYPE, ServerboundCancelSkillCastPacket.STREAM_CODEC, ServerboundCancelSkillCastPacket::handle);

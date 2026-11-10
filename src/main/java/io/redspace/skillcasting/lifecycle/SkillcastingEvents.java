@@ -1,6 +1,8 @@
 package io.redspace.skillcasting.lifecycle;
 
 
+import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.event.level.LevelEvent;
 import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.data.cast.ActiveCast;
 import io.redspace.skillcasting.data.cast.CastEndReason;
@@ -37,11 +39,20 @@ public final class SkillcastingEvents {
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
         SkillcastingManager.serverTick();
+        VirtualCasters.sweep();
     }
 
     @SubscribeEvent
     public static void onServerStopped(ServerStoppedEvent event) {
         SkillcastingManager.serverStopped();
+        VirtualCasters.clearAll();
+    }
+
+    @SubscribeEvent
+    public static void onLevelUnload(LevelEvent.Unload event) {
+        if (event.getLevel() instanceof Level level) {
+            VirtualCasters.clear(level);
+        }
     }
 
     @SubscribeEvent
