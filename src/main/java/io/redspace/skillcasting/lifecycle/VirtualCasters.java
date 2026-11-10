@@ -1,5 +1,6 @@
 package io.redspace.skillcasting.lifecycle;
 
+import net.minecraft.core.BlockPos;
 import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.data.cast.CasterId;
 import io.redspace.skillcasting.data.cast.VirtualCaster;
@@ -9,6 +10,7 @@ import io.redspace.skillcasting.network.VirtualCasterRemovePacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -78,6 +80,19 @@ public final class VirtualCasters {
         if (caster != null) {
             caster.markRemoved();
         }
+    }
+
+    /**
+     * Forgets every caster of this side whose point lies in {@code chunk}. Clients call it on chunk unload, since a viewer that leaves before a cast ends never receives its remove packet.
+     */
+    public static void dropInChunk(Level level, ChunkPos chunk) {
+        store(level).values().removeIf(caster -> {
+            if (new ChunkPos(BlockPos.containing(caster.position())).equals(chunk)) {
+                caster.markRemoved();
+                return true;
+            }
+            return false;
+        });
     }
 
     public static void clear(Level level) {

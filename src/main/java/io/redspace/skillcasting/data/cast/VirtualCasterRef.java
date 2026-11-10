@@ -1,5 +1,6 @@
 package io.redspace.skillcasting.data.cast;
 
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
@@ -25,7 +26,9 @@ public record VirtualCasterRef(VirtualCaster caster) implements CasterRef {
 
     @Override
     public boolean isValid() {
-        return !caster.isRemoved() && caster.level().isLoaded(BlockPos.containing(caster.position()));
+        // only the chunk matters: Level#isLoaded also rejects points outside the build height
+        Vec3 position = caster.position();
+        return !caster.isRemoved() && caster.level().hasChunk(SectionPos.blockToSectionCoord(position.x), SectionPos.blockToSectionCoord(position.z));
     }
 
     @Override

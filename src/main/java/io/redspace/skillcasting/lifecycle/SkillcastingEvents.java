@@ -1,6 +1,7 @@
 package io.redspace.skillcasting.lifecycle;
 
 
+import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import io.redspace.skillcasting.data.SkillcastingData;
@@ -46,6 +47,13 @@ public final class SkillcastingEvents {
     public static void onServerStopped(ServerStoppedEvent event) {
         SkillcastingManager.serverStopped();
         VirtualCasters.clearAll();
+    }
+
+    @SubscribeEvent
+    public static void onChunkUnload(ChunkEvent.Unload event) {
+        if (event.getLevel() instanceof Level level && level.isClientSide()) {
+            VirtualCasters.dropInChunk(level, event.getChunk().getPos());
+        }
     }
 
     @SubscribeEvent

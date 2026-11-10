@@ -85,7 +85,7 @@ public class SummonPolarBearSpell extends AbstractSpell {
     public void onCast(ServerLevel world, CastContext castContext) {
         if (!castContext.getSkillcastingData().recasts().hasRecast(this)) {
             SummonedPolarBear polarBear = new SummonedPolarBear(EntityRegistry.SUMMONED_POLAR_BEAR.get(), world);
-            polarBear.setPos(castContext.position(PositionAnchor.CASTING_POSITION));
+            polarBear.setPos(Utils.moveToRelativeGroundLevel(world, castContext.position(PositionAnchor.CASTING_POSITION), 3));
             polarBear.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_ATTACK_DAMAGE, 1f));
             polarBear.getAttributes().getInstance(Attributes.MAX_HEALTH).setBaseValue(castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_HEALTH, 10f));
             polarBear.setHealth(polarBear.getMaxHealth());
