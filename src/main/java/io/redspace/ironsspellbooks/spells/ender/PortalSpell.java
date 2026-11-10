@@ -34,6 +34,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -98,8 +99,9 @@ public class PortalSpell extends AbstractSpell {
             }
             return false;
         }
-        HitResult hitResult = Utils.raycastForBlock(castContext.level(), castContext.position(),
-                castContext.position().add(castContext.direction().scale(CAST_DISTANCE)), ClipContext.Fluid.NONE);
+        // frame colliders are hollow; outline is the whole frame
+        HitResult hitResult = castContext.level().clip(new ClipContext(castContext.position(), castContext.position().add(castContext.direction().scale(CAST_DISTANCE)),
+                ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, CollisionContext.empty()));
         castContext.set(SkillcastingComponentTypes.HIT_RESULT_TRANSIENT, hitResult);
         PortalData portalData = castContext.getOrNull(SpellcastingComponentTypes.PORTAL_DATA);
         if (portalData != null && portalData.isBlock) {

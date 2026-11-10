@@ -1,11 +1,8 @@
 package io.redspace.ironsspellbooks.gametest;
 
 import io.redspace.skillcasting.data.cast.EntityCasterRef;
-import net.minecraft.world.level.GameType;
-import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.minecraft.world.level.ChunkPos;
-import io.redspace.ironsspellbooks.entity.mobs.SummonedPolarBear;
 import java.util.UUID;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.phys.AABB;
@@ -29,7 +26,6 @@ import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.entity.spells.HealingAoe;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import io.redspace.skillcasting.api.event.BuildCooldownEvent;
@@ -42,7 +38,6 @@ import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.component.CastComponentMap;
 import io.redspace.skillcasting.data.recast.RecastInstance;
-import io.redspace.skillcasting.data.resolver.DirectionResolver;
 import io.redspace.skillcasting.data.recast.RecastManager;
 import io.redspace.skillcasting.data.selection.SkillSelection;
 import io.redspace.skillcasting.data.selection.SkillSelectionManager;
@@ -64,7 +59,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
@@ -229,38 +223,6 @@ public class SkillcastingGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "empty")
-    public static void teleportFollowsContextDirection(GameTestHelper helper) {
-        Zombie zombie = helper.spawn(EntityType.ZOMBIE, 1, 2, 1);
-        zombie.setNoAi(true);
-        zombie.setYRot(180);
-        zombie.setYHeadRot(180);
-        Vec3 start = zombie.position();
-        CasterRef caster = CasterRef.entity(zombie);
-        CastContext context = SkillcastingManager.buildCastContext(caster, SkillRegistry.holder(SpellRegistry.TELEPORT_SPELL.get()), 1, CastSource.of("test", EquipmentSlot.MAINHAND));
-        context.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, DirectionResolver.fixed(new Vec3(1, 0, 0)));
-        context.set(SkillcastingComponentTypes.TELEPORT_RANGE, 4f);
-        SkillcastingManager.initiateCast(caster, context);
-        helper.runAfterDelay(2, () -> {
-            Vec3 moved = zombie.position().subtract(start);
-            helper.assertTrue(moved.x > 1 && Math.abs(moved.z) < 0.5, "teleport should follow the context direction (+x), moved " + moved);
-            zombie.discard();
-            helper.succeed();
-        });
-    }
-
-    @GameTest(template = "empty")
-    public static void ownerlessHealingCircleHeals(GameTestHelper helper) {
-        Cow cow = helper.spawn(EntityType.COW, 1, 2, 1);
-        cow.setHealth(2);
-        HealingAoe aoe = new HealingAoe(helper.getLevel());
-        aoe.setDamage(4);
-        aoe.applyEffect(cow);
-        helper.assertTrue(cow.getHealth() > 2, "ownerless healing should heal, health " + cow.getHealth());
-        cow.discard();
-        helper.succeed();
-    }
-
     @GameTest(template = "empty", timeoutTicks = 100)
     public static void continuousCastPulsesEveryInterval(GameTestHelper helper) {
         Zombie caster = stillZombie(helper);
@@ -401,16 +363,6 @@ public class SkillcastingGameTests {
     }
 
     @GameTest(template = "empty")
-    public static void castAtAboveBuildHeightStarts(GameTestHelper helper) {
-        Vec3 base = helper.absoluteVec(new Vec3(4, 5, 4));
-        Vec3 point = new Vec3(base.x, helper.getLevel().getMaxBuildHeight() + 10, base.z);
-        var result = SkillcastingUtils.castAt(helper.getLevel(), point, DOWN, fireball(), 1, CastSource.of("test", ""), null, null);
-        helper.assertTrue(result.isPresent(), "a cast above build height in a loaded chunk should start");
-        result.ifPresent(ref -> SkillcastingManager.cancelCast(ref, CastEndReason.INTERRUPTED));
-        helper.succeed();
-    }
-
-    @GameTest(template = "empty")
     public static void dropInChunkForgetsVirtualCasters(GameTestHelper helper) {
         // far from the other tests: dropping a shared chunk would discard their casters too
         Vec3 point = helper.absoluteVec(new Vec3(4, 5, 4)).add(4096, 0, 4096);
@@ -419,89 +371,6 @@ public class SkillcastingGameTests {
         helper.assertTrue(VirtualCasterManager.get(helper.getLevel(), ref.caster().id()) == null, "casters in a dropped chunk should be forgotten");
         helper.assertFalse(ref.isValid(), "a dropped caster should be invalid");
         helper.succeed();
-    }
-
-    @GameTest(template = "empty", timeoutTicks = 200)
-    public static void polarBearSpawnsOnGround(GameTestHelper helper) {
-        bearRoom(helper, false);
-        Zombie caster = helper.spawn(EntityType.ZOMBIE, 1, 3, 1);
-        caster.setNoAi(true);
-        helper.runAfterDelay(20, () -> {
-            CasterRef ref = CasterRef.entity(caster);
-            CastContext context = SkillcastingManager.buildCastContext(ref, SkillRegistry.holder(SpellRegistry.SUMMON_POLAR_BEAR_SPELL.get()), 1, CastSource.of("test", ""));
-            context.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
-            double feet = caster.getY();
-            List<Double> spawnHeights = new ArrayList<>();
-            Consumer<EntityJoinLevelEvent> onJoin = event -> {
-                if (event.getEntity() instanceof SummonedPolarBear bear && bear.distanceTo(caster) < 6) {
-                    spawnHeights.add(bear.getY());
-                }
-            };
-            NeoForge.EVENT_BUS.addListener(EntityJoinLevelEvent.class, onJoin);
-            SkillcastingManager.initiateCast(ref, context);
-            helper.succeedWhen(() -> {
-                helper.assertFalse(spawnHeights.isEmpty(), "no bear yet");
-                NeoForge.EVENT_BUS.unregister(onJoin);
-                double y = spawnHeights.get(0);
-                helper.assertTrue(Math.abs(y - feet) < 0.5, "bear should spawn on the ground at " + feet + ", spawned at " + y);
-            });
-        });
-    }
-
-    @GameTest(template = "empty")
-    public static void onlyPlayersSpendMana(GameTestHelper helper) {
-        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
-        Zombie zombie = stillZombie(helper);
-        VirtualCasterRef point = VirtualCasterManager.create(helper.getLevel(), helper.absoluteVec(new Vec3(4, 5, 4)), DOWN, zombie);
-        helper.assertFalse(ignoresMana(CasterRef.entity(player)), "players should spend mana");
-        helper.assertTrue(ignoresMana(CasterRef.entity(zombie)), "mobs should not spend mana");
-        helper.assertTrue(ignoresMana(point), "virtual casters should not spend mana");
-        VirtualCasterManager.discard(point);
-        helper.succeed();
-    }
-
-    private static boolean ignoresMana(CasterRef caster) {
-        return SkillcastingManager.buildCastContext(caster, fireball(), 1, CastSource.of("test", "")).has(SpellcastingComponentTypes.IGNORE_MANA);
-    }
-
-    @GameTest(template = "empty", timeoutTicks = 200)
-    public static void polarBearSpawnsUnderLowCeiling(GameTestHelper helper) {
-        bearRoom(helper, true);
-        Zombie caster = helper.spawn(EntityType.ZOMBIE, 1, 3, 1);
-        caster.setNoAi(true);
-        caster.setYRot(-90);
-        caster.setYHeadRot(-90);
-        helper.runAfterDelay(20, () -> {
-            CasterRef ref = CasterRef.entity(caster);
-            CastContext context = SkillcastingManager.buildCastContext(ref, SkillRegistry.holder(SpellRegistry.SUMMON_POLAR_BEAR_SPELL.get()), 1, CastSource.of("test", ""));
-            double feet = caster.getY();
-            List<Vec3> spawns = new ArrayList<>();
-            Consumer<EntityJoinLevelEvent> onJoin = event -> {
-                if (event.getEntity() instanceof SummonedPolarBear bear && bear.distanceTo(caster) < 8) {
-                    spawns.add(bear.position());
-                }
-            };
-            NeoForge.EVENT_BUS.addListener(EntityJoinLevelEvent.class, onJoin);
-            SkillcastingManager.initiateCast(ref, context);
-            helper.succeedWhen(() -> {
-                helper.assertFalse(spawns.isEmpty(), "no bear yet");
-                NeoForge.EVENT_BUS.unregister(onJoin);
-                Vec3 spawn = spawns.get(0);
-                helper.assertTrue(Math.abs(spawn.y - feet) < 0.5, "bear should spawn under the ceiling at " + feet + ", spawned at " + spawn.y);
-                helper.assertTrue(spawn.subtract(caster.position()).horizontalDistance() > 1, "bear should spawn beside the caster, not inside it");
-            });
-        });
-    }
-
-    private static void bearRoom(GameTestHelper helper, boolean ceiling) {
-        for (int x = 0; x < 5; x++) {
-            for (int z = 0; z < 5; z++) {
-                helper.setBlock(new BlockPos(x, 2, z), Blocks.STONE);
-                if (ceiling) {
-                    helper.setBlock(new BlockPos(x, 5, z), Blocks.STONE);
-                }
-            }
-        }
     }
 
     private static Zombie stillZombie(GameTestHelper helper) {

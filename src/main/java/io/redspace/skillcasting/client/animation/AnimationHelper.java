@@ -28,7 +28,7 @@ public class AnimationHelper {
         var playerAnimationData = (IronPlayerAnimationData<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData(player).get(PLAYER_ANIMATION_RESOURCE);
         if (playerAnimationData != null) {
             playerAnimationData.replaceAnimationWithFade(AbstractFadeModifier.standardFadeIn(4, Ease.INOUTSINE), null, false);
-            playerAnimationData.adjustmentModifier.setupFade(3, 3);
+            playerAnimationData.adjustmentModifier.fadeOut(3);
             playerAnimationData.setSpeed(1f);
         }
     }
@@ -46,7 +46,7 @@ public class AnimationHelper {
                 var fadein = 2;
                 var animation = new KeyframeAnimationPlayer(copy.build());
                 var playerAnimationData = (IronPlayerAnimationData<IAnimation>) PlayerAnimationAccess.getPlayerAssociatedData((AbstractClientPlayer) player).get(PLAYER_ANIMATION_RESOURCE);
-                playerAnimationData.adjustmentModifier.setupFade(animation.getData().endTick, 3);
+                playerAnimationData.adjustmentModifier.follow(animation);
                 playerAnimationData.setSpeed(speed);
                 var armsFlag = SkillcastingClientConfig.SHOW_FIRST_PERSON_ARMS.get();
                 var itemsFlag = SkillcastingClientConfig.SHOW_FIRST_PERSON_ITEMS.get();

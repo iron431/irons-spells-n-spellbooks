@@ -1,10 +1,12 @@
 package io.redspace.skillcasting.client.animation;
 
 import dev.kosmx.playerAnim.api.TransformType;
+import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
 import dev.kosmx.playerAnim.api.layered.modifier.AbstractModifier;
 import dev.kosmx.playerAnim.api.layered.modifier.AdjustmentModifier;
 import dev.kosmx.playerAnim.core.util.Vec3f;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -18,27 +20,37 @@ public class IronsAdjustmentModifier extends AbstractModifier {
         this.transformFunction = transformFunction;
     }
 
-    int duration;
-    int currentTick;
-    int fadeTime;
+    private static final int FADE_TICKS = 3;
+    private @Nullable KeyframeAnimationPlayer animation;
+    private int fadeOutTicks = 1;
+    private int ticksSinceFadeOut;
 
-    public void setupFade(int duration, int fadeTime) {
-        this.currentTick = 0;
-        this.duration = Math.max(5, duration); // prevent ultra-short animations from fading while its actually playing
-        this.fadeTime = fadeTime;
+    public void follow(KeyframeAnimationPlayer animation) {
+        this.animation = animation;
+    }
+
+    public void fadeOut(int ticks) {
+        this.animation = null;
+        this.fadeOutTicks = ticks;
+        this.ticksSinceFadeOut = 0;
     }
 
     @Override
     public void tick() {
         super.tick();
-        currentTick++;
+        ticksSinceFadeOut++;
     }
 
-    public float getFadeOutPercent(float partialTick) {
-        if (currentTick > duration) {
+    // follows the animation's own tick so looping and speed-scaled animations keep the adjustment
+    private float getFade(float partialTick) {
+        if (animation == null) {
+            return 1 - Mth.clamp((ticksSinceFadeOut + partialTick) / fadeOutTicks, 0, 1);
+        }
+        if (animation.isInfinite()) {
             return 1;
         }
-        return Mth.clamp(((currentTick + partialTick) - (duration - fadeTime)) / fadeTime, 0, 1);
+        int end = Math.max(5, animation.getData().endTick); // prevent ultra-short animations from fading while its actually playing
+        return Mth.clamp((end - (animation.getTick() + partialTick)) / FADE_TICKS, 0, 1);
     }
 
     @Override
@@ -50,7 +62,7 @@ public class IronsAdjustmentModifier extends AbstractModifier {
         Optional<AdjustmentModifier.PartModifier> partModifier = transformFunction.apply(modelName, partialTick);
 
         Vec3f modifiedVector = value0;
-        float fade = 1 - getFadeOutPercent(partialTick);
+        float fade = getFade(partialTick);
         if (partModifier.isPresent()) {
             modifiedVector = super.get3DTransform(modelName, type, partialTick, modifiedVector);
             return transformVector(modifiedVector, type, partModifier.get(), fade);
