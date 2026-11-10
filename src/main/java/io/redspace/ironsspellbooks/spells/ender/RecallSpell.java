@@ -75,7 +75,7 @@ public class RecallSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        Entity entity = castContext.asEntityCaster();
+        Entity entity = castContext.entityOwner();
         if (!(entity instanceof ServerPlayer serverPlayer)) {
             return entity instanceof HomeOwner homeOwner && homeOwner.getHome() != null;
         }
@@ -89,14 +89,14 @@ public class RecallSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (castContext.asEntityCaster() instanceof ServerPlayer serverPlayer) {
+        if (castContext.entityOwner() instanceof ServerPlayer serverPlayer) {
             var destination = NeoForge.EVENT_BUS.post(new PlayerRespawnPositionEvent(serverPlayer,
                     serverPlayer.findRespawnPositionAndUseSpawnBlock(true, DimensionTransition.DO_NOTHING), false))
                     .getDimensionTransition();
             serverPlayer.changeDimension(destination);
-        } else if (castContext.asEntityCaster() instanceof HomeOwner homeOwner && homeOwner.getHome() != null) {
+        } else if (castContext.entityOwner() instanceof HomeOwner homeOwner && homeOwner.getHome() != null) {
             var pos = homeOwner.getHome();
-            castContext.asEntityCaster().teleportTo(pos.getX(), pos.getY() + 0.15, pos.getZ());
+            castContext.entityOwner().teleportTo(pos.getX(), pos.getY() + 0.15, pos.getZ());
         }
     }
 

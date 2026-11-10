@@ -85,7 +85,7 @@ public class ArcaneShackleSpell extends AbstractSpell {
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         ArcaneShackleProjectile projectile = new ArcaneShackleProjectile(EntityRegistry.ARCANE_SHACKLE.get(), level);
-        projectile.setOwner(castContext.asEntityCaster());
+        projectile.setOwner(castContext.entityOwner());
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         projectile.setPos(origin.subtract(0, projectile.getBoundingBox().getYsize() * 0.5f, 0).add(castContext.direction()));
         projectile.shootFromContext(projectile, castContext);

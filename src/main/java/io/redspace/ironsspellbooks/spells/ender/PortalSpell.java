@@ -92,7 +92,7 @@ public class PortalSpell extends AbstractSpell {
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
         if (castContext.level().dimension().equals(PocketDimensionManager.POCKET_DIMENSION)) {
-            if (castContext.asEntityCaster() instanceof ServerPlayer serverPlayer) {
+            if (castContext.entityOwner() instanceof ServerPlayer serverPlayer) {
                 serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(
                         Component.translatable("ui.irons_spellbooks.cast_error_dimension").withStyle(ChatFormatting.RED)));
             }
@@ -106,7 +106,7 @@ public class PortalSpell extends AbstractSpell {
             if (hitResult.getType() == HitResult.Type.MISS
                     || !(castContext.level().getBlockEntity(((BlockHitResult) hitResult).getBlockPos()) instanceof PortalFrameBlockEntity portalFrame)
                     || portalFrame.isPortalConnected()) {
-                if (castContext.asEntityCaster() instanceof ServerPlayer serverPlayer) {
+                if (castContext.entityOwner() instanceof ServerPlayer serverPlayer) {
                     serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(
                             Component.translatable("ui.irons_spellbooks.portal_target_failure").withStyle(ChatFormatting.RED)));
                 }

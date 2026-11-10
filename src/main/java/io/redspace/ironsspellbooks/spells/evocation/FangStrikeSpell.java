@@ -88,7 +88,7 @@ public class FangStrikeSpell extends AbstractSpell {
             spawn = new Vec3(spawn.x, getGroundLevel(world, spawn, 8), spawn.z);
             if (!world.getBlockState(BlockPos.containing(spawn).below()).isAir()) {
                 int delay = i / 3;
-                ExtendedEvokerFang fang = new ExtendedEvokerFang(world, spawn.x, spawn.y, spawn.z, fangYaw, delay, castContext.asEntityCaster(), damage);
+                ExtendedEvokerFang fang = new ExtendedEvokerFang(world, spawn.x, spawn.y, spawn.z, fangYaw, delay, castContext.entityOwner(), damage);
                 SkillcastingUtils.attachToContext(fang, castContext);
                 world.addFreshEntity(fang);
             }

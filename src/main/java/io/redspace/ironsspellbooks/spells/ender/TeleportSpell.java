@@ -79,7 +79,7 @@ public class TeleportSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (!(castContext.asEntityCaster() instanceof LivingEntity entity)) {
+        if (!(castContext.entityOwner() instanceof LivingEntity entity)) {
             return;
         }
         Vec3 dest = castContext.getOrNull(SkillcastingComponentTypes.TARGET_POSITION);

@@ -104,7 +104,7 @@ public class BlackHoleSpell extends AbstractSpell {
 
         level.playSound(null, center.x, center.y, center.z, SoundRegistry.BLACK_HOLE_CAST.get(), SoundSource.AMBIENT, 4, 1);
 
-        BlackHole blackHole = new BlackHole(level, castContext.asEntityCaster());
+        BlackHole blackHole = new BlackHole(level, castContext.entityOwner());
         SkillcastingUtils.attachToContext(blackHole, castContext);
         blackHole.setRadius(radius);
         blackHole.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f));

@@ -69,10 +69,10 @@ public class VoltStrikeSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (castContext.asEntityCaster() == null) {
+        if (castContext.entityOwner() == null) {
             return;
         }
-        Entity entity = castContext.asEntityCaster();
+        Entity entity = castContext.entityOwner();
         entity.hasImpulse = true;
         float multiplier = (15 + getSpellPower(castContext)) / 20f;
 

@@ -78,7 +78,7 @@ public class SpectralHammerSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         if (caster instanceof ServerPlayer serverPlayer && serverPlayer.gameMode.getGameModeForPlayer() == GameType.ADVENTURE) {
             serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.cast_error_adventure").withStyle(ChatFormatting.RED)));
             return false;
@@ -109,7 +109,7 @@ public class SpectralHammerSpell extends AbstractSpell {
             return;
         }
 
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         float yRot = -castContext.getYRot() * Mth.RAD_TO_DEG;
         float yHeadRot = yRot;
 

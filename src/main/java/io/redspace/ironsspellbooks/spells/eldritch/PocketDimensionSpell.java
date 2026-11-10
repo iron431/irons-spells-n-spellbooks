@@ -82,7 +82,7 @@ public class PocketDimensionSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        if (!(castContext.asEntityCaster() instanceof ServerPlayer serverPlayer)) {
+        if (!(castContext.entityOwner() instanceof ServerPlayer serverPlayer)) {
             return false;
         }
         Level level = castContext.level();
@@ -101,7 +101,7 @@ public class PocketDimensionSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (!(castContext.asEntityCaster() instanceof ServerPlayer serverPlayer)) {
+        if (!(castContext.entityOwner() instanceof ServerPlayer serverPlayer)) {
             return;
         }
 

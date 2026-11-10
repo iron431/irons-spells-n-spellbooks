@@ -46,7 +46,7 @@ public class SummonEnderChestSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (castContext.asEntityCaster() instanceof ServerPlayer player) {
+        if (castContext.entityOwner() instanceof ServerPlayer player) {
 //            Scroll.attemptRemoveScrollAfterCast(player);
             PlayerEnderChestContainer enderChest = player.getEnderChestInventory();
             player.openMenu(new SimpleMenuProvider(

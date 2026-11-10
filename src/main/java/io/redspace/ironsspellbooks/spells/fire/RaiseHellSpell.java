@@ -99,7 +99,7 @@ public class RaiseHellSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.FIRE_TICKS, 100);
         float weaponDamage = 0;
-        if (castContext.asEntityCaster() instanceof LivingEntity entity) {
+        if (castContext.entityOwner() instanceof LivingEntity entity) {
             weaponDamage = Utils.getWeaponDamage(entity);
         }
         castContext.set(SkillcastingComponentTypes.WEAPON_DAMAGE, weaponDamage);
@@ -117,10 +117,10 @@ public class RaiseHellSpell extends AbstractSpell {
                 Utils.raycastForBlock(level, eyePos, eyePos.add(forward.multiply(range, 0, range)), ClipContext.Fluid.NONE).getLocation(), 4);
         FireEruptionAoe aoe = new FireEruptionAoe(level, radius);
         SkillcastingUtils.attachToContext(aoe, castContext);
-        aoe.setOwner(castContext.asEntityCaster());
+        aoe.setOwner(castContext.entityOwner());
         aoe.setFireTicks(castContext.getOrDefault(SkillcastingComponentTypes.FIRE_TICKS, 100));
         aoe.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f) + castContext.getOrDefault(SkillcastingComponentTypes.WEAPON_DAMAGE, 0f));
-        aoe.setDamageSource(getDamageSource(level, aoe, castContext.asEntityCaster()).get());
+        aoe.setDamageSource(getDamageSource(level, aoe, castContext.entityOwner()).get());
         aoe.moveTo(hitLocation);
         level.addFreshEntity(aoe);
         CameraShakeManager.addCameraShake(new CameraShakeData(level, 20 + (int) radius, hitLocation, radius * 2 + 5));

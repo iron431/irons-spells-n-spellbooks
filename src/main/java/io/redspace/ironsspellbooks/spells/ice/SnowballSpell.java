@@ -71,7 +71,7 @@ public class SnowballSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Snowball orb = new Snowball(level, castContext.asEntityCaster());
+        Snowball orb = new Snowball(level, castContext.entityOwner());
         orb.setPos(castContext.position().add(castContext.direction()));
         orb.shootFromContext(orb, castContext);
         orb.setDeltaMovement(orb.getDeltaMovement().add(0, 0.2, 0));

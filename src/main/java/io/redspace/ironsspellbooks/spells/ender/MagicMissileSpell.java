@@ -59,7 +59,7 @@ public class MagicMissileSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        MagicMissileProjectile projectile = new MagicMissileProjectile(level, castContext.asEntityCaster());
+        MagicMissileProjectile projectile = new MagicMissileProjectile(level, castContext.entityOwner());
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         projectile.setPos(origin.subtract(0, projectile.getBoundingBox().getYsize() * 0.5f, 0));
         projectile.shootFromContext(projectile, castContext);

@@ -107,7 +107,7 @@ public class IceSpikesSpell extends AbstractSpell {
             distanceCovered += (float) forward.horizontalDistance();
             int delay = i;
             if (level.getBlockState(BlockPos.containing(spawn).below()).isFaceSturdy(level, BlockPos.containing(spawn).below(), Direction.UP)) {
-                IceSpikeEntity spike = new IceSpikeEntity(level, castContext.asEntityCaster());
+                IceSpikeEntity spike = new IceSpikeEntity(level, castContext.entityOwner());
                 if (i % 2 == count % 2) {
                     spike.setSilent(true);
                 }

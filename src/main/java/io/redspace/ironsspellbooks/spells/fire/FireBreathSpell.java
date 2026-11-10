@@ -86,7 +86,7 @@ public class FireBreathSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.FIRE_TICKS, 80);
-        if (castContext.asEntityCaster() instanceof Mob) {
+        if (castContext.entityOwner() instanceof Mob) {
             castContext.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, new MobAimDirectionResolver(castContext));
         }
         castContext.set(SkillcastingComponentTypes.DAMAGE, 1 + getSpellPower(castContext) * 0.75f);
@@ -96,7 +96,7 @@ public class FireBreathSpell extends AbstractSpell {
     @Override
     public void onServerCastTick(CastContext castContext) {
         MobAimDirectionResolver aimResolver = castContext.find(SkillcastingComponentTypes.DIRECTION_RESOLVER).map(resolver -> resolver instanceof MobAimDirectionResolver aim ? aim : null).orElse(null);
-        if (aimResolver == null || !(castContext.asEntityCaster() instanceof Mob mob)) {
+        if (aimResolver == null || !(castContext.entityOwner() instanceof Mob mob)) {
             return;
         }
         Entity target = mob.getTarget();
@@ -109,7 +109,7 @@ public class FireBreathSpell extends AbstractSpell {
     public void onCast(ServerLevel level, CastContext castContext) {
         handleSpellGriefing(level, castContext);
         Set<Entity> entities = SkillcastingUtils.collectConeTargets(castContext,
-                target -> target.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(castContext.asEntityCaster(), target));
+                target -> target.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(castContext.entityOwner(), target));
         var source = getDamageSource(castContext, false);
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         entities.forEach(entity -> {
@@ -131,7 +131,7 @@ public class FireBreathSpell extends AbstractSpell {
                     .xRot(Utils.random.nextFloat() * range * 2 - range)
                     .yRot(Utils.random.nextFloat() * range * 2 - range);
 
-            HitResult raycast = RaycastBuilder.begin(level, castContext.asEntityCaster())
+            HitResult raycast = RaycastBuilder.begin(level, castContext.entityOwner())
                     .start(origin)
                     .end(origin.add(cast.scale(10)))
                     .checkForBlocks(true)

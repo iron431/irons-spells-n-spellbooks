@@ -84,7 +84,7 @@ public class SacrificeSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         float summonDamageMult = 1f;
-        if (castContext.asEntityCaster() instanceof LivingEntity living) {
+        if (castContext.entityOwner() instanceof LivingEntity living) {
             summonDamageMult = (float) living.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE);
         }
         castContext.set(SkillcastingComponentTypes.DAMAGE, (10 + getSpellPower(castContext)) * summonDamageMult);
@@ -98,7 +98,7 @@ public class SacrificeSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         HitResult target = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
                 .bbInflation(0.25f)
@@ -134,7 +134,7 @@ public class SacrificeSpell extends AbstractSpell {
         if (targetEntity instanceof IMagicSummon summon /*&& summon.getSummoner().getUUID().equals(caster.getUUID())*/) {
             float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f) + targetEntity.getHealth() * 0.5f;
             float explosionRadius = BASE_RADIUS * (1f + 0.5f * targetEntity.getHealth() / targetEntity.getMaxHealth());
-            doSacrificeExplosion(level, getDamageSource(level, targetEntity, castContext.asEntityCaster()), damage, explosionRadius, targetEntity.getBoundingBox().getCenter());
+            doSacrificeExplosion(level, getDamageSource(level, targetEntity, castContext.entityOwner()), damage, explosionRadius, targetEntity.getBoundingBox().getCenter());
             targetEntity.remove(Entity.RemovalReason.KILLED);
         }
     }

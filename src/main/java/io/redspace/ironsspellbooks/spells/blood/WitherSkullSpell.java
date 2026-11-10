@@ -69,7 +69,7 @@ public class WitherSkullSpell extends AbstractSpell {
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         Vec3 direction = castContext.direction();
-        var skull = new WitherSkullProjectile(level, castContext.asEntityCaster());
+        var skull = new WitherSkullProjectile(level, castContext.entityOwner());
         skull.shootFromContext(skull, castContext);
         Vec3 spawn = castContext.position(PositionAnchor.CASTING_POSITION).add(direction);
         skull.moveTo(spawn.x, spawn.y - skull.getBoundingBox().getYsize() / 2, spawn.z);

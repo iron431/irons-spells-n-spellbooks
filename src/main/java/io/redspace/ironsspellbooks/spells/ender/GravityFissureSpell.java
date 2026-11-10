@@ -78,7 +78,7 @@ public class GravityFissureSpell extends AbstractSpell {
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f);
         Vec3 spawn = castContext.position().add(castContext.direction().scale(2)).subtract(0, radius, 0);
 
-        BlackHole blackHole = new BlackHole(level, castContext.asEntityCaster());
+        BlackHole blackHole = new BlackHole(level, castContext.entityOwner());
         SkillcastingUtils.attachToContext(blackHole, castContext);
         blackHole.setRadius(radius);
         blackHole.setDamage(0);

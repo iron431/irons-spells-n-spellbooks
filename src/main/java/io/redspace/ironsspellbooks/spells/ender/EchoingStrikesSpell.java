@@ -88,7 +88,7 @@ public class EchoingStrikesSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (castContext.asEntityCaster() instanceof LivingEntity entity) {
+        if (castContext.entityOwner() instanceof LivingEntity entity) {
             entity.addEffect(new MobEffectInstance(
                     MobEffectRegistry.ECHOING_STRIKES,
                     castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0),
@@ -109,7 +109,7 @@ public class EchoingStrikesSpell extends AbstractSpell {
     @Override
     public void onClientCastComplete(CastContext castContext, CastEndReason reason) {
         super.onClientCastComplete(castContext, reason);
-        if (castContext.asEntityCaster() instanceof LivingEntity entity) {
+        if (castContext.entityOwner() instanceof LivingEntity entity) {
             EchoingStrikesData.get(entity).vfxTimestamp = entity.tickCount + 20;
         }
     }

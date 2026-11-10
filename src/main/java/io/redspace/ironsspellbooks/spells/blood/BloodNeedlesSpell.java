@@ -77,7 +77,7 @@ public class BloodNeedlesSpell extends AbstractSpell {
                 .checkForBlocks(true)
                 .build();
         for (int i = 0; i < count; i++) {
-            BloodNeedle needle = new BloodNeedle(level, castContext.asEntityCaster());
+            BloodNeedle needle = new BloodNeedle(level, castContext.entityOwner());
             int rotation = degreesPerNeedle * i - (degreesPerNeedle / 2);
             needle.setZRot(rotation);
             // fixme: hardcoded y offset

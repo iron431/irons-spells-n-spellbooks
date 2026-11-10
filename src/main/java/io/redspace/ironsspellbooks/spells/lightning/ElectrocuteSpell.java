@@ -97,13 +97,13 @@ public class ElectrocuteSpell extends AbstractSpell {
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         Set<Entity> entities = SkillcastingUtils.collectConeTargets(castContext,
-                target -> target.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(castContext.asEntityCaster(), target));
+                target -> target.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(castContext.entityOwner(), target));
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         entities.forEach(entity -> {
             if (entity instanceof LivingEntity livingEntity) {
                 DamageSources.ignoreNextKnockback(livingEntity);
             }
-            if (DamageSources.applyDamage(entity, damage, getDamageSource(level, null, castContext.asEntityCaster()))) {
+            if (DamageSources.applyDamage(entity, damage, getDamageSource(level, null, castContext.entityOwner()))) {
                 MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY,
                         entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(),
                         10, entity.getBbWidth() / 3, entity.getBbHeight() / 3, entity.getBbWidth() / 3, 0.1, false);

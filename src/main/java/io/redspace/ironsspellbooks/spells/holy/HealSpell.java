@@ -65,7 +65,7 @@ public class HealSpell extends AbstractSpell {
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         float healAmount = castContext.getOrDefault(SkillcastingComponentTypes.HEALING, 0f);
-        if (castContext.asEntityCaster() instanceof LivingEntity entity) {
+        if (castContext.entityOwner() instanceof LivingEntity entity) {
             entity.heal(NeoForge.EVENT_BUS.post(new SpellHealEvent(castContext.caster(), entity, healAmount, this)).getHealAmount());
             spawnHeartParticles(level, entity.position());
         }

@@ -95,7 +95,7 @@ public class LightningLanceSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        LightningLanceProjectile lance = new LightningLanceProjectile(level, castContext.asEntityCaster());
+        LightningLanceProjectile lance = new LightningLanceProjectile(level, castContext.entityOwner());
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         lance.setPos(origin.add(0, lance.getBoundingBox().getYsize() * 0.25f, 0).add(castContext.direction()));
         lance.shootFromContext(lance, castContext);

@@ -86,7 +86,7 @@ public class AcidOrbSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        AcidOrb orb = new AcidOrb(level, castContext.asEntityCaster());
+        AcidOrb orb = new AcidOrb(level, castContext.entityOwner());
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         orb.setPos(origin.add(castContext.direction()).subtract(0, orb.getBoundingBox().getYsize() * 0.5f, 0));
         orb.shootFromContext(orb, castContext);

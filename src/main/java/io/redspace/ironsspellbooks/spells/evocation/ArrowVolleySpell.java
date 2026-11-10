@@ -130,7 +130,7 @@ public class ArrowVolleySpell extends AbstractSpell {
         arrowVolleyEntity.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         arrowVolleyEntity.setArrowsPerRow(castContext.getOrDefault(SkillcastingComponentTypes.PROJECTILE_COUNT, 0));
         arrowVolleyEntity.setRows(castContext.getOrDefault(SpellcastingComponentTypes.RING_COUNT, 0));
-        arrowVolleyEntity.setOwner(castContext.asEntityCaster());
+        arrowVolleyEntity.setOwner(castContext.entityOwner());
         level.addFreshEntity(arrowVolleyEntity);
     }
 

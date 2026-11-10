@@ -74,7 +74,7 @@ public class SpiderAspectSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (castContext.asEntityCaster() instanceof LivingEntity entity) {
+        if (castContext.entityOwner() instanceof LivingEntity entity) {
             entity.addEffect(new MobEffectInstance(
                     MobEffectRegistry.SPIDER_ASPECT,
                     castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0),

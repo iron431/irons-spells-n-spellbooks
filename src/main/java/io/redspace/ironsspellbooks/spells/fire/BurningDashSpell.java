@@ -80,10 +80,10 @@ public class BurningDashSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (castContext.asEntityCaster() == null) {
+        if (castContext.entityOwner() == null) {
             return;
         }
-        Entity entity = castContext.asEntityCaster();
+        Entity entity = castContext.entityOwner();
         float multiplier = (15 + getSpellPower(castContext)) / 12f;
 
         Vec3 forward = castContext.direction();

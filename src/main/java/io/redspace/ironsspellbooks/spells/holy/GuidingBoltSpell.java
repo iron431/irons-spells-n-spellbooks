@@ -70,7 +70,7 @@ public class GuidingBoltSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        GuidingBoltProjectile guidingBolt = new GuidingBoltProjectile(level, castContext.asEntityCaster());
+        GuidingBoltProjectile guidingBolt = new GuidingBoltProjectile(level, castContext.entityOwner());
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         guidingBolt.setPos(origin);
         guidingBolt.shootFromContext(guidingBolt, castContext);

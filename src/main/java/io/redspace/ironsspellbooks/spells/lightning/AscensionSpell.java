@@ -79,7 +79,7 @@ public class AscensionSpell extends AbstractSpell {
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 5f);
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         float radiusSqr = radius * radius;
-        Entity casterEntity = castContext.asEntityCaster();
+        Entity casterEntity = castContext.entityOwner();
         Vec3 casterPos = castContext.position();
         AABB searchBox = AABB.ofSize(strikePos, radius * 2, radius * 2, radius * 2);
         level.getEntities(casterEntity, searchBox).forEach(target -> {
@@ -103,7 +103,7 @@ public class AscensionSpell extends AbstractSpell {
             Vec3 motion = castContext.direction().multiply(1, 0, 1).normalize().add(0, 5, 0).scale(.125);
             casterEntity.setDeltaMovement(casterEntity.getDeltaMovement().add(motion));
             casterEntity.hurtMarked = true;
-            if (castContext.asEntityCaster() instanceof LivingEntity livingCaster) {
+            if (castContext.entityOwner() instanceof LivingEntity livingCaster) {
                 livingCaster.addEffect(new MobEffectInstance(MobEffectRegistry.ASCENSION, 80, 0, false, false, true));
             }
         }

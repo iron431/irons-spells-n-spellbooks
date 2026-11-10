@@ -92,8 +92,8 @@ public class HeatSurgeSpell extends AbstractSpell {
         int amplifier = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
         int fireTicks = castContext.getOrDefault(SkillcastingComponentTypes.FIRE_TICKS, Math.min(duration / 2, 160));
         float radiusSqr = radius * radius;
-        level.getEntities(castContext.asEntityCaster(), AABB.ofSize(position, radius * 2, 4, radius * 2),
-                        target -> !DamageSources.isFriendlyFireBetween(target, castContext.asEntityCaster())
+        level.getEntities(castContext.entityOwner(), AABB.ofSize(position, radius * 2, 4, radius * 2),
+                        target -> !DamageSources.isFriendlyFireBetween(target, castContext.entityOwner())
                                 && Utils.hasLineOfSight(level, position, target.getBoundingBox().getCenter(), true))
                 .forEach(target -> {
                     if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(position) < radiusSqr) {

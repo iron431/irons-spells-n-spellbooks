@@ -115,7 +115,7 @@ public class StarfallSpell extends AbstractSpell {
         if (castData == null) {
             return;
         }
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, RADIUS);
         var activeCast = castContext.getSkillcastingData().getActiveCast();
         if (activeCast == null) {
@@ -171,7 +171,7 @@ public class StarfallSpell extends AbstractSpell {
     }
 
     private void shootComet(Level level, CastContext castContext, Vec3 spawn, Vec3 trajectory) {
-        Comet comet = new Comet(level, castContext.asEntityCaster());
+        Comet comet = new Comet(level, castContext.entityOwner());
         comet.setPos(spawn.add(-1, 0, 0));
         comet.shoot(trajectory.x, trajectory.y, trajectory.z, 1.85f, 6f);
         comet.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));

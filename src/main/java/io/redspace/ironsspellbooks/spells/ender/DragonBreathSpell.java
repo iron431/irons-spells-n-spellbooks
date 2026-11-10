@@ -83,7 +83,7 @@ public class DragonBreathSpell extends AbstractSpell {
     @Override
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
-        if (castContext.asEntityCaster() instanceof Mob) {
+        if (castContext.entityOwner() instanceof Mob) {
             castContext.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, new MobAimDirectionResolver(castContext));
         }
         castContext.set(SkillcastingComponentTypes.DAMAGE, 1 + getSpellPower(castContext) * 0.75f);
@@ -93,7 +93,7 @@ public class DragonBreathSpell extends AbstractSpell {
     @Override
     public void onServerCastTick(CastContext castContext) {
         MobAimDirectionResolver aimResolver = castContext.find(SkillcastingComponentTypes.DIRECTION_RESOLVER).map(resolver -> resolver instanceof MobAimDirectionResolver aim ? aim : null).orElse(null);
-        if (aimResolver == null || !(castContext.asEntityCaster() instanceof Mob mob)) {
+        if (aimResolver == null || !(castContext.entityOwner() instanceof Mob mob)) {
             return;
         }
         Entity target = mob.getTarget();
@@ -105,13 +105,13 @@ public class DragonBreathSpell extends AbstractSpell {
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         Set<Entity> entities = SkillcastingUtils.collectConeTargets(castContext,
-                target -> target.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(castContext.asEntityCaster(), target));
+                target -> target.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(castContext.entityOwner(), target));
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         entities.forEach(entity -> {
             if (entity instanceof LivingEntity livingEntity) {
                 DamageSources.ignoreNextKnockback(livingEntity);
             }
-            if (DamageSources.applyDamage(entity, damage, getDamageSource(level, null, castContext.asEntityCaster())) && castContext.level().getRandom().nextFloat() < 0.3f) {
+            if (DamageSources.applyDamage(entity, damage, getDamageSource(level, null, castContext.entityOwner())) && castContext.level().getRandom().nextFloat() < 0.3f) {
                 createDragonBreathPuddle(castContext, entity.position());
             }
         });
@@ -119,7 +119,7 @@ public class DragonBreathSpell extends AbstractSpell {
 
     private void createDragonBreathPuddle(CastContext castContext, Vec3 spawnPos) {
         DragonBreathPool pool = new DragonBreathPool(castContext.level());
-        pool.setOwner(castContext.asEntityCaster());
+        pool.setOwner(castContext.entityOwner());
         pool.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         pool.moveTo(spawnPos);
         castContext.level().addFreshEntity(pool);

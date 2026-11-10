@@ -63,7 +63,7 @@ public class FrostbiteSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (castContext.asEntityCaster() instanceof LivingEntity entity) {
+        if (castContext.entityOwner() instanceof LivingEntity entity) {
             entity.addEffect(new MobEffectInstance(MobEffectRegistry.FROSTBITTEN_STRIKES,
                     castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0),
                     getAmplifierForLevel(castContext.getSkillLevel()),
@@ -80,7 +80,7 @@ public class FrostbiteSpell extends AbstractSpell {
     }
 
     private float getDamage(CastContext castContext) {
-        return FrostbiteEffect.getDamageForAmplifier(getAmplifierForLevel(castContext.getSkillLevel()), castContext.asEntityCaster() instanceof LivingEntity livingEntity ? livingEntity : null);
+        return FrostbiteEffect.getDamageForAmplifier(getAmplifierForLevel(castContext.getSkillLevel()), castContext.entityOwner() instanceof LivingEntity livingEntity ? livingEntity : null);
     }
 
     private int getAmplifierForLevel(int spellLevel) {

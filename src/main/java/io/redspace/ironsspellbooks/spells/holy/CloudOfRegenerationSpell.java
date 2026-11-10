@@ -82,7 +82,7 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         Vec3 center = castContext.position();
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, RADIUS);
         float healAmount = castContext.getOrDefault(SkillcastingComponentTypes.HEALING, 0f);

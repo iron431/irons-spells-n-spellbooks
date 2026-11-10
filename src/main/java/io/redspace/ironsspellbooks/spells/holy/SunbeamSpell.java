@@ -84,7 +84,7 @@ public class SunbeamSpell extends AbstractSpell {
         if (target != null) {
             sunbeam.setTarget(target);
         }
-        sunbeam.setOwner(castContext.asEntityCaster());
+        sunbeam.setOwner(castContext.entityOwner());
         sunbeam.moveTo(spawn);
         sunbeam.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         level.addFreshEntity(sunbeam);

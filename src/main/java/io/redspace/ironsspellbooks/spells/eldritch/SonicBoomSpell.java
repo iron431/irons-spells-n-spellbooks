@@ -90,7 +90,7 @@ public class SonicBoomSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         CameraShakeManager.addCameraShake(new CameraShakeData(level, 20, castContext.position(PositionAnchor.ORIGIN), 20, 10f));
 
         float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 15f);

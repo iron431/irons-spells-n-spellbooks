@@ -72,7 +72,7 @@ public class ChainLightningSpell extends AbstractSpell {
         if (targetEntity == null) {
             return;
         }
-        ChainLightning chainLightning = new ChainLightning(level, castContext.asEntityCaster(), castContext.position(PositionAnchor.CASTING_POSITION_CENTER).lerp(castContext.position(PositionAnchor.CENTER), 0.5f), targetEntity);
+        ChainLightning chainLightning = new ChainLightning(level, castContext.entityOwner(), castContext.position(PositionAnchor.CASTING_POSITION_CENTER).lerp(castContext.position(PositionAnchor.CENTER), 0.5f), targetEntity);
         SkillcastingUtils.attachToContext(chainLightning, castContext);
         chainLightning.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         chainLightning.range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 0f);

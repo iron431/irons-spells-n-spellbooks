@@ -58,7 +58,7 @@ public class IcicleSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        IcicleProjectile icicle = new IcicleProjectile(level, castContext.asEntityCaster());
+        IcicleProjectile icicle = new IcicleProjectile(level, castContext.entityOwner());
         icicle.setPos(castContext.position());
         icicle.shootFromContext(icicle, castContext);
         icicle.setNoGravity(true);

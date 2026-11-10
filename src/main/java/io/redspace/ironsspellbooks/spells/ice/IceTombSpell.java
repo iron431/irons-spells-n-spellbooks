@@ -63,7 +63,7 @@ public class IceTombSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (!(castContext.asEntityCaster() instanceof Entity entity)) {
+        if (!(castContext.entityOwner() instanceof Entity entity)) {
             return;
         }
         IceTombEntity iceTombEntity = new IceTombEntity(level, entity);

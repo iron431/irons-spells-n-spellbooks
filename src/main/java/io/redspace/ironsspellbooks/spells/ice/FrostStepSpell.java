@@ -80,7 +80,7 @@ public class FrostStepSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (!(castContext.asEntityCaster() instanceof LivingEntity entity)) {
+        if (!(castContext.entityOwner() instanceof LivingEntity entity)) {
             return;
         }
         FrozenHumanoid shadow = new FrozenHumanoid(level, entity);

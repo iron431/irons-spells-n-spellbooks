@@ -94,7 +94,7 @@ public class ShockwaveSpell extends AbstractSpell {
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f);
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         float radiusSqr = radius * radius;
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
 
         Vector3f edge = new Vector3f(.7f, 1f, 1f);
         Vector3f blastCenter = new Vector3f(1, 1f, 1f);

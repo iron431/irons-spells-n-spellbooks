@@ -70,7 +70,7 @@ public class BloodSlashSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        BloodSlashProjectile bloodSlash = new BloodSlashProjectile(level, castContext.asEntityCaster());
+        BloodSlashProjectile bloodSlash = new BloodSlashProjectile(level, castContext.entityOwner());
         bloodSlash.setPos(castContext.position(PositionAnchor.CASTING_POSITION));
         bloodSlash.shootFromContext(bloodSlash, castContext);
         bloodSlash.setYRot(castContext.getYRot() * Mth.RAD_TO_DEG);

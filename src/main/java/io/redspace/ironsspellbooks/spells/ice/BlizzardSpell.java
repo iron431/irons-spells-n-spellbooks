@@ -97,7 +97,7 @@ public class BlizzardSpell extends AbstractSpell {
         BlizzardAoe aoe = new BlizzardAoe(EntityRegistry.BLIZZARD_AOE.get(), level);
         SkillcastingUtils.attachToContext(aoe, castContext);
         aoe.moveTo(spawn);
-        aoe.setOwner(castContext.asEntityCaster());
+        aoe.setOwner(castContext.entityOwner());
         aoe.setRadius(radius);
         aoe.setDuration(duration);
         aoe.setFreezeTicks(castContext.getOrDefault(SkillcastingComponentTypes.FREEZE_TICKS, 5));

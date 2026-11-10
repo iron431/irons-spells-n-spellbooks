@@ -103,7 +103,7 @@ public class GustSpell extends AbstractSpell {
     public void onCast(ServerLevel level, CastContext castContext) {
         float strength = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f) * 0.2f;
         int amplifier = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         Vec3 casterPos = castContext.position(PositionAnchor.BOTTOM_CENTER);
         Set<Entity> targets = SkillcastingUtils.collectConeTargets(castContext, target -> !DamageSources.isFriendlyFireBetween(caster, target));
         for (Entity entity : targets) {

@@ -99,10 +99,10 @@ public final class CastContext {
     }
 
     /**
-     * @return If the context owner is an {@link EntityCasterRef}, returns the {@link Entity} behind it. Otherwise, <code>null</code>
+     * The entity this cast acts for: the caster itself for an entity caster, a virtual caster's owner, or null.
      */
-    public @Nullable Entity asEntityCaster() {
-        return caster instanceof EntityCasterRef entity ? entity.entity() : null;
+    public @Nullable Entity entityOwner() {
+        return caster.owner();
     }
 
     public int getRecastsRemaining() {

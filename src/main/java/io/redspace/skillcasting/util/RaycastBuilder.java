@@ -45,7 +45,7 @@ public final class RaycastBuilder {
     }
 
     public static RaycastBuilder fromCast(CastContext castContext, PositionAnchor anchor, float range) {
-        return RaycastBuilder.begin(castContext.level(), castContext.asEntityCaster())
+        return RaycastBuilder.begin(castContext.level(), castContext.entityOwner())
                 .start(castContext.position(anchor))
                 .end(castContext.direction(), range);
     }

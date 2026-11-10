@@ -140,7 +140,7 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
         }
         Entity creature = pre.getSummon();
         castContext.level().addFreshEntity(creature);
-        initSummon(castContext.asEntityCaster(), creature, duration, summonedEntitiesCastData);
+        initSummon(castContext.entityOwner(), creature, duration, summonedEntitiesCastData);
         SkillcastingUtils.attachToContext(creature, castContext);
         NeoForge.EVENT_BUS.post(new SummonEvent.Post(creature, castContext.caster(), castContext));
         return creature;
@@ -215,7 +215,7 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
                 });
             }
         }
-        if (castContext.asEntityCaster() instanceof LivingEntity livingEntity && ItemRegistry.GREATER_CONJURERS_TALISMAN.get().isEquippedBy(livingEntity)) {
+        if (castContext.entityOwner() instanceof LivingEntity livingEntity && ItemRegistry.GREATER_CONJURERS_TALISMAN.get().isEquippedBy(livingEntity)) {
             castContext.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
         }
     }

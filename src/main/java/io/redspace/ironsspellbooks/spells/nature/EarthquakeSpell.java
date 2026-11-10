@@ -104,7 +104,7 @@ public class EarthquakeSpell extends AbstractSpell {
         EarthquakeAoe aoeEntity = new EarthquakeAoe(level);
         SkillcastingUtils.attachToContext(aoeEntity, castContext);
         aoeEntity.moveTo(spawn);
-        aoeEntity.setOwner(castContext.asEntityCaster());
+        aoeEntity.setOwner(castContext.entityOwner());
         aoeEntity.setCircular();
         aoeEntity.setRadius(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f));
         aoeEntity.setDuration(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, DURATION_TICKS));

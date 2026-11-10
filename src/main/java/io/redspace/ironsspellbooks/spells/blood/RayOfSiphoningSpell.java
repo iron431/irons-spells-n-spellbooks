@@ -84,7 +84,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.DAMAGE, getSpellPower(castContext));
         castContext.set(SkillcastingComponentTypes.CAST_RANGE, 12f);
-        if (castContext.asEntityCaster() instanceof Mob) {
+        if (castContext.entityOwner() instanceof Mob) {
             castContext.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, new MobAimDirectionResolver(castContext));
         }
 
@@ -119,7 +119,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
     @Override
     public void onServerCastTick(CastContext castContext) {
         MobAimDirectionResolver aimResolver = castContext.find(SkillcastingComponentTypes.DIRECTION_RESOLVER).map(resolver -> resolver instanceof MobAimDirectionResolver aim ? aim : null).orElse(null);
-        if (aimResolver == null || !(castContext.asEntityCaster() instanceof Mob mob)) {
+        if (aimResolver == null || !(castContext.entityOwner() instanceof Mob mob)) {
             return;
         }
         Entity target = mob.getTarget();

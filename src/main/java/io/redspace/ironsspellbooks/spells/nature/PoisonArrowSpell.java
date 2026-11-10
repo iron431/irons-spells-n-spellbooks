@@ -101,7 +101,7 @@ public class PoisonArrowSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        PoisonArrow magicArrow = new PoisonArrow(level, castContext.asEntityCaster());
+        PoisonArrow magicArrow = new PoisonArrow(level, castContext.entityOwner());
         magicArrow.setPos(castContext.position(PositionAnchor.CASTING_POSITION)
                 .add(castContext.direction())
                 .add(0, magicArrow.getBoundingBox().getYsize() * -0.5f, 0));

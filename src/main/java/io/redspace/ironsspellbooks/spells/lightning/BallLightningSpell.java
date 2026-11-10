@@ -59,7 +59,7 @@ public class BallLightningSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        BallLightning ballLightning = new BallLightning(level, castContext.asEntityCaster());
+        BallLightning ballLightning = new BallLightning(level, castContext.entityOwner());
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         ballLightning.setPos(origin.subtract(0, ballLightning.getBoundingBox().getYsize() * .5f, 0));
         ballLightning.shootFromContext(ballLightning, castContext);

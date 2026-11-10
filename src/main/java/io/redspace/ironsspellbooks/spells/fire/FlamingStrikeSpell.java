@@ -88,7 +88,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.FIRE_TICKS, 60);
         float weaponDamage = 0;
-        if (castContext.asEntityCaster() instanceof LivingEntity entity) {
+        if (castContext.entityOwner() instanceof LivingEntity entity) {
             weaponDamage = Utils.getWeaponDamage(entity);
             var weaponItem = entity.getWeaponItem();
             if (!weaponItem.isEmpty() && weaponItem.has(DataComponents.ENCHANTMENTS)) {
@@ -106,7 +106,7 @@ public class FlamingStrikeSpell extends AbstractSpell {
         Vec3 forward = castContext.direction();
         Vec3 castOrigin = castContext.position(PositionAnchor.CASTING_POSITION);
         Vec3 hitLocation = castContext.position(PositionAnchor.BOTTOM_CENTER).lerp(castContext.position(PositionAnchor.CASTING_POSITION), .3f).add(forward.scale(distance));
-        var entities = level.getEntities(castContext.asEntityCaster(), AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
+        var entities = level.getEntities(castContext.entityOwner(), AABB.ofSize(hitLocation, radius * 2, radius, radius * 2));
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f) + castContext.getOrDefault(SkillcastingComponentTypes.WEAPON_DAMAGE, 0f);
         var damageSource = getDamageSource(castContext, true);
         for (Entity targetEntity : entities) {

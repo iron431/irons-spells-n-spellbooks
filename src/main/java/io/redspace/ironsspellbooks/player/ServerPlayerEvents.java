@@ -311,7 +311,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onCastComplete(SkillCastEvent.Complete event) {
-        if (event.getCastContext().asEntityCaster() instanceof ServerPlayer serverPlayer &&
+        if (event.getCastContext().entityOwner() instanceof ServerPlayer serverPlayer &&
                 (event.getCastEndReason() == CastEndReason.COMPLETED || event.getCastContext().skill().value().getCastType() == CastType.CONTINUOUS)) {
             Scroll.attemptRemoveScrollAfterCast(serverPlayer, event.getCastContext());
         }
@@ -321,7 +321,7 @@ public class ServerPlayerEvents {
     public static void buildSpellLevel(BuildCastContextEvent.Level event) {
         // todo: in the purview of this being only spells, should this just be moved to abstractspell's build context?
         CastContext context = event.context();
-        if (context.asEntityCaster() instanceof LivingEntity livingEntity && context.skill().value() instanceof AbstractSpell spell) {
+        if (context.entityOwner() instanceof LivingEntity livingEntity && context.skill().value() instanceof AbstractSpell spell) {
             int affinityBonus = CuriosApi.getCuriosInventory(livingEntity).map(inv ->
                     inv.findCurios(AffinityData::hasAffinityData).stream()
                             .mapToInt(slot -> AffinityData.getAffinityData(slot.stack()).getBonusFor(spell)).sum()).orElse(0);

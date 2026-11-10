@@ -75,7 +75,7 @@ public class CleanseSpell extends AbstractSpell {
         int channelTicks = castContext.getOrDefault(SkillcastingComponentTypes.CAST_TIME, castTime);
         TargetedAreaEntity area = TargetedAreaEntity.createTargetAreaEntity(
                 castContext.level(), castContext.position(), RADIUS,
-                Utils.packRGB(getSchoolType().getTargetingColor()), castContext.asEntityCaster());
+                Utils.packRGB(getSchoolType().getTargetingColor()), castContext.entityOwner());
         area.setDuration(channelTicks);
         castContext.set(SkillcastingComponentTypes.ATTACHED_ENTITIES, new TargetedEntitiesData(area));
         return true;
@@ -96,7 +96,7 @@ public class CleanseSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         Vec3 center = castContext.position();
         level.getEntitiesOfClass(LivingEntity.class, AABB.ofSize(center, 6, 6, 6))
                 .forEach(livingEntity -> {

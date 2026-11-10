@@ -107,7 +107,7 @@ public class AttributeRegistry {
     @SubscribeEvent
     public static void applyAttributesToContext(BuildCastContextEvent.Post event) {
         CastContext castContext = event.context();
-        if (!(castContext.skill().value() instanceof AbstractSpell) || !(castContext.asEntityCaster() instanceof LivingEntity livingEntity)) {
+        if (!(castContext.skill().value() instanceof AbstractSpell) || !(castContext.entityOwner() instanceof LivingEntity livingEntity)) {
             return;
         }
         applyToComponent(castContext, livingEntity, SkillcastingComponentTypes.CAST_RADIUS, SPELL_RADIUS, value -> (float) value);

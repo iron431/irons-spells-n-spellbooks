@@ -76,7 +76,7 @@ public class ConeOfColdSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         castContext.set(SkillcastingComponentTypes.FREEZE_TICKS, 80);
-        if (castContext.asEntityCaster() instanceof Mob) {
+        if (castContext.entityOwner() instanceof Mob) {
             castContext.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, new MobAimDirectionResolver(castContext));
         }
         castContext.set(SkillcastingComponentTypes.DAMAGE, 1 + getSpellPower(castContext) * 0.75f);
@@ -86,7 +86,7 @@ public class ConeOfColdSpell extends AbstractSpell {
     @Override
     public void onServerCastTick(CastContext castContext) {
         MobAimDirectionResolver aimResolver = castContext.find(SkillcastingComponentTypes.DIRECTION_RESOLVER).map(resolver -> resolver instanceof MobAimDirectionResolver aim ? aim : null).orElse(null);
-        if (aimResolver == null || !(castContext.asEntityCaster() instanceof Mob mob)) {
+        if (aimResolver == null || !(castContext.entityOwner() instanceof Mob mob)) {
             return;
         }
         Entity target = mob.getTarget();
@@ -98,7 +98,7 @@ public class ConeOfColdSpell extends AbstractSpell {
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
         Set<Entity> entities = SkillcastingUtils.collectConeTargets(castContext,
-                target -> target.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(castContext.asEntityCaster(), target));
+                target -> target.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(castContext.entityOwner(), target));
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         entities.forEach(entity -> {
             if (entity instanceof LivingEntity livingEntity) {

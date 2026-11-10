@@ -99,7 +99,7 @@ public class SculkTentaclesSpell extends AbstractSpell {
                 .getLocation());
         center = Utils.moveToRelativeGroundLevel(level, center, 6);
 
-        LivingEntity owner = castContext.asEntityCaster() instanceof LivingEntity living ? living : null;
+        LivingEntity owner = castContext.entityOwner() instanceof LivingEntity living ? living : null;
         if (owner instanceof Player player) {
             level.playSound(player, center.x, center.y, center.z, SoundRegistry.VOID_TENTACLES_FINISH.get(), SoundSource.AMBIENT, 1, 1);
         } else {

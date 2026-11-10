@@ -93,7 +93,7 @@ public class FirecrackerSpell extends AbstractSpell {
                 .subtract(direction.scale(.25f));
 
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
-        Entity owner = castContext.asEntityCaster();
+        Entity owner = castContext.entityOwner();
         var damageSource = getDamageSource(level, null, owner);
 
         dealFirecrackerDamage(level, spawn, damage, damageSource);

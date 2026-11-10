@@ -96,7 +96,7 @@ public class DivineSmiteSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         float weaponDamage = 0;
-        if (castContext.asEntityCaster() instanceof LivingEntity entity) {
+        if (castContext.entityOwner() instanceof LivingEntity entity) {
             weaponDamage = getAdditionalDamage(entity);
         }
         castContext.set(SkillcastingComponentTypes.WEAPON_DAMAGE, weaponDamage);
@@ -105,7 +105,7 @@ public class DivineSmiteSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         Vec3 forward = castContext.direction();
         Vec3 eyePos = castContext.position(PositionAnchor.CASTING_POSITION);
         Vec3 smiteLocation = Utils.raycastForBlock(level, eyePos,

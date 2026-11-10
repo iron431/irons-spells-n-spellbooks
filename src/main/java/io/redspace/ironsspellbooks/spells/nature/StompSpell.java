@@ -103,7 +103,7 @@ public class StompSpell extends AbstractSpell {
         stomp.moveTo(spawn);
         stomp.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         stomp.setRadius(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 1f));
-        stomp.setOwner(castContext.asEntityCaster());
+        stomp.setOwner(castContext.entityOwner());
         level.addFreshEntity(stomp);
     }
 

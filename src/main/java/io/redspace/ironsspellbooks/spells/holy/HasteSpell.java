@@ -82,10 +82,10 @@ public class HasteSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         if (!SkillcastingUtils.preCastTargetHelper(castContext, 0.35f, false,
                 target -> caster == null || Utils.shouldHealEntity(caster, target))) {
-            if (castContext.asEntityCaster() instanceof LivingEntity self) {
+            if (castContext.entityOwner() instanceof LivingEntity self) {
                 castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES, new TargetedEntitiesData(self));
                 if (self instanceof ServerPlayer serverPlayer) {
                     serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(

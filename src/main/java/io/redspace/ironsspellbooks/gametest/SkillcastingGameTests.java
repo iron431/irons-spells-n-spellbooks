@@ -321,12 +321,12 @@ public class SkillcastingGameTests {
         AtomicInteger cooldowns = new AtomicInteger();
         List<Boolean> recastPresentOnPost = new ArrayList<>();
         Consumer<BuildCooldownEvent> onCooldown = event -> {
-            if (event.context().asEntityCaster() == zombie) {
+            if (event.context().entityOwner() == zombie) {
                 cooldowns.incrementAndGet();
             }
         };
         Consumer<SkillRecastEvent.Finish> onRecastPost = event -> {
-            if (event.getCastContext().asEntityCaster() == zombie) {
+            if (event.getCastContext().entityOwner() == zombie) {
                 recastPresentOnPost.add(recasts.hasRecast(skill));
             }
         };

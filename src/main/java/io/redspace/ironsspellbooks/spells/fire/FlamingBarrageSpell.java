@@ -75,7 +75,7 @@ public class FlamingBarrageSpell extends AbstractSpell {
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION)
                 .add(castContext.direction().normalize().scale(0.2f))
                 .subtract(0, 0.15, 0);
-        SmallMagicFireball fireball = new SmallMagicFireball(level, castContext.asEntityCaster());
+        SmallMagicFireball fireball = new SmallMagicFireball(level, castContext.entityOwner());
         fireball.applyContext(castContext);
         SkillcastingUtils.attachToContext(fireball, castContext);
         fireball.setPos(origin.subtract(0, fireball.getBbHeight(), 0));

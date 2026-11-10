@@ -90,7 +90,7 @@ public class RootSpell extends AbstractSpell {
         }
         Vec3 spawn = target.position();
         float health = castContext.getOrDefault(SpellcastingComponentTypes.CONSTRUCT_HEALTH, 0f);
-        RootEntity rootEntity = new RootEntity(level, castContext.asEntityCaster());
+        RootEntity rootEntity = new RootEntity(level, castContext.entityOwner());
         SkillcastingUtils.attachToContext(rootEntity, castContext);
         rootEntity.setDuration(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0));
         rootEntity.setTarget(target);

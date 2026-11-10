@@ -86,7 +86,7 @@ public class WispSpell extends AbstractSpell {
         if (target == null) {
             return;
         }
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         Vec3 spawnPos = castContext.position(PositionAnchor.CASTING_POSITION).subtract(0, 0.2, 0);
         WispEntity wispEntity = new WispEntity(level, caster, damage, -castContext.getXRot() * Mth.RAD_TO_DEG, -castContext.getYRot() * Mth.RAD_TO_DEG);

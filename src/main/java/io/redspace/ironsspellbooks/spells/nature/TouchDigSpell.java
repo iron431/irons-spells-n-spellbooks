@@ -118,7 +118,7 @@ public class TouchDigSpell extends AbstractSpell {
 
     @Override
     public boolean checkPreCastConditions(CastContext castContext) {
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         if (caster instanceof ServerPlayer serverPlayer && serverPlayer.gameMode.getGameModeForPlayer() == GameType.ADVENTURE) {
             serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(
                     Component.translatable("ui.irons_spellbooks.cast_error_adventure").withStyle(ChatFormatting.RED)));
@@ -160,7 +160,7 @@ public class TouchDigSpell extends AbstractSpell {
         MagicManager.spawnParticles(level, ParticleTypes.CRIT, vec.x, vec.y, vec.z, 25, 0, 0, 0, 0.2, false);
 
         if (canBreak(level, blockHit.getBlockPos(), castContext)) {
-            var entity = castContext.asEntityCaster();
+            var entity = castContext.entityOwner();
 
             ServerPlayer breaker = entity instanceof ServerPlayer serverPlayer ? serverPlayer : FakePlayerFactory.getMinecraft(level);
             if (!CommonHooks.fireBlockBreak(
@@ -172,7 +172,7 @@ public class TouchDigSpell extends AbstractSpell {
     }
 
     private static BlockHitResult raycastBlock(CastContext castContext) {
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         float range = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, DIG_DISTANCE);
         Vec3 start = castContext.position(PositionAnchor.CASTING_POSITION);
         Vec3 end = start.add(castContext.direction().scale(range));

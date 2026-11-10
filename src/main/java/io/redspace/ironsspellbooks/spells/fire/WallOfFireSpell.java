@@ -109,7 +109,7 @@ public class WallOfFireSpell extends AbstractSpell {
             return;
         }
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DOT_DAMAGE, 0f);
-        WallOfFireEntity fireWall = new WallOfFireEntity(level, castContext.asEntityCaster(), data.anchorPoints, damage);
+        WallOfFireEntity fireWall = new WallOfFireEntity(level, castContext.entityOwner(), data.anchorPoints, damage);
         fireWall.setFireTicks(castContext.getOrDefault(SkillcastingComponentTypes.FIRE_TICKS, 80));
         Vec3 origin = Vec3.ZERO;
         for (Vec3 anchor : data.anchorPoints) {

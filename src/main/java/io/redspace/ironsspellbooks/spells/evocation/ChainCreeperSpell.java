@@ -107,7 +107,7 @@ public class ChainCreeperSpell extends AbstractSpell {
             motion = motion.xRot(75 * Mth.DEG_TO_RAD);
             motion = motion.yRot(degreesPerCreeper * i * Mth.DEG_TO_RAD);
 
-            CreeperHeadProjectile head = new CreeperHeadProjectile(level, castContext.asEntityCaster());
+            CreeperHeadProjectile head = new CreeperHeadProjectile(level, castContext.entityOwner());
             head.applyContext(castContext);
             SkillcastingUtils.attachToContext(head, castContext);
             head.setChainOnKill(true);

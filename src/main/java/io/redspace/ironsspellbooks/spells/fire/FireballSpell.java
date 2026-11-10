@@ -71,7 +71,7 @@ public class FireballSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        MagicFireball fireball = new MagicFireball(level, castContext.asEntityCaster());
+        MagicFireball fireball = new MagicFireball(level, castContext.entityOwner());
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         fireball.setPos(origin.add(castContext.direction()).subtract(0, fireball.getBbHeight() / 2, 0));
         fireball.shootFromContext(fireball, castContext);

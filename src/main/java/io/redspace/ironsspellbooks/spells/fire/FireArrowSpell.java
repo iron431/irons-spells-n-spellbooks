@@ -94,7 +94,7 @@ public class FireArrowSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        FireArrowProjectile magicArrow = new FireArrowProjectile(level, castContext.asEntityCaster());
+        FireArrowProjectile magicArrow = new FireArrowProjectile(level, castContext.entityOwner());
         magicArrow.setPos(castContext.position(PositionAnchor.CASTING_POSITION).add(castContext.direction().scale(1.5)).subtract(0, magicArrow.getBbHeight() * 0.25, 0));
         magicArrow.shootFromContext(magicArrow, castContext);
         level.addFreshEntity(magicArrow);

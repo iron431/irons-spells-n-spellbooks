@@ -91,9 +91,9 @@ public abstract class AbstractSpell extends AbstractSkill {
     public final SpellDamageSource getDamageSource(CastContext castContext, boolean direct) {
         Entity directEntity = null;
         if (direct) {
-            directEntity = castContext.asEntityCaster();
+            directEntity = castContext.entityOwner();
         }
-        var source = getDamageSource(castContext.level(), directEntity, castContext.asEntityCaster());
+        var source = getDamageSource(castContext.level(), directEntity, castContext.entityOwner());
         source.sourcePosition = castContext.position(PositionAnchor.BOTTOM_CENTER);
         castContext.find(SkillcastingComponentTypes.FIRE_TICKS).ifPresent(source::setFireTicks);
         castContext.find(SkillcastingComponentTypes.FREEZE_TICKS).ifPresent(source::setFreezeTicks);
@@ -150,7 +150,7 @@ public abstract class AbstractSpell extends AbstractSkill {
             castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
             // todo: likely remove anti-cooldown in future balance patch.
             castContext.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
-            if (castContext.asEntityCaster() instanceof ServerPlayer serverPlayer) {
+            if (castContext.entityOwner() instanceof ServerPlayer serverPlayer) {
                 EquipmentSlot slot = EquipmentSlot.CODEC.byName(castContext.getCastSource().equipmentSlot());
                 if (slot != null) {
                     castContext.set(SpellcastingComponentTypes.SCROLL_STACK, serverPlayer.getItemBySlot(slot));
@@ -163,7 +163,7 @@ public abstract class AbstractSpell extends AbstractSkill {
             }
         }
         float configPowerMultiplier = getConfigPowerMultiplier();
-        if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
+        if (castContext.entityOwner() instanceof LivingEntity livingEntity) {
             castContext.set(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, (float) livingEntity.getAttributeValue(AttributeRegistry.SPELL_POWER) * configPowerMultiplier);
             for (SchoolType type : SchoolRegistry.REGISTRY) {
                 castContext.set(type.getPowerComponent(), (float) type.getPowerFor(livingEntity));
@@ -171,7 +171,7 @@ public abstract class AbstractSpell extends AbstractSkill {
         } else {
             castContext.set(SpellcastingComponentTypes.SPELL_POWER_MULTIPLIER, configPowerMultiplier);
         }
-        if (castContext.asEntityCaster() instanceof Player player && player.getAbilities().instabuild) {
+        if (castContext.entityOwner() instanceof Player player && player.getAbilities().instabuild) {
             if (!ServerConfigs.CREATIVE_COOLDOWN.get()) {
                 castContext.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
             }
@@ -209,14 +209,14 @@ public abstract class AbstractSpell extends AbstractSkill {
 
     @Override
     public CastResult canBeCastBy(CastContext castContext) {
-        if (ServerConfigs.DISABLE_ADVENTURE_MODE_CASTING.get() && castContext.asEntityCaster() instanceof ServerPlayer serverPlayer && serverPlayer.gameMode.getGameModeForPlayer() == GameType.ADVENTURE) {
+        if (ServerConfigs.DISABLE_ADVENTURE_MODE_CASTING.get() && castContext.entityOwner() instanceof ServerPlayer serverPlayer && serverPlayer.gameMode.getGameModeForPlayer() == GameType.ADVENTURE) {
             return CastResult.failure(Component.translatable("ui.irons_spellbooks.cast_error_adventure").withStyle(ChatFormatting.RED));
         }
         MagicData magicData = castContext.caster().get().getData(DataAttachmentRegistry.MAGIC_DATA);
         if (this.requiresLearning() && !isLearned(castContext.caster().get())) {
             return CastResult.failure(Component.translatable("ui.irons_spellbooks.cast_error_unlearned", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED));
         }
-        if (castContext.has(SkillcastingComponentTypes.RECAST_CONFIG) && castContext.getCastSource().isType(SpellCastSources.SCROLL) && !((castContext.asEntityCaster() instanceof Player player && player.isCreative()))) {
+        if (castContext.has(SkillcastingComponentTypes.RECAST_CONFIG) && castContext.getCastSource().isType(SpellCastSources.SCROLL) && !((castContext.entityOwner() instanceof Player player && player.isCreative()))) {
             return CastResult.failure(Component.translatable("ui.irons_spellbooks.cast_error_scroll", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED));
         }
         int manaCost = getManaCost(castContext);
@@ -234,7 +234,7 @@ public abstract class AbstractSpell extends AbstractSkill {
         magicData.setMana(magicData.getMana() - manaCost);
         if (castContext.skill().value().getCastType() == CastType.CONTINUOUS && manaCost > magicData.getMana()) {
             SkillcastingManager.cancelCast(castContext.caster(), CastEndReason.INTERRUPTED);
-            if (castContext.asEntityCaster() instanceof ServerPlayer serverPlayer) {
+            if (castContext.entityOwner() instanceof ServerPlayer serverPlayer) {
                 serverPlayer.displayClientMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED), true);
             }
         }

@@ -96,7 +96,7 @@ public class LightningBoltSpell extends AbstractSpell {
 
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f);
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         Vec3 strikePos = pos;
         float radiusSqr = radius * radius;
         level.getEntities(caster, AABB.ofSize(strikePos, radius * 2, radius * 2, radius * 2), target -> canHit(caster, target))

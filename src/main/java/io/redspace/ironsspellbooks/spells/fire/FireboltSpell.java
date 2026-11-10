@@ -58,7 +58,7 @@ public class FireboltSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        FireboltProjectile firebolt = new FireboltProjectile(level, castContext.asEntityCaster());
+        FireboltProjectile firebolt = new FireboltProjectile(level, castContext.entityOwner());
         firebolt.setPos(castContext.position());
         firebolt.shootFromContext(firebolt, castContext);
         level.addFreshEntity(firebolt);

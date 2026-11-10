@@ -88,7 +88,7 @@ public class ShadowSlashSpell extends AbstractSpell {
     public void buildContextComponents(CastContext castContext) {
         super.buildContextComponents(castContext);
         float weaponDamage = 0;
-        if (castContext.asEntityCaster() instanceof LivingEntity entity) {
+        if (castContext.entityOwner() instanceof LivingEntity entity) {
             weaponDamage = Utils.getWeaponDamage(entity);
         }
         castContext.set(SkillcastingComponentTypes.WEAPON_DAMAGE, weaponDamage);
@@ -100,7 +100,7 @@ public class ShadowSlashSpell extends AbstractSpell {
     @Override
     public void onClientCastStart(CastContext castContext) {
         super.onClientCastStart(castContext);
-        if (castContext.asEntityCaster() instanceof LivingEntity entity) {
+        if (castContext.entityOwner() instanceof LivingEntity entity) {
             entity.setYBodyRot(entity.getYRot());
         }
     }
@@ -112,7 +112,7 @@ public class ShadowSlashSpell extends AbstractSpell {
         float distance = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, DISTANCE);
         Vec3 end = Utils.raycastForBlock(level, start, start.add(forward.scale(distance)), ClipContext.Fluid.NONE).getLocation();
         AABB hitbox = new AABB(start, end).inflate(2);
-        var targetableEntities = level.getEntities(castContext.asEntityCaster(), hitbox, e ->
+        var targetableEntities = level.getEntities(castContext.entityOwner(), hitbox, e ->
                 !e.isSpectator()
                         && (e instanceof LivingEntity || e instanceof Projectile)
                         && e.getBoundingBox().getCenter().subtract(start).normalize().dot(forward) >= 0.85);
@@ -128,7 +128,7 @@ public class ShadowSlashSpell extends AbstractSpell {
             AABB damageBox = AABB.ofSize(closestEntity.getBoundingBox().getCenter(), radius, radius + 1, radius)
                     .move(forward.scale(radius / 2));
             end = damageBox.getCenter().add(end).scale(0.5);
-            var damageEntities = level.getEntities(castContext.asEntityCaster(), damageBox);
+            var damageEntities = level.getEntities(castContext.entityOwner(), damageBox);
             boolean projectileEffects = false;
             for (Entity targetEntity : damageEntities) {
                 if (targetEntity instanceof Projectile projectile
@@ -136,7 +136,7 @@ public class ShadowSlashSpell extends AbstractSpell {
                         && !(projectile instanceof AbstractArrow arrow && ((AbstractArrowAccessor) arrow).isInGround())
                         && !projectile.getType().is(ModTags.CANT_PARRY)) {
                     projectileEffects = true;
-                    projectile.setOwner(castContext.asEntityCaster());
+                    projectile.setOwner(castContext.entityOwner());
                     projectile.shoot(forward.x, forward.y, forward.z, (float) projectile.getDeltaMovement().length(), 0f);
                 } else if (targetEntity.isAlive()
                         && targetEntity.isPickable()
@@ -169,7 +169,7 @@ public class ShadowSlashSpell extends AbstractSpell {
 
         Vec3 rayVector = end.subtract(start);
         Vec3 impulse = rayVector.scale(1 / 6f).add(0, 0.1, 0);
-        if (castContext.asEntityCaster() instanceof LivingEntity livingCaster) {
+        if (castContext.entityOwner() instanceof LivingEntity livingCaster) {
             livingCaster.setDeltaMovement(livingCaster.getDeltaMovement().scale(0.2).add(impulse));
             livingCaster.hurtMarked = true;
             livingCaster.addEffect(new MobEffectInstance(MobEffectRegistry.FALL_DAMAGE_IMMUNITY, 20, 0, false, false, true));

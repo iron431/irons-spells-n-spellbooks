@@ -82,7 +82,7 @@ public class MagmaBombSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        FireBomb orb = new FireBomb(level, castContext.asEntityCaster());
+        FireBomb orb = new FireBomb(level, castContext.entityOwner());
         orb.applyContext(castContext);
         SkillcastingUtils.attachToContext(orb, castContext);
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);

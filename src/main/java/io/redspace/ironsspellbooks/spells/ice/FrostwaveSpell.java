@@ -86,8 +86,8 @@ public class FrostwaveSpell extends AbstractSpell {
                 position.x, position.y, position.z, 1, 0, 0, 0, 0, true);
         castContext.caster().distributeToClients(new ShockwaveParticlesPacket(new Vec3(position.x, position.y, position.z), radius, ParticleRegistry.SNOWFLAKE_PARTICLE.get()));
         int duration = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 0);
-        level.getEntities(castContext.asEntityCaster(), AABB.ofSize(position, radius * 2, 4, radius* 2), (target) ->
-                        !DamageSources.isFriendlyFireBetween(target, castContext.asEntityCaster())
+        level.getEntities(castContext.entityOwner(), AABB.ofSize(position, radius * 2, 4, radius* 2), (target) ->
+                        !DamageSources.isFriendlyFireBetween(target, castContext.entityOwner())
                                 && Utils.hasLineOfSight(level, position, target.getBoundingBox().getCenter(), true))
                 .forEach(target -> {
                     if (target instanceof LivingEntity livingEntity && livingEntity.distanceToSqr(position) < radius * radius) {

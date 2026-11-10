@@ -84,7 +84,7 @@ public class FortifySpell extends AbstractSpell {
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f);
         int channelTicks = castContext.getOrDefault(SkillcastingComponentTypes.CAST_TIME, castTime);
         TargetedAreaEntity area = TargetedAreaEntity.createTargetAreaEntity(
-                castContext.level(), castContext.position(), radius, 16239960, castContext.asEntityCaster());
+                castContext.level(), castContext.position(), radius, 16239960, castContext.entityOwner());
         area.setDuration(channelTicks);
         castContext.set(SkillcastingComponentTypes.ATTACHED_ENTITIES, new TargetedEntitiesData(area));
     }
@@ -104,7 +104,7 @@ public class FortifySpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         Vec3 center = castContext.position();
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f);
         float power = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);

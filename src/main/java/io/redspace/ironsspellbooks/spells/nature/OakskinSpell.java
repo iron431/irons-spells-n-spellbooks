@@ -51,7 +51,7 @@ public class OakskinSpell extends AbstractSpell {
         int amplifier = castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_AMPLIFIER, 0);
         return List.of(
                 Component.translatable("ui.irons_spellbooks.damage_reduction",
-                        Utils.stringTruncation(OakskinEffect.getReductionAmount(amplifier, castContext.asEntityCaster() instanceof LivingEntity living ? living : null) * 100, 0)),
+                        Utils.stringTruncation(OakskinEffect.getReductionAmount(amplifier, castContext.entityOwner() instanceof LivingEntity living ? living : null) * 100, 0)),
                 Component.translatable("attribute.modifier.take.1",
                         Utils.stringTruncation(OakskinEffect.SLOWNESS_MAGNITUDE * 100, 0),
                         Component.translatable("attribute.name.generic.movement_speed")).withStyle(ChatFormatting.RED),
@@ -84,7 +84,7 @@ public class OakskinSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (castContext.asEntityCaster() instanceof LivingEntity entity) {
+        if (castContext.entityOwner() instanceof LivingEntity entity) {
             entity.removeEffect(MobEffectRegistry.OAKSKIN);
             OakskinData.remove(entity);
             entity.addEffect(new MobEffectInstance(

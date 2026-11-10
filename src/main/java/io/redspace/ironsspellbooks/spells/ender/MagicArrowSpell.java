@@ -90,7 +90,7 @@ public class MagicArrowSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        MagicArrowProjectile magicArrow = new MagicArrowProjectile(level, castContext.asEntityCaster());
+        MagicArrowProjectile magicArrow = new MagicArrowProjectile(level, castContext.entityOwner());
         Vec3 origin = castContext.position(PositionAnchor.CASTING_POSITION);
         magicArrow.setPos(origin.subtract(0, magicArrow.getBoundingBox().getYsize() * 0.5f, 0).add(castContext.direction()));
         magicArrow.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));

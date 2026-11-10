@@ -84,7 +84,7 @@ public class AcupunctureSpell extends AbstractSpell {
             Vec3 spawn = center.add(offset);
             Vec3 motion = center.subtract(spawn).normalize();
 
-            BloodNeedle needle = new BloodNeedle(level, castContext.asEntityCaster());
+            BloodNeedle needle = new BloodNeedle(level, castContext.entityOwner());
             needle.moveTo(spawn);
             needle.applyContext(castContext);
             SkillcastingUtils.attachToContext(needle, castContext);

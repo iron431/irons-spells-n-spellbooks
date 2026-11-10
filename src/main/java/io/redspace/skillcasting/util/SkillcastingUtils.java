@@ -109,7 +109,7 @@ public final class SkillcastingUtils {
     public static Set<Entity> collectConeTargets(CastContext castContext, Predicate<Entity> filter) {
         return collectConeTargets(
                 castContext.level(),
-                castContext.asEntityCaster(),
+                castContext.entityOwner(),
                 castContext.position(PositionAnchor.CASTING_POSITION_CENTER),
                 castContext.direction(),
                 castContext.getOrDefault(SkillcastingComponentTypes.CAST_RANGE, 7.75f),
@@ -217,7 +217,7 @@ public final class SkillcastingUtils {
             float aimAssist,
             boolean sendFailureMessage,
             Predicate<LivingEntity> filter) {
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         AbstractSkill skill = castContext.skill().value();
         if (castContext.has(SkillcastingComponentTypes.TARGETED_ENTITIES) && castContext.level() instanceof ServerLevel serverLevel) {
             LivingEntity livingTarget = castContext.find(SkillcastingComponentTypes.TARGETED_ENTITIES).map(data -> data.getFirstLivingEntityTarget(serverLevel)).orElse(null);

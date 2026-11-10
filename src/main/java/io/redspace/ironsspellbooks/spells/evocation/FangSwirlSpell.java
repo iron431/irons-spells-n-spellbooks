@@ -121,7 +121,7 @@ public class FangSwirlSpell extends AbstractSpell {
         swirl.setDelay(delay);
         swirl.setRadius(castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 0f));
         swirl.setDuration(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, 160));
-        swirl.setOwner(castContext.asEntityCaster());
+        swirl.setOwner(castContext.entityOwner());
         swirl.setDamage(castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f));
         level.addFreshEntity(swirl);
     }

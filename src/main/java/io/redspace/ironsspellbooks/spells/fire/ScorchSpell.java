@@ -131,7 +131,7 @@ public class ScorchSpell extends AbstractSpell {
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 2.5f);
         float radiusSqr = radius * radius;
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
-        Entity caster = castContext.asEntityCaster();
+        Entity caster = castContext.entityOwner();
         var source = getDamageSource(castContext, false);
         Vec3 _targetArea = targetArea;
         level.getEntitiesOfClass(LivingEntity.class, new AABB(targetArea.subtract(radius, radius, radius), targetArea.add(radius, radius, radius)),

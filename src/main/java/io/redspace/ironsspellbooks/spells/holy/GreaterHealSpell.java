@@ -50,7 +50,7 @@ public class GreaterHealSpell extends AbstractSpell {
 
     @Override
     public void onCast(ServerLevel level, CastContext castContext) {
-        if (castContext.asEntityCaster() instanceof LivingEntity entity) {
+        if (castContext.entityOwner() instanceof LivingEntity entity) {
             float healAmount = entity.getMaxHealth();
             entity.heal(NeoForge.EVENT_BUS.post(new SpellHealEvent(castContext.caster(), entity, healAmount, this)).getHealAmount());
             castContext.caster().distributeToClients(new HealParticlesPacket(entity.position()));

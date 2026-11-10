@@ -1,5 +1,7 @@
 package io.redspace.skillcasting.data;
 
+import net.minecraft.world.entity.Entity;
+import io.redspace.skillcasting.data.cast.EntityCasterRef;
 import io.redspace.skillcasting.animation.AnimationHolder;
 import io.redspace.skillcasting.animation.IAnimatedCastingMob;
 import io.redspace.skillcasting.client.animation.AnimationHelper;
@@ -122,7 +124,7 @@ public abstract class AbstractSkill {
         provideCastStartSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.CAST_START_SOUND, sound));
         provideOnCastSound(castContext).ifPresent(sound -> castContext.set(SkillcastingComponentTypes.ON_CAST_SOUND, sound));
         castContext.set(SkillcastingComponentTypes.CASTING_MOVESPEED_MULTIPLIER, getBaseCastingMovespeedMultiplier());
-        if (castContext.asEntityCaster() instanceof LivingEntity livingEntity) {
+        if (castContext.entityOwner() instanceof LivingEntity livingEntity) {
             castContext.mutate(SkillcastingComponentTypes.COOLDOWN_TICKS, ticks -> (int) (ticks * (2 - SkillcastingUtils.softCapFormula(livingEntity.getAttributeValue(SkillcastingAttributes.COOLDOWN_REDUCTION)))));
             if (getCastType() == CastType.CONTINUOUS) {
                 castContext.mutate(SkillcastingComponentTypes.CAST_TIME, ticks -> (int) (ticks * livingEntity.getAttributeValue(SkillcastingAttributes.CAST_TIME_REDUCTION)));
@@ -239,6 +241,10 @@ public abstract class AbstractSkill {
         return AnimationHolder.stop();
     }
 
+    private static @Nullable Entity animatedEntity(CastContext castContext) {
+        return castContext.caster() instanceof EntityCasterRef ref ? ref.entity() : null;
+    }
+
     protected void handleCastFinishAnimation(CastContext castContext, CastEndReason castEndReason) {
         AnimationHolder finishAnimation = castContext.getOrDefault(SkillcastingComponentTypes.CAST_FINISH_ANIMATION, AnimationHolder.pass());
         boolean cancelled = castEndReason == CastEndReason.INTERRUPTED;
@@ -246,13 +252,13 @@ public abstract class AbstractSkill {
             return;
         }
         float animationSpeed = castContext.getOrDefault(SkillcastingComponentTypes.ANIMATION_SPEED, SkillcastingUtils.getCastRateSpeed(castContext));
-        if (castContext.asEntityCaster() instanceof Player player) {
+        if (animatedEntity(castContext) instanceof Player player) {
             if (finishAnimation.getAnimation().isPresent() && !cancelled) {
                 AnimationHelper.animatePlayerStart(player, finishAnimation.getAnimation().get(), animationSpeed);
             } else {
                 AnimationHelper.cancelPlayerAnimation((AbstractClientPlayer) player);
             }
-        } else if (castContext.asEntityCaster() instanceof IAnimatedCastingMob animatedCastingMob) {
+        } else if (animatedEntity(castContext) instanceof IAnimatedCastingMob animatedCastingMob) {
             animatedCastingMob.playCastingAnimation(cancelled ? AnimationHolder.stop() : finishAnimation, animationSpeed);
         }
     }
@@ -263,9 +269,9 @@ public abstract class AbstractSkill {
             return;
         }
         float animationSpeed = castContext.getOrDefault(SkillcastingComponentTypes.ANIMATION_SPEED, SkillcastingUtils.getCastRateSpeed(castContext));
-        if (castContext.asEntityCaster() instanceof Player player) {
+        if (animatedEntity(castContext) instanceof Player player) {
             animation.getAnimation().ifPresent(resourceLocation -> AnimationHelper.animatePlayerStart(player, resourceLocation, animationSpeed));
-        } else if (castContext.asEntityCaster() instanceof IAnimatedCastingMob animatedCastingMob) {
+        } else if (animatedEntity(castContext) instanceof IAnimatedCastingMob animatedCastingMob) {
             animatedCastingMob.playCastingAnimation(animation, animationSpeed);
         }
     }

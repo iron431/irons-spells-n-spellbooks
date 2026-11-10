@@ -81,7 +81,7 @@ public class ScapegoatSpell extends AbstractSpell {
 
         ScapegoatEntity goat = new ScapegoatEntity(level);
         SkillcastingUtils.attachToContext(goat, castContext);
-        goat.setOwner(castContext.asEntityCaster());
+        goat.setOwner(castContext.entityOwner());
         goat.setTargetPos(BlockPos.containing(targetPos));
         float yRot = -castContext.getYRot() * Mth.RAD_TO_DEG;
         goat.setYBodyRot(yRot);
@@ -98,6 +98,6 @@ public class ScapegoatSpell extends AbstractSpell {
         goat.setDurationRemaining(castContext.getOrDefault(SkillcastingComponentTypes.EFFECT_DURATION_TICKS, GOAT_DURATION_TICKS));
         goat.invulnerableTime = 60;
         level.addFreshEntity(goat);
-        Utils.performTaunt(goat, TAUNT_RANGE, castContext.asEntityCaster() == null ? entity -> entity instanceof Enemy : Utils.tauntPredicate(castContext.asEntityCaster()));
+        Utils.performTaunt(goat, TAUNT_RANGE, castContext.entityOwner() == null ? entity -> entity instanceof Enemy : Utils.tauntPredicate(castContext.entityOwner()));
     }
 }
