@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.mixin;
 
-import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.item.spell_containers.ScrollContainer;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -80,7 +79,6 @@ public class DispenserBlockMixin {
         var caster = CasterRef.block(dispenserblockentity);
         var context = SkillcastingManager.buildCastContext(caster, SkillRegistry.holder(skillSlot.getSkill()), skillSlot.getLevel(), CastSource.of("dispenser", ""));
         context.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
-        context.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
         if (stack.is(ItemRegistry.SCROLL)) {
             stack.shrink(1);
         }

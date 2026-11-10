@@ -40,26 +40,25 @@ public final class SkillcastingEvents {
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
         SkillcastingManager.serverTick();
-        VirtualCasters.sweep();
     }
 
     @SubscribeEvent
     public static void onServerStopped(ServerStoppedEvent event) {
         SkillcastingManager.serverStopped();
-        VirtualCasters.clearAll();
+        VirtualCasterManager.clearAll();
     }
 
     @SubscribeEvent
     public static void onChunkUnload(ChunkEvent.Unload event) {
         if (event.getLevel() instanceof Level level && level.isClientSide()) {
-            VirtualCasters.dropInChunk(level, event.getChunk().getPos());
+            VirtualCasterManager.dropInChunk(level, event.getChunk().getPos());
         }
     }
 
     @SubscribeEvent
     public static void onLevelUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof Level level) {
-            VirtualCasters.clear(level);
+            VirtualCasterManager.clear(level);
         }
     }
 

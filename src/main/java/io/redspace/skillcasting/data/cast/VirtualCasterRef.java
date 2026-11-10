@@ -27,6 +27,7 @@ public record VirtualCasterRef(VirtualCaster caster) implements CasterRef {
     @Override
     public boolean isValid() {
         // only the chunk matters: Level#isLoaded also rejects points outside the build height
+        // fixme: as per manager, is strictly limiting casters to chunk limit necessary?
         Vec3 position = caster.position();
         return !caster.isRemoved() && caster.level().hasChunk(SectionPos.blockToSectionCoord(position.x), SectionPos.blockToSectionCoord(position.z));
     }
@@ -36,7 +37,6 @@ public record VirtualCasterRef(VirtualCaster caster) implements CasterRef {
         return caster.level();
     }
 
-    // a point has no body, so every anchor is the point itself
     @Override
     public Vec3 position(PositionAnchor anchor) {
         return caster.position();

@@ -1,5 +1,8 @@
 package io.redspace.ironsspellbooks.gametest;
 
+import io.redspace.skillcasting.data.cast.EntityCasterRef;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.minecraft.world.level.ChunkPos;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedPolarBear;
@@ -10,7 +13,7 @@ import net.minecraft.world.entity.Entity;
 import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.skillcasting.util.SkillcastingUtils;
-import io.redspace.skillcasting.lifecycle.VirtualCasters;
+import io.redspace.skillcasting.lifecycle.VirtualCasterManager;
 import io.redspace.skillcasting.data.cast.VirtualCasterRef;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.Blocks;
@@ -258,20 +261,28 @@ public class SkillcastingGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "empty")
-    public static void pulseTickEveryInterval(GameTestHelper helper) {
-        for (int t = 1; t <= 5; t++) {
-            helper.assertTrue(SkillcastingManager.isPulseTick(t, 1), "interval 1 should pulse at " + t);
-        }
-        List<Integer> pulses = new ArrayList<>();
-        for (int t = 1; t <= 25; t++) {
-            if (SkillcastingManager.isPulseTick(t, 10)) {
-                pulses.add(t);
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void continuousCastPulsesEveryInterval(GameTestHelper helper) {
+        Zombie caster = stillZombie(helper);
+        CasterRef ref = CasterRef.entity(caster);
+        CastContext context = SkillcastingManager.buildCastContext(ref, SkillRegistry.holder(SpellRegistry.CLOUD_OF_REGENERATION_SPELL.get()), 1, CastSource.of("test", ""));
+        context.set(SkillcastingComponentTypes.CAST_TIME, 35);
+        List<Long> pulses = new ArrayList<>();
+        Consumer<SkillCastEvent.PostCast> onPulse = event -> {
+            if (event.getCastContext().caster() instanceof EntityCasterRef entity && entity.entity() == caster) {
+                pulses.add(helper.getLevel().getGameTime());
             }
-        }
-        helper.assertTrue(pulses.equals(List.of(1, 11, 21)), "interval 10 should pulse at 1, 11, 21, got " + pulses);
-        helper.assertFalse(SkillcastingManager.isPulseTick(0, 10), "tick 0 should not pulse");
-        helper.succeed();
+        };
+        NeoForge.EVENT_BUS.addListener(SkillCastEvent.PostCast.class, onPulse);
+        helper.assertTrue(SkillcastingManager.initiateCast(ref, context), "continuous cast should start");
+        helper.runAfterDelay(45, () -> {
+            NeoForge.EVENT_BUS.unregister(onPulse);
+            helper.assertTrue(pulses.size() == 4, "35 ticks at interval 10 should pulse 4 times, got " + pulses.size());
+            for (int i = 1; i < pulses.size(); i++) {
+                helper.assertTrue(pulses.get(i) - pulses.get(i - 1) == 10, "pulses should be 10 ticks apart, got " + pulses);
+            }
+            helper.succeed();
+        });
     }
 
     @GameTest(template = "empty")
@@ -306,7 +317,7 @@ public class SkillcastingGameTests {
         VirtualCasterRef ref = SkillcastingUtils.castAt(helper.getLevel(), point, DOWN, fireball(), 1, CastSource.of("test", ""), owner, null).orElseThrow();
         helper.succeedWhen(() -> {
             helper.assertFalse(fireballsNear(helper, point, owner).isEmpty(), "no owned fireball yet");
-            helper.assertTrue(VirtualCasters.get(helper.getLevel(), ref.caster().id()) == null, "virtual caster should be discarded after its cast");
+            helper.assertTrue(VirtualCasterManager.get(helper.getLevel(), ref.caster().id()) == null, "virtual caster should be discarded after its cast");
         });
     }
 
@@ -385,7 +396,7 @@ public class SkillcastingGameTests {
             NeoForge.EVENT_BUS.unregister(cancel);
         }
         helper.assertTrue(seen.size() == 1, "PreCast should have seen the virtual cast");
-        helper.assertTrue(VirtualCasters.get(helper.getLevel(), seen.get(0)) == null, "cancelled virtual caster should be discarded");
+        helper.assertTrue(VirtualCasterManager.get(helper.getLevel(), seen.get(0)) == null, "cancelled virtual caster should be discarded");
         helper.succeed();
     }
 
@@ -403,15 +414,16 @@ public class SkillcastingGameTests {
     public static void dropInChunkForgetsVirtualCasters(GameTestHelper helper) {
         // far from the other tests: dropping a shared chunk would discard their casters too
         Vec3 point = helper.absoluteVec(new Vec3(4, 5, 4)).add(4096, 0, 4096);
-        VirtualCasterRef ref = VirtualCasters.spawn(helper.getLevel(), point, new Vec3(1, 0, 0), null);
-        VirtualCasters.dropInChunk(helper.getLevel(), new ChunkPos(BlockPos.containing(point)));
-        helper.assertTrue(VirtualCasters.get(helper.getLevel(), ref.caster().id()) == null, "casters in a dropped chunk should be forgotten");
+        VirtualCasterRef ref = VirtualCasterManager.create(helper.getLevel(), point, new Vec3(1, 0, 0), null);
+        VirtualCasterManager.dropInChunk(helper.getLevel(), new ChunkPos(BlockPos.containing(point)));
+        helper.assertTrue(VirtualCasterManager.get(helper.getLevel(), ref.caster().id()) == null, "casters in a dropped chunk should be forgotten");
         helper.assertFalse(ref.isValid(), "a dropped caster should be invalid");
         helper.succeed();
     }
 
     @GameTest(template = "empty", timeoutTicks = 200)
     public static void polarBearSpawnsOnGround(GameTestHelper helper) {
+        bearRoom(helper, false);
         Zombie caster = helper.spawn(EntityType.ZOMBIE, 1, 3, 1);
         caster.setNoAi(true);
         helper.runAfterDelay(20, () -> {
@@ -434,6 +446,62 @@ public class SkillcastingGameTests {
                 helper.assertTrue(Math.abs(y - feet) < 0.5, "bear should spawn on the ground at " + feet + ", spawned at " + y);
             });
         });
+    }
+
+    @GameTest(template = "empty")
+    public static void onlyPlayersSpendMana(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Zombie zombie = stillZombie(helper);
+        VirtualCasterRef point = VirtualCasterManager.create(helper.getLevel(), helper.absoluteVec(new Vec3(4, 5, 4)), DOWN, zombie);
+        helper.assertFalse(ignoresMana(CasterRef.entity(player)), "players should spend mana");
+        helper.assertTrue(ignoresMana(CasterRef.entity(zombie)), "mobs should not spend mana");
+        helper.assertTrue(ignoresMana(point), "virtual casters should not spend mana");
+        VirtualCasterManager.discard(point);
+        helper.succeed();
+    }
+
+    private static boolean ignoresMana(CasterRef caster) {
+        return SkillcastingManager.buildCastContext(caster, fireball(), 1, CastSource.of("test", "")).has(SpellcastingComponentTypes.IGNORE_MANA);
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void polarBearSpawnsUnderLowCeiling(GameTestHelper helper) {
+        bearRoom(helper, true);
+        Zombie caster = helper.spawn(EntityType.ZOMBIE, 1, 3, 1);
+        caster.setNoAi(true);
+        caster.setYRot(-90);
+        caster.setYHeadRot(-90);
+        helper.runAfterDelay(20, () -> {
+            CasterRef ref = CasterRef.entity(caster);
+            CastContext context = SkillcastingManager.buildCastContext(ref, SkillRegistry.holder(SpellRegistry.SUMMON_POLAR_BEAR_SPELL.get()), 1, CastSource.of("test", ""));
+            double feet = caster.getY();
+            List<Vec3> spawns = new ArrayList<>();
+            Consumer<EntityJoinLevelEvent> onJoin = event -> {
+                if (event.getEntity() instanceof SummonedPolarBear bear && bear.distanceTo(caster) < 8) {
+                    spawns.add(bear.position());
+                }
+            };
+            NeoForge.EVENT_BUS.addListener(EntityJoinLevelEvent.class, onJoin);
+            SkillcastingManager.initiateCast(ref, context);
+            helper.succeedWhen(() -> {
+                helper.assertFalse(spawns.isEmpty(), "no bear yet");
+                NeoForge.EVENT_BUS.unregister(onJoin);
+                Vec3 spawn = spawns.get(0);
+                helper.assertTrue(Math.abs(spawn.y - feet) < 0.5, "bear should spawn under the ceiling at " + feet + ", spawned at " + spawn.y);
+                helper.assertTrue(spawn.subtract(caster.position()).horizontalDistance() > 1, "bear should spawn beside the caster, not inside it");
+            });
+        });
+    }
+
+    private static void bearRoom(GameTestHelper helper, boolean ceiling) {
+        for (int x = 0; x < 5; x++) {
+            for (int z = 0; z < 5; z++) {
+                helper.setBlock(new BlockPos(x, 2, z), Blocks.STONE);
+                if (ceiling) {
+                    helper.setBlock(new BlockPos(x, 5, z), Blocks.STONE);
+                }
+            }
+        }
     }
 
     private static Zombie stillZombie(GameTestHelper helper) {

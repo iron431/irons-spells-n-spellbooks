@@ -10,14 +10,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 /**
- * A caster with no body: a point in a level that casts for an optional owner entity.
+ * A self container point with casting capability
  */
 public final class VirtualCaster extends AttachmentHolder {
     private final Level level;
     private final UUID id;
     private final Vec3 position;
     private final Vec3 forward;
-    // the server resolves the owner by UUID, the client mirror by network id
+    // uuid used on server, integer id on client
     private final @Nullable UUID ownerId;
     private final int ownerEntityId;
     private boolean removed;
@@ -55,6 +55,7 @@ public final class VirtualCaster extends AttachmentHolder {
         if (level instanceof ServerLevel serverLevel) {
             return ownerId == null ? null : serverLevel.getEntity(ownerId);
         }
+        // fixme: is id = 0 valid? less than equal to?
         return ownerEntityId < 0 ? null : level.getEntity(ownerEntityId);
     }
 

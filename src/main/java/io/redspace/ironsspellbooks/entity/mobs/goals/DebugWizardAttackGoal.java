@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
-import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.cast.CastSource;
@@ -50,7 +49,6 @@ public class DebugWizardAttackGoal extends Goal {
         if (tickCount++ % 200 == 0) {
             CasterRef casterRef = CasterRef.entity(mob);
             var castContext = SkillcastingManager.buildCastContext(casterRef, SkillRegistry.holder(spell), spellLevel, CastSource.EMPTY);
-            castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
             castContext.set(SkillcastingComponentTypes.IGNORE_COOLDOWN, Unit.INSTANCE);
             SkillcastingManager.initiateCast(casterRef, castContext);
             castingTicks = 0;

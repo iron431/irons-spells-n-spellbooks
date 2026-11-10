@@ -2,7 +2,7 @@ package io.redspace.skillcasting.network;
 
 import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.data.cast.CasterId;
-import io.redspace.skillcasting.lifecycle.VirtualCasters;
+import io.redspace.skillcasting.lifecycle.VirtualCasterManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -17,7 +17,7 @@ public record VirtualCasterRemovePacket(CasterId.Virtual id) implements CustomPa
             CasterId.Virtual.STREAM_CODEC.map(VirtualCasterRemovePacket::new, VirtualCasterRemovePacket::id);
 
     public static void handle(VirtualCasterRemovePacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> VirtualCasters.removeClient(context.player().level(), packet.id));
+        context.enqueueWork(() -> VirtualCasterManager.removeClient(context.player().level(), packet.id));
     }
 
     @Override

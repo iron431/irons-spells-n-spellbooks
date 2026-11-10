@@ -2,7 +2,7 @@ package io.redspace.skillcasting.network;
 
 import io.redspace.skillcasting.Skillcasting;
 import io.redspace.skillcasting.data.cast.CasterId;
-import io.redspace.skillcasting.lifecycle.VirtualCasters;
+import io.redspace.skillcasting.lifecycle.VirtualCasterManager;
 import io.redspace.skillcasting.util.StreamCodecUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -24,7 +24,7 @@ public record VirtualCasterAddPacket(CasterId.Virtual id, Vec3 position, Vec3 fo
             VirtualCasterAddPacket::new);
 
     public static void handle(VirtualCasterAddPacket packet, IPayloadContext context) {
-        context.enqueueWork(() -> VirtualCasters.addClient(context.player().level(), packet.id, packet.position, packet.forward, packet.ownerEntityId));
+        context.enqueueWork(() -> VirtualCasterManager.addClient(context.player().level(), packet.id, packet.position, packet.forward, packet.ownerEntityId));
     }
 
     @Override

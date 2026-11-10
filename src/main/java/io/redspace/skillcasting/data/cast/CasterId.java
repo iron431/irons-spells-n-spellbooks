@@ -1,6 +1,6 @@
 package io.redspace.skillcasting.data.cast;
 
-import io.redspace.skillcasting.lifecycle.VirtualCasters;
+import io.redspace.skillcasting.lifecycle.VirtualCasterManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
@@ -59,7 +59,7 @@ public sealed interface CasterId permits CasterId.Entity, CasterId.Block, Caster
             if (!level.dimension().equals(this.dimension)) {
                 return null;
             }
-            VirtualCaster caster = VirtualCasters.get(level, this.id);
+            VirtualCaster caster = VirtualCasterManager.get(level, this.id);
             return caster == null ? null : new VirtualCasterRef(caster);
         }
     }

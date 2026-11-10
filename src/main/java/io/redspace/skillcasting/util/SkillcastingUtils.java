@@ -1,9 +1,5 @@
 package io.redspace.skillcasting.util;
 
-import java.util.function.Consumer;
-import io.redspace.skillcasting.lifecycle.VirtualCasters;
-import io.redspace.skillcasting.data.cast.VirtualCasterRef;
-import io.redspace.skillcasting.data.cast.VirtualCaster;
 import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.ActiveCast;
@@ -11,10 +7,12 @@ import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.cast.PositionAnchor;
 import io.redspace.skillcasting.data.cast.PreventDismount;
-import io.redspace.skillcasting.data.component.CastComponentMap;
+import io.redspace.skillcasting.data.cast.VirtualCaster;
+import io.redspace.skillcasting.data.cast.VirtualCasterRef;
 import io.redspace.skillcasting.data.component.TargetedEntitiesData;
 import io.redspace.skillcasting.data.skill.ISkillContainer;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
+import io.redspace.skillcasting.lifecycle.VirtualCasterManager;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -50,6 +48,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public final class SkillcastingUtils {
@@ -369,6 +368,7 @@ public final class SkillcastingUtils {
     /**
      * Helper for setting a mob's cast context and skillcast utilizing {@link AbstractSkill#setupAIContext(CastContext, Mob)} and {@link AbstractSkill#shouldAIStopCasting(CastContext, Mob, LivingEntity)}
      *
+     * @param configure runs on the built context before the cast starts
      * @return Whether cast is initiated
      */
     public static boolean initiateMobCast(Mob mob, Holder<AbstractSkill> skill, int skillLevel, @Nullable Consumer<CastContext> configure) {
@@ -385,23 +385,21 @@ public final class SkillcastingUtils {
     }
 
     /**
-     * Casts a skill from a point, through a {@link VirtualCaster} that exists for this one cast and acts for {@code owner}.
-     * Like dispenser and mob casts, it skips {@link AbstractSkill#canBeCastBy}: the caller decides whether the cast is allowed.
+     * Casts a skill from a point, through a {@link VirtualCaster} that exists for this one cast, and acts for {@code owner}.
      *
      * @param configure runs on the built context before the cast starts
      * @return the virtual caster, if the cast started
      */
-    public static Optional<VirtualCasterRef> castAt(ServerLevel level, Vec3 position, Vec3 direction, Holder<AbstractSkill> skill, int skillLevel,
-                                                    CastSource source, @Nullable Entity owner, @Nullable Consumer<CastContext> configure) {
-        VirtualCasterRef caster = VirtualCasters.spawn(level, position, direction, owner);
+    public static Optional<VirtualCasterRef> castAt(ServerLevel level, Vec3 position, Vec3 direction, Holder<AbstractSkill> skill, int skillLevel, CastSource source, @Nullable Entity owner, @Nullable Consumer<CastContext> configure) {
+        VirtualCasterRef caster = VirtualCasterManager.create(level, position, direction, owner);
         CastContext castContext = SkillcastingManager.buildCastContext(caster, skill, skillLevel, source);
-        // a caster that lives for one cast cannot hold a recast window
+        // a caster that lives for one cast cannot hold a recast window. it dies anyway though so.
         castContext.remove(SkillcastingComponentTypes.RECAST_CONFIG);
         if (configure != null) {
             configure.accept(castContext);
         }
         if (!SkillcastingManager.initiateCast(caster, castContext)) {
-            VirtualCasters.discard(caster);
+            VirtualCasterManager.discard(caster);
             return Optional.empty();
         }
         return Optional.of(caster);

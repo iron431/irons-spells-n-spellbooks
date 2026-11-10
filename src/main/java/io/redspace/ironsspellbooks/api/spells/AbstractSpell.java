@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.api.spells;
 
-import io.redspace.skillcasting.data.cast.VirtualCasterRef;
 import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
@@ -144,7 +143,7 @@ public abstract class AbstractSpell extends AbstractSkill {
         int scaledLevel = castContext.getSkillLevel() - 1;
         double manaMultiplier = SpellConfigManager.getSpellConfigValue(this, SpellConfigParameter.MANA_MULTIPLIER);
         castContext.set(SpellcastingComponentTypes.MANA_COST, (int) ((baseManaCost + manaCostPerLevel * scaledLevel) * manaMultiplier));
-        if (castContext.getRecastsRemaining() > 0) {
+        if (!(castContext.caster().get() instanceof Player) || castContext.getRecastsRemaining() > 0) {
             castContext.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
         }
         if (castContext.getCastSource().isType(SpellCastSources.SCROLL)) {
@@ -230,6 +229,9 @@ public abstract class AbstractSpell extends AbstractSkill {
     @Override
     public void onPostCast(CastContext castContext) {
         super.onPostCast(castContext);
+        if (castContext.has(SpellcastingComponentTypes.IGNORE_MANA)) {
+            return;
+        }
         MagicData magicData = castContext.caster().get().getData(DataAttachmentRegistry.MAGIC_DATA);
         int manaCost = getManaCost(castContext);
         magicData.setMana(magicData.getMana() - manaCost);
@@ -239,9 +241,7 @@ public abstract class AbstractSpell extends AbstractSkill {
                 serverPlayer.displayClientMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED), true);
             }
         }
-        if (!(castContext.caster() instanceof VirtualCasterRef)) {
-            SyncManaPacket.syncFor(castContext.caster());
-        }
+        SyncManaPacket.syncFor(castContext.caster());
     }
 
     @Override

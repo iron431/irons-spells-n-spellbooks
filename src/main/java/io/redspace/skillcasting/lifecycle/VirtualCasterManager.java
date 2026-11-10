@@ -21,27 +21,24 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class VirtualCasters {
-    // one store per logical side: the integrated server runs both in one JVM
+public final class VirtualCasterManager {
+    // one store per logical side
     private static final Map<ResourceKey<Level>, Map<UUID, VirtualCaster>> SERVER = new ConcurrentHashMap<>();
     private static final Map<ResourceKey<Level>, Map<UUID, VirtualCaster>> CLIENT = new ConcurrentHashMap<>();
 
-    private VirtualCasters() {
-    }
-
-    private static Map<UUID, VirtualCaster> store(Level level) {
+    private static Map<UUID, VirtualCaster> getOrCreate(Level level) {
         return (level.isClientSide() ? CLIENT : SERVER).computeIfAbsent(level.dimension(), key -> new ConcurrentHashMap<>());
     }
 
     public static @Nullable VirtualCaster get(Level level, UUID id) {
-        return store(level).get(id);
+        return getOrCreate(level).get(id);
     }
 
-    public static VirtualCasterRef spawn(ServerLevel level, Vec3 position, Vec3 forward, @Nullable Entity owner) {
+    public static VirtualCasterRef create(ServerLevel level, Vec3 position, Vec3 forward, @Nullable Entity owner) {
         Vec3 direction = forward.normalize();
         int ownerEntityId = owner == null ? -1 : owner.getId();
         VirtualCaster caster = new VirtualCaster(level, UUID.randomUUID(), position, direction, owner == null ? null : owner.getUUID(), ownerEntityId);
-        store(level).put(caster.id(), caster);
+        getOrCreate(level).put(caster.id(), caster);
         VirtualCasterRef ref = new VirtualCasterRef(caster);
         ref.distributeToClients(new VirtualCasterAddPacket(ref.id(), position, direction, ownerEntityId));
         return ref;
@@ -50,14 +47,11 @@ public final class VirtualCasters {
     public static void discard(VirtualCasterRef ref) {
         VirtualCaster caster = ref.caster();
         caster.markRemoved();
-        store(caster.level()).remove(caster.id());
+        getOrCreate(caster.level()).remove(caster.id());
         ref.distributeToClients(new VirtualCasterRemovePacket(ref.id()));
     }
 
-    /**
-     * Discards every server caster whose cast has ended. Runs after {@link SkillcastingManager#serverTick()}, so a cast's stop packet reaches clients before the remove packet.
-     */
-    public static void sweep() {
+    static void tickServer() {
         List<VirtualCasterRef> finished = new ArrayList<>();
         for (Map<UUID, VirtualCaster> casters : SERVER.values()) {
             for (VirtualCaster caster : casters.values()) {
@@ -66,27 +60,26 @@ public final class VirtualCasters {
                 }
             }
         }
-        finished.forEach(VirtualCasters::discard);
+        finished.forEach(VirtualCasterManager::discard);
     }
 
     public static void addClient(Level level, CasterId.Virtual id, Vec3 position, Vec3 forward, int ownerEntityId) {
         if (level.dimension().equals(id.dimension())) {
-            store(level).put(id.id(), new VirtualCaster(level, id.id(), position, forward, null, ownerEntityId));
+            getOrCreate(level).put(id.id(), new VirtualCaster(level, id.id(), position, forward, null, ownerEntityId));
         }
     }
 
     public static void removeClient(Level level, CasterId.Virtual id) {
-        VirtualCaster caster = store(level).remove(id.id());
+        VirtualCaster caster = getOrCreate(level).remove(id.id());
         if (caster != null) {
             caster.markRemoved();
         }
     }
 
-    /**
-     * Forgets every caster of this side whose point lies in {@code chunk}. Clients call it on chunk unload, since a viewer that leaves before a cast ends never receives its remove packet.
-     */
+    // fixme: is this strictly necessary? what benefit does limiting client visibility range to casting actually provide?
+    // remove packets only reach players tracking the chunk
     public static void dropInChunk(Level level, ChunkPos chunk) {
-        store(level).values().removeIf(caster -> {
+        getOrCreate(level).values().removeIf(caster -> {
             if (new ChunkPos(BlockPos.containing(caster.position())).equals(chunk)) {
                 caster.markRemoved();
                 return true;
@@ -103,6 +96,7 @@ public final class VirtualCasters {
     }
 
     public static void clearAll() {
+        // fixme: this assumes held virtual casters get removed automatically (ie level close)
         SERVER.clear();
         CLIENT.clear();
     }

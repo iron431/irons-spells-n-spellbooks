@@ -10,11 +10,11 @@ import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonedEntitiesCastData;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedPolarBear;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
-import io.redspace.skillcasting.data.cast.PositionAnchor;
 import io.redspace.skillcasting.data.CastContext;
-import io.redspace.skillcasting.data.recast.RecastConfig;
-import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
+import io.redspace.skillcasting.data.cast.CastType;
+import io.redspace.skillcasting.data.cast.PositionAnchor;
+import io.redspace.skillcasting.data.recast.RecastConfig;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -85,7 +85,7 @@ public class SummonPolarBearSpell extends AbstractSpell {
     public void onCast(ServerLevel world, CastContext castContext) {
         if (!castContext.getSkillcastingData().recasts().hasRecast(this)) {
             SummonedPolarBear polarBear = new SummonedPolarBear(EntityRegistry.SUMMONED_POLAR_BEAR.get(), world);
-            polarBear.setPos(Utils.moveToRelativeGroundLevel(world, castContext.position(PositionAnchor.CASTING_POSITION), 3));
+            polarBear.setPos(castContext.position(PositionAnchor.CENTER));
             polarBear.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_ATTACK_DAMAGE, 1f));
             polarBear.getAttributes().getInstance(Attributes.MAX_HEALTH).setBaseValue(castContext.getOrDefault(SpellcastingComponentTypes.SUMMON_HEALTH, 10f));
             polarBear.setHealth(polarBear.getMaxHealth());
