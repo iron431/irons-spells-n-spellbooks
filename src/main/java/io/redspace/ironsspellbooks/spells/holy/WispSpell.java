@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.skillcasting.data.cast.PositionAnchor;
+import net.minecraft.util.Mth;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastType;
 import io.redspace.skillcasting.data.PlayableSound;
@@ -88,7 +89,7 @@ public class WispSpell extends AbstractSpell {
         Entity caster = castContext.asEntityCaster();
         float damage = castContext.getOrDefault(SkillcastingComponentTypes.DAMAGE, 0f);
         Vec3 spawnPos = castContext.position(PositionAnchor.CASTING_POSITION).subtract(0, 0.2, 0);
-        WispEntity wispEntity = new WispEntity(level, caster, damage);
+        WispEntity wispEntity = new WispEntity(level, caster, damage, -castContext.getXRot() * Mth.RAD_TO_DEG, -castContext.getYRot() * Mth.RAD_TO_DEG);
         SkillcastingUtils.attachToContext(wispEntity, castContext);
         wispEntity.setTarget(target);
         wispEntity.setPos(spawnPos);

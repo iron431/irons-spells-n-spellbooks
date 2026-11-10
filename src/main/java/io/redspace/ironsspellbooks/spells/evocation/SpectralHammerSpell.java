@@ -21,7 +21,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.phys.BlockHitResult;
@@ -111,8 +110,8 @@ public class SpectralHammerSpell extends AbstractSpell {
         }
 
         Entity caster = castContext.asEntityCaster();
-        float yRot = caster != null ? caster.getYRot() : castContext.getYRot() * Mth.RAD_TO_DEG;
-        float yHeadRot = caster instanceof LivingEntity living ? living.getYHeadRot() : yRot;
+        float yRot = -castContext.getYRot() * Mth.RAD_TO_DEG;
+        float yHeadRot = yRot;
 
         Direction face = blockHitResult.getDirection();
         int radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 1f).intValue();

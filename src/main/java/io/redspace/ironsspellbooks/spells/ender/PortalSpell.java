@@ -27,6 +27,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import io.redspace.skillcasting.data.cast.PositionAnchor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ClipContext;
@@ -157,14 +158,10 @@ public class PortalSpell extends AbstractSpell {
     }
 
     private void handleEntityPortal(CastContext castContext, ServerLevel serverLevel, HitResult hitResult) {
-        Entity caster = castContext.asEntityCaster();
-        if (caster == null) {
-            return;
-        }
         Vec3 hitResultPos = hitResult.getLocation().subtract(castContext.direction().multiply(0.25, 0, 0.25));
-        Vec3 portalLocation = serverLevel.clip(new ClipContext(hitResultPos, hitResultPos.add(0, -caster.getBbHeight() - 1, 0),
-                ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, caster)).getLocation().add(0, 0.076, 0);
-        float portalRotation = 90 + Utils.getAngle(portalLocation.x, portalLocation.z, caster.getX(), caster.getZ()) * Mth.RAD_TO_DEG;
+        Vec3 portalLocation = Utils.raycastForBlock(serverLevel, hitResultPos, hitResultPos.add(0, -3, 0), ClipContext.Fluid.NONE).getLocation().add(0, 0.076, 0);
+        Vec3 origin = castContext.position(PositionAnchor.ORIGIN);
+        float portalRotation = 90 + Utils.getAngle(portalLocation.x, portalLocation.z, origin.x, origin.z) * Mth.RAD_TO_DEG;
 
         if (!castContext.has(SpellcastingComponentTypes.PORTAL_DATA)) {
             PortalData portalData = new PortalData();

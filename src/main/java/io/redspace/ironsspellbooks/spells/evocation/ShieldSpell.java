@@ -18,7 +18,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -76,10 +75,7 @@ public class ShieldSpell extends AbstractSpell {
                 .getLocation();
         SkillcastingUtils.attachToContext(shield, castContext);
         shield.setPos(spawn);
-        Entity caster = castContext.asEntityCaster();
-        float xRot = caster != null ? caster.getXRot() : castContext.getXRot() * Mth.RAD_TO_DEG;
-        float yRot = caster != null ? caster.getYRot() : castContext.getYRot() * Mth.RAD_TO_DEG;
-        shield.setRotation(xRot, yRot);
+        shield.setRotation(-castContext.getXRot() * Mth.RAD_TO_DEG, -castContext.getYRot() * Mth.RAD_TO_DEG);
         level.addFreshEntity(shield);
     }
 }

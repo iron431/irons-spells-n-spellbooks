@@ -20,6 +20,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import io.redspace.skillcasting.data.cast.PositionAnchor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -83,7 +84,7 @@ public class TeleportSpell extends AbstractSpell {
         }
         Vec3 dest = castContext.getOrNull(SkillcastingComponentTypes.TARGET_POSITION);
         if (dest == null) {
-            dest = findTeleportLocation(level, entity, castContext.getOrDefault(SkillcastingComponentTypes.TELEPORT_RANGE, 0f));
+            dest = findTeleportLocation(level, entity, castContext.position(PositionAnchor.CASTING_POSITION), castContext.direction(), castContext.getOrDefault(SkillcastingComponentTypes.TELEPORT_RANGE, 0f));
         }
         final Vec3 teleportDest = dest;
 
@@ -99,14 +100,14 @@ public class TeleportSpell extends AbstractSpell {
                 sound.soundEventHolder().value(), SoundSource.NEUTRAL, sound.volume(), sound.samplePitch(level.getRandom())));
     }
 
-    public static Vec3 findTeleportLocation(Level level, LivingEntity entity, float maxDistance) {
-        var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, maxDistance);
-        return solveTeleportDestination(level, entity, blockHitResult.getBlockPos(), blockHitResult.getLocation());
+    public static Vec3 findTeleportLocation(Level level, LivingEntity entity, Vec3 start, Vec3 direction, float maxDistance) {
+        var blockHitResult = Utils.raycastForBlock(level, start, start.add(direction.normalize().scale(maxDistance)), ClipContext.Fluid.NONE);
+        return solveTeleportDestination(level, entity, direction, blockHitResult.getBlockPos(), blockHitResult.getLocation());
     }
 
-    public static Vec3 solveTeleportDestination(Level level, LivingEntity entity, BlockPos blockPos, Vec3 vec3) {
+    public static Vec3 solveTeleportDestination(Level level, LivingEntity entity, Vec3 direction, BlockPos blockPos, Vec3 vec3) {
         BlockPos pos = blockPos;
-        Vec3 bbOffset = entity.getForward().normalize().multiply(entity.getBbWidth() * 0.75f, 0, entity.getBbWidth() * 0.75f);
+        Vec3 bbOffset = direction.normalize().multiply(entity.getBbWidth() * 0.75f, 0, entity.getBbWidth() * 0.75f);
         Vec3 bbImpact = vec3.subtract(bbOffset);
 
         double ledgeY = level.clip(new ClipContext(Vec3.atBottomCenterOf(pos).add(0, 3, 0), Vec3.atBottomCenterOf(pos),

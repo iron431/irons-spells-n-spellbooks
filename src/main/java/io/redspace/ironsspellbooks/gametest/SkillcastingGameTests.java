@@ -19,6 +19,7 @@ import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.cast.CasterRef;
 import io.redspace.skillcasting.data.component.CastComponentMap;
 import io.redspace.skillcasting.data.recast.RecastInstance;
+import io.redspace.skillcasting.data.resolver.DirectionResolver;
 import io.redspace.skillcasting.data.recast.RecastManager;
 import io.redspace.skillcasting.data.selection.SkillSelection;
 import io.redspace.skillcasting.data.selection.SkillSelectionManager;
@@ -41,6 +42,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -201,6 +203,26 @@ public class SkillcastingGameTests {
         var upgrades = UpgradeData.CODEC.parse(ops, upgradeJson).getOrThrow().upgrades();
         helper.assertTrue(upgrades.size() == 1 && upgrades.get(fire) == 2, "upgrades should keep only fire power, kept " + upgrades);
         helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void teleportFollowsContextDirection(GameTestHelper helper) {
+        Zombie zombie = helper.spawn(EntityType.ZOMBIE, 1, 2, 1);
+        zombie.setNoAi(true);
+        zombie.setYRot(180);
+        zombie.setYHeadRot(180);
+        Vec3 start = zombie.position();
+        CasterRef caster = CasterRef.entity(zombie);
+        CastContext context = SkillcastingManager.buildCastContext(caster, SkillRegistry.holder(SpellRegistry.TELEPORT_SPELL.get()), 1, CastSource.of("test", EquipmentSlot.MAINHAND));
+        context.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, DirectionResolver.fixed(new Vec3(1, 0, 0)));
+        context.set(SkillcastingComponentTypes.TELEPORT_RANGE, 4f);
+        SkillcastingManager.initiateCast(caster, context);
+        helper.runAfterDelay(2, () -> {
+            Vec3 moved = zombie.position().subtract(start);
+            helper.assertTrue(moved.x > 1 && Math.abs(moved.z) < 0.5, "teleport should follow the context direction (+x), moved " + moved);
+            zombie.discard();
+            helper.succeed();
+        });
     }
 
     private static CastContext fireboltContext(CasterRef caster, Holder<AbstractSkill> firebolt) {

@@ -120,10 +120,11 @@ public class GustSpell extends AbstractSpell {
         MagicManager.spawnParticles(level, ParticleRegistry.GUST_PARTICLE.get(), gustPos.x, gustPos.y, gustPos.z, 0, direction.x, direction.y, direction.z, 1, true);
 
         if (caster instanceof LivingEntity living) {
-            float kickback = (float) living.getBoundingBox().getCenter().distanceToSqr(Utils.getTargetBlock(level, living, ClipContext.Fluid.NONE, 3.5f).getLocation());
+            Vec3 center = castContext.position(PositionAnchor.CENTER);
+            float kickback = (float) center.distanceToSqr(Utils.raycastForBlock(level, center, center.add(direction.scale(3.5f)), ClipContext.Fluid.NONE).getLocation());
             kickback = Mth.clamp(1 / (kickback + 1) - .11f, 0f, .95f);
             if (kickback > 0) {
-                living.setDeltaMovement(living.getDeltaMovement().subtract(living.getLookAngle().scale(kickback * castContext.getSkillLevel() * .25f)));
+                living.setDeltaMovement(living.getDeltaMovement().subtract(direction.scale(kickback * castContext.getSkillLevel() * .25f)));
                 living.resetFallDistance();
                 living.hurtMarked = true;
             }

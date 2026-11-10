@@ -13,6 +13,7 @@ import io.redspace.ironsspellbooks.entity.spells.FireEruptionAoe;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import io.redspace.skillcasting.data.cast.PositionAnchor;
+import net.minecraft.world.level.Level;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.recast.RecastConfig;
 import io.redspace.skillcasting.data.cast.CastType;
@@ -110,9 +111,7 @@ public class RaiseHellSpell extends AbstractSpell {
     public void onCast(ServerLevel level, CastContext castContext) {
         float radius = castContext.getOrDefault(SkillcastingComponentTypes.CAST_RADIUS, 8f);
         float range = 1.7f;
-        Vec3 eyePos = castContext.asEntityCaster() instanceof LivingEntity living
-                ? living.getEyePosition()
-                : castContext.position(PositionAnchor.CASTING_POSITION);
+        Vec3 eyePos = castContext.position(PositionAnchor.CASTING_POSITION);
         Vec3 forward = castContext.direction();
         Vec3 hitLocation = Utils.moveToRelativeGroundLevel(level,
                 Utils.raycastForBlock(level, eyePos, eyePos.add(forward.multiply(range, 0, range)), ClipContext.Fluid.NONE).getLocation(), 4);
@@ -139,20 +138,14 @@ public class RaiseHellSpell extends AbstractSpell {
 
     @Override
     public Optional<ClientSkillTicker> createClientTicker(CastContext castContext) {
-        return Optional.of((casterRef, data, activeCast) -> {
-            if (casterRef.get() instanceof LivingEntity living) {
-                // fixme: ungate from entity
-                ambientParticles(living);
-            }
-        });
+        return Optional.of((casterRef, data, activeCast) -> ambientParticles(casterRef.level(), activeCast.context().position(PositionAnchor.CENTER)));
     }
 
-    public static void ambientParticles(LivingEntity entity) {
-        Vec3 vec3 = entity.getBoundingBox().getCenter();
+    public static void ambientParticles(Level level, Vec3 center) {
         for (int i = 0; i < 2; i++) {
-            Vec3 pos = vec3.add(Utils.getRandomVec3(entity.getBbHeight() * 2));
-            Vec3 motion = vec3.subtract(pos).scale(0.10f);
-            entity.level().addParticle(ParticleHelper.EMBERS, pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
+            Vec3 pos = center.add(Utils.getRandomVec3(3.6));
+            Vec3 motion = center.subtract(pos).scale(0.10f);
+            level.addParticle(ParticleHelper.EMBERS, pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
         }
     }
 

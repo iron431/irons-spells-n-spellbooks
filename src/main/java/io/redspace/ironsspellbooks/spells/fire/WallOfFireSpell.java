@@ -22,8 +22,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.HitResult;
@@ -155,9 +153,6 @@ public class WallOfFireSpell extends AbstractSpell {
     }
 
     private Vec3 resolveAnchor(Level level, CastContext castContext) {
-        if (castContext.asEntityCaster() instanceof LivingEntity living) {
-            return Utils.getTargetBlock(level, living, ClipContext.Fluid.ANY, 20).getLocation();
-        }
         HitResult hit = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION, 20)
                 .checkForBlocks(true)
                 .build();

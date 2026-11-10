@@ -97,7 +97,7 @@ public class SonicBoomSpell extends AbstractSpell {
         Vec3 start = castContext.position(PositionAnchor.CASTING_POSITION);
         Vec3 forward = castContext.direction();
         Vec3 end = start.add(forward.scale(range));
-        AABB boundingBox = caster != null ? caster.getBoundingBox().expandTowards(end.subtract(start)) : new AABB(start, end);
+        AABB boundingBox = new AABB(start, end).inflate(1);
 
         for (Entity target : level.getEntities(caster, boundingBox)) {
             HitResult hit = Utils.checkEntityIntersecting(target, start, end, 0.4f);

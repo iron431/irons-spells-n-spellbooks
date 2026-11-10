@@ -95,7 +95,7 @@ public class FrostStepSpell extends AbstractSpell {
 
         Vec3 targetPos = castContext.getOrNull(SkillcastingComponentTypes.TARGET_POSITION);
         if (targetPos == null) {
-            targetPos = findTeleportLocation(level, entity, castContext.getOrDefault(SkillcastingComponentTypes.TELEPORT_RANGE, 0f));
+            targetPos = TeleportSpell.findTeleportLocation(level, entity, castContext.position(PositionAnchor.CASTING_POSITION), castContext.direction(), castContext.getOrDefault(SkillcastingComponentTypes.TELEPORT_RANGE, 0f));
         }
         castContext.caster().distributeToClients(new FrostStepParticlesPacket(castContext.position(PositionAnchor.ORIGIN), targetPos));
 
@@ -106,10 +106,6 @@ public class FrostStepSpell extends AbstractSpell {
         entity.resetFallDistance();
         Vec3 soundPos = targetPos;
         provideOnCastSound(castContext).ifPresent(playableSound -> level.playSound(null, soundPos.x, soundPos.y, soundPos.z, playableSound.soundEventHolder().value(), SoundSource.NEUTRAL, 1f, 1f));
-    }
-
-    private Vec3 findTeleportLocation(Level level, LivingEntity entity, float distance) {
-        return TeleportSpell.findTeleportLocation(level, entity, distance);
     }
 
     public static void particleCloud(Level level, Vec3 pos) {

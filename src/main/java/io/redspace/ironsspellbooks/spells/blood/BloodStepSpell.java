@@ -127,7 +127,7 @@ public class BloodStepSpell extends AbstractSpell {
                 Utils.handleSpellTeleport(this, entity, dest.add(0, 1, 0));
                 entity.lookAt(EntityAnchorArgument.Anchor.EYES, target.getEyePosition().subtract(0, 0.15, 0));
             } else {
-                dest = TeleportSpell.findTeleportLocation(level, entity, range);
+                dest = TeleportSpell.findTeleportLocation(level, entity, castContext.position(PositionAnchor.CASTING_POSITION), castContext.direction(), range);
                 Utils.handleSpellTeleport(this, entity, dest);
             }
         } else {

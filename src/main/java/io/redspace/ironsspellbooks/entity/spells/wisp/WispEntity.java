@@ -61,22 +61,16 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
         this.setNoGravity(true);
     }
 
-    public WispEntity(Level levelIn, Entity owner, float damageAmount) {
+    public WispEntity(Level levelIn, Entity owner, float damageAmount, float xRot, float yRot) {
         this(EntityRegistry.WISP.get(), levelIn);
         this.moveControl = new FlyingMoveControl(this, 20, true);
         this.damageAmount = damageAmount;
         setOwner(owner);
-        if (owner != null) {
-            this.setYRot(owner.getYRot());
-            this.setXRot(owner.getXRot());
-            this.setYBodyRot(owner.getYRot());
-            this.setYHeadRot(owner instanceof LivingEntity living ? living.getYHeadRot() : owner.getYRot());
-        }
+        this.setYRot(yRot);
+        this.setXRot(xRot);
+        this.setYBodyRot(yRot);
+        this.setYHeadRot(yRot);
         this.lastTickPos = this.position();
-    }
-
-    public WispEntity(Level levelIn, LivingEntity owner, float damageAmount) {
-        this(levelIn, (Entity) owner, damageAmount);
     }
 
     @Override
