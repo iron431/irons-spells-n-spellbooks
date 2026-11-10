@@ -2,59 +2,113 @@ package io.redspace.ironsspellbooks.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.tree.LiteralCommandNode;
+import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.Dynamic3CommandExceptionType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.skillcasting.data.AbstractSkill;
+import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.CastSource;
 import io.redspace.skillcasting.data.cast.CasterRef;
+import io.redspace.skillcasting.data.resolver.DirectionResolver;
+import io.redspace.skillcasting.data.resolver.FixedPositionResolver;
 import io.redspace.skillcasting.lifecycle.SkillcastingManager;
+import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
+import io.redspace.skillcasting.util.SkillcastingUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
 
 public class CastCommand {
+    private static final Dynamic3CommandExceptionType ERROR_NO_BLOCK_ENTITY = new Dynamic3CommandExceptionType((x, y, z) -> Component.translatable("commands.irons_spellbooks.cast.no_block_entity", x, y, z));
+
+    @FunctionalInterface
+    private interface Cast {
+        int run(CommandContext<CommandSourceStack> context, Holder<AbstractSkill> skill, int level, boolean absolute) throws CommandSyntaxException;
+    }
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        LiteralCommandNode<CommandSourceStack> command = dispatcher.register(Commands.literal("cast")
-                .requires((p) -> p.hasPermission(2))
-                .then(Commands.argument("casters", EntityArgument.entities())
+        dispatcher.register(Commands.literal("cast")
+                .requires(source -> source.hasPermission(2))
+                .then(Commands.literal("entity")
+                        .then(Commands.argument("casters", EntityArgument.entities())
+                                .then(withSpell(CastCommand::castFromEntities))))
+                .then(Commands.literal("block")
+                        .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                                .then(withSpell(CastCommand::castFromBlock))))
+                // position and facing come from the command source, so /execute positioned/rotated places it
+                .then(Commands.literal("virtual")
                         .then(Commands.argument("spell", SpellArgument.spellArgument())
-                                        .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class)))
-                                        .then(Commands.argument("level", IntegerArgumentType.integer(1))
-                                                .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class), IntegerArgumentType.getInteger(context, "level"))))
-                                //.then(Commands.argument("function value", FunctionArgument.functions())
-                                //        .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class), FunctionArgument.getFunctions(context, "function value"))))
-                        ))
-        );
+                                .executes(context -> castVirtual(context, skill(context), 1, null))
+                                .then(Commands.argument("level", IntegerArgumentType.integer(1))
+                                        .executes(context -> castVirtual(context, skill(context), IntegerArgumentType.getInteger(context, "level"), null))
+                                        .then(Commands.argument("owner", EntityArgument.entity())
+                                                .executes(context -> castVirtual(context, skill(context), IntegerArgumentType.getInteger(context, "level"), EntityArgument.getEntity(context, "owner"))))))));
     }
 
-//    private static int castSpell(CommandSourceStack source, Collection<? extends Entity> targets, String spellId, Collection<CommandFunction> functions) {
-//        int i = 0;
-//
-//        for (CommandFunction commandfunction : functions) {
-//            i += source.getServer().getFunctions().execute(commandfunction, source.withSuppressedOutput().withMaximumPermission(2));
-//        }
-//        return castSpell(source, targets, spellId, i);
-//    }
-
-    private static int castSpell(CommandSourceStack source, Collection<? extends Entity> targets, String spellId) {
-        return castSpell(source, targets, spellId, 1);
+    private static ArgumentBuilder<CommandSourceStack, ?> withSpell(Cast cast) {
+        // rotation is rasterized by the command chain; we can't tell whether it was set by the chain, relative, etc, so we rely on the "absolute" flag for whether to listen
+        return Commands.argument("spell", SpellArgument.spellArgument())
+                .executes(context -> cast.run(context, skill(context), 1, false))
+                .then(Commands.literal("absolute")
+                        .executes(context -> cast.run(context, skill(context), 1, true)))
+                .then(Commands.argument("level", IntegerArgumentType.integer(1))
+                        .executes(context -> cast.run(context, skill(context), IntegerArgumentType.getInteger(context, "level"), false))
+                        .then(Commands.literal("absolute")
+                                .executes(context -> cast.run(context, skill(context), IntegerArgumentType.getInteger(context, "level"), true))));
     }
 
-    private static int castSpell(CommandSourceStack source, Collection<? extends Entity> targets, String spellId, int spellLevel) {
+    private static Holder<AbstractSkill> skill(CommandContext<CommandSourceStack> context) {
+        String spellId = context.getArgument("spell", String.class);
         if (!spellId.contains(":")) {
             spellId = IronsSpellbooks.MODID + ":" + spellId;
         }
+        return SpellRegistry.getSpell(ResourceLocation.parse(spellId)).holder();
+    }
 
-        var spell = SpellRegistry.getSpell(ResourceLocation.parse(spellId));
-
-        for (Entity target : targets) {
-            SkillcastingManager.initiateCast(CasterRef.entity(target), SkillcastingManager.buildCastContext(CasterRef.entity(target), spell.holder(), spellLevel, CastSource.EMPTY));
+    private static int castFromEntities(CommandContext<CommandSourceStack> context, Holder<AbstractSkill> skill, int level, boolean absolute) throws CommandSyntaxException {
+        int started = 0;
+        for (Entity entity : EntityArgument.getEntities(context, "casters")) {
+            if (cast(context.getSource(), CasterRef.entity(entity), skill, level, absolute)) {
+                started++;
+            }
         }
-        return 1;
+        return started;
+    }
+
+    private static int castFromBlock(CommandContext<CommandSourceStack> context, Holder<AbstractSkill> skill, int level, boolean absolute) throws CommandSyntaxException {
+        BlockPos pos = BlockPosArgument.getLoadedBlockPos(context, "pos");
+        BlockEntity blockEntity = context.getSource().getLevel().getBlockEntity(pos);
+        if (blockEntity == null) {
+            throw ERROR_NO_BLOCK_ENTITY.create(pos.getX(), pos.getY(), pos.getZ());
+        }
+        return cast(context.getSource(), CasterRef.block(blockEntity), skill, level, absolute) ? 1 : 0;
+    }
+
+    private static int castVirtual(CommandContext<CommandSourceStack> context, Holder<AbstractSkill> skill, int level, @Nullable Entity owner) {
+        CommandSourceStack source = context.getSource();
+        Vec3 direction = Vec3.directionFromRotation(source.getRotation());
+        return SkillcastingUtils.castAt(source.getLevel(), source.getPosition(), direction, skill, level, CastSource.EMPTY, owner).isPresent() ? 1 : 0;
+    }
+
+    private static boolean cast(CommandSourceStack source, CasterRef caster, Holder<AbstractSkill> skill, int level, boolean absolute) {
+        CastContext castContext = SkillcastingManager.buildCastContext(caster, skill, level, CastSource.EMPTY);
+        if (absolute) {
+            castContext.set(SkillcastingComponentTypes.POSITION_RESOLVER, new FixedPositionResolver(source.getPosition()));
+            castContext.set(SkillcastingComponentTypes.DIRECTION_RESOLVER, DirectionResolver.fixedFromRotation(source.getRotation()));
+        }
+        return SkillcastingManager.initiateCast(caster, castContext);
     }
 }

@@ -405,8 +405,7 @@ public final class SkillcastingUtils {
         return Optional.of(caster);
     }
 
-    public static Optional<VirtualCasterRef> castAt(ServerLevel level, Vec3 position, Vec3 direction, Holder<AbstractSkill> skill, int skillLevel,
-                                                    CastSource source, @Nullable Entity owner) {
+    public static Optional<VirtualCasterRef> castAt(ServerLevel level, Vec3 position, Vec3 direction, Holder<AbstractSkill> skill, int skillLevel, CastSource source, @Nullable Entity owner) {
         return castAt(level, position, direction, skill, skillLevel, source, owner, null);
     }
 

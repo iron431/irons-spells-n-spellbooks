@@ -980,6 +980,7 @@
   "effect.irons_spellbooks.soul_burn.description": "Decreases incoming healing by 5% per level",
   "commands.irons_spellbooks.generic.unknown_spell": "Unknown spell id: %s",
   "commands.irons_spellbooks.generic.create_file": "Successfully created file %s",
+  "commands.irons_spellbooks.cast.no_block_entity": "No block entity at %s, %s, %s",
   "commands.irons_spellbooks.create_scroll.failed": "Create Scroll Failed",
   "commands.irons_spellbooks.create_spell_book.failed": "Create Spell Book Failed",
   "commands.irons_spellbooks.create_debug_wizard.failed": "Create DebugWizard Failed",
