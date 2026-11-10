@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface CasterRef {
     static EntityCasterRef entity(@NotNull Entity entity) {
@@ -19,6 +20,12 @@ public interface CasterRef {
     }
 
     CasterId id();
+
+    /**
+     * The entity this caster acts for: credited with damage, owner of projectiles and summons, and receiver of effects aimed at the caster.
+     */
+    @Nullable
+    Entity owner();
 
     boolean isValid();
 

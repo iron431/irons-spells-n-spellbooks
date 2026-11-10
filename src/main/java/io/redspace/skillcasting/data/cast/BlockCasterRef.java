@@ -12,12 +12,19 @@ import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Objects;
+import net.minecraft.world.entity.Entity;
+import org.jetbrains.annotations.Nullable;
 
 public record BlockCasterRef(BlockEntity blockEntity) implements CasterRef {
 
     @Override
     public CasterId id() {
         return new CasterId.Block(Objects.requireNonNull(blockEntity.getLevel(), "Cannot ID a block entity outside of a level").dimension(), blockEntity.getBlockPos());
+    }
+
+    @Override
+    public @Nullable Entity owner() {
+        return null;
     }
 
     @Override

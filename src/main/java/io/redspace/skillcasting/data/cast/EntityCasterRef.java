@@ -16,6 +16,11 @@ public record EntityCasterRef(Entity entity) implements CasterRef {
     }
 
     @Override
+    public Entity owner() {
+        return entity;
+    }
+
+    @Override
     public boolean isValid() {
         return !entity.isRemoved() && entity.isAlive();
     }

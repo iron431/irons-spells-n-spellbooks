@@ -1,6 +1,7 @@
 package io.redspace.skillcasting.data.cast;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.UUID;
 
-public interface CasterId {
+public sealed interface CasterId permits CasterId.Entity, CasterId.Block, CasterId.Virtual {
 
     @Nullable
     CasterRef resolve(Level level);
@@ -46,39 +47,36 @@ public interface CasterId {
         }
     }
 
-    /**
-     * Stub for a future non-entity, non-block caster identified by a UUID the consumer defines resolution for.
-     * Not implemented nor resolvable, do not use
-     */
-    record Custom(UUID id) implements CasterId {
+    record Virtual(ResourceKey<Level> dimension, UUID id) implements CasterId {
         @Override
         public @Nullable CasterRef resolve(Level level) {
             return null;
         }
     }
 
-    static Custom custom(UUID id) {
-        return new Custom(id);
-    }
-
     StreamCodec<RegistryFriendlyByteBuf, CasterId> STREAM_CODEC = StreamCodec.of(
             (buf, id) -> {
-                if (id instanceof Entity e) {
-                    buf.writeBoolean(true);
-                    buf.writeInt(e.entityId);
-                } else if (id instanceof Block b) {
-                    buf.writeBoolean(false);
-                    buf.writeResourceKey(b.dimension);
-                    buf.writeBlockPos(b.pos);
-                } else {
-                    throw new UnsupportedOperationException("CasterId.Custom has no wire format yet");
+                switch (id) {
+                    case Entity e -> {
+                        buf.writeByte(0);
+                        buf.writeInt(e.entityId);
+                    }
+                    case Block b -> {
+                        buf.writeByte(1);
+                        buf.writeResourceKey(b.dimension);
+                        buf.writeBlockPos(b.pos);
+                    }
+                    case Virtual v -> {
+                        buf.writeByte(2);
+                        buf.writeResourceKey(v.dimension);
+                        UUIDUtil.STREAM_CODEC.encode(buf, v.id);
+                    }
                 }
             },
-            buf -> {
-                if (buf.readBoolean()) {
-                    return new Entity(buf.readInt());
-                } else {
-                    return new Block(buf.readResourceKey(Registries.DIMENSION), buf.readBlockPos());
-                }
+            buf -> switch (buf.readByte()) {
+                case 0 -> new Entity(buf.readInt());
+                case 1 -> new Block(buf.readResourceKey(Registries.DIMENSION), buf.readBlockPos());
+                case 2 -> new Virtual(buf.readResourceKey(Registries.DIMENSION), UUIDUtil.STREAM_CODEC.decode(buf));
+                default -> throw new IllegalStateException("Unknown caster id kind");
             });
 }
