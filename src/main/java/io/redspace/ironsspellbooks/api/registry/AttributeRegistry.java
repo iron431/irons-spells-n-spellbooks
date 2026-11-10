@@ -1,5 +1,8 @@
 package io.redspace.ironsspellbooks.api.registry;
 
+import net.minecraft.util.Unit;
+import io.redspace.ironsspellbooks.api.spells.SpellcastingComponentTypes;
+import io.redspace.skillcasting.data.cast.VirtualCasterRef;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.TickRepresentativeAttribute;
@@ -102,6 +105,13 @@ public class AttributeRegistry {
 
     private static DeferredHolder<Attribute, Attribute> newPowerAttribute(String id) {
         return ATTRIBUTES.register(id + "_spell_power", () -> (new PercentageAttribute("attribute.irons_spellbooks." + id + "_spell_power", 1.0D, -100, 100).setSyncable(true)));
+    }
+
+    @SubscribeEvent
+    public static void virtualCastsIgnoreMana(BuildCastContextEvent.Post event) {
+        if (event.context().caster() instanceof VirtualCasterRef) {
+            event.context().set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
+        }
     }
 
     @SubscribeEvent

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.api.spells;
 
+import io.redspace.skillcasting.data.cast.VirtualCasterRef;
 import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
@@ -238,7 +239,9 @@ public abstract class AbstractSpell extends AbstractSkill {
                 serverPlayer.displayClientMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", Component.translatable(castContext.skill().value().getDescriptionId())).withStyle(ChatFormatting.RED), true);
             }
         }
-        SyncManaPacket.syncFor(castContext.caster());
+        if (!(castContext.caster() instanceof VirtualCasterRef)) {
+            SyncManaPacket.syncFor(castContext.caster());
+        }
     }
 
     @Override

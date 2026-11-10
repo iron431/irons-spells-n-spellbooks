@@ -1,5 +1,9 @@
 package io.redspace.skillcasting.util;
 
+import java.util.function.Consumer;
+import io.redspace.skillcasting.lifecycle.VirtualCasters;
+import io.redspace.skillcasting.data.cast.VirtualCasterRef;
+import io.redspace.skillcasting.data.cast.VirtualCaster;
 import io.redspace.skillcasting.data.AbstractSkill;
 import io.redspace.skillcasting.data.CastContext;
 import io.redspace.skillcasting.data.cast.ActiveCast;
@@ -367,17 +371,45 @@ public final class SkillcastingUtils {
      *
      * @return Whether cast is initiated
      */
-    public static boolean initiateMobCast(Mob mob, Holder<AbstractSkill> skill, int skillLevel, @Nullable CastComponentMap componentPatch) {
+    public static boolean initiateMobCast(Mob mob, Holder<AbstractSkill> skill, int skillLevel, @Nullable Consumer<CastContext> configure) {
         CasterRef casterRef = CasterRef.entity(mob);
         var castContext = SkillcastingManager.buildCastContext(casterRef, skill, skillLevel, CastSource.EMPTY);
         if (mob.getTarget() != null && skill.value().shouldAIStopCasting(castContext, mob, mob.getTarget())) {
             return false;
         }
         skill.value().setupAIContext(castContext, mob);
-        if (componentPatch != null) {
-            castContext.components().applyFrom(componentPatch);
+        if (configure != null) {
+            configure.accept(castContext);
         }
         return SkillcastingManager.initiateCast(casterRef, castContext);
+    }
+
+    /**
+     * Casts a skill from a point, through a {@link VirtualCaster} that exists for this one cast and acts for {@code owner}.
+     * Like dispenser and mob casts, it skips {@link AbstractSkill#canBeCastBy}: the caller decides whether the cast is allowed.
+     *
+     * @param configure runs on the built context before the cast starts
+     * @return the virtual caster, if the cast started
+     */
+    public static Optional<VirtualCasterRef> castAt(ServerLevel level, Vec3 position, Vec3 direction, Holder<AbstractSkill> skill, int skillLevel,
+                                                    CastSource source, @Nullable Entity owner, @Nullable Consumer<CastContext> configure) {
+        VirtualCasterRef caster = VirtualCasters.spawn(level, position, direction, owner);
+        CastContext castContext = SkillcastingManager.buildCastContext(caster, skill, skillLevel, source);
+        // a caster that lives for one cast cannot hold a recast window
+        castContext.remove(SkillcastingComponentTypes.RECAST_CONFIG);
+        if (configure != null) {
+            configure.accept(castContext);
+        }
+        if (!SkillcastingManager.initiateCast(caster, castContext)) {
+            VirtualCasters.discard(caster);
+            return Optional.empty();
+        }
+        return Optional.of(caster);
+    }
+
+    public static Optional<VirtualCasterRef> castAt(ServerLevel level, Vec3 position, Vec3 direction, Holder<AbstractSkill> skill, int skillLevel,
+                                                    CastSource source, @Nullable Entity owner) {
+        return castAt(level, position, direction, skill, skillLevel, source, owner, null);
     }
 
     public static float getCastRateSpeed(CastContext castContext) {

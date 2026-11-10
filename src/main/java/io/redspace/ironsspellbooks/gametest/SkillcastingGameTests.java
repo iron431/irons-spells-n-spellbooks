@@ -1,5 +1,14 @@
 package io.redspace.ironsspellbooks.gametest;
 
+import java.util.UUID;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.entity.Entity;
+import io.redspace.ironsspellbooks.entity.spells.fireball.MagicFireball;
+import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.skillcasting.util.SkillcastingUtils;
+import io.redspace.skillcasting.lifecycle.VirtualCasters;
+import io.redspace.skillcasting.data.cast.VirtualCasterRef;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.util.Unit;
@@ -285,6 +294,100 @@ public class SkillcastingGameTests {
             helper.assertTrue(reasons.equals(List.of(CastEndReason.INTERRUPTED)), "broken dispenser cast should end interrupted, got " + reasons);
             helper.succeed();
         });
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void castAtFireballOwnedByOwner(GameTestHelper helper) {
+        Zombie owner = stillZombie(helper);
+        Vec3 point = helper.absoluteVec(new Vec3(4, 3, 4));
+        VirtualCasterRef ref = SkillcastingUtils.castAt(helper.getLevel(), point, new Vec3(1, 0, 0), fireball(), 1, CastSource.of("test", ""), owner, null).orElseThrow();
+        helper.succeedWhen(() -> {
+            helper.assertFalse(fireballsNear(helper, point, owner).isEmpty(), "no owned fireball yet");
+            helper.assertTrue(VirtualCasters.get(helper.getLevel(), ref.caster().id()) == null, "virtual caster should be discarded after its cast");
+        });
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void castAtSameTickBothRun(GameTestHelper helper) {
+        Zombie owner = stillZombie(helper);
+        Vec3 point = helper.absoluteVec(new Vec3(4, 3, 4));
+        SkillcastingUtils.castAt(helper.getLevel(), point, new Vec3(1, 0, 0), fireball(), 1, CastSource.of("test", ""), owner, null);
+        SkillcastingUtils.castAt(helper.getLevel(), point.add(0, 0, 2), new Vec3(1, 0, 0), fireball(), 1, CastSource.of("test", ""), owner, null);
+        helper.succeedWhen(() -> helper.assertTrue(fireballsNear(helper, point, owner).size() == 2, "expected two owned fireballs"));
+    }
+
+    @GameTest(template = "empty")
+    public static void castAtKeepsOwnerCast(GameTestHelper helper) {
+        Zombie owner = stillZombie(helper);
+        CasterRef ownerCaster = CasterRef.entity(owner);
+        CastContext ownCast = SkillcastingManager.buildCastContext(ownerCaster, fireball(), 1, CastSource.of("test", ""));
+        ownCast.set(SpellcastingComponentTypes.IGNORE_MANA, Unit.INSTANCE);
+        helper.assertTrue(SkillcastingManager.initiateCast(ownerCaster, ownCast), "owner cast should start");
+        SkillcastingUtils.castAt(helper.getLevel(), helper.absoluteVec(new Vec3(4, 3, 4)), new Vec3(1, 0, 0), fireball(), 1, CastSource.of("test", ""), owner, null);
+        helper.runAfterDelay(1, () -> {
+            helper.assertTrue(ownerCaster.skillcastingData().getActiveCast() != null, "virtual cast should not interrupt the owner's cast");
+            owner.discard();
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void castAtHasteBuffsOwner(GameTestHelper helper) {
+        Zombie owner = stillZombie(helper);
+        SkillcastingUtils.castAt(helper.getLevel(), helper.absoluteVec(new Vec3(4, 3, 4)), new Vec3(1, 0, 0),
+                SkillRegistry.holder(SpellRegistry.HASTE_SPELL.get()), 1, CastSource.of("test", ""), owner, null);
+        helper.succeedWhen(() -> helper.assertTrue(owner.hasEffect(MobEffectRegistry.HASTENED), "owner should be hastened"));
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void castAtWithoutOwner(GameTestHelper helper) {
+        Vec3 point = helper.absoluteVec(new Vec3(4, 3, 4));
+        helper.assertTrue(SkillcastingUtils.castAt(helper.getLevel(), point, new Vec3(1, 0, 0), fireball(), 1, CastSource.of("test", ""), null, null).isPresent(), "ownerless cast should start");
+        helper.succeedWhen(() -> helper.assertFalse(fireballsNear(helper, point, null).isEmpty(), "no ownerless fireball yet"));
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 200)
+    public static void castAtOwnerRemovedMidCast(GameTestHelper helper) {
+        Zombie owner = stillZombie(helper);
+        Vec3 point = helper.absoluteVec(new Vec3(4, 3, 4));
+        SkillcastingUtils.castAt(helper.getLevel(), point, new Vec3(1, 0, 0), fireball(), 1, CastSource.of("test", ""), owner, null);
+        owner.discard();
+        helper.succeedWhen(() -> helper.assertFalse(fireballsNear(helper, point, null).isEmpty(), "cast should finish without its owner"));
+    }
+
+    @GameTest(template = "empty")
+    public static void castAtPreCastCancelled(GameTestHelper helper) {
+        List<UUID> seen = new ArrayList<>();
+        Consumer<SkillCastEvent.PreCast> cancel = event -> {
+            if (event.getCastContext().caster() instanceof VirtualCasterRef ref && ref.level() == helper.getLevel()) {
+                seen.add(ref.caster().id());
+                event.setCanceled(true);
+            }
+        };
+        NeoForge.EVENT_BUS.addListener(SkillCastEvent.PreCast.class, cancel);
+        try {
+            var result = SkillcastingUtils.castAt(helper.getLevel(), helper.absoluteVec(new Vec3(4, 3, 4)), new Vec3(1, 0, 0), fireball(), 1, CastSource.of("test", ""), null, null);
+            helper.assertTrue(result.isEmpty(), "cancelled cast should return empty");
+        } finally {
+            NeoForge.EVENT_BUS.unregister(cancel);
+        }
+        helper.assertTrue(seen.size() == 1, "PreCast should have seen the virtual cast");
+        helper.assertTrue(VirtualCasters.get(helper.getLevel(), seen.get(0)) == null, "cancelled virtual caster should be discarded");
+        helper.succeed();
+    }
+
+    private static Zombie stillZombie(GameTestHelper helper) {
+        Zombie zombie = helper.spawn(EntityType.ZOMBIE, 1, 2, 1);
+        zombie.setNoAi(true);
+        return zombie;
+    }
+
+    private static Holder<AbstractSkill> fireball() {
+        return SkillRegistry.holder(SpellRegistry.FIREBALL_SPELL.get());
+    }
+
+    private static List<MagicFireball> fireballsNear(GameTestHelper helper, Vec3 point, @Nullable Entity owner) {
+        return helper.getLevel().getEntitiesOfClass(MagicFireball.class, new AABB(point, point).inflate(24), fireball -> fireball.getOwner() == owner);
     }
 
     private static CastContext fireboltContext(CasterRef caster, Holder<AbstractSkill> firebolt) {

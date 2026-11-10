@@ -4,7 +4,6 @@ import io.redspace.skillcasting.util.SkillcastingUtils;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingBoss;
-import io.redspace.skillcasting.data.component.CastComponentMap;
 import io.redspace.skillcasting.data.component.TargetedEntitiesData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.world.entity.Entity;
@@ -38,9 +37,8 @@ public class CreateFangSwirlGoal extends Goal {
         if (target == null) {
             return;
         }
-        CastComponentMap componentMap = new CastComponentMap();
-        componentMap.set(SkillcastingComponentTypes.TARGETED_ENTITIES.get(), new TargetedEntitiesData(target));
-        SkillcastingUtils.initiateMobCast(mob, SpellRegistry.FANG_SWIRL_SPELL, (int) (8 * mob.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE)), componentMap);
+        SkillcastingUtils.initiateMobCast(mob, SpellRegistry.FANG_SWIRL_SPELL, (int) (8 * mob.getAttributeValue(AttributeRegistry.SUMMON_DAMAGE)),
+                castContext -> castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES, new TargetedEntitiesData(target)));
     }
 
     @Override

@@ -11,7 +11,6 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
 import io.redspace.ironsspellbooks.particle.FlameStrikeParticleOptions;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
-import io.redspace.skillcasting.data.component.CastComponentMap;
 import io.redspace.skillcasting.data.SkillcastingData;
 import io.redspace.skillcasting.registry.SkillcastingComponentTypes;
 import net.minecraft.util.Mth;
@@ -97,9 +96,8 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
             if (!mob.onGround() && distanceSquared > meleeRange * meleeRange * 2 * 2) {
                 if (!isActing()) {
                     // insta-cast that fireball: override cast time via component instead of a mob attribute modifier
-                    CastComponentMap components = new CastComponentMap();
-                    components.set(SkillcastingComponentTypes.CAST_TIME.get(), FIREBALLER);
-                    SkillcastingUtils.initiateMobCast(mob, SpellRegistry.FIREBALL_SPELL, mob.isSoulMode() ? 6 : 5, components);
+                    SkillcastingUtils.initiateMobCast(mob, SpellRegistry.FIREBALL_SPELL, mob.isSoulMode() ? 6 : 5,
+                            castContext -> castContext.set(SkillcastingComponentTypes.CAST_TIME, FIREBALLER));
                     fireballcooldown = 20 * 10;
                     return;
                 }
