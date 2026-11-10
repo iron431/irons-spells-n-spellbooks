@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.damage.DamageSources;
+import io.redspace.ironsspellbooks.entity.spells.HealingAoe;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import io.redspace.skillcasting.api.event.BuildCooldownEvent;
@@ -41,6 +42,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
@@ -223,6 +225,18 @@ public class SkillcastingGameTests {
             zombie.discard();
             helper.succeed();
         });
+    }
+
+    @GameTest(template = "empty")
+    public static void ownerlessHealingCircleHeals(GameTestHelper helper) {
+        Cow cow = helper.spawn(EntityType.COW, 1, 2, 1);
+        cow.setHealth(2);
+        HealingAoe aoe = new HealingAoe(helper.getLevel());
+        aoe.setDamage(4);
+        aoe.applyEffect(cow);
+        helper.assertTrue(cow.getHealth() > 2, "ownerless healing should heal, health " + cow.getHealth());
+        cow.discard();
+        helper.succeed();
     }
 
     private static CastContext fireboltContext(CasterRef caster, Holder<AbstractSkill> firebolt) {

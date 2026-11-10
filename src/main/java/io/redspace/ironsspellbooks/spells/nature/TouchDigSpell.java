@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.nature;
 
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -161,9 +162,9 @@ public class TouchDigSpell extends AbstractSpell {
         if (canBreak(level, blockHit.getBlockPos(), castContext)) {
             var entity = castContext.asEntityCaster();
 
-            if (!(entity instanceof ServerPlayer serverPlayer)
-                    || !CommonHooks.fireBlockBreak(
-                    level, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer,
+            ServerPlayer breaker = entity instanceof ServerPlayer serverPlayer ? serverPlayer : FakePlayerFactory.getMinecraft(level);
+            if (!CommonHooks.fireBlockBreak(
+                    level, breaker.gameMode.getGameModeForPlayer(), breaker,
                     blockHit.getBlockPos(), level.getBlockState(blockHit.getBlockPos())).isCanceled()) {
                 doDestroyBlock(level, blockHit.getBlockPos(), entity);
             }

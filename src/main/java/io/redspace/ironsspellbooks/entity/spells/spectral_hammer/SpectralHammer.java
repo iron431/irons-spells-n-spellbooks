@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.spectral_hammer;
 
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.particle.FallingBlockParticleOption;
@@ -135,7 +136,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
                             float pct = (distance * distance) / (100.0f * this.radius);
 
                             var blockstate = level.getBlockState(pos);
-                            BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, blockstate, owner);
+                            BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, blockstate, owner != null ? owner : FakePlayerFactory.getMinecraft((ServerLevel) level));
                             NeoForge.EVENT_BUS.post(event);
 
                             // Handle if the event is canceled

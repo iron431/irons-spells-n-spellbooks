@@ -102,7 +102,7 @@ public class SacrificeSpell extends AbstractSpell {
         HitResult target = RaycastBuilder.fromCast(castContext, PositionAnchor.CASTING_POSITION)
                 .checkForBlocks(true)
                 .bbInflation(0.25f)
-                .filter(e -> e instanceof IMagicSummon summon && summon.getSummoner() == caster)
+                .filter(e -> caster != null && e instanceof IMagicSummon summon && summon.getSummoner() == caster)
                 .build();
         if (target instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity livingTarget) {
             castContext.set(SkillcastingComponentTypes.TARGETED_ENTITIES,

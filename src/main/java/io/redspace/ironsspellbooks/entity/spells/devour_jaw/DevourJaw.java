@@ -38,10 +38,10 @@ public class DevourJaw extends AoeEntity {
     @Override
     public void applyEffect(LivingEntity target) {
         if (target == this.target) {
-            if (DamageSources.applyDamage(target, getDamage(), SpellRegistry.DEVOUR_SPELL.get().getDamageSource(this.level(), this, getOwner())) && getOwner() instanceof LivingEntity livingOwner) {
+            if (DamageSources.applyDamage(target, getDamage(), SpellRegistry.DEVOUR_SPELL.get().getDamageSource(this.level(), this, getOwner()))) {
                 target.setDeltaMovement(target.getDeltaMovement().add(0, .5f, 0));
                 target.hurtMarked = true;
-                if (target.isDeadOrDying()) {
+                if (getOwner() instanceof LivingEntity livingOwner && target.isDeadOrDying()) {
                     var oldVigor = livingOwner.getEffect(MobEffectRegistry.VIGOR);
                     var addition = 0;
                     if (oldVigor != null)

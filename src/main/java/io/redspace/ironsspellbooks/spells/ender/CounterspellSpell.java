@@ -93,7 +93,7 @@ public class CounterspellSpell extends AbstractSpell {
             }
             boolean didWork = false;
             if (target.get() instanceof AntiMagicSusceptible antiMagicSusceptible) {
-                boolean isOwnSummonAndIsInCombat = antiMagicSusceptible instanceof IMagicSummon summon && summon instanceof Mob mob && mob.isAggressive() && summon.getSummoner() == castContext.asEntityCaster();
+                boolean isOwnSummonAndIsInCombat = antiMagicSusceptible instanceof IMagicSummon summon && summon instanceof Mob mob && mob.isAggressive() && castContext.asEntityCaster() != null && summon.getSummoner() == castContext.asEntityCaster();
                 if (!isOwnSummonAndIsInCombat) {
                     didWork = true;
                     antiMagicSusceptible.onAntiMagic(MagicData.get(castContext.caster().get()));
