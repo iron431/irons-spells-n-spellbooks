@@ -724,7 +724,9 @@ public class Utils {
                     entity.getBlockX() + l + o.getX(), entity.getBlockY() + i1 + o.getY(), entity.getBlockZ() + l + o.getZ()
             )) {
                 BlockState blockstate = entity.level.getBlockState(blockpos);
-                if (blockstate.canEntityDestroy(entity.level(), blockpos, entity) && EventHooks.onEntityDestroyBlock(entity, blockpos, blockstate)) {
+                if (blockstate.getDestroySpeed(entity.level(), blockpos) >=0 &&
+                        blockstate.canEntityDestroy(entity.level(), blockpos, entity) &&
+                        EventHooks.onEntityDestroyBlock(entity, blockpos, blockstate)) {
                     if (entity.level.destroyBlock(blockpos, true, entity)) {
                         entity.level.levelEvent(null, 1022, entity.blockPosition(), 0);
                     }
