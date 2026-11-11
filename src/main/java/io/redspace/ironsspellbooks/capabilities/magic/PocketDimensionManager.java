@@ -58,15 +58,28 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         CompoundTag compoundTag = new CompoundTag();
         ListTag idEntries = new ListTag();
         for (var entry : ids.object2IntEntrySet()) {
-            CompoundTag tagEntry = new CompoundTag();
-            tagEntry.putUUID(UUID_KEY, entry.getKey());
-            tagEntry.putInt(INT_ID_KEY, entry.getIntValue());
-            idEntries.add(tagEntry);
+            try {
+                CompoundTag tagEntry = new CompoundTag();
+                tagEntry.putUUID(UUID_KEY, entry.getKey());
+                tagEntry.putInt(INT_ID_KEY, entry.getIntValue());
+                idEntries.add(tagEntry);
+            } catch (Exception e) {
+                IronsSpellbooks.LOGGER.error("Failed to serialize PocketDimensionManager id entry: {}: {}", entry, e.getMessage());
+            }
         }
         compoundTag.put(ID_MAP_KEY, idEntries);
         ListTag returnEntries = new ListTag();
         for (var returnPos : returnPositions) {
-            returnEntries.add(NBT.writePortalPos(returnPos));
+            try {
+                if (returnPos == null) {
+                    returnEntries.add(new CompoundTag());
+                } else {
+                    returnEntries.add(NBT.writePortalPos(returnPos));
+                }
+            } catch (Exception e) {
+                IronsSpellbooks.LOGGER.error("Failed to serialize PocketDimensionManager position: {}: {}", returnPos, e.getMessage());
+                returnEntries.add(new CompoundTag());
+            }
         }
         compoundTag.put(RETURN_POS_KEY, returnEntries);
         compoundTag.putInt(SAVED_SPACING_KEY, pocketSpacing);
@@ -75,6 +88,8 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        ids.clear();
+        returnPositions.clear();
         pocketSpacing = nbt.getInt(SAVED_SPACING_KEY);
         int highestId = -1;
         ListTag idEntries = nbt.getList(ID_MAP_KEY, 10);
@@ -94,9 +109,14 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         for (Tag tag : returnEntries) {
             try {
                 CompoundTag compoundTag = (CompoundTag) tag;
-                returnPositions.add(NBT.readPortalPos(compoundTag));
+                if (compoundTag.isEmpty()) {
+                    returnPositions.add(null);
+                } else {
+                    returnPositions.add(NBT.readPortalPos(compoundTag));
+                }
             } catch (Exception e) {
                 IronsSpellbooks.LOGGER.error("Failed to parse PocketDimensionManager position: {}: {}", tag, e.getMessage());
+                returnPositions.add(null);
             }
         }
         // Place extra null values to make sure there are return slots for each id
@@ -169,8 +189,8 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         {
             // Assign new ID
             ids.put(playerUUId, returnPositions.size());
-            returnPositions.add(PortalPos.of(player.level.dimension(), player.position(), player.getYRot()));
             var structurePos = structurePosForId(returnPositions.size());
+            returnPositions.add(PortalPos.of(player.level.dimension(), player.position(), player.getYRot()));
             IronsDataStorage.INSTANCE.setDirty();
             // Create new pocket dimension
             var pocketLevel = player.serverLevel().getServer().getLevel(POCKET_DIMENSION);
