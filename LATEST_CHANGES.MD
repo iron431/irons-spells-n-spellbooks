@@ -3,7 +3,11 @@
 - Added Ice Spider Satiation System
 
 ### Changes
-- Updated Simplified Chinese translation, thanks to 1mtwtfss1
+- Pocket Dimensions
+  - New configs available
+  - Portals now regenerate when broken
+  - You can re-cast the spell to leave your pocket dimension
+  - Voidstone now has an item form
 
 ### Fixes
 - Fixed Chain Creeper Damage

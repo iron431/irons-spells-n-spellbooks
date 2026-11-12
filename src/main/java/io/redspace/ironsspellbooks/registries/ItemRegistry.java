@@ -399,6 +399,8 @@ public class ItemRegistry {
             (properties) -> new BlockItem(BlockRegistry.FIREFLY_JAR.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> PORTAL_FRAME_ITEM = registerItem("portal_frame",
             (properties) -> new PortalFrameBlockItem(new Item.Properties().fireResistant().rarity(Rarity.RARE)));
+    public static final DeferredHolder<Item, Item> VOIDSTONE_ITEM = registerItem("voidstone",
+            (properties) -> new BlockItem(BlockRegistry.VOIDSTONE.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> BRAZIER_ITEM = registerItem("brazier",
             (properties) -> new BlockItem(BlockRegistry.BRAZIER_FIRE.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> SOUL_BRAZIER_ITEM = registerItem("brazier_soul",
