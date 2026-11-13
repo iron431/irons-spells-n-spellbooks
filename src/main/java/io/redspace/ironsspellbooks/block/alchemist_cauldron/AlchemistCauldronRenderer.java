@@ -47,6 +47,9 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
 
     @Override
     public void render(AlchemistCauldronTile cauldron, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+        if (cauldron.getLevel() == null) {
+            return;
+        }
         int waterLevel = cauldron.getFluidAmount();
 
         float waterOffset = cauldron.getLiquidSurfaceHeight();
@@ -59,9 +62,9 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
         for (int i = 0; i < floatingItems.size(); i++) {
             var itemStack = floatingItems.get(i);
             if (!itemStack.isEmpty()) {
-                float f = waterLevel > 0 ? cauldron.getLevel().getGameTime() + partialTick : 15;
+                double f = waterLevel > 0 ? cauldron.getLevel().getGameTime() + partialTick : 15;
                 Vec2 floatOffset = getFloatingItemOffset(f, i * 587);
-                float yRot = (f + i * 213) / (i + 1) * 1.5f;
+                float yRot = (float) (((f + i * 213) / (i + 1) * 1.5) % 360);
                 renderItem(itemStack,
                         new Vec3(
                                 floatOffset.x,
@@ -97,19 +100,19 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
         }
     }
 
-    public Vec2 getFloatingItemOffset(float time, int offset) {
+    public Vec2 getFloatingItemOffset(double time, int offset) {
         //for our case, offset never changes
         float xspeed = offset % 2 == 0 ? .0075f : .025f * (1 + (offset % 88) * .001f);
         float yspeed = offset % 2 == 0 ? .025f : .0075f * (1 + (offset % 88) * .001f);
-        float x = (time + offset) * xspeed;
+        double x = (time + offset) * xspeed;
         x = (Math.abs((x % 2) - 1) + 1) / 2;
-        float y = (time + offset + 4356) * yspeed;
+        double y = (time + offset + 4356) * yspeed;
         y = (Math.abs((y % 2) - 1) + 1) / 2;
 
         //these values are "bouncing" between 0-1. however, this needs to be bounded to inside the limits of the cauldron, taking into account the item size
         x = Mth.lerp(x, -.2f, .75f);
         y = Mth.lerp(y, -.2f, .75f);
-        return new Vec2(x, y);
+        return new Vec2((float) x, (float) y);
 
     }
 
