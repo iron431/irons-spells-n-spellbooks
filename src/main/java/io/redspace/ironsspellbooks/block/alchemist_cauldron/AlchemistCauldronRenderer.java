@@ -49,7 +49,7 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
     public void render(AlchemistCauldronTile cauldron, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         int waterLevel = cauldron.getFluidAmount();
 
-        float waterOffset = Mth.lerp(waterLevel / 1000f, .25f, .9f);
+        float waterOffset = cauldron.getLiquidSurfaceHeight();
 
         if (waterLevel > 0) {
             renderWater(cauldron, poseStack, bufferSource, packedLight, waterOffset);
