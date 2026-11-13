@@ -445,6 +445,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         }
         outward = outward.normalize().scale(BOUNCE_OUT_SPEED);
         itemEntity.setPos(launchPoint);
+        itemEntity.setOnGround(false);
         itemEntity.setDeltaMovement(outward.x, BOUNCE_UP_SPEED, outward.z);
         itemEntity.hasImpulse = true;
         level.playSound(null, launchPoint.x, launchPoint.y, launchPoint.z, SoundRegistry.FORCE_IMPACT.get(), SoundSource.BLOCKS, .5f, 1f);
