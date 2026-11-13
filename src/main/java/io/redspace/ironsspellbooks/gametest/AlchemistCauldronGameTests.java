@@ -71,7 +71,7 @@ public class AlchemistCauldronGameTests {
             }
         };
         NeoForge.EVENT_BUS.addListener(PlayLevelSoundEvent.AtPosition.class, onSound);
-        ItemEntity item = drop(helper, new ItemStack(ItemRegistry.SCROLL.get()), 0.25, 0.3, 0.25);
+        ItemEntity item = drop(helper, new ItemStack(ItemRegistry.SCROLL.get()), 0.25, 0.25, 0.25);
         helper.succeedWhen(() -> {
             assertRestsOutside(helper, item);
             helper.assertTrue(bounces.get() == 1, "expected one bounce, got " + bounces.get());
