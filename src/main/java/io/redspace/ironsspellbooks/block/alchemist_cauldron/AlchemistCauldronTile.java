@@ -586,14 +586,12 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     @Override
     public boolean canPlaceItemThroughFace(int pIndex, ItemStack pItemStack, @Nullable Direction pDirection) {
-        //any non-bottom side can insert a valid item
-        return pDirection != Direction.DOWN && isValidInput(pItemStack) && getItem(pIndex).isEmpty();
+        return isValidInput(pItemStack) && getItem(pIndex).isEmpty();
     }
 
     @Override
     public boolean canTakeItemThroughFace(int pIndex, ItemStack pStack, Direction pDirection) {
-        // can only withdrawl from botoom
-        return pDirection == Direction.DOWN;
+        return true;
     }
 
     @Override
