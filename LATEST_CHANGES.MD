@@ -1,6 +1,8 @@
 ### Additions
 - Added Alchemist Cauldron modded pipe support
-
+- Added Alchemist Cauldron item picks
+  - Items thrown in to cauldron that are acceptable ingredients will be slotted into the next free space
+  - Full of invalid items bounce off
 
 ### Changes
 - Amulet of Teleportation no longer grants Evasion from an Evasion teleport
