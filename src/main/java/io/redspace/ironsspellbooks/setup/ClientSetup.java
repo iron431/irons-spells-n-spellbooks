@@ -124,6 +124,7 @@ import io.redspace.ironsspellbooks.particle.SoulfireRayParticle;
 import io.redspace.ironsspellbooks.particle.SparkParticle;
 import io.redspace.ironsspellbooks.particle.SwirlingParticle;
 import io.redspace.ironsspellbooks.particle.TintedBubblePopParticle;
+import io.redspace.ironsspellbooks.particle.TintedSplashParticle;
 import io.redspace.ironsspellbooks.particle.TraceParticle;
 import io.redspace.ironsspellbooks.particle.UnstableEnderParticle;
 import io.redspace.ironsspellbooks.particle.WispParticle;
@@ -463,6 +464,7 @@ public class ClientSetup {
         event.registerSpriteSet(ParticleRegistry.SOULFIRE_RAY_PARTICLE.get(), SoulfireRayParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.SOUL_FIRE_PARTICLE.get(), DragonFireParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.TINTED_BUBBLE_POP_PARTICLE.get(), TintedBubblePopParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.TINTED_SPLASH_PARTICLE.get(), TintedSplashParticle.Provider::new);
 
         event.registerSpecial(ParticleRegistry.FALLING_BLOCK_PARTICLE.get(), new FallingBlockParticle.Provider());
         event.registerSpecial(ParticleRegistry.SWIRLING_PARTICLE.get(), new SwirlingParticle.Provider());

@@ -14,7 +14,8 @@ import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.FillAlchemist
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.FluidRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.particle.TintedBubblePopParticleOptions;
+import io.redspace.ironsspellbooks.registries.ParticleRegistry;
+import io.redspace.ironsspellbooks.particle.CauldronParticleOptions;
 import io.redspace.ironsspellbooks.registries.RecipeRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
@@ -24,7 +25,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -307,7 +307,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         if (cauldronTile.isBoiling(blockState)) {
             float waterLevel = cauldronTile.getLiquidSurfaceHeight();
             MagicManager.spawnParticles(level,
-                    new TintedBubblePopParticleOptions(pos),
+                    new CauldronParticleOptions(ParticleRegistry.TINTED_BUBBLE_POP_PARTICLE.get(), pos),
                     pos.getX() + Mth.randomBetween(random, .2f, .8f), pos.getY() + waterLevel + 0.01, pos.getZ() + Mth.randomBetween(random, .2f, .8f),
                     1, 0, 0, 0, 0, false);
         }
@@ -431,7 +431,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     private void splash(ServerLevel serverLevel, ItemEntity itemEntity) {
         double surfaceY = worldPosition.getY() + getLiquidSurfaceHeight();
-        serverLevel.sendParticles(ParticleTypes.SPLASH, itemEntity.getX(), surfaceY, itemEntity.getZ(), 12, .15, 0, .15, 0);
+        serverLevel.sendParticles(new CauldronParticleOptions(ParticleRegistry.TINTED_SPLASH_PARTICLE.get(), worldPosition), itemEntity.getX(), surfaceY, itemEntity.getZ(), 12, .15, 0, .15, 0);
         serverLevel.playSound(null, itemEntity.getX(), surfaceY, itemEntity.getZ(), SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, .4f, Mth.randomBetween(serverLevel.random, .9f, 1.1f));
     }
 

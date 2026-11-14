@@ -155,14 +155,22 @@ public class ParticleRegistry {
         }
     });
     public static final Supplier<SimpleParticleType> SOUL_FIRE_PARTICLE = PARTICLE_TYPES.register("soul_fire", () -> new SimpleParticleType(false));
-    public static final Supplier<ParticleType<TintedBubblePopParticleOptions>> TINTED_BUBBLE_POP_PARTICLE = PARTICLE_TYPES.register("tinted_bubble_pop", () -> new ParticleType<>(false) {
-        public MapCodec<TintedBubblePopParticleOptions> codec() {
-            return TintedBubblePopParticleOptions.MAP_CODEC;
+    public static final Supplier<ParticleType<CauldronParticleOptions>> TINTED_BUBBLE_POP_PARTICLE = PARTICLE_TYPES.register("tinted_bubble_pop", () -> new ParticleType<>(false) {
+        public MapCodec<CauldronParticleOptions> codec() {
+            return CauldronParticleOptions.codec((ParticleType<CauldronParticleOptions>) this);
         }
 
-        public StreamCodec<? super RegistryFriendlyByteBuf, TintedBubblePopParticleOptions> streamCodec() {
-            return TintedBubblePopParticleOptions.STREAM_CODEC;
+        public StreamCodec<? super RegistryFriendlyByteBuf, CauldronParticleOptions> streamCodec() {
+            return CauldronParticleOptions.streamCodec((ParticleType<CauldronParticleOptions>) this);
         }
     });
+    public static final Supplier<ParticleType<CauldronParticleOptions>> TINTED_SPLASH_PARTICLE = PARTICLE_TYPES.register("tinted_splash", () -> new ParticleType<>(false) {
+        public MapCodec<CauldronParticleOptions> codec() {
+            return CauldronParticleOptions.codec((ParticleType<CauldronParticleOptions>) this);
+        }
 
+        public StreamCodec<? super RegistryFriendlyByteBuf, CauldronParticleOptions> streamCodec() {
+            return CauldronParticleOptions.streamCodec((ParticleType<CauldronParticleOptions>) this);
+        }
+    });
 }

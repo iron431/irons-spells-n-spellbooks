@@ -4,7 +4,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.block.alchemist_cauldron.AlchemistCauldronTile;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
-import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -62,11 +61,10 @@ public class AlchemistCauldronGameTests {
     public static void restingItemInFullCauldronBouncesOnce(GameTestHelper helper) {
         AlchemistCauldronTile tile = placeCauldron(helper);
         fillSlots(tile, 4);
-        Vec3 cauldronCenter = Vec3.atCenterOf(helper.absolutePos(CAULDRON));
+        Vec3 launchPoint = Vec3.upFromBottomCenterOf(helper.absolutePos(CAULDRON), 1);
         AtomicInteger bounces = new AtomicInteger();
         Consumer<PlayLevelSoundEvent.AtPosition> onSound = event -> {
-            if (event.getLevel() == helper.getLevel() && event.getSound() != null && event.getSound().value() == SoundRegistry.FORCE_IMPACT.get()
-                    && event.getPosition().distanceTo(cauldronCenter) < 1) {
+            if (event.getLevel() == helper.getLevel() && event.getPosition().distanceTo(launchPoint) < 0.01) {
                 bounces.incrementAndGet();
             }
         };
