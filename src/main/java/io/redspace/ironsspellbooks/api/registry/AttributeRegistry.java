@@ -53,7 +53,12 @@ public class AttributeRegistry {
 
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
-        e.getTypes().forEach(entity -> ATTRIBUTES.getEntries().forEach(attribute -> e.add(entity, attribute)));
+        // do not re-add an attribute the type has: add() resets its base value
+        e.getTypes().forEach(entity -> ATTRIBUTES.getEntries().forEach(attribute -> {
+            if (!e.has(entity, attribute)) {
+                e.add(entity, attribute);
+            }
+        }));
     }
 
     private static DeferredHolder<Attribute, Attribute> newResistanceAttribute(String id) {

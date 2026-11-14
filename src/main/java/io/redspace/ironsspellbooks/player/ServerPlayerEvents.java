@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
@@ -34,6 +35,7 @@ import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.network.EquipmentChangedPacket;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
+import io.redspace.ironsspellbooks.network.casting.SyncEntityDataPacket;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -305,8 +307,13 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onStartTracking(final PlayerEvent.StartTracking event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer && event.getTarget() instanceof ServerPlayer targetPlayer) {
-            MagicData.getPlayerMagicData(serverPlayer).getSyncedData().syncToPlayer(targetPlayer);
+        if (!(event.getEntity() instanceof ServerPlayer tracker)) {
+            return;
+        }
+        if (event.getTarget() instanceof ServerPlayer targetPlayer) {
+            MagicData.getPlayerMagicData(targetPlayer).getSyncedData().syncToPlayer(tracker);
+        } else if (event.getTarget() instanceof IMagicEntity magicEntity) {
+            PacketDistributor.sendToPlayer(tracker, new SyncEntityDataPacket(magicEntity.getMagicData().getSyncedData(), magicEntity));
         }
     }
 
@@ -354,7 +361,8 @@ public class ServerPlayerEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onSpellTeleport(SpellTeleportEvent event) {
         if (event.getEntity() instanceof LivingEntity livingEntity) {
-            if (ItemRegistry.TELEPORTATION_AMULET.get().isEquippedBy(livingEntity)) {
+            // an evasion dodge would re-grant evasion forever
+            if (event.getSpell() != SpellRegistry.EVASION_SPELL.get() && ItemRegistry.TELEPORTATION_AMULET.get().isEquippedBy(livingEntity)) {
                 livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.EVASION, 3 * 20, 0, false, false, true));
             }
         }

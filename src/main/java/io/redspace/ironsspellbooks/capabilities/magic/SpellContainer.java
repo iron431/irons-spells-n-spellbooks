@@ -69,15 +69,17 @@ public class SpellContainer implements ISpellContainer {
     ).apply(builder, (id, index, lvl, lock) -> SpellSlot.of(new SpellData(id, lvl, lock), index)));
 
     public static final Codec<ISpellContainer> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.INT.fieldOf(MAX_SLOTS).forGetter(ISpellContainer::getMaxSpellCount),
+            Codec.intRange(0, Integer.MAX_VALUE).fieldOf(MAX_SLOTS).forGetter(ISpellContainer::getMaxSpellCount),
             Codec.BOOL.fieldOf(SPELL_WHEEL).forGetter(ISpellContainer::isSpellWheel),
             Codec.BOOL.fieldOf(MUST_EQUIP).forGetter(ISpellContainer::mustEquip),
             Codec.BOOL.optionalFieldOf(IMPROVED, false).forGetter(ISpellContainer::isImproved),
             Codec.list(SPELL_SLOT_CODEC).fieldOf(SPELL_DATA).forGetter(ISpellContainer::getActiveSpells)
     ).apply(builder, (count, wheel, equip, improved, spells) -> {
         var container = new SpellContainer(count, wheel, equip, improved);
-        spells.forEach(slot -> container.slots[slot.index()] = slot);
-        container.activeSlots = spells.size();
+        // hand-written data can hold out-of-range indices
+        var validSpells = spells.stream().filter(slot -> slot.index() >= 0 && slot.index() < count).toList();
+        validSpells.forEach(slot -> container.slots[slot.index()] = slot);
+        container.activeSlots = validSpells.size();
         return container;
     }));
 

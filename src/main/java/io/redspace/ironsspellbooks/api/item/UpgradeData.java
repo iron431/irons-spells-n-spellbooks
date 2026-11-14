@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.registries.UpgradeOrbTypeRegistry;
 import it.unimi.dsi.fastutil.Pair;
@@ -41,44 +42,45 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
 
     public static final Codec<UpgradeData> REAL_CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.STRING.fieldOf(SLOT).forGetter(UpgradeData::getUpgradedSlot),
-            Codec.unboundedMap(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_CODEC, Codec.INT).fieldOf(UPGRADES).forGetter(UpgradeData::upgrades)
+            Codec.unboundedMap(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_CODEC, Codec.INT)
+                    .promotePartial(error -> IronsSpellbooks.LOGGER.warn("Dropped unreadable upgrades: {}", error))
+                    .fieldOf(UPGRADES).forGetter(UpgradeData::upgrades)
     ).apply(builder, (slot, list) -> new UpgradeData(list, slot)));
 
     @Deprecated(forRemoval = true)
-    private static final Codec<UpgradeData> DEPRECATED_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.STRING.fieldOf(SLOT).forGetter(UpgradeData::getUpgradedSlot),
-            Codec.list(ELEMENT_CODEC).fieldOf(UPGRADES)
-                    .forGetter(
-                            (data) -> data.upgrades().entrySet().stream().map(entry -> new ObjectObjectImmutablePair<>(entry.getKey().getKey().location().toString(), entry.getValue())).toList())
-    ).apply(builder, (slot, list) -> new UpgradeData(parseCodec(list), slot)));
+    private record LegacyUpgradeData(String slot, List<ObjectObjectImmutablePair<String, Integer>> upgrades) {
+    }
+
+    @Deprecated(forRemoval = true)
+    private static final Codec<LegacyUpgradeData> DEPRECATED_CODEC = RecordCodecBuilder.create(builder -> builder.group(
+            Codec.STRING.fieldOf(SLOT).forGetter(LegacyUpgradeData::slot),
+            Codec.list(ELEMENT_CODEC).fieldOf(UPGRADES).forGetter(LegacyUpgradeData::upgrades)
+    ).apply(builder, LegacyUpgradeData::new));
 
     public static final Codec<UpgradeData> CODEC = Codec.withAlternative(REAL_CODEC, Codec.of(
             UpgradeData::deprecatedEncodeWrapper,
             UpgradeData::deprecatedDecodeWrapper
     ));
 
-    @Deprecated(forRemoval = true) // holy scary...
+    @Deprecated(forRemoval = true)
     private static <T> DataResult<T> deprecatedEncodeWrapper(final UpgradeData input, final DynamicOps<T> ops, final T prefix) {
-        return DEPRECATED_CODEC.encode(input, ops, prefix);
+        var legacyUpgrades = input.upgrades().entrySet().stream()
+                .map(entry -> new ObjectObjectImmutablePair<>(entry.getKey().getKey().location().toString(), entry.getValue()))
+                .toList();
+        return DEPRECATED_CODEC.encode(new LegacyUpgradeData(input.getUpgradedSlot(), legacyUpgrades), ops, prefix);
     }
 
-    @Deprecated(forRemoval = true)
-    /**
-     * holy scary... temporarily store for decoding ops, so that a record-built-codec can access the ops, which usually doesnt have registry access, can now reference the static registry ops.
-     */
-    private static DynamicOps<?> ops;
-
+    // do not stash ops in a static field: decoding runs on several threads
     @Deprecated(forRemoval = true)
     private static <T> DataResult<com.mojang.datafixers.util.Pair<UpgradeData, T>> deprecatedDecodeWrapper(final DynamicOps<T> ops, final T input) {
-        UpgradeData.ops = ops;
-        var result = DEPRECATED_CODEC.decode(ops, input);
-        UpgradeData.ops = null;
-        return result;
+        return DEPRECATED_CODEC.decode(ops, input).map(result -> result.mapFirst(
+                legacy -> new UpgradeData(parseCodec(legacy.upgrades(), ops), legacy.slot())
+        ));
     }
 
     @Deprecated(forRemoval = true)
-    private static ImmutableMap<Holder<UpgradeOrbType>, Integer> parseCodec(List<ObjectObjectImmutablePair<String, Integer>> data) {
-        if (UpgradeData.ops instanceof RegistryOps<?> ops) {
+    private static ImmutableMap<Holder<UpgradeOrbType>, Integer> parseCodec(List<ObjectObjectImmutablePair<String, Integer>> data, DynamicOps<?> decodingOps) {
+        if (decodingOps instanceof RegistryOps<?> ops) {
             var reg = ops.getter(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).get();
             ImmutableMap.Builder<Holder<UpgradeOrbType>, Integer> map = ImmutableMap.builder();
             for (Pair<String, Integer> pair : data) {

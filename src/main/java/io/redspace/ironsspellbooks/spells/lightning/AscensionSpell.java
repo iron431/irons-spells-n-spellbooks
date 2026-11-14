@@ -20,6 +20,7 @@ import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -99,7 +100,7 @@ public class AscensionSpell extends AbstractSpell {
 
         //livingEntity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 100));
         float radius = 5;
-        level.getEntities(entity, entity.getBoundingBox().inflate(radius)).forEach(target -> {
+        level.getEntities(entity, AABB.ofSize(strikePos, radius * 2, radius * 2, radius * 2)).forEach(target -> {
             double distance = target.distanceToSqr(strikePos);
             if (distance < radius * radius) {
                 float finalDamage = (float) (getDamage(spellLevel, entity) * (1 - distance / (radius * radius)));

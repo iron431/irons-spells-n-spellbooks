@@ -19,7 +19,6 @@ import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
-import io.redspace.ironsspellbooks.entity.spells.shield.ShieldEntity;
 import io.redspace.ironsspellbooks.item.CastingItem;
 import io.redspace.ironsspellbooks.item.Scroll;
 import io.redspace.ironsspellbooks.item.SpellBook;
@@ -271,13 +270,13 @@ public class Utils {
 //        return rotation.add(pos);
 //    }
 
-    public static boolean hasLineOfSight(Level level, Vec3 start, Vec3 end, boolean checkForShields) {
-        if (checkForShields) {
-            List<ShieldEntity> shieldEntities = level.getEntitiesOfClass(ShieldEntity.class, new AABB(start, end));
-            if (shieldEntities.size() > 0) {
-                var shieldImpact = checkEntityIntersecting(shieldEntities.get(0), start, end, 0);
-                if (shieldImpact.getType() != HitResult.Type.MISS)
-                    end = shieldImpact.getLocation();
+    public static boolean hasLineOfSight(Level level, Vec3 start, Vec3 end, boolean checkForCollidableEntities) {
+        if (checkForCollidableEntities) {
+            List<Entity> collisions = level.getEntities((Entity) null, new AABB(start, end), e -> e.canBeCollidedWith() && e.canBeHitByProjectile());
+            for (Entity e : collisions) {
+                if (checkEntityIntersecting(e, start, end, 0).getType() != HitResult.Type.MISS) {
+                    return false;
+                }
             }
         }
         return level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType() == HitResult.Type.MISS;

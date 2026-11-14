@@ -34,12 +34,16 @@ public class RecastOverlay implements LayeredDraw.Layer {
     static final int ORB_TEXTURE_OFFSET_Y = 5;
     static final int CONNECTOR_TEXTURE_OFFSET_X = 109;
     static final int CONNECTOR_TEXTURE_OFFSET_Y = 8;
+    static final int EDGE_MARGIN = 6;
+    static final int ICON_LEFT_OVERHANG = 20;
+    static final int ICON_TOP_OVERHANG = 4;
+    static final int ICON_BOTTOM_OVERHANG = 14;
 
     public enum Anchor {
         Center(0.5f, 0.5f),
         TopCenter(0.5f, 0),
         TopLeft(0, 0),
-        TopRight(0, 1),
+        TopRight(1, 0),
         BottomLeft(0, 1),
         BottomRight(1, 1);
         final float m1, m2;
@@ -73,18 +77,28 @@ public class RecastOverlay implements LayeredDraw.Layer {
             int total = recastInstance.getTotalRecasts();
             int remaining = recastInstance.getRemainingRecasts();
             int totalWidth = total * ORB_WIDTH + (total - 1) * CONNECTOR_WIDTH;
-            int barX, barY;
-            barX = (int) (screenWidth * anchor.m1);
-            barY = (int) (screenHeight * anchor.m2);
-            if (anchor == Anchor.Center || anchor == Anchor.TopCenter) {
+            String time = formatTime(recastInstance.getTicksRemaining(), recastInstance.getTicksToLive());
+            int barX = (int) (screenWidth * anchor.m1);
+            int barY = (int) (screenHeight * anchor.m2);
+            if (anchor.m1 == 0) {
+                barX += EDGE_MARGIN + ICON_LEFT_OVERHANG;
+            } else if (anchor.m1 == 1) {
+                barX -= EDGE_MARGIN + (ORB_WIDTH + CONNECTOR_WIDTH) * total + Minecraft.getInstance().font.width(time);
+            } else {
                 barX -= totalWidth / 2;
             }
+            int rowOffset = totalHeightPerBar * castIndex;
             if (anchor == Anchor.TopCenter) {
-                barY += screenTopBuffer + bossbarOffset;
+                barY += screenTopBuffer + bossbarOffset + rowOffset;
+            } else if (anchor.m2 == 0) {
+                barY += EDGE_MARGIN + ICON_TOP_OVERHANG + rowOffset;
+            } else if (anchor.m2 == 1) {
+                barY -= EDGE_MARGIN + ICON_BOTTOM_OVERHANG + rowOffset;
+            } else {
+                barY += rowOffset;
             }
             barX += ClientConfigs.RECAST_X_OFFSET.get();
             barY += ClientConfigs.RECAST_Y_OFFSET.get();
-            barY += totalHeightPerBar * castIndex;
 
             var poseStack = guiGraphics.pose();
             poseStack.pushPose();
@@ -125,7 +139,7 @@ public class RecastOverlay implements LayeredDraw.Layer {
             }
 
             int textX = (barX + (ORB_WIDTH + CONNECTOR_WIDTH) * total);
-            guiGraphics.drawString(Minecraft.getInstance().font, formatTime(recastInstance.getTicksRemaining(), recastInstance.getTicksToLive()), textX, barY + (ORB_WIDTH - Minecraft.getInstance().font.lineHeight) / 2, ChatFormatting.WHITE.getColor());
+            guiGraphics.drawString(Minecraft.getInstance().font, time, textX, barY + (ORB_WIDTH - Minecraft.getInstance().font.lineHeight) / 2, ChatFormatting.WHITE.getColor());
         }
 
         bossbarOffset = 0; // reset for next render frame
