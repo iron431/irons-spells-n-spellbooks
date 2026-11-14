@@ -10,7 +10,6 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.network.particles.TeleportParticlesPacket;
 import io.redspace.ironsspellbooks.util.Log;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -121,10 +120,11 @@ public class TeleportSpell extends AbstractSpell {
         Vec3 bbImpact = vec3.subtract(bbOffset);
 
         double ledgeY = level.clip(new ClipContext(Vec3.atBottomCenterOf(pos).add(0, 3, 0), Vec3.atBottomCenterOf(pos), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getLocation().y;
-        boolean isAir = level.getBlockState(new BlockPos(new Vec3i(pos.getX(), (int) ledgeY, pos.getZ())).above()).isAir();
+        BlockPos above = BlockPos.containing(pos.getX(), ledgeY, pos.getZ()).above();
+        boolean isOpen = level.getBlockState(above).getCollisionShape(level, above).isEmpty();
         boolean los = level.clip(new ClipContext(bbImpact, bbImpact.add(0, ledgeY - pos.getY(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getType() == HitResult.Type.MISS;
 
-        if (isAir && los && Math.abs(ledgeY - pos.getY()) <= 3) {
+        if (isOpen && los && Math.abs(ledgeY - pos.getY()) <= 3) {
             return new Vec3(pos.getX() + .5, ledgeY + 0.001, pos.getZ() + .5);
         }
         return level.clip(new ClipContext(bbImpact, bbImpact.add(0, -entity.getBbHeight(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getLocation().add(0, 0.001, 0);
