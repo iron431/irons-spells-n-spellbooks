@@ -608,6 +608,12 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     @Override
+    public int getMaxStackSize() {
+        // each slot holds one recipe input; pipes would fill it with a whole stack
+        return 1;
+    }
+
+    @Override
     public boolean isEmpty() {
         return inputItems.stream().allMatch(ItemStack::isEmpty);
     }

@@ -23,6 +23,7 @@
 - Fixed Recall never working for mobs with a home position
 - Fixed the recast overlay drawing partly or fully off screen with any anchor other than Top Center
 - Fixed Necromancers rarely spawning from trial spawners
+- Fixed the Alchemist Cauldron not working with modded item pipes
 
 ### API
 - 

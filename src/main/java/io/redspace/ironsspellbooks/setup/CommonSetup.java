@@ -45,6 +45,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
@@ -83,6 +84,8 @@ public class CommonSetup {
 
                     return be.fluidCapability;
                 });
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockRegistry.ALCHEMIST_CAULDRON_TILE.get(),
+                (be, side) -> new SidedInvWrapper(be, side));
     }
 
     @SubscribeEvent
