@@ -74,7 +74,7 @@ public class IronsSpellbooksCommand {
         command.then(Commands.literal("it")
                 .executes(source -> source.getSource().getPlayer().openMenu(new SimpleMenuProvider(
                         (i, inventory, player) ->
-                                new InscriptionTableMenu(i, inventory, ContainerLevelAccess.NULL), Component.translatable("block.irons_spellbooks.inscription_table")
+                                new InscriptionTableMenu(i, inventory, ContainerLevelAccess.NULL), Component.translatable("ui.irons_spellbooks.inscription_table_title")
                 )).orElse(0)));
     }
 

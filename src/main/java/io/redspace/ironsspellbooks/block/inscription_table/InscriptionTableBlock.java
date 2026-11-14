@@ -159,7 +159,7 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock implements
     @javax.annotation.Nullable
     public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {
         return new SimpleMenuProvider((i, inventory, player) ->
-                new InscriptionTableMenu(i, inventory, ContainerLevelAccess.create(pLevel, pPos)), Component.translatable("block.irons_spellbooks.inscription_table"));
+                new InscriptionTableMenu(i, inventory, ContainerLevelAccess.create(pLevel, pPos)), Component.translatable("ui.irons_spellbooks.inscription_table_title"));
     }
 
     public static final MapCodec<InscriptionTableBlock> CODEC = simpleCodec((t) -> new InscriptionTableBlock());

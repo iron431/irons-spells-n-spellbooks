@@ -6,13 +6,17 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 
 import java.util.Set;
 
+@EventBusSubscriber
 public class AquiferHelper {
     static final Set<ResourceLocation> structuresToTrack;
     private static final Set<Structure> structuresInterruptingAquifers;
-    private static boolean cached = false;
+    private static volatile boolean cached = false;
 
     static {
         structuresToTrack = new ObjectOpenHashSet<>();
@@ -38,5 +42,14 @@ public class AquiferHelper {
             }
         }
         return structuresInterruptingAquifers;
+    }
+
+    @SubscribeEvent
+    public static void clearCache(ServerStoppedEvent event) {
+        // each server builds its own Structure instances
+        synchronized (structuresInterruptingAquifers) {
+            structuresInterruptingAquifers.clear();
+            cached = false;
+        }
     }
 }

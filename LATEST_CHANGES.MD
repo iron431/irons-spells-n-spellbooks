@@ -22,8 +22,17 @@
 - Fixed Touch Dig and Spectral Hammer cast by mobs skipping block protection checks
 - Fixed Recall never working for mobs with a home position
 - Fixed the recast overlay drawing partly or fully off screen with any anchor other than Top Center
+- Fixed a crash when an Echoing Strikes target disappears before the arrow fires
+- Fixed a crash saving chunks that hold portal frames during world generation
+- Fixed Counterspell putting active summon spells on cooldown
+- Fixed Ice Spider Dens flooding in every world after the first one opened in a session
+- Fixed Black Hole lagging the game by scanning its whole area for fluids every tick
+- Fixed the Inscription Table screen using the block name for its title
+- Fixed the Cryomancer Tower pedestal holding an empty potion
+- Fixed Raise Dead summons not counting as undead
 - Fixed Necromancers rarely spawning from trial spawners
 - Fixed the Alchemist Cauldron not working with modded item pipes
+- Fixed Teleport sinking into farmland with crops
 
 ### API
 - 

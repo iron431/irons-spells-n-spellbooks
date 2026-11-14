@@ -40,7 +40,7 @@ public class CommandRegistry {
             GenerateSiteData.register(commandDispatcher);
             commandDispatcher.register((LiteralArgumentBuilder<CommandSourceStack>) ((LiteralArgumentBuilder) LiteralArgumentBuilder.literal("it")).executes(source -> ((CommandSourceStack) source.getSource()).getPlayer().openMenu(new SimpleMenuProvider(
                     (i, inventory, player) ->
-                            new InscriptionTableMenu(i, inventory, ContainerLevelAccess.NULL), Component.translatable("block.irons_spellbooks.inscription_table")
+                            new InscriptionTableMenu(i, inventory, ContainerLevelAccess.NULL), Component.translatable("ui.irons_spellbooks.inscription_table_title")
             )).orElse(0)));
         }
     }
