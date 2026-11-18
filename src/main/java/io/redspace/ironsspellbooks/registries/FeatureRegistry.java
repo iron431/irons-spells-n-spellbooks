@@ -39,31 +39,35 @@ public class FeatureRegistry {
         PLACED_FEATURES.register(eventBus);
     }
 
-    public static final ResourceKey<ConfiguredFeature<?, ?>> ARCANE_DEBRIS_FEATURE = configuredFeatureResourceKey("ore_arcane_debris");
-    public static final ResourceKey<PlacedFeature> ARCANE_DEBRIS_PLACEMENT = placedFeatureResourceKey("ore_arcane_debris");
-    public static final ResourceKey<BiomeModifier> ADD_ARCANE_DEBRIS_ORE = biomeModifierResourceKey("add_arcane_debris_ore");
+    public static final ResourceKey<ConfiguredFeature<?, ?>> MITHRIL_ORE_FEATURE = configuredFeatureResourceKey("ore_mithril_feature");
+    public static final ResourceKey<PlacedFeature> MITHRIL_ORE_PLACEMENT = placedFeatureResourceKey("ore_mithril_placement");
+    public static final ResourceKey<BiomeModifier> ADD_MITHRIL_TO_BIOMES = biomeModifierResourceKey("add_mithril_ore");
 
     public static void bootstrapConfiguredFeature(BootstapContext<ConfiguredFeature<?, ?>> context) {
-        RuleTest ruleTestArcaneDebris = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
-        List<OreConfiguration.TargetBlockState> arcaneDebrisList = List.of(OreConfiguration.target(ruleTestArcaneDebris, BlockRegistry.ARCANE_DEBRIS.get().defaultBlockState()));
-        FeatureUtils.register(context, ARCANE_DEBRIS_FEATURE, Feature.ORE, new OreConfiguration(arcaneDebrisList, 3, 1.0f));
+        RuleTest deepslateTest = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
+        RuleTest stoneTest = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
+        List<OreConfiguration.TargetBlockState> mithrilTargets = List.of(
+                OreConfiguration.target(stoneTest, BlockRegistry.MITHRIL_ORE.get().defaultBlockState()),
+                OreConfiguration.target(deepslateTest, BlockRegistry.MITHRIL_ORE_DEEPSLATE.get().defaultBlockState())
+        );
+        FeatureUtils.register(context, MITHRIL_ORE_FEATURE, Feature.ORE, new OreConfiguration(mithrilTargets, 3, 1.0f));
     }
 
     public static void bootstrapPlacedFeature(BootstapContext<PlacedFeature> context) {
         HolderGetter<ConfiguredFeature<?, ?>> holdergetter = context.lookup(CONFIGURED_FEATURES.getRegistryKey());
-        Holder<ConfiguredFeature<?, ?>> holderArcaneDebris = holdergetter.getOrThrow(ARCANE_DEBRIS_FEATURE);
+        Holder<ConfiguredFeature<?, ?>> mithrilFeature = holdergetter.getOrThrow(MITHRIL_ORE_FEATURE);
         List<PlacementModifier> list = List.of(CountPlacement.of(7), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-63), VerticalAnchor.absolute(-38)), BiomeFilter.biome());
-        PlacementUtils.register(context, ARCANE_DEBRIS_PLACEMENT, holderArcaneDebris, list);
+        PlacementUtils.register(context, MITHRIL_ORE_PLACEMENT, mithrilFeature, list);
     }
 
     public static void bootstrapBiomeModifier(final BootstapContext<BiomeModifier> context) {
         final var biomes = context.lookup(ForgeRegistries.BIOMES.getRegistryKey());
         final var features = context.lookup(PLACED_FEATURES.getRegistryKey());
 
-        context.register(ADD_ARCANE_DEBRIS_ORE,
+        context.register(ADD_MITHRIL_TO_BIOMES,
                 new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         tag(biomes, BiomeTags.IS_OVERWORLD),
-                        feature(features, ARCANE_DEBRIS_PLACEMENT),
+                        feature(features, MITHRIL_ORE_PLACEMENT),
                         GenerationStep.Decoration.UNDERGROUND_ORES
                 )
         );
