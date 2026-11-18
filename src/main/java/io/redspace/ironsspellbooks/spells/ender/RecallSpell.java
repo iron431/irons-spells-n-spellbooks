@@ -67,7 +67,7 @@ public class RecallSpell extends AbstractSpell {
     @Override
     public boolean checkPreCastConditions(Level level, int spellLevel, LivingEntity entity, MagicData playerMagicData) {
         if (!(entity instanceof ServerPlayer serverPlayer)) {
-            return false;
+            return entity instanceof HomeOwner homeOwner && homeOwner.getHome() != null;
         }
         if (entity.getCombatTracker().inCombat) {
             serverPlayer.displayClientMessage(Component.translatable("ui.irons_spellbooks.cast_error_combat").withStyle(ChatFormatting.RED), true);

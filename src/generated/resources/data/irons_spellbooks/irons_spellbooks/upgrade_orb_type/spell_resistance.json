@@ -3,7 +3,10 @@
   "attribute": "irons_spellbooks:spell_resist",
   "containerItem": {
     "Count": 1,
-    "id": "irons_spellbooks:protection_upgrade_orb"
+    "id": "irons_spellbooks:protection_upgrade_orb",
+    "tag": {
+      "irons_spellbooks:upgrade_orb_type": "irons_spellbooks:spell_resistance"
+    }
   },
   "operation": "MULTIPLY_BASE"
 }

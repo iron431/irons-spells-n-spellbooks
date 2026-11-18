@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.api.item;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.backwards_compat.CodecHelper;
 import io.redspace.ironsspellbooks.api.backwards_compat.UpgradeTypeCache;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
@@ -18,7 +19,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -41,7 +44,10 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
     /**
      * We can't access the data registry without level data, but 1.20.1 has embedded static access. So we made the janky static registry cache, which this codec looks up
      */
-    public static final Codec<Holder<UpgradeOrbType>> I_LOVE_ONE_POINT_TWENTY = ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).xmap(UpgradeTypeCache.CACHE::get, holder -> holder.unwrapKey().get());
+    public static final Codec<Holder<UpgradeOrbType>> I_LOVE_ONE_POINT_TWENTY = ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).comapFlatMap(
+            key -> UpgradeTypeCache.CACHE.containsKey(key) ? DataResult.success(UpgradeTypeCache.CACHE.get(key)) : DataResult.error(() -> "Unknown upgrade orb type: " + key.location()),
+            holder -> holder.unwrapKey().get()
+    );
 
     /**
      * Manually parses nbt used in pre 3.4.0 items
@@ -63,7 +69,9 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
                                 var upgradeId = ResourceLocation.parse(compoundTag.getString("id"));
                                 Holder<UpgradeOrbType> holder = UpgradeTypeCache.CACHE.get(ResourceKey.create(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY, upgradeId));
                                 int count = compoundTag.getInt("upgrades");
-                                map.put(holder, count);
+                                if (holder != null) {
+                                    map.put(holder, count);
+                                }
                             }
                         }
                         return DataResult.success(com.mojang.datafixers.util.Pair.of(new UpgradeData(map, upgradedSlot), input));
@@ -74,10 +82,29 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
             }
     );
 
+    // Keys resolve after the map is read: a key that fails to decode makes DataFixerUpper 6.0.8 map codecs drop every later entry.
     public static final Codec<UpgradeData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.STRING.fieldOf(SLOT).forGetter(UpgradeData::getUpgradedSlot),
-            Codec.unboundedMap(I_LOVE_ONE_POINT_TWENTY, Codec.INT).fieldOf(UPGRADES).forGetter(UpgradeData::upgrades)
+            Codec.unboundedMap(ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY), Codec.INT)
+                    .comapFlatMap(UpgradeData::resolveUpgrades, upgrades -> upgrades.entrySet().stream().collect(ImmutableMap.toImmutableMap(entry -> entry.getKey().unwrapKey().get(), Map.Entry::getValue)))
+                    .promotePartial(error -> IronsSpellbooks.LOGGER.warn("Dropped unreadable upgrades: {}", error))
+                    .fieldOf(UPGRADES).forGetter(UpgradeData::upgrades)
     ).apply(builder, (slot, list) -> new UpgradeData(list, slot)));
+
+    private static DataResult<Map<Holder<UpgradeOrbType>, Integer>> resolveUpgrades(Map<ResourceKey<UpgradeOrbType>, Integer> upgradeCounts) {
+        ImmutableMap.Builder<Holder<UpgradeOrbType>, Integer> upgrades = ImmutableMap.builder();
+        List<ResourceLocation> unknownTypes = new ArrayList<>();
+        upgradeCounts.forEach((key, count) -> {
+            Holder<UpgradeOrbType> holder = UpgradeTypeCache.CACHE.get(key);
+            if (holder == null) {
+                unknownTypes.add(key.location());
+            } else {
+                upgrades.put(holder, count);
+            }
+        });
+        Map<Holder<UpgradeOrbType>, Integer> knownUpgrades = upgrades.build();
+        return unknownTypes.isEmpty() ? DataResult.success(knownUpgrades) : DataResult.error(() -> "Unknown upgrade orb types: " + unknownTypes, knownUpgrades);
+    }
 
 
     public static UpgradeData getUpgradeData(ItemStack itemStack) {

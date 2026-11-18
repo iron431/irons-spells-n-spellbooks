@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.level.BlockEvent;
 import software.bernie.geckolib.animatable.GeoEntity;
 import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
@@ -129,7 +130,12 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
                             float pct = (distance * distance) / (100.0f * this.radius);
 
                             var blockstate = level.getBlockState(pos);
-                            BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, blockstate, owner);
+                            Player breaker = owner;
+                            if (breaker == null && level instanceof ServerLevel serverLevel) {
+                                // protection checks need a player
+                                breaker = FakePlayerFactory.getMinecraft(serverLevel);
+                            }
+                            BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, blockstate, breaker);
                             MinecraftForge.EVENT_BUS.post(event);
 
                             // Handle if the event is canceled

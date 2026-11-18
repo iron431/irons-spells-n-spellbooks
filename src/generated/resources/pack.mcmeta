@@ -1,6 +1,8 @@
 {
   "pack": {
-    "description": "Resources for Iron's Spells N Spellbooks",
-    "pack_format": 34
+    "description": {
+      "text": "Resources for Iron's Spells N Spellbooks"
+    },
+    "pack_format": 15
   }
 }

@@ -6,16 +6,7 @@
     "targets": [
       {
         "state": {
-          "Name": "irons_spellbooks:mithril_ore"
-        },
-        "target": {
-          "predicate_type": "minecraft:tag_match",
-          "tag": "minecraft:stone_ore_replaceables"
-        }
-      },
-      {
-        "state": {
-          "Name": "irons_spellbooks:deepslate_mithril_ore"
+          "Name": "irons_spellbooks:arcane_debris"
         },
         "target": {
           "predicate_type": "minecraft:tag_match",

@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
@@ -36,6 +37,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.TierSortingRegistry;
+import net.minecraftforge.common.util.FakePlayerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -148,8 +150,14 @@ public class TouchDigSpell extends AbstractSpell {
         MagicManager.spawnParticles(world, ParticleTypes.CRIT, vec.x, vec.y, vec.z, 25, 0, 0, 0, 0.2, false);
 
         if (canBreak(world, blockhit.getBlockPos(), getSpellPower(spellLevel, entity))) {
-            if (!(entity instanceof ServerPlayer serverPlayer)
-                    || ForgeHooks.onBlockBreakEvent(world, serverPlayer.gameMode.getGameModeForPlayer(), serverPlayer, blockhit.getBlockPos()/*, world.getBlockState(blockhit.getBlockPos())*/) != -1) {
+            ServerPlayer breaker;
+            if (entity instanceof ServerPlayer serverPlayer) {
+                breaker = serverPlayer;
+            } else {
+                // protection checks need a player
+                breaker = FakePlayerFactory.getMinecraft((ServerLevel) world);
+            }
+            if (ForgeHooks.onBlockBreakEvent(world, breaker.gameMode.getGameModeForPlayer(), breaker, blockhit.getBlockPos()) != -1) {
                 doDestroyBlock(world, blockhit.getBlockPos(), entity);
             }
         }

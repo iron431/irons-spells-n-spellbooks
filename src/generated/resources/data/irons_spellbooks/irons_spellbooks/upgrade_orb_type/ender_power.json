@@ -3,7 +3,10 @@
   "attribute": "irons_spellbooks:ender_spell_power",
   "containerItem": {
     "Count": 1,
-    "id": "irons_spellbooks:ender_upgrade_orb"
+    "id": "irons_spellbooks:ender_upgrade_orb",
+    "tag": {
+      "irons_spellbooks:upgrade_orb_type": "irons_spellbooks:ender_power"
+    }
   },
   "operation": "MULTIPLY_BASE"
 }

@@ -125,7 +125,7 @@ public class ShadowSlashSpell extends AbstractSpell {
                         EnchantmentHelper.doPostDamageEffects(entity, targetEntity);
 //                        targetEntity.setDeltaMovement(targetEntity.getDeltaMovement().add(end.subtract(targetEntity.position()).scale(1 / 6f)));
                         Vec3 knockback = targetEntity.position().subtract(entity.position()).normalize().add(0, 0.5, 0).normalize();
-                        knockback.scale(Utils.random.nextIntBetweenInclusive(70, 100) / 100f *
+                        knockback = knockback.scale(Utils.random.nextIntBetweenInclusive(70, 100) / 100f *
                                 Utils.clampedKnockbackResistanceFactor(targetEntity, .2f, 1f) * .1f);
                         targetEntity.setDeltaMovement(targetEntity.getDeltaMovement().add(knockback));
 

@@ -130,6 +130,12 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     }
 
     @Override
+    protected boolean updateInWaterStateAndDoFluidPushing() {
+        // the fluid scan reads every block in the hitbox each tick; cut for performance (we aren't pushed by fluids anyways)
+        return false;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         this.xo = getX();

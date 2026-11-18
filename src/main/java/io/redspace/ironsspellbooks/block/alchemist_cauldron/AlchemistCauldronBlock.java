@@ -11,6 +11,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -71,6 +72,10 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
+        if (entity instanceof ItemEntity itemEntity && itemEntity.isAlive() && !level.isClientSide
+                && level.getBlockEntity(pos) instanceof AlchemistCauldronTile cauldronTile) {
+            cauldronTile.acceptDroppedItem(itemEntity);
+        }
         if (entity.tickCount % 20 == 0) {
             if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile cauldronTile) {
                 if (entity instanceof LivingEntity livingEntity && livingEntity.hurt(DamageSources.get(level, ISSDamageTypes.CAULDRON), 2) && !livingEntity.level.isClientSide()) {

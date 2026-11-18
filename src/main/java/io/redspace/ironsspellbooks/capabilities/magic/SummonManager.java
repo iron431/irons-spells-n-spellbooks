@@ -141,6 +141,7 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
         if (recastResult == RecastResult.COUNTERSPELL) {
             //ignore counterspell
             MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().forceAddRecast(recastInstance);
+            return false;
         } else if (recastResult != RecastResult.TIMEOUT) { // timeouts are handled by summon manager
             if (castDataSerializable instanceof SummonedEntitiesCastData summonedEntitiesCastData) {
                 var serverLevel = serverPlayer.serverLevel();

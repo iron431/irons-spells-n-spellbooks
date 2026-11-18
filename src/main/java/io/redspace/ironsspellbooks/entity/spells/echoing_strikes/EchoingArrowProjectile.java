@@ -44,6 +44,12 @@ public class EchoingArrowProjectile extends MagicArrowProjectile implements NoKn
         }
 
         if (tickCount == SPAWN_DELAY) {
+            if (lastHomingPosition == null) {
+                if (!level.isClientSide) {
+                    discard();
+                }
+                return;
+            }
             this.setInvisible(false);
             this.stopEntityHoming();
             Vec3 trajectory = lastHomingPosition.subtract(this.position()).normalize();

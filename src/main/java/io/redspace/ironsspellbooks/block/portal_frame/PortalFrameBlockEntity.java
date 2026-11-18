@@ -288,9 +288,18 @@ public class PortalFrameBlockEntity extends BlockEntity {
     }
 
     record PortalId(Optional<UUID> _uuid) {
-        UUID uuid(PortalFrameBlockEntity portalFrameBlockEntity) {
-            return _uuid.orElse(
-                    portalFrameBlockEntity.level.isLoaded(portalFrameBlockEntity.getBlockPos().below()) && portalFrameBlockEntity.level.getBlockEntity(portalFrameBlockEntity.getBlockPos().below()) instanceof PortalFrameBlockEntity be ? be.getUUID() : null);
+        UUID uuid(PortalFrameBlockEntity frame) {
+            if (_uuid.isPresent()) {
+                return _uuid.get();
+            }
+            BlockPos below = frame.getBlockPos().below();
+            if (frame.level == null || !frame.level.isLoaded(below)) {
+                return null;
+            }
+            if (frame.level.getBlockEntity(below) instanceof PortalFrameBlockEntity belowFrame) {
+                return belowFrame.getUUID();
+            }
+            return null;
         }
     }
 }

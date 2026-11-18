@@ -191,6 +191,6 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
 
     @Override
     public void onUnSummon() {
-        //todo: implement
+        vanish();
     }
 }
