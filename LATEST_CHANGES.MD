@@ -1,12 +1,12 @@
 ### Additions
 - Added Alchemist Cauldron modded pipe support
-- Added Alchemist Cauldron item picks
+- Added Alchemist Cauldron thrown-item pickup
   - Items thrown in to cauldron that are acceptable ingredients will be slotted into the next free space
-  - Full of invalid items bounce off
+  - When full or when trying to throw an invalid ingredient, the item will bounce off
 
 ### Changes
 - Amulet of Teleportation no longer grants Evasion from an Evasion teleport
-- Improved Ice Spider Dens anti-aquifier detection
+- Improved Ice Spider Dens anti-aquifer detection
 
 ### Fixes
 - Fixed Alchemist Cauldron holding on to level state for dispenser interactions
