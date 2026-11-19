@@ -19,7 +19,7 @@ build
 
 # other
 .scripts
-.cursor
+.port
 docs
 .scripts
 mcmodsrepo/
