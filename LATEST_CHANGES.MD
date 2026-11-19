@@ -31,6 +31,8 @@
 - Fixed Raise Dead summons not counting as undead
 - Fixed Necromancers rarely spawning from trial spawners
 - Fixed Teleport sinking into farmland with crops
+- 1.20.1: Fixed guidebook format
+- 1.20.1: Fixed citadel book loot table
 
 ### API
 - 
