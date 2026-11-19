@@ -362,6 +362,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
+    public boolean canBreatheUnderwater() {
+        return true;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         if (level.isClientSide) {
