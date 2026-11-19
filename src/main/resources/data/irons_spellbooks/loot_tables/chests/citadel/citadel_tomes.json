@@ -15,15 +15,8 @@
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
-              "pages": [
-                {
-                  "translate": "lore.citadel_book.construction_ledger",
-                  "color": "dark_gray",
-                  "italic": true
-                }
-              ],
-              "mode": "insert"
+              "function": "minecraft:set_nbt",
+              "tag": "{title:\"\",author:\"\",pages:['{\"translate\":\"lore.citadel_book.construction_ledger\",\"color\":\"dark_gray\",\"italic\":true}']}"
             }
           ]
         },
@@ -39,15 +32,8 @@
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
-              "pages": [
-                {
-                  "translate": "lore.citadel_book.soul_research",
-                  "color": "dark_gray",
-                  "italic": true
-                }
-              ],
-              "mode": "insert"
+              "function": "minecraft:set_nbt",
+              "tag": "{title:\"\",author:\"\",pages:['{\"translate\":\"lore.citadel_book.soul_research\",\"color\":\"dark_gray\",\"italic\":true}']}"
             }
           ]
         },
@@ -63,15 +49,8 @@
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
-              "pages": [
-                {
-                  "translate": "lore.citadel_book.planar_travel",
-                  "color": "dark_gray",
-                  "italic": true
-                }
-              ],
-              "mode": "insert"
+              "function": "minecraft:set_nbt",
+              "tag": "{title:\"\",author:\"\",pages:['{\"translate\":\"lore.citadel_book.planar_travel\",\"color\":\"dark_gray\",\"italic\":true}']}"
             }
           ]
         },
@@ -87,15 +66,8 @@
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
-              "pages": [
-                {
-                  "translate": "lore.citadel_book.legion_war_journal",
-                  "color": "dark_gray",
-                  "italic": true
-                }
-              ],
-              "mode": "insert"
+              "function": "minecraft:set_nbt",
+              "tag": "{title:\"\",author:\"\",pages:['{\"translate\":\"lore.citadel_book.legion_war_journal\",\"color\":\"dark_gray\",\"italic\":true}']}"
             }
           ]
         },
@@ -111,15 +83,8 @@
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
-              "pages": [
-                {
-                  "translate": "lore.citadel_book.armory_ledger",
-                  "color": "dark_gray",
-                  "italic": true
-                }
-              ],
-              "mode": "insert"
+              "function": "minecraft:set_nbt",
+              "tag": "{title:\"\",author:\"\",pages:['{\"translate\":\"lore.citadel_book.armory_ledger\",\"color\":\"dark_gray\",\"italic\":true}']}"
             }
           ]
         },
@@ -135,15 +100,8 @@
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
-              "pages": [
-                {
-                  "translate": "lore.citadel_book.training_manual",
-                  "color": "dark_gray",
-                  "italic": true
-                }
-              ],
-              "mode": "insert"
+              "function": "minecraft:set_nbt",
+              "tag": "{title:\"\",author:\"\",pages:['{\"translate\":\"lore.citadel_book.training_manual\",\"color\":\"dark_gray\",\"italic\":true}']}"
             }
           ]
         },
@@ -159,15 +117,8 @@
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
-              "pages": [
-                {
-                  "translate": "lore.citadel_book.cinderous_rituals",
-                  "color": "dark_gray",
-                  "italic": true
-                }
-              ],
-              "mode": "insert"
+              "function": "minecraft:set_nbt",
+              "tag": "{title:\"\",author:\"\",pages:['{\"translate\":\"lore.citadel_book.cinderous_rituals\",\"color\":\"dark_gray\",\"italic\":true}']}"
             }
           ]
         },
@@ -183,15 +134,8 @@
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
-              "pages": [
-                {
-                  "translate": "lore.citadel_book.architectural_diagrams",
-                  "color": "dark_gray",
-                  "italic": true
-                }
-              ],
-              "mode": "insert"
+              "function": "minecraft:set_nbt",
+              "tag": "{title:\"\",author:\"\",pages:['{\"translate\":\"lore.citadel_book.architectural_diagrams\",\"color\":\"dark_gray\",\"italic\":true}']}"
             }
           ]
         },
@@ -207,15 +151,8 @@
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
-              "pages": [
-                {
-                  "translate": "lore.citadel_book.fire_notes",
-                  "color": "dark_gray",
-                  "italic": true
-                }
-              ],
-              "mode": "insert"
+              "function": "minecraft:set_nbt",
+              "tag": "{title:\"\",author:\"\",pages:['{\"translate\":\"lore.citadel_book.fire_notes\",\"color\":\"dark_gray\",\"italic\":true}']}"
             }
           ]
         },
@@ -231,15 +168,8 @@
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
-              "pages": [
-                {
-                  "translate": "lore.citadel_book.quarry",
-                  "color": "dark_gray",
-                  "italic": true
-                }
-              ],
-              "mode": "insert"
+              "function": "minecraft:set_nbt",
+              "tag": "{title:\"\",author:\"\",pages:['{\"translate\":\"lore.citadel_book.quarry\",\"color\":\"dark_gray\",\"italic\":true}']}"
             }
           ]
         },
@@ -255,15 +185,8 @@
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
-              "pages": [
-                {
-                  "translate": "lore.citadel_book.complaint",
-                  "color": "dark_gray",
-                  "italic": true
-                }
-              ],
-              "mode": "insert"
+              "function": "minecraft:set_nbt",
+              "tag": "{title:\"\",author:\"\",pages:['{\"translate\":\"lore.citadel_book.complaint\",\"color\":\"dark_gray\",\"italic\":true}']}"
             }
           ]
         },
@@ -279,15 +202,8 @@
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
-              "pages": [
-                {
-                  "translate": "lore.citadel_book.soul_warning",
-                  "color": "dark_gray",
-                  "italic": true
-                }
-              ],
-              "mode": "insert"
+              "function": "minecraft:set_nbt",
+              "tag": "{title:\"\",author:\"\",pages:['{\"translate\":\"lore.citadel_book.soul_warning\",\"color\":\"dark_gray\",\"italic\":true}']}"
             }
           ]
         }
@@ -295,4 +211,3 @@
     }
   ]
 }
-

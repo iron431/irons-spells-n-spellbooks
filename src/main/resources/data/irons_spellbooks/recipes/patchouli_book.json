@@ -6,7 +6,6 @@
       "modid": "patchouli"
     }
   ],
-  
   "ingredients": [
     {
       "item": "minecraft:book"
@@ -15,10 +14,9 @@
       "item": "irons_spellbooks:arcane_essence"
     }
   ],
-  "result": { "item": "patchouli:guide_book",
-    "components": {
-      "patchouli:book": "irons_spellbooks:iss_guide_book"
-    },
+  "result": {
+    "item": "patchouli:guide_book",
+    "nbt": "{\"patchouli:book\": \"irons_spellbooks:iss_guide_book\"}",
     "count": 1
   }
 }
