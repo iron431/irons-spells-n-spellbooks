@@ -39,6 +39,11 @@ public class NecromancerEntity extends AbstractSpellCastingMob implements Enemy 
     }
 
     @Override
+    public MobType getMobType() {
+        return MobType.UNDEAD;
+    }
+
+    @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(4, new WizardAttackGoal(this, 1.25f, 35, 80)
                 .setSpells(
