@@ -268,7 +268,7 @@ public class AdditionalWanderingTrades {
                 if (!trader.level.isClientSide) {
                     LootTable loottable = trader.level.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, IronsSpellbooks.id("magic_items/basic_curios")));
                     var context = new LootParams.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
-                    var items = loottable.getRandomItems(context);
+                    var items = loottable.getRandomItems(context, random);
                     if (!items.isEmpty()) {
                         ItemStack forSale = items.get(0);
                         var cost = new ItemCost(Items.EMERALD, 64);
@@ -286,7 +286,7 @@ public class AdditionalWanderingTrades {
                 if (!trader.level.isClientSide) {
                     LootTable loottable = trader.level.getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, IronsSpellbooks.id("magic_items/scroll_pouch")));
                     var context = new LootParams.Builder((ServerLevel) trader.level).create(LootContextParamSets.EMPTY);
-                    var items = loottable.getRandomItems(context);
+                    var items = loottable.getRandomItems(context, random);
                     if (!items.isEmpty()) {
                         int quality = 0;
                         for (ItemStack stack : items) {
