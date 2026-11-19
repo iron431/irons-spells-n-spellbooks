@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -17,9 +17,7 @@ public class SyncEntityDataPacket implements CustomPacketPayload {
 
     public SyncEntityDataPacket(SyncedSpellData syncedSpellData, IMagicEntity entity) {
         this.syncedSpellData = syncedSpellData;
-        if (entity instanceof PathfinderMob m) {
-            this.entityId = m.getId();
-        }else throw new IllegalStateException("Unable to add " + this.getClass().getSimpleName() + "to entity, must extend PathfinderMob.");
+        this.entityId = ((Entity) entity).getId();
     }
 
     public SyncEntityDataPacket(FriendlyByteBuf buf) {
